@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — ระบบเช็คอินเข้าห้องประชุม</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif;background:#f0f4f9;color:#1a2332;min-height:100vh}
+:root{
+  --navy:#0f2044;--navy2:#1a3260;--gold:#d4a843;
+  --day1:#1e6fbf;--day1-lt:#dbeafe;--day2:#0e7c5a;--day2-lt:#dcfce7;
+  --border:#e2e8f0;--white:#fff;--muted:#64748b;
+  --red:#dc2626;--red-lt:#fee2e2;--green:#059669;--green-lt:#d1fae5;
+  --amber:#b45309;--amber-lt:#fef3c7;
+}
+.hdr{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;box-shadow:0 4px 20px rgba(15,32,68,.3)}
+.hdr-inner{max-width:1100px;margin:0 auto;padding:18px 24px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.hdr h1{font-size:20px;font-weight:700}
+.hdr p{font-size:12px;color:rgba(255,255,255,.6);margin-top:2px}
+.stats-bar{background:rgba(255,255,255,.08);border-top:1px solid rgba(255,255,255,.1);padding:9px 24px}
+.stats-inner{max-width:1100px;margin:0 auto;display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+.stat{display:flex;align-items:center;gap:7px;font-size:13px}
+.stat-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.stat-val{font-weight:700;font-size:15px}
+.stat-lbl{color:rgba(255,255,255,.6)}
+.main{max-width:1100px;margin:0 auto;padding:20px 24px}
+.prog-wrap{background:var(--white);border-radius:10px;border:1px solid var(--border);padding:14px 18px;margin-bottom:16px}
+.prog-bar-bg{flex:1;background:#e2e8f0;border-radius:99px;height:8px;overflow:hidden;margin-top:6px}
+.prog-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green),#34d399);transition:width .4s}
+.toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.search-box{flex:1;min-width:180px;border:1.5px solid var(--border);border-radius:9px;padding:8px 12px 8px 36px;font-size:13px;font-family:inherit;background:var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' fill='none' stroke='%2394a3b8' stroke-width='2' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 10px center}
+.search-box:focus{outline:none;border-color:var(--day1)}
+.filter-btns{display:flex;gap:5px;flex-wrap:wrap}
+.fbtn{padding:7px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--white);font-size:12px;font-family:inherit;cursor:pointer;transition:all .15s;font-weight:500;white-space:nowrap}
+.fbtn:hover{border-color:var(--navy)}
+.fbtn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.fbtn.fc.active{background:var(--green);border-color:var(--green)}
+.fbtn.fa.active{background:var(--red);border-color:var(--red)}
+.tbl-wrap{background:var(--white);border-radius:12px;border:1px solid var(--border);overflow-x:auto;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+table{width:100%;border-collapse:collapse;min-width:600px}
+thead tr{background:var(--navy)}
+thead th{padding:11px 14px;text-align:left;font-size:11px;font-weight:600;color:rgba(255,255,255,.8);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#f8fafc}
+tbody tr.hidden{display:none}
+td{padding:10px 14px;font-size:13px;vertical-align:middle}
+.td-num{color:var(--muted);font-size:11px;width:36px}
+.td-name{font-weight:600}
+.td-tms{font-family:monospace;font-size:11px;color:var(--muted)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600;white-space:nowrap}
+.b-checked{background:var(--green-lt);color:#065f46}
+.b-absent{background:var(--red-lt);color:#991b1b}
+.b-day1{background:var(--day1-lt);color:#1e3a8a}
+.b-day2{background:var(--day2-lt);color:#14532d}
+.b-noday{background:#f1f5f9;color:var(--muted)}
+.b-senior{background:var(--amber-lt);color:var(--amber)}
+.b-agent{background:#f1f5f9;color:#475569}
+.btn{padding:8px 16px;border-radius:9px;border:none;cursor:pointer;font-size:13px;font-family:inherit;font-weight:600;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{background:#f0c96a}
+.btn-outline{background:var(--white);color:var(--navy);border:1.5px solid var(--border)}
+.btn-outline:hover{border-color:var(--navy)}
+.btn-danger{background:var(--red-lt);color:var(--red);border:1.5px solid #fca5a5}
+.btn-danger:hover{background:var(--red);color:#fff}
+.toast{position:fixed;bottom:20px;right:20px;z-index:200;background:#1e293b;color:#fff;padding:11px 18px;border-radius:9px;font-size:13px;font-weight:500;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:300;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;font-size:14px;color:var(--muted)}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.qr-section{background:var(--white);border-radius:12px;border:1px solid var(--border);padding:24px;margin-bottom:20px;text-align:center}
+.qr-section h2{font-size:16px;font-weight:700;margin-bottom:8px}
+.qr-section p{font-size:13px;color:var(--muted);margin-bottom:16px}
+.qr-url-box{background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--navy);word-break:break-all;margin-bottom:12px;font-family:monospace}
+.qr-display{display:flex;justify-content:center;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-inner">
+    <div>
+      <h1>🏢 Admin — เช็คอินเข้าห้องประชุม</h1>
+      <p>Call Center Team · 25-26 พฤษภาคม 2569 · เวลา 15.00-16.00 น.</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-outline" onclick="refreshAll()" style="font-size:12px">🔄 รีเฟรช</button>
+      <button class="btn btn-gold" onclick="exportCSV()" style="font-size:12px">⬇️ Export CSV</button>
+      <button class="btn btn-danger" onclick="confirmReset()" style="font-size:12px">🗑️ ล้างข้อมูล</button>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat"><div class="stat-dot" style="background:#94a3b8"></div><span class="stat-lbl">ทั้งหมด</span><span class="stat-val">55</span><span class="stat-lbl">คน</span></div>
+      <div class="stat"><div class="stat-dot" style="background:var(--green)"></div><span class="stat-lbl">เช็คอินแล้ว</span><span class="stat-val" id="s-chk" style="color:var(--green)">0</span></div>
+      <div class="stat"><div class="stat-dot" style="background:var(--red)"></div><span class="stat-lbl">ยังไม่มา</span><span class="stat-val" id="s-abs" style="color:var(--red)">55</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Progress -->
+  <div class="prog-wrap">
+    <div style="display:flex;justify-content:space-between;font-size:12px">
+      <span style="font-weight:600">ความคืบหน้าการเช็คอิน</span>
+      <span id="prog-txt" style="color:var(--muted)">0 / 55 คน (0%)</span>
+    </div>
+    <div class="prog-bar-bg"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+  </div>
+
+  <!-- QR Section -->
+  <div class="qr-section">
+    <h2>📱 QR Code สำหรับพนักงานสแกน</h2>
+    <p>พนักงานสแกน QR นี้ด้วยมือถือ แล้วกรอกรหัส TMS เพื่อเช็คอิน</p>
+    <div class="qr-url-box" id="qrUrlBox">กำลังสร้าง QR...</div>
+    <div class="qr-display" id="qrDisplay"></div>
+    <div style="font-size:11px;color:var(--muted)">สามารถพิมพ์หรือแสดงบนหน้าจอที่เคาน์เตอร์ได้ครับ</div>
+  </div>
+
+  <!-- Table -->
+  <div class="toolbar">
+    <input class="search-box" type="text" placeholder="ค้นหาชื่อ, ชื่อเล่น, TMS..." id="searchInput" oninput="filterTable()">
+    <div class="filter-btns">
+      <button class="fbtn active" data-f="all" onclick="setFilter('all',this)">ทั้งหมด</button>
+      <button class="fbtn fc" data-f="checked" onclick="setFilter('checked',this)">✅ เช็คอินแล้ว</button>
+      <button class="fbtn fa" data-f="absent" onclick="setFilter('absent',this)">❌ ยังไม่มา</button>
+    </div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>#</th><th>ชื่อ-สกุล</th><th>ชื่อเล่น</th><th>ชื่อไทย</th><th>ตำแหน่ง</th><th>TMS</th>
+        <th>วันที่เลือก</th><th>สถานะเข้าห้อง</th><th>เวลาเช็คอิน</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <span>กำลังโหลดข้อมูล...</span>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── Inline QR SVG Generator ── */
+(function(g){
+var QR8=function(d){this.mode=4;this.data=d};
+QR8.prototype={getMode:function(){return 4},getLength:function(){return this.data.length},write:function(b){for(var i=0;i<this.data.length;i++)b.put(this.data.charCodeAt(i),8)}};
+var QRUtil={PP:[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],G15:1335,G18:7973,G15M:21522,
+getBCHTypeInfo:function(a){for(var b=a<<10;QRUtil.getBCHDigit(b)-QRUtil.getBCHDigit(QRUtil.G15)>=0;)b^=QRUtil.G15<<QRUtil.getBCHDigit(b)-QRUtil.getBCHDigit(QRUtil.G15);return(a<<10|b)^QRUtil.G15M},
+getBCHTypeNumber:function(a){for(var b=a<<12;QRUtil.getBCHDigit(b)-QRUtil.getBCHDigit(QRUtil.G18)>=0;)b^=QRUtil.G18<<QRUtil.getBCHDigit(b)-QRUtil.getBCHDigit(QRUtil.G18);return a<<12|b},
+getBCHDigit:function(a){for(var b=0;a!=0;)b++,a>>>=1;return b},
+getPatternPos:function(a){return QRUtil.PP[a-1]},
+getMask:function(a,r,c){switch(a){case 0:return(r+c)%2==0;case 1:return r%2==0;case 2:return c%3==0;case 3:return(r+c)%3==0;case 4:return(Math.floor(r/2)+Math.floor(c/3))%2==0;case 5:return r*c%2+r*c%3==0;case 6:return(r*c%2+r*c%3)%2==0;case 7:return(r*c%3+(r+c)%2)%2==0}},
+getLenBits:function(m,t){if(t<10)switch(m){case 1:return 10;case 2:return 9;case 4:return 8;case 8:return 8}else if(t<27)switch(m){case 1:return 12;case 2:return 11;case 4:return 16;case 8:return 16}else switch(m){case 1:return 14;case 2:return 13;case 4:return 12;case 8:return 16}},
+getLostPoint:function(a){var n=a.getN(),s=0;for(var r=0;r<n;r++){for(var c=0;c<n;c++){var f=0,d=a.isDark(r,c);for(var dr=-1;dr<=1;dr++)if(r+dr>=0&&r+dr<n)for(var dc=-1;dc<=1;dc++)c+dc>=0&&c+dc<n&&!(dr==0&&dc==0)&&a.isDark(r+dr,c+dc)==d&&f++;f>5&&(s+=3+f-5)}for(var r=0;r<n-1;r++)for(var c=0;c<n-1;c++){var j=0;a.isDark(r,c)&&j++;a.isDark(r+1,c)&&j++;a.isDark(r,c+1)&&j++;a.isDark(r+1,c+1)&&j++;(j==0||j==4)&&(s+=3)}}for(var r=0;r<n;r++)for(var c=0;c<n-6;c++)a.isDark(r,c)&&!a.isDark(r,c+1)&&a.isDark(r,c+2)&&a.isDark(r,c+3)&&a.isDark(r,c+4)&&!a.isDark(r,c+5)&&a.isDark(r,c+6)&&(s+=40);for(var c=0;c<n;c++)for(var r=0;r<n-6;r++)a.isDark(r,c)&&!a.isDark(r+1,c)&&a.isDark(r+2,c)&&a.isDark(r+3,c)&&a.isDark(r+4,c)&&!a.isDark(r+5,c)&&a.isDark(r+6,c)&&(s+=40);var k=0;for(var r=0;r<n;r++)for(var c=0;c<n;c++)a.isDark(r,c)&&k++;s+=10*Math.abs(100*k/n/n-50)/5;return s}};
+var QRMath=function(){var e=new Array(256),l=new Array(256);for(var i=0;i<8;i++)e[i]=1<<i;for(var i=8;i<256;i++)e[i]=e[i-4]^e[i-5]^e[i-6]^e[i-8];for(var i=0;i<255;i++)l[e[i]]=i;return{gexp:function(a){while(a<0)a+=255;while(a>=256)a-=255;return e[a]},glog:function(a){if(a<1)throw new Error("glog("+a+")");return l[a]}}}();
+var QRPoly=function(a,b){var c=0;while(c<a.length&&a[c]==0)c++;this.n=new Array(a.length-c+b);for(var i=0;i<a.length-c;i++)this.n[i]=a[i+c]};
+QRPoly.prototype={get:function(i){return this.n[i]},len:function(){return this.n.length},mul:function(a){var b=new Array(this.len()+a.len()-1);for(var i=0;i<this.len();i++)for(var j=0;j<a.len();j++)b[i+j]^=QRMath.gexp(QRMath.glog(this.get(i))+QRMath.glog(a.get(j)));return new QRPoly(b,0)},mod:function(a){if(this.len()-a.len()<0)return this;var r=QRMath.glog(this.get(0))-QRMath.glog(a.get(0)),b=new Array(this.len());for(var i=0;i<this.len();i++)b[i]=this.get(i);for(var i=0;i<a.len();i++)b[i]^=QRMath.gexp(QRMath.glog(a.get(i))+r);return new QRPoly(b,0).mod(a)}};
+var RSB=[1,26,19,1,26,16,1,26,13,1,26,9,1,44,34,1,44,28,1,44,22,1,44,16,1,70,55,1,70,44,2,35,17,2,35,13,1,100,80,2,50,32,2,50,24,4,25,9,1,134,108,2,67,43,2,33,15,2,33,11,2,67,68,4,33,27,4,33,19,4,33,15,2,86,64,4,43,31,2,43,19,4,43,15,4,69,46,2,69,30,4,69,24,4,69,19,2,98,86,3,49,22,4,49,20,4,49,14,3,98,44,4,49,24,6,33,14,4,33,13,4,98,60,7,49,26,4,33,13,5,33,11,1,116,58,2,58,22,8,33,10,5,33,9,6,116,56,4,58,23,4,58,14,6,58,14,4,100,32,4,50,24,4,50,19,3,50,15,4,132,72,6,50,28,6,33,14,7,33,12,6,130,96,8,65,32,8,65,24,12,33,12,8,130,88,4,65,31,6,65,22,11,33,11,6,130,76,5,65,27,5,65,21,11,33,10,3,135,60,4,45,20,11,33,13,11,33,10,7,135,72,7,45,22,13,33,13,11,33,10];
+function getRSB(t,e){var idx;switch(e){case 1:idx=6*(t-1);break;case 0:idx=6*(t-1)+1;break;case 3:idx=6*(t-1)+2;break;default:idx=6*(t-1)+1}var r=[];for(var i=0;i<RSB[idx];i++)r.push({totalCount:RSB[idx+1],dataCount:RSB[idx+2]});return r}
+function getECP(n){var p=new QRPoly([1],0);for(var i=0;i<n;i++)p=p.mul(new QRPoly([1,QRMath.gexp(i)],0));return p}
+var QRBuf=function(){this.buf=[];this.len=0};QRBuf.prototype={put:function(a,l){for(var i=0;i<l;i++)this.putBit((a>>>(l-i-1)&1)==1)},getLenBits:function(){return this.len},putBit:function(a){var b=Math.floor(this.len/8);this.buf.length<=b&&this.buf.push(0);a&&(this.buf[b]|=0x80>>>(this.len%8));this.len++}};
+function createData(t,e,dl){var blocks=getRSB(t,e),buf=new QRBuf(),totalDC=0;for(var i=0;i<blocks.length;i++)totalDC+=blocks[i].dataCount;for(var i=0;i<dl.length;i++){var d=dl[i];buf.put(d.getMode(),4);buf.put(d.getLength(),QRUtil.getLenBits(d.getMode(),t));d.write(buf)}if(buf.getLenBits()+4<=8*totalDC)buf.put(0,4);while(buf.getLenBits()%8!=0)buf.putBit(false);while(buf.getLenBits()<8*totalDC){buf.put(236,8);if(buf.getLenBits()<8*totalDC)buf.put(17,8)}var maxDC=0,maxEC=0,dc=[],ec=[];for(var i=0;i<blocks.length;i++){var tc=blocks[i].dataCount,ec2=blocks[i].totalCount-tc;maxDC=Math.max(maxDC,tc);maxEC=Math.max(maxEC,ec2);dc.push(new Array(tc));ec.push(new Array(ec2))}var ci=0;for(var i=0;i<blocks.length;i++){for(var j=0;j<dc[i].length;j++)dc[i][j]=0xff&buf.buf[ci++];var ecp=getECP(ec[i].length),rsp=new QRPoly(dc[i],ec[i].length),mp=rsp.mod(ecp);for(var j=0;j<ec[i].length;j++){var idx2=j+mp.len()-ec[i].length;ec[i][j]=idx2>=0?mp.get(idx2):0}}var data=[],idx=0;for(var j=0;j<maxDC;j++)for(var i=0;i<blocks.length;i++)j<dc[i].length&&(data[idx++]=dc[i][j]);for(var j=0;j<maxEC;j++)for(var i=0;i<blocks.length;i++)j<ec[i].length&&(data[idx++]=ec[i][j]);return data}
+var QRM=function(text,ecl){this.ecl=ecl||0;this.modules=null;this.N=0;this.cache=null;this.dl=[new QR8(text)];var tn=1;for(;tn<=40;tn++){var blocks=getRSB(tn,this.ecl),totalDC=0;for(var i=0;i<blocks.length;i++)totalDC+=blocks[i].dataCount;var total=0;for(var i=0;i<this.dl.length;i++)total+=this.dl[i].getLength();if(totalDC>=total)break}this.tn=tn;this._impl(false,this._best())};
+QRM.prototype={isDark:function(r,c){return this.modules[r][c]},getN:function(){return this.N},_impl:function(test,mask){this.N=4*this.tn+17;this.modules=[];for(var i=0;i<this.N;i++){this.modules.push([]);for(var j=0;j<this.N;j++)this.modules[i].push(null)}this._probe(0,0);this._probe(this.N-7,0);this._probe(0,this.N-7);this._align();this._timing();this._typeInfo(test,mask);this.tn>=7&&this._typeNum(test);if(!this.cache)this.cache=createData(this.tn,this.ecl,this.dl);this._map(this.cache,mask)},_probe:function(r,c){for(var dr=-1;dr<=7;dr++){if(r+dr<0||this.N<=r+dr)continue;for(var dc=-1;dc<=7;dc++){if(c+dc<0||this.N<=c+dc)continue;(dr>=0&&dr<=6&&(dc==0||dc==6))||(dc>=0&&dc<=6&&(dr==0||dr==6))||(dr>=2&&dr<=4&&dc>=2&&dc<=4)?this.modules[r+dr][c+dc]=true:this.modules[r+dr][c+dc]=false}}},_best:function(){var best=0,bestP=0;for(var p=0;p<8;p++){this._impl(true,p);var lp=QRUtil.getLostPoint(this);if(p==0||bestP>lp){bestP=lp;best=p}}return best},_timing:function(){for(var r=8;r<this.N-8;r++)this.modules[r][6]==null&&(this.modules[r][6]=r%2==0);for(var c=8;c<this.N-8;c++)this.modules[6][c]==null&&(this.modules[6][c]=c%2==0)},_align:function(){var pos=QRUtil.getPatternPos(this.tn);for(var i=0;i<pos.length;i++)for(var j=0;j<pos.length;j++){var r=pos[i],c=pos[j];if(this.modules[r][c]!=null)continue;for(var dr=-2;dr<=2;dr++)for(var dc=-2;dc<=2;dc++)dr==-2||dr==2||dc==-2||dc==2||dr==0&&dc==0?this.modules[r+dr][c+dc]=true:this.modules[r+dr][c+dc]=false}},_typeNum:function(t){var b=QRUtil.getBCHTypeNumber(this.tn);for(var i=0;i<18;i++){var d=!t&&(b>>i&1)==1;this.modules[Math.floor(i/3)][i%3+this.N-8-3]=d}for(var i=0;i<18;i++){var d=!t&&(b>>i&1)==1;this.modules[i%3+this.N-8-3][Math.floor(i/3)]=d}},_typeInfo:function(t,m){var b=QRUtil.getBCHTypeInfo(this.ecl<<3|m);for(var i=0;i<15;i++){var d=!t&&(b>>i&1)==1;i<6?this.modules[i][8]=d:i<8?this.modules[i+1][8]=d:this.modules[this.N-15+i][8]=d}for(var i=0;i<15;i++){var d=!t&&(b>>i&1)==1;i<8?this.modules[8][this.N-i-1]=d:i<9?this.modules[8][15-i]:this.modules[8][15-i-1]=d}this.modules[this.N-8][8]=!t},_map:function(data,mask){var di=-1,r=this.N-1,step=7,ci=0;for(var col=this.N-1;col>0;col-=2){col==6&&col--;for(;;){for(var dr=0;dr<2;dr++){if(this.modules[r][col-dr]==null){var dark=false;ci<data.length&&(dark=(data[ci]>>step&1)==1);QRUtil.getMask(mask,r,col-dr)&&(dark=!dark);this.modules[r][col-dr]=dark;step--;if(step==-1){ci++;step=7}}}if((r+=di)<0||this.N<=r){r-=di;di=-di;break}}}}};
+function makeQRSVG(text,sz,dark,light){var qr=new QRM(text,0),n=qr.getN(),cell=Math.floor(sz/n),pad=Math.floor((sz-n*cell)/2);var s='<svg xmlns="http://www.w3.org/2000/svg" width="'+sz+'" height="'+sz+'" viewBox="0 0 '+sz+' '+sz+'"><rect width="'+sz+'" height="'+sz+'" fill="'+(light||'#fff')+'"/>';for(var r=0;r<n;r++)for(var c=0;c<n;c++)if(qr.isDark(r,c))s+='<rect x="'+(pad+c*cell)+'" y="'+(pad+r*cell)+'" width="'+cell+'" height="'+cell+'" fill="'+(dark||'#000')+'"/>';return s+'</svg>'}
+g.makeQRSVG=makeQRSVG;
+})(window);
+
+const API_URL = 'https://script.google.com/macros/s/AKfycbxkstYBx381D9Sj9AxPJ9dfFdyj9POqb5meMFv1WDrZ1DDnrbmQkgiCcLC06pMVRvs/exec';
+
+const EMPLOYEES = [
+  ["Ms.Rugnthip Sriplay","Mui","นางสาวรุ่งทิพย์ ศรีพลาย","มุ้ย","Senior Call Center Agent","af011"],
+  ["Ms.Chonlada Ninyasai","Ae","นางสาวชลดา นิลยะไทร","เอ๋","Call Center Agent","af029"],
+  ["Mr. Kriangkrai Baboon","Kriang","นายเกรียงไกร บาบุญ","เกรียง","Call Center Agent","af034"],
+  ["Mr.Sitthiporn ThaiKeay","Ant","นายสิทธิพร ไทยเขียว","แอนท์","Senior Call Center Agent","af038"],
+  ["Ms.Farida Sadee","Da","นางสาว ฟารีดา สะดี","ดา","Call Center Agent","af240"],
+  ["Ms.Panisara Kaewprasert","Tangmo","นางสาวปาณิสรา แก้วประเสริฐ","แตงโม","Call Center Agent","af256"],
+  ["Ms.Vipada Kadam","Tookta","นางสาววิภาดา กาดำ","ตุ๊กตา","Call Center Agent","af261"],
+  ["Ms.Napaporn Kruangthed","Tai","นางสาวนภาพร เครื่องเทศ","ต่าย","Call Center Agent","af313"],
+  ["Ms.Wasana Kamolhat","Van","นางสาววาสนา กมลหัตถ์","แหวน","Call Center Agent","af316"],
+  ["Mr. Kwan Prisri","Kwan","นายขวัญ ไพรศรี","ขวัญ","Call Center Agent","af441"],
+  ["Ms. Kanda Kamonhat","Jum","นางสาวกานดา กมลหัตถ์","จุ๋ม","Call Center Agent","af442"],
+  ["Mr.Sarawut Yimniam","Golf","นายสราวุธ ยิ้มเนียม","กอล์ฟ","Senior Call Center Agent","af009"],
+  ["Ms.Chanakarn Deenarn","Phueng","นางสาวชนากานต์ ดีนาน","ผึ้ง","Call Center Agent","af016"],
+  ["Ms.Yupa Sriplay","Yui","นางสาวยุพา ศรีพลาย","ยุ้ย","Senior Call Center Agent","af018"],
+  ["Mr.Sathit Petsai","Sathit","นายสถิตย์ เพชรใส","สถิต","Call Center Agent","af023"],
+  ["Mr.Akchai Puthongjan","Poo","นายเอกชัย ปู่ทองจันทร์","ปู","Call Center Agent","af170"],
+  ["Mr.Phathanakorn Rungreangkaisiri","Ice","นายพัฒนากร รุ่งเรืองไกรศิริ","ไอซ์","Call Center Agent","af181"],
+  ["Ms.Siriluck sukkon","Namwan","นางสาวสิริลักษณ์ สุขก้อน","น้ำหวาน","Call Center Agent","af214"],
+  ["Mr. Manatsanan Meechim","Yo","นายมนัสนันท์ มีฉิม","โย","Call Center Agent","af216"],
+  ["Ms.Teerawat Poka","Ow","นายธีรวัฒน์ พ่อค้า","โอ๋","Call Center Agent","af226"],
+  ["Ms.Somsak Supornchairoj","Lek","นายสมศักดิ์ ศุภรชัยโรจน์","เล็ก","Call Center Agent","af247"],
+  ["Ms.Acharaporn Chinkrathok","Sai","นางสาวอัจฉราพร ชินกระโทก","ทราย","Call Center Agent","af258"],
+  ["Ms.Krittiya Boontawee","Bow","นางสาวกฤติยา บุญทวี","โบว์","Call Center Agent","af269"],
+  ["Ms. Suwanna somboon","Nui","นางสาว สุวรรณา สมบูรณ์","นุ้ย","Call Center Agent","af379"],
+  ["Mr. Anek Jaisad","Tong","นาย อเนก ใจสัตย์","โต้ง","Senior Call Center Agent","af006"],
+  ["Ms.Phakthinan Chanchaiteerapat","Nok","นางสาวภัคธินันท์ ชาญชัยธีรพัชร์","นก","Call Center Agent","af025"],
+  ["Ms.Aunkavara Boonrod","Kwan","นางสาวอังค์วรา บุญรอด","ขวัญ","Call Center Agent","af039"],
+  ["Ms.Nannaphat Choowongchiranan","Fon","นางสาว นันท์นภัส ชูวงษ์จิรนันท์","ฝน","Call Center Agent","af040"],
+  ["Ms.Promporn Pussatham","Nid","นางสาวพรหมพร ปุสธรรม","นิด","Call Center Agent","af075"],
+  ["Ms.Panthita Phoosamphao","Nui","นางสาวปัณฑิตา ภูสำเภา","นุ้ย","Call Center Agent","af105"],
+  ["Mr. Surasak Khamphan","Bird","นาย สุรศักดิ์ คำพันธ์","เบิร์ด","Call Center Agent","af115"],
+  ["Mr.Yingpant Kaewraksa","Tae","นายยิ่งพันธุ์ แก้วรักษา","เต้","Call Center Agent","af123"],
+  ["Ms.Nareerat Pattanapiyawach","Aoi","นางสาว นรีรัตน์ พัฒนปิยวัชร์","อ้อย","Call Center Agent","af189"],
+  ["Ms.Lerdmongkol Sujarit","Took","นางสาว เลิศมงคล สุจริต","ตุ๊ก","Call Center Agent","af236"],
+  ["Ms.Rattana Phurimnak","Rose","นางสาว รัตนา ภูริมนาค","โรส","Call Center Agent","af275"],
+  ["Ms.Acharaporn Phrmalam","Peemai","นางสาวอัจฉราพร พรหมเอี่ยม","ปีใหม่","Call Center Agent","af276"],
+  ["Ms.Chanthaphitchaya Taso","Jeed","นางสาวฉันทพิชญา ตาโส","จี้ด","Call Center Agent","af317"],
+  ["Mr. Thanadon Promson","Tem","นายธนดล พรหมศร","เทม","Call Center Agent","af432"],
+  ["Ms.Napatson Churnson","Nid","นางนภัสสร ฉ่ำสนธิ์","นิด","Senior Call Center Agent","af020"],
+  ["Ms.Namfon Songseechang","Fon","นางสาวน้ำฝน ส่งศรีแจ้ง","ฝน","Call Center Agent","af066"],
+  ["Ms.Mali Pornjan","Mao","นางสาวมะลิ พรจันทร์","เหมา","Call Center Agent","af067"],
+  ["Ms. Parichart Prohsanoi","Jeed","นางสาวปาริชาติ เพราะสระน้อย","จี๊ด","Call Center Agent","af084"],
+  ["Ms.Saichon Pumman","Pum","นางสาวสายชล พุ่มมั่น","ป๋ำ","Call Center Agent","af174"],
+  ["Ms.Jirata Pakmai","Fay","นางสาวจิรฐา ผักไหม","เฟย์","Call Center Agent","af178"],
+  ["Ms.Kanchana Phumchuen","Nana","นางสาวกาญจนา พุ่มชื่น","นานา","Call Center Agent","af241"],
+  ["Ms.Chutikan Thaothiam","Add","นางสาวชุติกาญจน์ เท่าเทียม","แอ๊ด","Call Center Agent","af279"],
+  ["Ms.Monta Likibantoon","Lek","นางสาวมณฑา ลิขิตบัณฑูร","เล็ก","Call Center Agent","af314"],
+  ["Ms.Saengdaun Phumcharoen","Duan","นางสาวแสงเดือน พุ่มเจริญ","เดือน","Call Center Agent","af315"],
+  ["Ms. Ruttikaln Maraksa","Yeens","นางสาวรัตติกาล มารักษา","ยีนส์","Call Center Agent","af381"],
+  ["Ms.Kantaya Keawsha-aum","Peung","นางสาวกันตยา เขียวชะอุ่ม","ผึ้ง","Call Center Agent","af437"],
+  ["Ms. Mewika Mhantasiri","Me","นางสาวเมวิกา มหันตสิริ","เม","Call Center Agent","af555"],
+  ["Mr. Nattapon Phaowattanawaraporn","Arm","นายณัฐพนธ์ เผ่าวัฒนวราภรณ์","อาร์ม","Call Center Agent","af217"],
+  ["Mr. Kittisak Phoon","Mark","นายกิตติศักดิ์ โพธิ์อ่อน","มาร์ค","Call Center Agent","af566"],
+  ["Ms. Thiptiwa Thupplean","Pakkard","นางสาวทิพย์ทิวา ทับเปลี่ยน","ผักกาด","Call Center Agent","af520"],
+  ["Ms. Pronlaphat Jarunesiri","Fong","นางสาวพรลภัส เจริญศิริ","ฟอง","Call Center Agent","af599"],
+];
+
+let _room={}, _sel={}, _filter='all';
+
+async function apiGet(a){ const r=await fetch(API_URL+'?action='+a); return r.json(); }
+async function apiPost(d){ const r=await fetch(API_URL,{method:'POST',body:JSON.stringify(d)}); return r.json(); }
+function showToast(m){ const t=document.getElementById('toast');t.textContent=m;t.className='toast show';clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500); }
+
+async function refreshAll(){
+  try{
+    const data=await apiGet('getAllRoom');
+    _room=data.roomCheckin||{};
+    _sel=data.selection||{};
+    buildTable(); updateStats();
+  }catch(e){ showToast('❌ โหลดข้อมูลไม่ได้'); }
+}
+
+function updateStats(){
+  const chkd=Object.keys(_room).length;
+  document.getElementById('s-chk').textContent=chkd;
+  document.getElementById('s-abs').textContent=55-chkd;
+  const pct=Math.round(chkd/55*100);
+  document.getElementById('prog-bar').style.width=pct+'%';
+  document.getElementById('prog-txt').textContent=chkd+' / 55 คน ('+pct+'%)';
+}
+
+function buildTable(){
+  const tbody=document.getElementById('tbody');
+  tbody.innerHTML='';
+  EMPLOYEES.forEach((emp,i)=>{
+    const [eng,nick,th,thnick,pos,tms]=emp;
+    const isSenior=pos.includes('Senior');
+    const chkData=_room[tms];
+    const dayVal=_sel[tms]||'';
+    const dayLbl=dayVal==='day1'?'🔵 25 พ.ค.':dayVal==='day2'?'🟢 26 พ.ค.':'—';
+    const dayBadge=dayVal==='day1'?'b-day1':dayVal==='day2'?'b-day2':'b-noday';
+    const tr=document.createElement('tr');
+    tr.id='tr'+i;
+    tr.dataset.eng=eng.toLowerCase(); tr.dataset.nick=nick.toLowerCase();
+    tr.dataset.th=th; tr.dataset.thnick=thnick; tr.dataset.tms=tms;
+    tr.dataset.chk=chkData?'1':'0';
+    if(chkData) tr.style.background='#f0fdf4';
+    tr.innerHTML=`
+      <td class="td-num">${i+1}</td>
+      <td class="td-name">${eng}</td>
+      <td>${nick} <span style="font-size:10px;color:#94a3b8">(${thnick})</span></td>
+      <td style="font-size:12px">${th}</td>
+      <td><span class="badge ${isSenior?'b-senior':'b-agent'}">${isSenior?'Senior':'Agent'}</span></td>
+      <td class="td-tms">${tms}</td>
+      <td><span class="badge ${dayBadge}">${dayLbl}</span></td>
+      <td><span class="badge ${chkData?'b-checked':'b-absent'}">${chkData?'✅ เข้าแล้ว':'❌ ยังไม่มา'}</span></td>
+      <td style="font-size:11px;color:var(--muted);font-family:monospace">${chkData?chkData.time:'—'}</td>`;
+    tbody.appendChild(tr);
+  });
+  filterTable();
+}
+
+function filterTable(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  EMPLOYEES.forEach((_,i)=>{
+    const tr=document.getElementById('tr'+i); if(!tr)return;
+    const mS=!q||tr.dataset.eng.includes(q)||tr.dataset.nick.includes(q)||tr.dataset.th.includes(q)||tr.dataset.thnick.includes(q)||tr.dataset.tms.includes(q);
+    let mF=true;
+    if(_filter==='checked') mF=tr.dataset.chk==='1';
+    if(_filter==='absent') mF=tr.dataset.chk==='0';
+    tr.classList.toggle('hidden',!(mS&&mF));
+  });
+}
+
+function setFilter(f,btn){ _filter=f; document.querySelectorAll('[data-f]').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); filterTable(); }
+
+function exportCSV(){
+  const rows=[['#','ชื่อ-สกุล','ชื่อเล่น','ชื่อไทย','TMS','ตำแหน่ง','วันที่เลือก','สถานะ','เวลาเช็คอิน']];
+  EMPLOYEES.forEach(([eng,nick,th,thnick,pos,tms],i)=>{
+    const d=_sel[tms]||'';
+    const dayTxt=d==='day1'?'25 พ.ค. 15.00-16.00':d==='day2'?'26 พ.ค. 15.00-16.00':'ยังไม่เลือก';
+    const chk=_room[tms];
+    rows.push([i+1,eng,nick,th,tms,pos,dayTxt,chk?'เข้าแล้ว':'ยังไม่มา',chk?chk.time:'—']);
+  });
+  const csv='\uFEFF'+rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='room_checkin_report.csv'; a.click();
+}
+
+async function confirmReset(){
+  if(!confirm('⚠️ ล้างข้อมูลเช็คอินเข้าห้องทั้งหมด?')) return;
+  await apiPost({action:'resetRoomCheckin'});
+  _room={}; buildTable(); updateStats(); showToast('🗑️ ล้างข้อมูลแล้ว');
+}
+
+// Generate QR pointing to checkin_room.html
+function generateQR(){
+  const url = window.location.href.replace('checkin_admin.html','checkin_room.html');
+  document.getElementById('qrUrlBox').textContent = url;
+  document.getElementById('qrDisplay').innerHTML = makeQRSVG(url, 200, '#0f2044', '#ffffff');
+}
+
+// Auto-refresh every 10s
+setInterval(()=>{ refreshAll(); }, 10000);
+
+// INIT
+(async()=>{
+  generateQR();
+  try{ await refreshAll(); }catch(e){}
+  document.getElementById('loadingOverlay').style.display='none';
+})();
+</script>
+</body>
+</html>
