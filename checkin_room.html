@@ -51,7 +51,7 @@ body{font-family:'Sarabun',sans-serif;background:linear-gradient(135deg,#0f2044 
   <div id="formView">
     <div class="logo">🏢</div>
     <div class="title">เช็คอินเข้าห้องประชุม</div>
-    <div class="sub">Call Center Team<br>25-26 พฤษภาคม 2569 · เวลา 15.00-16.00 น.</div>
+    <div class="sub">Call Center Fresh Team<br>25-26 พฤษภาคม 2569 · เวลา 15.00-16.00 น.</div>
     <div class="input-wrap">
       <input class="tms-input" type="text" id="tmsInput" placeholder="กรอกรหัส TMS เช่น af011" maxlength="10" autocomplete="off" autocorrect="off" autocapitalize="off">
     </div>
@@ -63,7 +63,7 @@ body{font-family:'Sarabun',sans-serif;background:linear-gradient(135deg,#0f2044 
 </div>
 
 <div class="footer">
-  ระบบเช็คอินอบรม · Call Center Team 2569<br>
+  ระบบเช็คอินอบรม · Call Center Fresh Team 2569<br>
   <a href="checkin_admin.html">→ ไปหน้า Admin</a>
 </div>
 
@@ -176,7 +176,7 @@ async function doCheckin(){
           <div class="info-row"><span class="info-label">TMS</span><span style="font-family:monospace">${tms}</span></div>
         </div>
         <a href="https://line.me/R/meeting/0e0d3898dadb4b3da04a9b40b5f45aa0" style="display:block;width:100%;padding:15px;border-radius:12px;background:#06C755;color:#fff;font-size:16px;font-weight:700;text-decoration:none;margin-bottom:12px;text-align:center">📹 เข้าห้องประชุม Line</a>
-        <button class="btn-again" onclick="resetForm()">🔄 เช็คอินคนต่อไป</button>
+        <button class="btn-again" onclick="resetForm()">← ย้อนกลับหน้าเช็คอิน</button>
       `);
     } else {
       showResult(`
@@ -190,7 +190,7 @@ async function doCheckin(){
           <div class="info-row"><span class="info-label">ตำแหน่ง</span><span>${pos}</span></div>
         </div>
         <a href="https://line.me/R/meeting/0e0d3898dadb4b3da04a9b40b5f45aa0" style="display:block;width:100%;padding:15px;border-radius:12px;background:#06C755;color:#fff;font-size:16px;font-weight:700;text-decoration:none;margin-bottom:12px;text-align:center">📹 เข้าห้องประชุม Line</a>
-        <button class="btn-again" onclick="resetForm()">🔄 เช็คอินคนต่อไป</button>
+        <button class="btn-again" onclick="resetForm()">← ย้อนกลับหน้าเช็คอิน</button>
       `);
     }
   } catch(e){
