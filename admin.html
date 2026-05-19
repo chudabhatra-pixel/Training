@@ -129,8 +129,10 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
     <div class="stats-inner">
       <div class="stat"><div class="stat-dot" style="background:#94a3b8"></div><span class="stat-lbl">ทั้งหมด</span><span class="stat-val">55</span><span class="stat-lbl">คน</span></div>
       <div class="stat"><div class="stat-dot" style="background:var(--green)"></div><span class="stat-lbl">เช็คอินแล้ว</span><span class="stat-val" id="s-chk" style="color:var(--green)">0</span></div>
-      <div class="stat"><div class="stat-dot" style="background:var(--day1)"></div><span class="stat-lbl">25 พ.ค.</span><span class="stat-val" id="s-d1" style="color:var(--day1)">0</span></div>
-      <div class="stat"><div class="stat-dot" style="background:var(--day2)"></div><span class="stat-lbl">26 พ.ค.</span><span class="stat-val" id="s-d2" style="color:var(--day2)">0</span></div>
+      <div class="stat"><div class="stat-dot" style="background:var(--day1)"></div><span class="stat-lbl">25 รอบ1</span><span class="stat-val" id="s-d1" style="color:var(--day1)">0</span></div>
+      <div class="stat"><div class="stat-dot" style="background:#5b9bd5"></div><span class="stat-lbl">25 รอบ2</span><span class="stat-val" id="s-d2" style="color:#5b9bd5">0</span></div>
+      <div class="stat"><div class="stat-dot" style="background:var(--day2)"></div><span class="stat-lbl">26 รอบ1</span><span class="stat-val" id="s-d3" style="color:var(--day2)">0</span></div>
+      <div class="stat"><div class="stat-dot" style="background:#2d8c5e"></div><span class="stat-lbl">26 รอบ2</span><span class="stat-val" id="s-d4" style="color:#2d8c5e">0</span></div>
       <div class="stat"><div class="stat-dot" style="background:var(--red)"></div><span class="stat-lbl">ยังไม่มา</span><span class="stat-val" id="s-abs" style="color:var(--red)">55</span></div>
     </div>
   </div>
@@ -444,7 +446,7 @@ function renderQR(){
     if(_qrFilter==='day1'&&dayVal!=='day1') return;
     if(_qrFilter==='day2'&&dayVal!=='day2') return;
     if(q&&!eng.toLowerCase().includes(q)&&!nick.toLowerCase().includes(q)&&!tms.includes(q)) return;
-    const dayTxt=dayVal==='day1'?'25 พ.ค. 15.00-16.00':dayVal==='day2'?'26 พ.ค. 15.00-16.00':'ยังไม่เลือกวัน';
+    const dayTxt=dayVal==='day1'?'25/5 รอบ1':dayVal==='day2'?'25/5 รอบ2':dayVal==='day3'?'26/5 รอบ1':dayVal==='day4'?'26/5 รอบ2':'ยังไม่เลือกวัน';
     const card=document.createElement('div');
     card.className='qr-card'; if(chkd)card.style.opacity='0.5';
     const url=makeURL(tms);
@@ -462,7 +464,7 @@ function setQRFilter(f,btn){ _qrFilter=f; document.querySelectorAll('[data-fq]')
 function showQR(i){
   const [eng,nick,th,thnick,pos,tms]=EMPLOYEES[i];
   const dayVal=_sel[tms]||'';
-  const dayTxt=dayVal==='day1'?'🔵 25 พ.ค. 15.00-16.00':dayVal==='day2'?'🟢 26 พ.ค. 15.00-16.00':'⚠️ ยังไม่เลือกวัน';
+  const dayTxt=dayVal==='day1'?'🔵 25/5 รอบ1':dayVal==='day2'?'🔵 25/5 รอบ2':dayVal==='day3'?'🟢 26/5 รอบ1':dayVal==='day4'?'🟢 26/5 รอบ2':'⚠️ ยังไม่เลือกวัน';
   const url=makeURL(tms);
   document.getElementById('qr-title').textContent=nick+' — '+th;
   document.getElementById('qr-sub').textContent=tms+' · '+dayTxt;
@@ -489,7 +491,7 @@ function renderLog(){
       <span class="log-time">${l.time}</span>
       <div style="flex:1"><div style="font-weight:600;font-size:13px">${l.nick} — ${l.name}</div>
       <div style="font-size:11px;color:var(--muted)">${l.tms}</div></div>
-      <span style="font-size:11px;font-weight:600;color:${l.day==='day1'?'var(--day1)':'var(--day2)'}">${l.day==='day1'?'🔵 25 พ.ค.':'🟢 26 พ.ค.'}</span>
+      <span style="font-size:11px;font-weight:600;color:${l.day==='day1'?'var(--day1)':'var(--day2)'}">${l.day==='day1'?'🔵 25/5 รอบ1':l.day==='day2'?'🔵 25/5 รอบ2':l.day==='day3'?'🟢 26/5 รอบ1':'🟢 26/5 รอบ2'}</span>
     </div>`).join('');
 }
 
