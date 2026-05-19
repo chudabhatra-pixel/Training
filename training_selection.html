@@ -55,9 +55,13 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
 .day-opt label{display:flex;align-items:center;gap:5px;padding:6px 11px;border-radius:8px;border:1.5px solid var(--border);font-size:12px;font-family:inherit;cursor:pointer;white-space:nowrap;transition:all .15s;user-select:none;font-weight:500;background:var(--white)}
 .day-opt label:hover{border-color:var(--navy)}
 .day-opt.od1 input:checked+label{background:var(--day1-lt);border-color:var(--day1);color:var(--day1);font-weight:700}
-.day-opt.od2 input:checked+label{background:var(--day2-lt);border-color:var(--day2);color:var(--day2);font-weight:700}
+.day-opt.od2 input:checked+label{background:var(--day1-lt);border-color:var(--day1);color:var(--day1);font-weight:700}
+.day-opt.od3 input:checked+label{background:var(--day2-lt);border-color:var(--day2);color:var(--day2);font-weight:700}
+.day-opt.od4 input:checked+label{background:var(--day2-lt);border-color:var(--day2);color:var(--day2);font-weight:700}
 tr.sd1{background:#f0f7ff!important}
-tr.sd2{background:#f0fdf4!important}
+tr.sd2{background:#f0f7ff!important}
+tr.sd3{background:#f0fdf4!important}
+tr.sd4{background:#f0fdf4!important}
 .badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600}
 .b-senior{background:#fef3c7;color:#92400e}
 .b-agent{background:#f1f5f9;color:#475569}
@@ -101,8 +105,10 @@ tr.sd2{background:#f0fdf4!important}
   <div class="stats-bar">
     <div class="stats-inner">
       <div class="stat"><div class="stat-dot" style="background:#94a3b8"></div><span class="stat-lbl">ทั้งหมด</span><span class="stat-val">55</span><span class="stat-lbl">คน</span></div>
-      <div class="stat"><div class="stat-dot" style="background:var(--day1)"></div><span class="stat-lbl">25 พ.ค. 15.00-16.00</span><span class="stat-val" id="s-d1" style="color:var(--day1)">0</span></div>
-      <div class="stat"><div class="stat-dot" style="background:var(--day2)"></div><span class="stat-lbl">26 พ.ค. 15.00-16.00</span><span class="stat-val" id="s-d2" style="color:var(--day2)">0</span></div>
+      <div class="stat"><div class="stat-dot" style="background:var(--day1)"></div><span class="stat-lbl">25 รอบ1</span><span class="stat-val" id="s-d1" style="color:var(--day1)">0</span></div>
+      <div class="stat"><div class="stat-dot" style="background:#5b9bd5"></div><span class="stat-lbl">25 รอบ2</span><span class="stat-val" id="s-d2" style="color:#5b9bd5">0</span></div>
+      <div class="stat"><div class="stat-dot" style="background:var(--day2)"></div><span class="stat-lbl">26 รอบ1</span><span class="stat-val" id="s-d3" style="color:var(--day2)">0</span></div>
+      <div class="stat"><div class="stat-dot" style="background:#2d8c5e"></div><span class="stat-lbl">26 รอบ2</span><span class="stat-val" id="s-d4" style="color:#2d8c5e">0</span></div>
       <div class="stat"><div class="stat-dot" style="background:var(--red)"></div><span class="stat-lbl">ยังไม่เลือก</span><span class="stat-val" id="s-un" style="color:var(--red)">55</span></div>
     </div>
   </div>
@@ -113,8 +119,10 @@ tr.sd2{background:#f0fdf4!important}
     <input class="search-box" type="text" placeholder="ค้นหาชื่อ, ชื่อเล่น, TMS..." id="searchInput" oninput="filterRows()">
     <div class="filter-btns">
       <button class="fbtn active" data-f="all" onclick="setFilter('all',this)">ทั้งหมด</button>
-      <button class="fbtn fd1" data-f="day1" onclick="setFilter('day1',this)">🔵 25 พ.ค.</button>
-      <button class="fbtn fd2" data-f="day2" onclick="setFilter('day2',this)">🟢 26 พ.ค.</button>
+      <button class="fbtn fd1" data-f="day1" onclick="setFilter('day1',this)">🔵 25 รอบ1</button>
+      <button class="fbtn fd1" data-f="day2" onclick="setFilter('day2',this)">🔵 25 รอบ2</button>
+      <button class="fbtn fd2" data-f="day3" onclick="setFilter('day3',this)">🟢 26 รอบ1</button>
+      <button class="fbtn fd2" data-f="day4" onclick="setFilter('day4',this)">🟢 26 รอบ2</button>
       <button class="fbtn fun" data-f="unset" onclick="setFilter('unset',this)">⚠️ ยังไม่เลือก</button>
     </div>
   </div>
@@ -122,7 +130,7 @@ tr.sd2{background:#f0fdf4!important}
     <table>
       <thead><tr>
         <th>#</th><th>ชื่อ-สกุล (ENG)</th><th>ชื่อเล่น</th><th>ชื่อไทย</th><th>ตำแหน่ง</th><th>TMS</th>
-        <th style="text-align:center;min-width:290px">เลือกวันอบรม (15.00-16.00)</th>
+        <th style="text-align:center;min-width:480px">เลือกวันและรอบอบรม</th>
       </tr></thead>
       <tbody id="tbody"></tbody>
     </table>
@@ -133,8 +141,10 @@ tr.sd2{background:#f0fdf4!important}
   <div class="modal">
     <h2>📊 สรุปการลงทะเบียน</h2>
     <div class="mrow"><span>พนักงานทั้งหมด</span><span class="mval">55 คน</span></div>
-    <div class="mrow"><span>🔵 25 พ.ค. 2569 เวลา 15.00-16.00 น.</span><span class="mval" id="m-d1" style="color:var(--day1)">—</span></div>
-    <div class="mrow"><span>🟢 26 พ.ค. 2569 เวลา 15.00-16.00 น.</span><span class="mval" id="m-d2" style="color:var(--day2)">—</span></div>
+    <div class="mrow"><span>🔵 25 พ.ค. รอบ1 15.00-15.30 น.</span><span class="mval" id="m-d1" style="color:var(--day1)">—</span></div>
+    <div class="mrow"><span>🔵 25 พ.ค. รอบ2 15.30-16.00 น.</span><span class="mval" id="m-d2" style="color:#5b9bd5">—</span></div>
+    <div class="mrow"><span>🟢 26 พ.ค. รอบ1 15.00-15.30 น.</span><span class="mval" id="m-d3" style="color:var(--day2)">—</span></div>
+    <div class="mrow"><span>🟢 26 พ.ค. รอบ2 15.30-16.00 น.</span><span class="mval" id="m-d4" style="color:#2d8c5e">—</span></div>
     <div class="mrow"><span>⚠️ ยังไม่เลือก</span><span class="mval" id="m-un" style="color:var(--red)">—</span></div>
     <button class="modal-close" onclick="document.getElementById('modalBg').classList.remove('open')">ปิด</button>
   </div>
@@ -256,11 +266,19 @@ function buildTable() {
         <div class="day-sel">
           <div class="day-opt od1">
             <input type="radio" name="d${i}" id="d1-${i}" value="day1" ${sel==='day1'?'checked':''} onchange="selectDay(${i},'day1')">
-            <label for="d1-${i}">🔵 25 พ.ค. 15.00-16.00</label>
+            <label for="d1-${i}">🔵 25/5 รอบ1 15.00-15.30</label>
           </div>
           <div class="day-opt od2">
             <input type="radio" name="d${i}" id="d2-${i}" value="day2" ${sel==='day2'?'checked':''} onchange="selectDay(${i},'day2')">
-            <label for="d2-${i}">🟢 26 พ.ค. 15.00-16.00</label>
+            <label for="d2-${i}">🔵 25/5 รอบ2 15.30-16.00</label>
+          </div>
+          <div class="day-opt od3">
+            <input type="radio" name="d${i}" id="d3-${i}" value="day3" ${sel==='day3'?'checked':''} onchange="selectDay(${i},'day3')">
+            <label for="d3-${i}">🟢 26/5 รอบ1 15.00-15.30</label>
+          </div>
+          <div class="day-opt od4">
+            <input type="radio" name="d${i}" id="d4-${i}" value="day4" ${sel==='day4'?'checked':''} onchange="selectDay(${i},'day4')">
+            <label for="d4-${i}">🟢 26/5 รอบ2 15.30-16.00</label>
           </div>
         </div>
       </td>`;
@@ -275,9 +293,11 @@ function selectDay(i, val) {
   selections[tms] = val;
   const tr = document.getElementById('tr' + i);
   tr.dataset.sel = val;
-  tr.classList.remove('sd1','sd2');
+  tr.classList.remove('sd1','sd2','sd3','sd4');
   if (val === 'day1') tr.classList.add('sd1');
   if (val === 'day2') tr.classList.add('sd2');
+  if (val === 'day3') tr.classList.add('sd3');
+  if (val === 'day4') tr.classList.add('sd4');
   updateStats();
   filterRows();
   showToast('⏳ กำลังบันทึก...', 'ing');
@@ -290,9 +310,13 @@ function updateStats() {
   const vals = Object.values(selections);
   const d1 = vals.filter(v=>v==='day1').length;
   const d2 = vals.filter(v=>v==='day2').length;
+  const d3 = vals.filter(v=>v==='day3').length;
+  const d4 = vals.filter(v=>v==='day4').length;
   document.getElementById('s-d1').textContent = d1;
   document.getElementById('s-d2').textContent = d2;
-  document.getElementById('s-un').textContent = 55 - d1 - d2;
+  document.getElementById('s-d3').textContent = d3;
+  document.getElementById('s-d4').textContent = d4;
+  document.getElementById('s-un').textContent = 55 - d1 - d2 - d3 - d4;
 }
 
 function setFilter(f, btn) {
@@ -313,7 +337,9 @@ function filterRows() {
     let mFilter = true;
     if (activeFilter === 'day1') mFilter = sel === 'day1';
     if (activeFilter === 'day2') mFilter = sel === 'day2';
-    if (activeFilter === 'unset') mFilter = sel !== 'day1' && sel !== 'day2';
+    if (activeFilter === 'day3') mFilter = sel === 'day3';
+    if (activeFilter === 'day4') mFilter = sel === 'day4';
+    if (activeFilter === 'unset') mFilter = !['day1','day2','day3','day4'].includes(sel);
     tr.classList.toggle('hidden', !(mSearch && mFilter));
   });
 }
@@ -321,9 +347,13 @@ function filterRows() {
 function openSummary() {
   const d1 = Object.values(selections).filter(v=>v==='day1').length;
   const d2 = Object.values(selections).filter(v=>v==='day2').length;
+  const d3 = Object.values(selections).filter(v=>v==='day3').length;
+  const d4 = Object.values(selections).filter(v=>v==='day4').length;
   document.getElementById('m-d1').textContent = d1 + ' คน';
   document.getElementById('m-d2').textContent = d2 + ' คน';
-  document.getElementById('m-un').textContent = (55-d1-d2) + ' คน';
+  document.getElementById('m-d3').textContent = d3 + ' คน';
+  document.getElementById('m-d4').textContent = d4 + ' คน';
+  document.getElementById('m-un').textContent = (55-d1-d2-d3-d4) + ' คน';
   document.getElementById('modalBg').classList.add('open');
 }
 
@@ -331,7 +361,7 @@ function exportCSV() {
   const rows = [['#','ชื่อ-สกุล','ชื่อเล่น','ชื่อไทย','TMS','ตำแหน่ง','วันที่เลือก']];
   EMPLOYEES.forEach(([eng,nick,th,thnick,pos,tms],i) => {
     const d = selections[tms]||'';
-    const dayTxt = d==='day1'?'25 พ.ค. 2569 เวลา 15.00-16.00 น.':d==='day2'?'26 พ.ค. 2569 เวลา 15.00-16.00 น.':'ยังไม่เลือก';
+    const dayTxt = d==='day1'?'25 พ.ค. รอบ1 15.00-15.30':d==='day2'?'25 พ.ค. รอบ2 15.30-16.00':d==='day3'?'26 พ.ค. รอบ1 15.00-15.30':d==='day4'?'26 พ.ค. รอบ2 15.30-16.00':'ยังไม่เลือก';
     rows.push([i+1,eng,nick,th,tms,pos,dayTxt]);
   });
   const csv = '\uFEFF' + rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
@@ -345,7 +375,7 @@ function exportCSV() {
   try {
     const data = await apiGet('getSelection');
     Object.entries(data).forEach(([tms, day]) => {
-      if (day === 'day1' || day === 'day2') selections[tms] = day;
+      if (['day1','day2','day3','day4'].includes(day)) selections[tms] = day;
     });
   } catch(e) { showToast('⚠️ โหลดข้อมูลไม่ได้', 'err'); }
   document.getElementById('loadingOverlay').style.display = 'none';
