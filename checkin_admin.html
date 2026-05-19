@@ -266,8 +266,8 @@ function buildTable(){
     const isSenior=pos.includes('Senior');
     const chkData=_room[tms];
     const dayVal=_sel[tms]||'';
-    const dayLbl=dayVal==='day1'?'🔵 25 พ.ค.':dayVal==='day2'?'🟢 26 พ.ค.':'—';
-    const dayBadge=dayVal==='day1'?'b-day1':dayVal==='day2'?'b-day2':'b-noday';
+    const dayLbl=dayVal==='day1'?'🔵 25/5 รอบ1':dayVal==='day2'?'🔵 25/5 รอบ2':dayVal==='day3'?'🟢 26/5 รอบ1':dayVal==='day4'?'🟢 26/5 รอบ2':'—';
+    const dayBadge=dayVal==='day1'||dayVal==='day2'?'b-day1':dayVal==='day3'||dayVal==='day4'?'b-day2':'b-noday';
     const tr=document.createElement('tr');
     tr.id='tr'+i;
     tr.dataset.eng=eng.toLowerCase(); tr.dataset.nick=nick.toLowerCase();
