@@ -95,6 +95,10 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
     <div class="stats-inner">
       <div class="stat"><div class="stat-dot" style="background:#94a3b8"></div><span class="stat-lbl">ทั้งหมด</span><span class="stat-val">55</span><span class="stat-lbl">คน</span></div>
       <div class="stat"><div class="stat-dot" style="background:var(--green)"></div><span class="stat-lbl">เช็คอินแล้ว</span><span class="stat-val" id="s-chk" style="color:var(--green)">0</span></div>
+      <div class="stat"><div class="stat-dot" style="background:var(--day1)"></div><span class="stat-lbl">25 รอบ1</span><span class="stat-val" id="s-d1" style="color:var(--day1)">0</span></div>
+      <div class="stat"><div class="stat-dot" style="background:#5b9bd5"></div><span class="stat-lbl">25 รอบ2</span><span class="stat-val" id="s-d2" style="color:#5b9bd5">0</span></div>
+      <div class="stat"><div class="stat-dot" style="background:var(--day2)"></div><span class="stat-lbl">26 รอบ1</span><span class="stat-val" id="s-d3" style="color:var(--day2)">0</span></div>
+      <div class="stat"><div class="stat-dot" style="background:#2d8c5e"></div><span class="stat-lbl">26 รอบ2</span><span class="stat-val" id="s-d4" style="color:#2d8c5e">0</span></div>
       <div class="stat"><div class="stat-dot" style="background:var(--red)"></div><span class="stat-lbl">ยังไม่มา</span><span class="stat-val" id="s-abs" style="color:var(--red)">55</span></div>
     </div>
   </div>
@@ -127,6 +131,10 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
       <button class="fbtn active" data-f="all" onclick="setFilter('all',this)">ทั้งหมด</button>
       <button class="fbtn fc" data-f="checked" onclick="setFilter('checked',this)">✅ เช็คอินแล้ว</button>
       <button class="fbtn fa" data-f="absent" onclick="setFilter('absent',this)">❌ ยังไม่มา</button>
+      <button class="fbtn fd1" data-f="day1" onclick="setFilter('day1',this)">🔵 25 รอบ1</button>
+      <button class="fbtn fd1" data-f="day2" onclick="setFilter('day2',this)">🔵 25 รอบ2</button>
+      <button class="fbtn fd2" data-f="day3" onclick="setFilter('day3',this)">🟢 26 รอบ1</button>
+      <button class="fbtn fd2" data-f="day4" onclick="setFilter('day4',this)">🟢 26 รอบ2</button>
     </div>
   </div>
 
@@ -251,7 +259,15 @@ async function refreshAll(){
 
 function updateStats(){
   const chkd=Object.keys(_room).length;
+  const d1=Object.values(_sel).filter(v=>v==='day1').length;
+  const d2=Object.values(_sel).filter(v=>v==='day2').length;
+  const d3=Object.values(_sel).filter(v=>v==='day3').length;
+  const d4=Object.values(_sel).filter(v=>v==='day4').length;
   document.getElementById('s-chk').textContent=chkd;
+  document.getElementById('s-d1').textContent=d1;
+  document.getElementById('s-d2').textContent=d2;
+  document.getElementById('s-d3').textContent=d3;
+  document.getElementById('s-d4').textContent=d4;
   document.getElementById('s-abs').textContent=55-chkd;
   const pct=Math.round(chkd/55*100);
   document.getElementById('prog-bar').style.width=pct+'%';
@@ -273,6 +289,7 @@ function buildTable(){
     tr.dataset.eng=eng.toLowerCase(); tr.dataset.nick=nick.toLowerCase();
     tr.dataset.th=th; tr.dataset.thnick=thnick; tr.dataset.tms=tms;
     tr.dataset.chk=chkData?'1':'0';
+    tr.dataset.day=dayVal;
     if(chkData) tr.style.background='#f0fdf4';
     tr.innerHTML=`
       <td class="td-num">${i+1}</td>
@@ -297,6 +314,10 @@ function filterTable(){
     let mF=true;
     if(_filter==='checked') mF=tr.dataset.chk==='1';
     if(_filter==='absent') mF=tr.dataset.chk==='0';
+    if(_filter==='day1') mF=tr.dataset.day==='day1';
+    if(_filter==='day2') mF=tr.dataset.day==='day2';
+    if(_filter==='day3') mF=tr.dataset.day==='day3';
+    if(_filter==='day4') mF=tr.dataset.day==='day4';
     tr.classList.toggle('hidden',!(mS&&mF));
   });
 }
