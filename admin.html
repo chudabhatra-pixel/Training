@@ -171,7 +171,7 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
       <table>
         <thead><tr>
           <th>#</th><th>ชื่อ-สกุล</th><th>ชื่อเล่น</th><th>ชื่อไทย</th><th>ตำแหน่ง</th><th>TMS</th>
-          <th>วันที่เลือก</th><th>สถานะ</th><th>เวลาเช็คอิน</th><th>QR</th>
+          <th>วันที่เลือก</th><th>สถานะ</th><th>เวลาเช็คอิน</th>
         </tr></thead>
         <tbody id="tbody"></tbody>
       </table>
@@ -384,7 +384,7 @@ function buildTable(){
     const isSenior=pos.includes('Senior');
     const dayVal=_sel[tms]||'';
     const chkData=_chk[tms];
-    const dayLbl=dayVal==='day1'?'🔵 25/5 รอบ1 15.00-15.30':dayVal==='day2'?'🔵 25/5 รอบ2 15.30-16.00':dayVal==='day3'?'🟢 26/5 รอบ1 15.00-15.30':dayVal==='day4'?'🟢 26/5 รอบ2 15.30-16.00':'—';
+    const dayLbl=dayVal==='day1'?'🔵 25/5 รอบ1':dayVal==='day2'?'🔵 25/5 รอบ2':dayVal==='day3'?'🟢 26/5 รอบ1':dayVal==='day4'?'🟢 26/5 รอบ2':'—';
     const dayBadge=dayVal==='day1'||dayVal==='day2'?'b-day1':dayVal==='day3'||dayVal==='day4'?'b-day2':'b-noday';
     const tr=document.createElement('tr');
     tr.id='tr'+i; tr.dataset.eng=eng.toLowerCase(); tr.dataset.nick=nick.toLowerCase();
@@ -400,8 +400,7 @@ function buildTable(){
       <td class="td-tms">${tms}</td>
       <td><span class="badge ${dayBadge}">${dayLbl}</span></td>
       <td><span class="badge ${chkData?'b-checked':'b-absent'}">${chkData?'✅ มาแล้ว':'❌ ยังไม่มา'}</span></td>
-      <td style="font-size:11px;color:var(--muted);font-family:monospace">${chkData?chkData.time:'—'}</td>
-      <td><button class="qr-btn" onclick="showQR(${i})">📱 QR</button></td>`;
+      <td style="font-size:11px;color:var(--muted);font-family:monospace">${chkData?chkData.time:'—'}</td>`;
     tbody.appendChild(tr);
   });
   filterTable();
