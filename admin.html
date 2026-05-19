@@ -161,8 +161,10 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
         <button class="fbtn active" data-f="all" onclick="setFilter('all',this)">ทั้งหมด</button>
         <button class="fbtn fc" data-f="checked" onclick="setFilter('checked',this)">✅ เช็คอินแล้ว</button>
         <button class="fbtn fa" data-f="absent" onclick="setFilter('absent',this)">❌ ยังไม่มา</button>
-        <button class="fbtn fd1" data-f="day1" onclick="setFilter('day1',this)">🔵 25 พ.ค.</button>
-        <button class="fbtn fd2" data-f="day2" onclick="setFilter('day2',this)">🟢 26 พ.ค.</button>
+        <button class="fbtn fd1" data-f="day1" onclick="setFilter('day1',this)">🔵 25 รอบ1</button>
+        <button class="fbtn fd1" data-f="day2" onclick="setFilter('day2',this)">🔵 25 รอบ2</button>
+        <button class="fbtn fd2" data-f="day3" onclick="setFilter('day3',this)">🟢 26 รอบ1</button>
+        <button class="fbtn fd2" data-f="day4" onclick="setFilter('day4',this)">🟢 26 รอบ2</button>
       </div>
     </div>
     <div class="tbl-wrap">
@@ -382,8 +384,8 @@ function buildTable(){
     const isSenior=pos.includes('Senior');
     const dayVal=_sel[tms]||'';
     const chkData=_chk[tms];
-    const dayLbl=dayVal==='day1'?'🔵 25 พ.ค. 15.00-16.00':dayVal==='day2'?'🟢 26 พ.ค. 15.00-16.00':'—';
-    const dayBadge=dayVal==='day1'?'b-day1':dayVal==='day2'?'b-day2':'b-noday';
+    const dayLbl=dayVal==='day1'?'🔵 25/5 รอบ1 15.00-15.30':dayVal==='day2'?'🔵 25/5 รอบ2 15.30-16.00':dayVal==='day3'?'🟢 26/5 รอบ1 15.00-15.30':dayVal==='day4'?'🟢 26/5 รอบ2 15.30-16.00':'—';
+    const dayBadge=dayVal==='day1'||dayVal==='day2'?'b-day1':dayVal==='day3'||dayVal==='day4'?'b-day2':'b-noday';
     const tr=document.createElement('tr');
     tr.id='tr'+i; tr.dataset.eng=eng.toLowerCase(); tr.dataset.nick=nick.toLowerCase();
     tr.dataset.th=th; tr.dataset.thnick=thnick; tr.dataset.tms=tms;
@@ -415,6 +417,8 @@ function filterTable(){
     if(_tableFilter==='absent')  mF=tr.dataset.chk==='0';
     if(_tableFilter==='day1')    mF=tr.dataset.day==='day1';
     if(_tableFilter==='day2')    mF=tr.dataset.day==='day2';
+    if(_tableFilter==='day3')    mF=tr.dataset.day==='day3';
+    if(_tableFilter==='day4')    mF=tr.dataset.day==='day4';
     tr.classList.toggle('hidden',!(mS&&mF));
   });
 }
@@ -495,7 +499,7 @@ function exportCSV(){
   const rows=[['#','ชื่อ-สกุล','ชื่อเล่น','ชื่อไทย','TMS','ตำแหน่ง','วันที่เลือก','สถานะ','เวลาเช็คอิน']];
   EMPLOYEES.forEach(([eng,nick,th,thnick,pos,tms],i)=>{
     const d=_sel[tms]||'';
-    const dayTxt=d==='day1'?'25 พ.ค. 2569 เวลา 15.00-16.00 น.':d==='day2'?'26 พ.ค. 2569 เวลา 15.00-16.00 น.':'ยังไม่เลือก';
+    const dayTxt=d==='day1'?'25/5 รอบ1 15.00-15.30':d==='day2'?'25/5 รอบ2 15.30-16.00':d==='day3'?'26/5 รอบ1 15.00-15.30':d==='day4'?'26/5 รอบ2 15.30-16.00':'ยังไม่เลือก';
     const chk=_chk[tms];
     rows.push([i+1,eng,nick,th,tms,pos,dayTxt,chk?'มาแล้ว':'ยังไม่มา',chk?chk.time:'—']);
   });
