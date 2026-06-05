@@ -509,7 +509,7 @@ function toggle(kk){
 }
 
 // ⬇️ วาง URL จาก Google Apps Script Deploy ตรงนี้
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoam_SF95TtnmshF5_qvA0oGZ9Y_SDGWMkfmIFlqd5IFeKmgQOCBXVXUhJJ7ivTrXW/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby8BcRs3EUfeZYa5Aj9u-yFPE5XUIggLiZ6niEYluNuF8EYHQ_Bd8bPTDIhShwG285g/exec";
 
 function save(kk){
   orders[kk]={
@@ -557,6 +557,16 @@ function clearForm(kk){
   const ring=document.getElementById('ring_'+kk);
   if(ring) ring.className='status-ring';
   const msg=document.getElementById('msg_'+kk);
+
+  if(SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE"){
+    const parts=kk.split('__');
+    const personId=parts[0].replace(/_/g,' ');
+    const day=parts[1];
+    const dayObj=DAYS.find(d=>String(d.d)===day);
+    const params=new URLSearchParams({action:'delete',name:personId,day:dayObj?dayObj.label:day});
+    fetch(SCRIPT_URL+'?'+params.toString(),{method:'GET',redirect:'follow'}).catch(()=>{});
+  }
+
   if(msg){msg.textContent='✕ ล้างแล้ว';msg.style.display='inline';setTimeout(()=>msg.style.display='none',1500);}
   updateProgress();
 }
