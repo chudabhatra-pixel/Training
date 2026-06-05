@@ -226,7 +226,15 @@ select.m-sel:focus{outline:none;border-color:var(--accent);}
   letter-spacing:1px;text-transform:uppercase;cursor:pointer;
   transition:background 0.15s;
 }
-.save-btn:hover{background:var(--mid);}
+.clear-btn{
+  padding:8px 18px;background:transparent;color:var(--light);
+  border:1px solid var(--border);border-radius:2px;
+  font-family:'DM Sans',sans-serif;font-size:12px;
+  letter-spacing:1px;text-transform:uppercase;cursor:pointer;
+  transition:all 0.15s;
+}
+.clear-btn:hover{border-color:var(--light);color:var(--mid);}
+
 .saved-msg{font-size:12px;color:var(--green);display:none;}
 
 /* BOTTOM BAR */
@@ -477,6 +485,7 @@ function renderContent(){
           </div>
           <div class="form-footer">
             <button class="save-btn" onclick="save('${kk}')">บันทึก</button>
+            <button class="clear-btn" onclick="clearForm('${kk}')">ล้างรายการ</button>
             <span class="saved-msg" id="msg_${kk}">✓ บันทึกแล้ว</span>
           </div>
         </div>
@@ -499,6 +508,9 @@ function toggle(kk){
   c.classList.toggle('open',open);
 }
 
+// ⬇️ วาง URL จาก Google Apps Script Deploy ตรงนี้
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoam_SF95TtnmshF5_qvA0oGZ9Y_SDGWMkfmIFlqd5IFeKmgQOCBXVXUhJJ7ivTrXW/exec";
+
 function save(kk){
   orders[kk]={
     bm:document.getElementById('bm_'+kk)?.value||'',
@@ -510,7 +522,42 @@ function save(kk){
   const ring=document.getElementById('ring_'+kk);
   if(ring)ring.className='status-ring'+(done?' done':'');
   const msg=document.getElementById('msg_'+kk);
-  if(msg){msg.style.display='inline';setTimeout(()=>msg.style.display='none',2000);}
+
+  if(SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE"){
+    const parts=kk.split('__');
+    const personId=parts[0].replace(/_/g,' ');
+    const day=parts[1];
+    const dayObj=DAYS.find(d=>String(d.d)===day);
+    const person=dayObj?.people.find(p=>p.id===personId);
+    if(msg){msg.textContent='⏳ กำลังบันทึก...';msg.style.display='inline';}
+    fetch(SCRIPT_URL,{
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name:personId, team:person?TL[person.t]:'',
+        day:dayObj?dayObj.label:day,
+        bm:orders[kk].bm, ln:orders[kk].ln,
+        ad:orders[kk].ad, ds:orders[kk].ds
+      })
+    })
+    .then(()=>{if(msg){msg.textContent='✓ บันทึกแล้ว';setTimeout(()=>msg.style.display='none',2500);}})
+    .catch(()=>{if(msg){msg.textContent='⚠️ บันทึกไม่สำเร็จ';msg.style.color='#B91C1C';setTimeout(()=>{msg.style.display='none';msg.style.color='';},3000);}});
+  } else {
+    if(msg){msg.textContent='✓ บันทึกแล้ว (local)';msg.style.display='inline';setTimeout(()=>msg.style.display='none',2000);}
+  }
+  updateProgress();
+}
+
+function clearForm(kk){
+  ['bm','ln','ad','ds'].forEach(f=>{
+    const el=document.getElementById(f+'_'+kk);
+    if(el) el.value='';
+  });
+  delete orders[kk];
+  const ring=document.getElementById('ring_'+kk);
+  if(ring) ring.className='status-ring';
+  const msg=document.getElementById('msg_'+kk);
+  if(msg){msg.textContent='✕ ล้างแล้ว';msg.style.display='inline';setTimeout(()=>msg.style.display='none',1500);}
   updateProgress();
 }
 
