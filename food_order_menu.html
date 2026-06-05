@@ -389,7 +389,7 @@ select.m-sel:focus{outline:none;border-color:var(--accent);}
     <div class="progress-bar-bg"><div class="progress-bar-fill" id="progFill" style="width:0%"></div></div>
   </div>
   <button class="btn-print" onclick="window.print()">พิมพ์</button>
-  <button class="btn-export" onclick="exportHTML()">ดาวน์โหลด</button>
+  <button class="btn-export" onclick="exportCSV()">ดาวน์โหลด CSV</button>
 </div>
 
 <script>
@@ -508,8 +508,8 @@ function toggle(kk){
   c.classList.toggle('open',open);
 }
 
-// ⬇️ วาง URL จาก Google Apps Script Deploy ตรงนี้
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGudZs_GxreAcuDYuH9Xs7RgN_ub3ZeEe1pVjaGjaYpb0Xsmqj6XsyrabqxF5ebTFT/exec";
+// ไม่มี Google Sheets — ใช้ CSV export แทน
+const SCRIPT_URL = "";
 
 function save(kk){
   orders[kk]={
@@ -522,38 +522,7 @@ function save(kk){
   const ring=document.getElementById('ring_'+kk);
   if(ring)ring.className='status-ring'+(done?' done':'');
   const msg=document.getElementById('msg_'+kk);
-
-  if(SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE"){
-    const parts=kk.split('__');
-    const personId=parts[0].replace(/_/g,' ');
-    const day=parts[1];
-    const dayObj=DAYS.find(d=>String(d.d)===day);
-    const person=dayObj?.people.find(p=>p.id===personId);
-    if(msg){msg.textContent='⏳ กำลังบันทึก...';msg.style.display='inline';}
-    const cbName='cb_'+Date.now();
-    window[cbName]=function(res){
-      delete window[cbName];
-      if(msg){msg.textContent=res&&res.success?'✓ บันทึกแล้ว':'⚠️ บันทึกไม่สำเร็จ';setTimeout(()=>msg.style.display='none',2500);}
-    };
-    const params=new URLSearchParams({
-      action:'save',
-      name:personId,
-      team:person?TL[person.t]:'',
-      day:dayObj?dayObj.label:day,
-      bm:orders[kk].bm,
-      ln:orders[kk].ln,
-      ad:orders[kk].ad,
-      ds:orders[kk].ds,
-      callback:cbName
-    });
-    const s=document.createElement('script');
-    s.src=SCRIPT_URL+'?'+params.toString();
-    s.onerror=function(){if(msg){msg.textContent='⚠️ บันทึกไม่สำเร็จ';setTimeout(()=>msg.style.display='none',2500);}};
-    document.body.appendChild(s);
-    setTimeout(()=>s.remove(),5000);
-  } else {
-    if(msg){msg.textContent='✓ บันทึกแล้ว (local)';msg.style.display='inline';setTimeout(()=>msg.style.display='none',2000);}
-  }
+  if(msg){msg.textContent='✓ บันทึกแล้ว';msg.style.display='inline';setTimeout(()=>msg.style.display='none',2000);}
   updateProgress();
 }
 
@@ -604,11 +573,23 @@ function toggleLegend(){
   a.textContent=open?'▲':'▼';
 }
 
-function exportHTML(){
-  const blob=new Blob([document.documentElement.outerHTML],{type:'text/html'});
+function exportCSV(){
+  const rows=[['วันที่อบรม','ชื่อ/รหัส','ทีม','เบรกเช้า (เครื่องดื่ม)','กลางวัน (อาหาร)','เบรกบ่าย (เครื่องดื่ม)','เบรกบ่าย (ของหวาน)']];
+  DAYS.forEach(day=>{
+    day.people.forEach(p=>{
+      const kk=k(p.id,day.d);
+      const o=orders[kk];
+      if(o&&(o.bm||o.ln||o.ad||o.ds)){
+        rows.push([day.label,p.id,TL[p.t],o.bm||'-',o.ln||'-',o.ad||'-',o.ds||'-']);
+      }
+    });
+  });
+  const csv='\uFEFF'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download='food_order_fave_june2026.html';a.click();
+  a.download='food_order_fave_june2026.csv';
+  a.click();
 }
 
 renderTabs();renderContent();
