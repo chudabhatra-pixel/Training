@@ -509,7 +509,7 @@ function toggle(kk){
 }
 
 // ⬇️ วาง URL จาก Google Apps Script Deploy ตรงนี้
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTzAOOjcyXLEpjcE22wpaxDu_o-Ow1_ppFjcwA4_cjHqtvjs7wFInPAaTEYXlU9HdP/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRYY2sXSUjW54HF9ANLTMHNNNzZP1PkI8Q2jo-LjPTxqB0OxzBTg8REp1nWbJoV7hh/exec";
 
 function save(kk){
   orders[kk]={
@@ -563,9 +563,10 @@ function clearForm(kk){
     const personId=parts[0].replace(/_/g,' ');
     const day=parts[1];
     const dayObj=DAYS.find(d=>String(d.d)===day);
-    const url=SCRIPT_URL+'?action=delete&name='+encodeURIComponent(personId)+'&day='+encodeURIComponent(dayObj?dayObj.label:day);
+    const cbName='cb_'+Date.now();
+    window[cbName]=function(){delete window[cbName];};
     const s=document.createElement('script');
-    s.src=url;
+    s.src=SCRIPT_URL+'?action=delete&name='+encodeURIComponent(personId)+'&day='+encodeURIComponent(dayObj?dayObj.label:day)+'&callback='+cbName;
     document.body.appendChild(s);
     setTimeout(()=>s.remove(),3000);
   }
