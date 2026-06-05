@@ -563,8 +563,11 @@ function clearForm(kk){
     const personId=parts[0].replace(/_/g,' ');
     const day=parts[1];
     const dayObj=DAYS.find(d=>String(d.d)===day);
-    const params=new URLSearchParams({action:'delete',name:personId,day:dayObj?dayObj.label:day});
-    fetch(SCRIPT_URL+'?'+params.toString(),{method:'GET',redirect:'follow'}).catch(()=>{});
+    fetch(SCRIPT_URL,{
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'delete',name:personId,day:dayObj?dayObj.label:day})
+    }).catch(()=>{});
   }
 
   if(msg){msg.textContent='✕ ล้างแล้ว';msg.style.display='inline';setTimeout(()=>msg.style.display='none',1500);}
