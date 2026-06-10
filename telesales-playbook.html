@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Telesales Playbook — คู่มือปิดการขายทางโทรศัพท์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Anuphan:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0E1B33;
+  --navy-2:#16284A;
+  --gold:#C9A23F;
+  --gold-soft:#E8D9AE;
+  --orange:#E8842C;
+  --paper:#FAF7F0;
+  --ink:#1C2434;
+  --muted:#5A6679;
+  --line:#E4DDCC;
+  --green:#2E9E5B;
+  --red:#C44545;
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Anuphan','IBM Plex Sans Thai',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.7;
+  font-size:16px;
+}
+h1,h2,h3,h4{font-family:'IBM Plex Sans Thai',sans-serif;line-height:1.35}
+.wrap{max-width:1000px;margin:0 auto;padding:0 22px}
+
+/* ===== NAV ===== */
+nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(14,27,51,.96);backdrop-filter:blur(8px);
+  border-bottom:2px solid var(--gold);
+}
+nav .wrap{display:flex;align-items:center;gap:6px;overflow-x:auto;padding:10px 22px}
+nav a{
+  color:#cfd8e8;text-decoration:none;font-size:.85rem;font-weight:500;
+  padding:6px 12px;border-radius:99px;white-space:nowrap;transition:.2s;
+}
+nav a:hover,nav a:focus-visible{background:var(--navy-2);color:var(--gold-soft);outline:none}
+nav .brand{color:var(--gold);font-weight:700;font-size:.9rem;margin-right:8px}
+
+/* ===== HERO ===== */
+header{
+  background:linear-gradient(160deg,var(--navy) 0%,#13234299 60%),var(--navy);
+  color:#fff;padding:64px 0 0;position:relative;overflow:hidden;
+}
+header::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 80% -10%,rgba(201,162,63,.22),transparent 55%);
+}
+.hero-tag{
+  display:inline-block;border:1px solid var(--gold);color:var(--gold-soft);
+  font-size:.8rem;letter-spacing:.12em;padding:4px 14px;border-radius:99px;margin-bottom:18px;
+}
+header h1{font-size:clamp(1.7rem,4.5vw,2.7rem);font-weight:700;max-width:21ch}
+header h1 em{color:var(--gold);font-style:normal}
+header p.sub{margin-top:14px;max-width:54ch;color:#c9d3e4;font-size:1.05rem}
+.hero-goal{
+  margin:34px 0 0;display:flex;flex-wrap:wrap;gap:0;
+  border:1px solid rgba(201,162,63,.45);border-bottom:none;
+  border-radius:var(--radius) var(--radius) 0 0;overflow:hidden;position:relative;z-index:1;
+}
+.hero-goal div{flex:1 1 200px;padding:18px 22px;background:rgba(255,255,255,.04)}
+.hero-goal div+div{border-left:1px solid rgba(201,162,63,.3)}
+.hero-goal b{display:block;font-size:1.5rem;color:var(--gold);font-family:'IBM Plex Sans Thai'}
+.hero-goal span{font-size:.85rem;color:#b9c4d8}
+
+/* ===== SECTION SHELL ===== */
+section{padding:58px 0}
+section.alt{background:#F2EDE1}
+.eyebrow{
+  font-size:.78rem;font-weight:700;letter-spacing:.18em;color:var(--orange);
+  text-transform:uppercase;margin-bottom:8px;
+}
+h2{font-size:clamp(1.4rem,3vw,1.9rem);color:var(--navy);margin-bottom:8px}
+.lede{color:var(--muted);max-width:62ch;margin-bottom:30px}
+
+/* ===== WHY: 1 vs 3 ===== */
+.versus{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.v-card{border-radius:var(--radius);padding:26px;border:1px solid var(--line);background:#fff}
+.v-card.bad{border-top:5px solid var(--red)}
+.v-card.good{border-top:5px solid var(--green);background:linear-gradient(180deg,#fff, #FBF6E8)}
+.v-card h3{font-size:1.15rem;margin-bottom:6px}
+.v-card .price{font-size:1.9rem;font-weight:700;font-family:'IBM Plex Sans Thai'}
+.bad .price{color:var(--red)}
+.good .price{color:var(--green)}
+.v-card ul{list-style:none;margin-top:12px}
+.v-card li{padding:6px 0 6px 26px;position:relative;font-size:.95rem;color:var(--ink)}
+.bad li::before{content:"✕";position:absolute;left:0;color:var(--red);font-weight:700}
+.good li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
+
+/* ===== KPI ===== */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.kpi.star{background:var(--navy);color:#fff;border-color:var(--gold)}
+.kpi .abbr{
+  display:inline-block;font-family:'IBM Plex Sans Thai';font-weight:700;font-size:.8rem;
+  background:var(--navy);color:var(--gold-soft);padding:3px 10px;border-radius:6px;margin-bottom:10px;
+}
+.kpi.star .abbr{background:var(--gold);color:var(--navy)}
+.kpi h3{font-size:1.02rem;margin-bottom:4px}
+.kpi p{font-size:.88rem;color:var(--muted)}
+.kpi.star p{color:#d8def0}
+.kpi .target{font-size:1.3rem;font-weight:700;color:var(--gold);font-family:'IBM Plex Sans Thai'}
+
+/* ===== LEAKS ===== */
+.leaks{counter-reset:leak;display:grid;gap:12px}
+.leak{
+  counter-increment:leak;background:#fff;border:1px solid var(--line);
+  border-left:5px solid var(--orange);border-radius:10px;
+  padding:16px 20px 16px 64px;position:relative;
+}
+.leak::before{
+  content:counter(leak);position:absolute;left:18px;top:50%;transform:translateY(-50%);
+  width:32px;height:32px;border-radius:50%;background:var(--navy);color:var(--gold);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'IBM Plex Sans Thai';
+}
+.leak b{display:block;color:var(--navy)}
+.leak span{font-size:.9rem;color:var(--muted)}
+.leak-note{
+  margin-top:18px;background:var(--navy);color:#f4e9c9;border-radius:10px;
+  padding:14px 20px;font-size:.95rem;border-left:5px solid var(--gold);
+}
+
+/* ===== STEPS ===== */
+.step{margin-bottom:46px}
+.step:last-child{margin-bottom:0}
+.step-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+.step-num{
+  flex:none;font-family:'IBM Plex Sans Thai';font-weight:700;font-size:.85rem;
+  background:var(--gold);color:var(--navy);padding:4px 12px;border-radius:99px;
+}
+.step h3{font-size:1.25rem;color:var(--navy)}
+.step .insight{
+  background:#FBF4DF;border:1px solid var(--gold-soft);border-radius:10px;
+  padding:10px 16px;font-size:.95rem;margin:10px 0 18px;color:#6b5615;
+}
+.step .insight b{color:#8a6d12}
+
+/* chat bubbles */
+.chat{display:grid;gap:10px;max-width:680px}
+.bubble{padding:12px 18px;border-radius:18px;font-size:.95rem;max-width:88%}
+.bubble.cust{
+  background:#E9ECF3;color:var(--ink);border-bottom-left-radius:4px;justify-self:start;
+}
+.bubble.agent{
+  background:var(--navy);color:#fff;border-bottom-right-radius:4px;justify-self:end;
+}
+.bubble .who{display:block;font-size:.72rem;font-weight:700;letter-spacing:.08em;opacity:.7;margin-bottom:2px}
+.bubble.agent .who{color:var(--gold-soft)}
+
+/* funnel */
+.funnel{display:grid;gap:12px;max-width:680px}
+.f-row{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:stretch}
+.f-label{
+  border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-family:'IBM Plex Sans Thai';font-size:.92rem;padding:10px;text-align:center;
+}
+.f-row:nth-child(1) .f-label{background:var(--navy)}
+.f-row:nth-child(2) .f-label{background:var(--orange)}
+.f-row:nth-child(3) .f-label{background:var(--gold);color:var(--navy)}
+.f-q{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-size:.95rem}
+.f-q small{display:block;color:var(--muted);margin-top:2px;font-size:.82rem}
+
+/* do/don't */
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:780px}
+.dd .col{border-radius:var(--radius);padding:20px;background:#fff;border:1px solid var(--line)}
+.dd .col.dont{border-top:4px solid var(--red)}
+.dd .col.do{border-top:4px solid var(--green)}
+.dd h4{font-size:.95rem;margin-bottom:10px}
+.dd .dont h4{color:var(--red)}
+.dd .do h4{color:var(--green)}
+.dd blockquote{
+  font-size:.98rem;background:var(--paper);border-radius:10px;padding:12px 16px;font-style:normal;
+}
+.dd .why{font-size:.85rem;color:var(--muted);margin-top:10px}
+.value-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.value-chips span{
+  background:var(--navy);color:var(--gold-soft);font-size:.85rem;
+  padding:6px 14px;border-radius:99px;font-weight:500;
+}
+
+/* objection cards */
+.objections{display:grid;gap:14px;max-width:780px}
+.obj{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.obj summary{
+  cursor:pointer;list-style:none;padding:14px 18px;display:flex;align-items:center;gap:12px;
+  font-weight:600;color:var(--navy);user-select:none;
+}
+.obj summary::-webkit-details-marker{display:none}
+.obj summary .tag{
+  flex:none;background:#F3E8C8;color:#8a6d12;font-size:.78rem;font-weight:700;
+  padding:3px 10px;border-radius:6px;
+}
+.obj summary::after{content:"+";margin-left:auto;font-size:1.2rem;color:var(--gold);font-weight:700}
+.obj[open] summary::after{content:"–"}
+.obj .body{padding:0 18px 16px}
+.obj .body .bubble{margin-top:4px}
+
+/* closing arsenal */
+.closes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.close-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;position:relative}
+.close-card.featured{border:2px solid var(--gold);background:linear-gradient(180deg,#fff,#FBF4DF)}
+.close-card .rec{
+  position:absolute;top:-11px;right:14px;background:var(--orange);color:#fff;
+  font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:99px;
+}
+.close-card h4{color:var(--navy);font-size:1rem}
+.close-card .en{font-size:.78rem;color:var(--muted);font-weight:500;margin-bottom:10px;display:block}
+.close-card blockquote{
+  background:var(--navy);color:#fff;border-radius:10px;padding:12px 14px;font-size:.92rem;
+}
+
+/* checklist */
+.shield{max-width:680px}
+.check{display:grid;gap:10px;margin-top:6px}
+.check label{
+  display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:12px 16px;cursor:pointer;transition:.15s;
+}
+.check input{margin-top:5px;accent-color:var(--green);width:17px;height:17px;flex:none}
+.check label:has(input:checked){background:#EDF7EF;border-color:#bfe0c8}
+.check small{display:block;color:var(--muted);font-size:.83rem}
+.script-bar{
+  margin-top:18px;background:var(--navy);color:#fff;border-radius:10px;padding:14px 18px;
+  font-size:.95rem;border-left:5px solid var(--gold);
+}
+.script-bar b{color:var(--gold-soft)}
+
+/* ===== CALL TIMELINE ===== */
+.timeline{position:relative;max-width:720px;margin:10px 0 0;padding-left:34px}
+.timeline::before{
+  content:"";position:absolute;left:11px;top:8px;bottom:8px;width:3px;
+  background:linear-gradient(var(--navy),var(--orange),var(--gold));border-radius:3px;
+}
+.t-item{position:relative;padding:0 0 26px}
+.t-item:last-child{padding-bottom:0}
+.t-item::before{
+  content:"";position:absolute;left:-29px;top:6px;width:14px;height:14px;border-radius:50%;
+  background:var(--paper);border:3px solid var(--navy);
+}
+.t-item:nth-child(4)::before,.t-item:nth-child(5)::before{border-color:var(--orange)}
+.t-item:nth-child(6)::before{border-color:var(--gold);background:var(--gold)}
+.t-item b{font-family:'IBM Plex Sans Thai';color:var(--navy)}
+.t-item .en{font-size:.78rem;color:var(--orange);font-weight:700;letter-spacing:.08em;margin-right:8px}
+.t-item p{font-size:.92rem;color:var(--muted)}
+
+/* ===== COMMITMENT ===== */
+.commit{background:var(--navy);color:#fff}
+.commit h2{color:#fff}
+.commit .lede{color:#bcc7db}
+.c-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.c-card{
+  background:rgba(255,255,255,.05);border:1px solid rgba(201,162,63,.4);
+  border-radius:var(--radius);padding:24px;text-align:center;
+}
+.c-card .n{
+  width:42px;height:42px;border-radius:10px;background:var(--gold);color:var(--navy);
+  font-weight:700;font-size:1.2rem;display:flex;align-items:center;justify-content:center;
+  margin:0 auto 12px;font-family:'IBM Plex Sans Thai';
+}
+.c-card h3{color:var(--gold);letter-spacing:.1em;font-size:1.2rem}
+.c-card p{font-size:.92rem;color:#d4dbea;margin-top:6px}
+.quote{
+  margin-top:34px;text-align:center;font-size:1.05rem;color:var(--gold-soft);
+  font-family:'IBM Plex Sans Thai';font-weight:600;
+}
+footer{background:#0A1426;color:#7e8aa3;text-align:center;font-size:.82rem;padding:20px}
+
+@media (max-width:720px){
+  .versus,.dd{grid-template-columns:1fr}
+  .f-row{grid-template-columns:96px 1fr}
+  .bubble{max-width:100%}
+}
+@media (prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+  .reveal.in{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="brand">📞 Playbook</span>
+    <a href="#why">ทำไมต้อง 4 ชิ้น</a>
+    <a href="#kpi">ตัวชี้วัด</a>
+    <a href="#leaks">5 หลุมพราง</a>
+    <a href="#steps">5 ขั้นตอน</a>
+    <a href="#flow">โครงสร้างสาย</a>
+    <a href="#commit">พันธสัญญา</a>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <span class="hero-tag">THE TELESALES PLAYBOOK</span>
+    <h1>ให้ทุกสายที่โทรออก<br><em>เป็นยอดขาย 4 ชิ้นทุกสาย</em></h1>
+    <p class="sub">คู่มือปิดการขายฉบับมือโปรสำหรับพนักงานขายทางโทรศัพท์ — เจาะลึกเทคนิคตั้งแต่โทรออก ถามหาปัญหา รับมือข้อโต้แย้ง ไปจนถึงล็อกยอดจัดส่งให้ถึงมือลูกค้า</p>
+    <div class="hero-goal">
+      <div><b>2,970+ ฿</b><span>เป้าหมาย AOV ต่อบิล</span></div>
+      <div><b>4 ชิ้น + ของแถม</b><span>เป้าการปิดขั้นต่ำทุกสาย</span></div>
+      <div><b>GV 200 ฿</b><span>บัตรกำนัลสำหรับซื้อครั้งต่อไป</span></div>
+      <div><b>ส่งถึงมือ</b><span>การขายจบเมื่อลูกค้า "รับของ"</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- WHY -->
+<section id="why">
+  <div class="wrap">
+    <p class="eyebrow">เริ่มที่ Mindset</p>
+    <h2>ทำไมขาย 1 ชิ้น = ขาดทุน แต่ 4 ชิ้น = ทางรอด</h2>
+    <p class="lede">ทุกสายที่โทรออกมีต้นทุนทั้งเวลาและค่าใช้จ่าย การปิดได้แค่ชิ้นเดียวแทบไม่ครอบคลุมต้นทุน — เป้าหมายที่แท้จริงของทุกสายคือแพ็กเกจ 4 ชิ้น + ของแถม + บัตรกำนัล GV 200 ฿</p>
+    <div class="versus">
+      <div class="v-card bad reveal">
+        <h3>ขาย 1 ชิ้น</h3>
+        <div class="price">990 ฿</div>
+        <ul>
+          <li>ค่า Lead (CPA) สูง แทบไม่คุ้มต้นทุน</li>
+          <li>เหนื่อยเท่ากันแต่ได้น้อย</li>
+          <li>คอมมิชชันต่ำ — เกมที่ไม่คุ้มค่า</li>
+        </ul>
+      </div>
+      <div class="v-card good reveal">
+        <h3>ขาย 4 ชิ้น + ของแถม + GV 200 ฿</h3>
+        <div class="price">2,970 ฿</div>
+        <ul>
+          <li>ทะลุเป้าหมาย AOV 2,970 ฿</li>
+          <li>ครอบคลุมต้นทุนค่า Lead ทันที</li>
+          <li>ลูกค้าได้ของแถม + บัตรกำนัล GV 200 ฿ ซื้อครั้งต่อไป</li>
+          <li>ค่าคอมมิชชันพุ่งสูงสุด — นี่คือหนทางสู่ความสำเร็จ</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KPI -->
+<section id="kpi" class="alt">
+  <div class="wrap">
+    <p class="eyebrow">วัดผลอย่างไร</p>
+    <h2>4 ตัวชี้วัดที่ต้องรู้จัก</h2>
+    <p class="lede">ยอดขายที่ดีไม่ใช่แค่ "ปิดได้" แต่ต้องมีคุณภาพครบทั้ง 4 ด้าน</p>
+    <div class="kpis">
+      <div class="kpi reveal">
+        <span class="abbr">QA</span>
+        <h3>Quality — ข้อมูลเป๊ะ</h3>
+        <p>อธิบายข้อมูลครบถ้วน ถูกต้องตามขั้นตอนการขาย</p>
+      </div>
+      <div class="kpi reveal">
+        <span class="abbr">E-AR</span>
+        <h3>Closing Rate — อัตราปิด</h3>
+        <p>เปลี่ยนความสนใจให้เป็นยอดโอน ปิดการขายได้เด็ดขาด</p>
+      </div>
+      <div class="kpi star reveal">
+        <span class="abbr">AOV</span>
+        <h3>Order Value — มูลค่าต่อบิล</h3>
+        <p>ต้องปิดให้ได้ 4 ชิ้น + ของแถม + GV 200 ฿! เพิ่มมูลค่าเฉลี่ยต่อบิล</p>
+        <div class="target">เป้า 2,970 ฿</div>
+      </div>
+      <div class="kpi reveal">
+        <span class="abbr">DR</span>
+        <h3>Delivered — ส่งมอบสำเร็จ</h3>
+        <p>ลูกค้ารับของจริง ไม่ยกเลิกกลางทาง</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEAKS -->
+<section id="leaks">
+  <div class="wrap">
+    <p class="eyebrow">รู้จุดรั่วก่อนอุด</p>
+    <h2>5 หลุมพราง: ทำไมลูกค้าถึงหลุดมือ?</h2>
+    <p class="lede">ปัญหาเหล่านี้คือเหตุผลที่ยอดขายหยุดอยู่ที่ 1 ชิ้น — เช็กตัวเองว่าตกหลุมข้อไหนบ่อยที่สุด</p>
+    <div class="leaks">
+      <div class="leak reveal"><b>รีบเสนอขายเกินไป</b><span>ยังไม่ทันรู้จักลูกค้าก็ยิงราคา ทำให้ลูกค้ารู้สึกถูกยัดเยียด</span></div>
+      <div class="leak reveal"><b>ไม่ค้นหาปัญหาที่แท้จริง</b><span>ขาย "สินค้า" แทนที่จะขาย "ทางแก้ปัญหา" ของลูกค้า</span></div>
+      <div class="leak reveal"><b>รับมือข้อโต้แย้งไม่ได้</b><span>เจอคำว่า "แพง" หรือ "ขอคิดดูก่อน" แล้วยอมถอยทันที</span></div>
+      <div class="leak reveal"><b>ไม่กล้าปิดการขาย</b><span>คุยดีทั้งสาย แต่ไม่กล้าชวนตัดสินใจ ปล่อยให้สายจบแบบค้างคา</span></div>
+      <div class="leak reveal"><b>สรุปข้อมูลไม่ครบ</b><span>ลูกค้ายกเลิกทีหลัง เพราะไม่ได้ทวนรายละเอียดก่อนวางสาย</span></div>
+    </div>
+    <div class="leak-note">⚠️ <b>Leak Detected:</b> ทุกบาทที่หลุดจากท่อ คือค่า Lead ที่จ่ายไปแล้วแต่ไม่ได้อะไรกลับมา</div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section id="steps" class="alt">
+  <div class="wrap">
+    <p class="eyebrow">เทคนิคปิดการขาย</p>
+    <h2>5 ขั้นตอนสู่ยอด 2,970+ บาท (4 ชิ้น + ของแถม + GV)</h2>
+    <p class="lede">ทำตามลำดับนี้ทุกสาย — ถาม ก่อน ขาย, ขายคุณค่า ก่อน ราคา, แล้วจึงปิดและล็อกยอด</p>
+
+    <!-- STEP 1 -->
+    <div class="step reveal">
+      <div class="step-head"><span class="step-num">STEP 1</span><h3>The Questioning Funnel — ถามให้เป็นก่อนขาย</h3></div>
+      <div class="insight">💡 Insight: ลูกค้าซื้อ <b>"สิ่งที่แก้ปัญหา"</b> ไม่ใช่แค่ซื้อสินค้า — ใช้คำถาม 3 ระดับเพื่อขุดให้เจอปัญหาจริง</div>
+      <div class="funnel">
+        <div class="f-row">
+          <div class="f-label">ปัจจุบัน<br>Current</div>
+          <div class="f-q">"ปัจจุบันคุณลูกค้าดูแลเรื่องนี้อย่างไรอยู่คะ?"<small>เปิดบทสนทนา ทำความเข้าใจสถานการณ์ปัจจุบัน</small></div>
+        </div>
+        <div class="f-row">
+          <div class="f-label">ปัญหา<br>Problem</div>
+          <div class="f-q">"มีความกังวลเรื่องใดเป็นพิเศษไหมคะ?"<small>เจาะลึกหาจุดเจ็บ (Pain Point) ที่ลูกค้าอยากแก้</small></div>
+        </div>
+        <div class="f-row">
+          <div class="f-label">ผลกระทบ<br>Impact</div>
+          <div class="f-q">"หากไม่รีบแก้ จะส่งผลอย่างไรบ้างคะ?"<small>ให้ลูกค้าเห็นความเร่งด่วนด้วยตัวเอง</small></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step reveal">
+      <div class="step-head"><span class="step-num">STEP 2</span><h3>Value &gt; Price — เปลี่ยน "ราคาแพง" เป็น "ความคุ้มค่า"</h3></div>
+      <div class="dd">
+        <div class="col dont">
+          <h4>✕ อย่าพูดว่า</h4>
+          <blockquote>"สินค้า 4 ชิ้น ราคา 2,970 บาทค่ะ"</blockquote>
+          <p class="why">เน้นที่ตัวเลข ทำให้ลูกค้ารู้สึกถึง "รายจ่าย" ที่เพิ่มขึ้น</p>
+        </div>
+        <div class="col do">
+          <h4>✓ ควรพูดว่า</h4>
+          <blockquote>"แพ็กเกจดูแลต่อเนื่อง 4 ชิ้นนี้ <b>คุ้มค่ากว่า</b>... ช่วยแก้ปัญหาได้อย่างครอบคลุม อุ่นใจตลอดทั้งปี ประหยัดกว่าซื้อแยก และยังได้รับ <b>ของแถม</b> พร้อม <b>บัตรกำนัล GV 200 ฿</b> สำหรับซื้อครั้งต่อไปด้วยค่ะ"</blockquote>
+          <p class="why">เน้นที่ผลลัพธ์ ความคุ้ม และโบนัสพิเศษ ลูกค้ารู้สึกถึง "การลงทุนที่ได้มากกว่า"</p>
+        </div>
+      </div>
+      <div class="value-chips">
+        <span>ประโยชน์ที่ได้รับ</span><span>ความคุ้มค่า</span><span>ความสะดวก</span><span>ประหยัดในอนาคต</span><span>ของแถมพิเศษ</span><span>GV 200 ฿ ครั้งต่อไป</span><span>ความอุ่นใจ</span>
+      </div>
+      <div style="margin-top:18px;background:var(--navy);border-left:5px solid var(--gold);border-radius:10px;padding:14px 18px;max-width:780px">
+        <div style="color:var(--gold);font-weight:700;font-size:.88rem;letter-spacing:.08em;margin-bottom:6px">🎁 BONUS PACKAGE — แพ็กเกจ 4 ชิ้น 2,970 ฿</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;font-size:.92rem">
+          <div style="background:rgba(255,255,255,.07);border-radius:8px;padding:10px 14px;color:#e8dfc9">✅ สินค้า <b style="color:#fff">4 ชิ้น</b> ราคา 2,970 ฿</div>
+          <div style="background:rgba(255,255,255,.07);border-radius:8px;padding:10px 14px;color:#e8dfc9">🎁 <b style="color:#fff">ของแถม</b> มูลค่าพิเศษ</div>
+          <div style="background:rgba(201,162,63,.18);border:1px solid var(--gold);border-radius:8px;padding:10px 14px;color:#f5e9c3">🏷️ บัตรกำนัล <b style="color:var(--gold)">GV 200 ฿</b> สำหรับซื้อครั้งต่อไป</div>
+        </div>
+        <div style="color:#a0afc8;font-size:.83rem;margin-top:10px">💬 สคริปต์: "นอกจากสินค้า 4 ชิ้นแล้ว คุณลูกค้ายังได้รับของแถมพิเศษ และบัตรกำนัล GV มูลค่า 200 บาท สำหรับใช้ซื้อครั้งต่อไปด้วยนะคะ"</div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step reveal">
+      <div class="step-head"><span class="step-num">STEP 3</span><h3>Objection Handling Matrix — รับมือข้อโต้แย้งอย่างมืออาชีพ</h3></div>
+      <div class="insight">💡 ข้อโต้แย้งไม่ใช่การปฏิเสธ <b>แต่คือการขอข้อมูลเพิ่ม</b> — แตะเพื่อดูสคริปต์ตอบ</div>
+      <div class="objections">
+        <details class="obj" open>
+          <summary><span class="tag">ข้อโต้แย้ง</span> "แพงไป"</summary>
+          <div class="body chat">
+            <div class="bubble cust"><span class="who">ลูกค้า</span>แพงไปหน่อยนะ</div>
+            <div class="bubble agent"><span class="who">เรา</span>เข้าใจเลยค่ะ หลายท่านก็เคยมองแบบเดียวกันในช่วงแรก แต่เมื่อเห็นความคุ้มค่าของแพ็กเกจนี้ จึงตัดสินใจเลือกค่ะ</div>
+          </div>
+        </details>
+        <details class="obj">
+          <summary><span class="tag">ข้อโต้แย้ง</span> "ขอคิดดูก่อน"</summary>
+          <div class="body chat">
+            <div class="bubble cust"><span class="who">ลูกค้า</span>ขอคิดดูก่อนนะคะ</div>
+            <div class="bubble agent"><span class="who">เรา</span>ได้เลยค่ะ มีข้อมูลส่วนไหนที่ยังทำให้ไม่มั่นใจ ให้ดิฉันช่วยอธิบายเพิ่มได้นะคะ</div>
+          </div>
+        </details>
+        <details class="obj">
+          <summary><span class="tag">ข้อโต้แย้ง</span> "ยังไม่สนใจ"</summary>
+          <div class="body chat">
+            <div class="bubble cust"><span class="who">ลูกค้า</span>ยังไม่สนใจค่ะ</div>
+            <div class="bubble agent"><span class="who">เรา</span>เข้าใจค่ะ หากต้องเลือกเรื่องที่สำคัญที่สุดในปัจจุบัน จะเป็นเรื่องใดคะ?</div>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step reveal">
+      <div class="step-head"><span class="step-num">STEP 4</span><h3>The Closing Arsenal — ปิดการขายอย่างมั่นใจ</h3></div>
+      <div class="insight">💡 ลูกค้าพร้อมซื้อแล้ว... หน้าที่ของเราคือ <b>"นำทาง"</b> ไม่ใช่รอให้ลูกค้าตัดสินใจเอง</div>
+      <div class="closes">
+        <div class="close-card">
+          <h4>Assumptive Close</h4><span class="en">สรุปรวบยอด</span>
+          <blockquote>"ดิฉันขออนุญาตดำเนินการให้เลยนะคะ"</blockquote>
+        </div>
+        <div class="close-card featured">
+          <span class="rec">เทคนิคแนะนำ</span>
+          <h4>Alternative Choice</h4><span class="en">ให้ทางเลือก</span>
+          <blockquote>"คุณลูกค้าสะดวกรับเป็นแพ็กเกจ A (3 ชิ้น 2,700 ฿) หรือ แพ็กเกจ B (4 ชิ้น 2,970 ฿ + ของแถม + GV 200 ฿) ดีคะ"</blockquote>
+          <p class="why" style="font-size:.85rem;color:var(--muted);margin-top:10px">⭐ นำเสนอแพ็กเกจ 4 ชิ้นเป็นตัวเลือกที่คุ้มกว่าเสมอ — ลูกค้าเลือก "แบบไหน" ไม่ใช่ "ซื้อหรือไม่ซื้อ"</p>
+        </div>
+        <div class="close-card">
+          <h4>Summary Close</h4><span class="en">ทวนความต้องการ</span>
+          <blockquote>"แพ็กเกจนี้ตอบโจทย์เรื่องที่คุณกังวล ขออนุญาตดำเนินการนะคะ"</blockquote>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step reveal">
+      <div class="step-head"><span class="step-num">STEP 5</span><h3>The Pre-Hangup Shield — ล็อกยอดก่อนวางสาย (เพิ่ม DR)</h3></div>
+      <div class="insight">💡 การขายจบลงเมื่อลูกค้า <b>"รับของ"</b> ไม่ใช่ตอนวางสาย — ทวนเช็กลิสต์นี้ทุกครั้ง</div>
+      <div class="shield">
+        <div class="check">
+          <label><input type="checkbox"><div>ชื่อ–นามสกุล<small>สะกดให้ถูกต้องตรงตามบัตร</small></div></label>
+          <label><input type="checkbox"><div>เบอร์โทรศัพท์<small>ทวนทีละตัวเลข ใช้ติดต่อตอนจัดส่ง</small></div></label>
+          <label><input type="checkbox"><div>ที่อยู่จัดส่ง<small>ครบถ้วนถึงระดับบ้านเลขที่ / จุดสังเกต</small></div></label>
+          <label><input type="checkbox"><div>ทวนรายละเอียดสินค้า<small>ย้ำความคุ้มค่าของแพ็กเกจ 4 ชิ้น + ของแถม + GV 200 ฿ อีกครั้ง</small></div></label>
+          <label><input type="checkbox"><div>ตรวจสอบความเข้าใจของลูกค้า<small>เปิดโอกาสให้ถามก่อนจบสาย ลดการยกเลิกปลายทาง</small></div></label>
+        </div>
+        <div class="script-bar">🎙️ <b>Script:</b> "เพื่อความถูกต้อง ดิฉันขอสรุปรายละเอียดอีกครั้งนะคะ..."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLOW -->
+<section id="flow">
+  <div class="wrap">
+    <p class="eyebrow">ภาพรวมทั้งสาย</p>
+    <h2>The Perfect Call Architecture</h2>
+    <p class="lede">โครงสร้างสายขายที่สมบูรณ์แบบ — จาก Lead ที่มีต้นทุนสูง สู่ยอดขาย 2,970+ บาทที่ส่งถึงมือลูกค้า</p>
+    <div class="timeline">
+      <div class="t-item reveal"><span class="en">START</span><b>โทรออกหา Lead</b><p>ทุกสายที่โทรออกมีค่า — เตรียมพร้อมก่อนกด Call ห้ามทิ้งโอกาส</p></div>
+      <div class="t-item reveal"><span class="en">ASK</span><b>ขุดหาปัญหาที่แท้จริง</b><p>ใช้ Questioning Funnel: ปัจจุบัน → ปัญหา → ผลกระทบ</p></div>
+      <div class="t-item reveal"><span class="en">PITCH</span><b>นำเสนอคุณค่าแพ็กเกจ 4 ชิ้น + ของแถม + GV</b><p>ขายความคุ้มค่า (Bundle Concept) ไม่ใช่ขายราคา — บัตรกำนัล GV 200 ฿ คือ Hook สำคัญ</p></div>
+      <div class="t-item reveal"><span class="en">HANDLE</span><b>รับมือข้อโต้แย้ง</b><p>ใช้ Objection Matrix — ข้อโต้แย้งคือการขอข้อมูลเพิ่ม</p></div>
+      <div class="t-item reveal"><span class="en">CLOSE</span><b>ปิดการตัดสินใจ</b><p>ใช้ Alternative Choice: A = 3 ชิ้น 2,700 ฿ / B = 4 ชิ้น 2,970 ฿ + ของแถม + GV 200 ฿</p></div>
+      <div class="t-item reveal"><span class="en">CONFIRM</span><b>ล็อกยอดจัดส่ง 🎯 2,970+ ฿</b><p>Pre-Hangup Shield ทวนข้อมูลครบ 5 ข้อ — แจ้งของแถมและ GV ก่อนวางสาย</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMITMENT -->
+<section id="commit" class="commit">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--gold)">The Daily Commitment</p>
+    <h2>พันธสัญญาแห่งความสำเร็จ — ตั้งแต่วันพรุ่งนี้เป็นต้นไป</h2>
+    <p class="lede">3 สิ่งที่ต้องทำทุกสาย ทุกวัน</p>
+    <div class="c-grid">
+      <div class="c-card reveal">
+        <div class="n">1</div>
+        <h3>ASK</h3>
+        <p>ใช้คำถามค้นหาความต้องการ อย่างน้อย 3 คำถามต่อสาย</p>
+      </div>
+      <div class="c-card reveal">
+        <div class="n">2</div>
+        <h3>CLOSE</h3>
+        <p>ปิดการขายทุกสาย — เป้าหมายต้อง 4 ชิ้น + ของแถม + GV 200 ฿!</p>
+      </div>
+      <div class="c-card reveal">
+        <div class="n">3</div>
+        <h3>SECURE</h3>
+        <p>สรุปรายละเอียดก่อนจบสายทุกครั้ง เพื่อล็อกยอดจัดส่ง</p>
+      </div>
+    </div>
+    <p class="quote">"ยอดขายที่ดี คือยอดขายที่มีคุณภาพ และสามารถส่งมอบถึงมือลูกค้าได้สำเร็จ"</p>
+  </div>
+</section>
+
+<footer>The Telesales Playbook · คู่มือภายในสำหรับทีมขายทางโทรศัพท์</footer>
+
+<script>
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}});
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
