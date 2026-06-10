@@ -377,6 +377,11 @@ select.m-sel:focus{outline:none;border-color:var(--accent);}
       <div class="legend-item"><span class="legend-num">D3</span>Pandan Cake</div>
       <div class="legend-item"><span class="legend-num">D4</span>Thai Tea Cake</div>
       <div class="legend-item"><span class="legend-num">D5</span>Banoffee</div>
+      <div class="legend-item"><span class="legend-num">D6</span>Fruit Tart</div>
+      <div class="legend-item"><span class="legend-num">D7</span>Shine Muscat Tart</div>
+      <div class="legend-item"><span class="legend-num">D8</span>Coffee Ganache Tart</div>
+      <div class="legend-item"><span class="legend-num">D9</span>Macadamia Tart</div>
+      <div class="legend-item"><span class="legend-num">D10</span>Lemon Tart</div>
     </div>
   </div>
 </div>
@@ -397,6 +402,7 @@ const BD=["Americano ร้อน","Americano เย็น","Americano Coconut",
 const AD=[...BD,"Plum Soda","Lychee Soda","Strawberry Pink Smoothie","Yellow Passion Smoothie"];
 const LN=["ข้าวมันไก่","ก๋วยเตี๋ยวคั่วไก่","ก๋วยเตี๋ยวคั่วกะเพราเนื้อ/หมู","ข้าวผัดต้มยำไก่","ข้าวผัดแกงเขียวหวานไก่","ข้าวซอยไก่","ข้าวคลุกกะปิ","ข้าวสามชั้นคั่วพริกเกลือ","ผัดไทยกุ้ง","ผัดซีอิ๊ว","สปาเก็ตตี้ผัดพริกแห้งเห็ด","เพนเน่ซอสมะเขือเทศเผ็ด","เพนเน่เพสโต้ซอส","ลิงกวินีคาโบนาร่า"];
 const DS=["Young Coconut Cake","Strawberry Fresh Cream Cake","Pandan Cake","Thai Tea Cake","Banoffee"];
+const DS11=["Young Coconut Cake","Strawberry Fresh Cream Cake","Pandan Cake","Thai Tea Cake","Banoffee","Fruit Tart","Shine Muscat Tart","Coffee Ganache Tart","Macadamia Tart","Lemon Tart"];
 const TL={fresh:"Fresh Team",cit:"CIT Team",sup:"Supervisor",new:"New Staff",other:"อื่นๆ"};
 
 const DAYS=[
@@ -427,11 +433,11 @@ const DAYS=[
     {id:"Khun Vivien",t:"other"},
     
   ]},
-  {d:11,label:"11 มิ.ย.",count:14,people:[
+  {d:11,label:"11 มิ.ย.",count:16,people:[
     {id:"Ac248",t:"cit"},{id:"Ac254",t:"cit"},{id:"Ar507",t:"cit"},{id:"Ac591",t:"cit"},
     {id:"Ac598",t:"cit"},{id:"Ac597",t:"cit"},{id:"Ac595",t:"cit"},{id:"Ac303",t:"cit"},
     {id:"Ac376",t:"cit"},{id:"Ac466",t:"cit"},
-    {id:"Supervisor Irene",t:"sup"},{id:"New Supervisor 1",t:"new"},
+    {id:"Supervisor Irene",t:"sup"},{id:"Supervisor Nut",t:"sup"},{id:"Supervisor Rodmay",t:"sup"},{id:"New Supervisor 1",t:"new"},
     {id:"New Staff 2",t:"new"},{id:"Khun Nong",t:"other"}
   ]}
 ];
@@ -483,7 +489,7 @@ function renderContent(){
             <div class="meal-group"><label>เบรกเช้า — เครื่องดื่ม</label>${sel(BD,'bm_'+kk)}</div>
             <div class="meal-group"><label>กลางวัน — อาหาร</label>${sel(LN,'ln_'+kk)}</div>
             <div class="meal-group"><label>เบรกบ่าย — เครื่องดื่ม</label>${sel(AD,'ad_'+kk)}</div>
-            <div class="meal-group"><label>เบรกบ่าย — ของหวาน</label>${sel(DS,'ds_'+kk)}</div>
+            <div class="meal-group"><label>เบรกบ่าย — ของหวาน</label>${sel(curDay===11?DS11:DS,'ds_'+kk)}</div>
           </div>
           <div class="form-footer">
             <button class="save-btn" onclick="save('${kk}')">บันทึก</button>
