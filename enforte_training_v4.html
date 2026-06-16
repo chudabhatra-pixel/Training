@@ -221,6 +221,26 @@ footer b{background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-col
   .pg-wrap{padding:20px 14px}
   .sym-grid{grid-template-columns:repeat(auto-fill,minmax(115px,1fr))}
 }
+
+/* ─── SALES SCRIPT PAGE ─── */
+.sc-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.sc-tab{padding:9px 18px;border:1px solid #DDD0BC;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;background:#FFF9F4;color:#7A6A55;font-family:'Sarabun',sans-serif;transition:all .2s}
+.sc-tab:hover{border-color:var(--p);color:var(--p)}
+.sc-tab.on{background:var(--g1);color:#fff;border:none;box-shadow:0 0 16px rgba(108,99,255,.3)}
+.sc-intro{background:#FFF9F4;border:1px solid #EAD9C6;border-left:4px solid var(--p);border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:14px;line-height:1.7;color:#5A4A3A}
+.sc-intro b{color:#2A1F14}
+.sc-block{background:#FFFCF8;border:1px solid #EAD9C6;border-radius:14px;padding:18px 20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(160,110,60,.06)}
+.sc-block-title{font-family:'Prompt',sans-serif;font-size:16px;font-weight:700;color:#2A1F14;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.sc-block-sit{font-size:12.5px;color:#A09080;margin-bottom:14px;font-style:italic}
+.sc-line{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
+.sc-who{flex-shrink:0;width:64px;font-size:11px;font-weight:700;padding:4px 8px;border-radius:8px;text-align:center;line-height:1.3}
+.sc-who.cust{background:#F2EAE0;color:#8A7060}
+.sc-who.staff{background:rgba(108,99,255,.12);color:var(--p)}
+.sc-say{flex:1;font-size:13.5px;line-height:1.6;color:#3A2F24;padding-top:2px}
+.sc-say b{color:var(--p);font-weight:700}
+.sc-tip{background:rgba(0,201,167,.08);border:1px solid rgba(0,201,167,.25);border-radius:8px;padding:9px 13px;font-size:12.5px;margin-top:10px;color:#0A8A6A}
+.sc-tip b{color:#076B52}
+.sc-warn-line{background:rgba(255,179,71,.1);border:1px solid rgba(255,179,71,.3);border-radius:8px;padding:9px 13px;font-size:12.5px;margin-top:10px;color:#9A6A10}
 </style>
 </head>
 <body>
@@ -233,6 +253,7 @@ footer b{background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-col
     <button class="tab"     onclick="showPage('faq',this)">❓ FAQ</button>
     <button class="tab"     onclick="showPage('compare',this)">⚖️ เปรียบเทียบ</button>
     <button class="tab"     onclick="showPage('quiz',this)">🧠 แบบทดสอบ</button>
+    <button class="tab"     onclick="showPage('script',this)">💬 บทพูดขาย</button>
   </div>
 </nav>
 
@@ -361,6 +382,23 @@ footer b{background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-col
 </div>
 </div>
 
+
+<!-- ══════════════════════════ SALES SCRIPT ══════════════════════════ -->
+<div class="page" id="page-script">
+<div class="pg-wrap" style="max-width:1000px">
+  <div class="page-title"><span>บทพูดขาย</span> / Sales Script</div>
+  <div class="pg-desc" style="margin-bottom:18px">ตัวอย่างบทสนทนากับลูกค้าตามสถานการณ์ — ใช้เป็นแนวทาง ปรับให้เป็นธรรมชาติตามหน้างาน</div>
+
+  <div class="sc-tabs">
+    <button class="sc-tab on" onclick="showScript('open',this)">🤝 เปิดการขาย</button>
+    <button class="sc-tab" onclick="showScript('present',this)">💎 นำเสนอสินค้า</button>
+    <button class="sc-tab" onclick="showScript('object',this)">🛡️ รับมือข้อโต้แย้ง</button>
+    <button class="sc-tab" onclick="showScript('close',this)">✅ ปิดการขาย</button>
+  </div>
+  <div id="sc-content"></div>
+</div>
+</div>
+
 <footer>
   <p><b>Products Training Guide</b></p>
   <p style="margin-top:3px">27 Products · FAQ & Safety · Compare Tool · Interactive Quiz</p>
@@ -465,7 +503,7 @@ const FAQS=[
   {cat:"general", q:"ผลิตภัณฑ์เหล่านี้เป็นยาหรืออาหารเสริม?",
    a:"<b>อาหารเสริม</b> ไม่ใช่ยา ช่วยเสริมสุขภาพ ไม่ได้รักษาโรค ลูกค้าที่มีโรคประจำตัวควรแจ้งแพทย์ก่อน"},
   {cat:"safety", q:"หญิงตั้งครรภ์ทานได้ไหม?",
-   a:"<b>ไม่แนะนำ</b> สินค้าที่ห้ามใช้เด็ดขาด: Dabelite Kratom, Vigasil CBD, Duasil, Viago, Prosofil, Urofin, Protolite",
+   a:"<b>ไม่แนะนำ</b> สินค้าที่ห้ามใช้เด็ดขาด: Vigasil CBD, Duasil, Viago, Prosofil, Urofin, Protolite",
    danger:"ห้ามแนะนำสินค้ากลุ่ม Men Enhancement ให้สตรีโดยเด็ดขาด"},
   {cat:"safety", q:"เด็กทานได้ไหม?",
    a:"ออกแบบสำหรับ<b>ผู้ใหญ่อายุ 18 ปีขึ้นไป</b> ไม่แนะนำเด็ก"},
@@ -481,15 +519,12 @@ const FAQS=[
   {cat:"usage", q:"เก็บรักษาอย่างไร?",
    a:"เก็บ<b>อุณหภูมิห้อง &lt;30°C</b> หลีกเลี่ยงแสงแดดและความชื้น",
    ok:"Manuka Honey ปิดฝาแน่น ใช้ภายใน 6-12 เดือนหลังเปิด"},
-  {cat:"usage", q:"Tansonous Cream ใช้อย่างไร?",
-   a:"<b>ทาภายนอกเท่านั้น</b> วันละ 2-3 ครั้ง หลีกเลี่ยงแผลเปิดและดวงตา",
-   danger:"ห้ามรับประทาน"},
   {cat:"selling", q:'ลูกค้าบอก "ราคาแพง" ตอบอย่างไร?',
    a:"เน้น<b>คุณภาพสารสกัด Clinical Grade</b> เช่น Aquamin TG, UC-II Collagen และ cost per day เพียงวันละ 20-30 บาท",
    ok:"เสนอแพ็กเกจ 3 เดือน ประหยัดกว่าซื้อทีละกล่อง"},
   {cat:"selling", q:"สินค้าเหมาะกับผู้สูงอายุ?",
-   a:"Top 3: <b>Flexorin</b> (ข้อต่อ) · <b>Vistorin</b> (สายตา) · <b>Octavis</b> (หู)",
-   ok:"Bundle ขายดี: Flexorin + Vistorin + Octavis"},
+   a:"Top 3: <b>Flexorin</b> (ข้อต่อ) · <b>Vistorin</b> (สายตา) · <b>Cardilite</b> (หัวใจ/ความดัน)",
+   ok:"Bundle ขายดี: Flexorin + Vistorin + Cardilite"},
   {cat:"selling", q:"Upsell สินค้าใดร่วมกันดี?",
    a:"ข้อต่อ → Flexorin+Movita | ผู้ชาย → Viago+Protolite | ผิว → Cellarin+Melavita | Detox → Bactofin+Detarin",
    ok:"Bundle เพิ่ม basket size ได้ 40-80%"}
@@ -589,6 +624,7 @@ function showPage(name, btn) {
   if (name === 'compare') { buildCmp(); buildSymGrid(); }
   if (name === 'quiz')    startQuiz();
   if (name === 'faq')     showFaq('all', document.querySelector('.fcat.on'));
+  if (name === 'script')  showScript('open', document.querySelector('.sc-tab'));
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
@@ -869,11 +905,140 @@ function renderResult() {
 }
 
 // ── init ──────────────────────────────────────────────────────────────────────
+
+// ── Sales Scripts data ──────────────────────────────────────────────────────
+const SCRIPTS = {
+  open: {
+    intro: '<b>เป้าหมาย:</b> สร้างความไว้วางใจ และค้นหาความต้องการที่แท้จริงของลูกค้า อย่ารีบเสนอขายทันที — ถามก่อนเสมอ',
+    blocks: [
+      { title:'🤝 ทักทายและสร้างความสัมพันธ์', sit:'เมื่อลูกค้าเพิ่งติดต่อเข้ามา',
+        lines:[
+          {who:'staff', text:'สวัสดีค่ะ/ครับ ยินดีให้คำปรึกษาเรื่องสุขภาพนะคะ ไม่ทราบว่าวันนี้สนใจดูแลเรื่องไหนเป็นพิเศษคะ?'},
+          {who:'cust', text:'คือช่วงนี้รู้สึกปวดเข่าบ่อย เดินขึ้นบันไดแล้วเจ็บ'},
+          {who:'staff', text:'เข้าใจเลยค่ะ อาการแบบนี้รบกวนการใช้ชีวิตมากเลยนะคะ <b>ขอถามเพิ่มนิดนึงนะคะ</b> ปวดมานานหรือยังคะ แล้วเป็นข้างเดียวหรือทั้งสองข้างคะ?'},
+        ],
+        tip:'<b>เทคนิค:</b> ถามคำถามปลายเปิดเพื่อให้ลูกค้าเล่าอาการ ยิ่งรู้รายละเอียดมาก ยิ่งแนะนำสินค้าได้ตรงจุด'
+      },
+      { title:'🔍 ค้นหาความต้องการ', sit:'เจาะลึกอาการเพื่อแนะนำให้ตรง',
+        lines:[
+          {who:'staff', text:'ปกติคุณลูกค้าเคยทานอาหารเสริมบำรุงข้อมาก่อนไหมคะ?'},
+          {who:'cust', text:'ไม่เคยเลย ไม่รู้จะเริ่มยังไง'},
+          {who:'staff', text:'ไม่เป็นไรค่ะ เดี๋ยวแนะนำให้ค่ะ <b>สำหรับอาการปวดเข่าแบบที่เล่ามา</b> เรามีตัวที่ช่วยเรื่องน้ำหล่อเลี้ยงข้อและลดการเสียดสีโดยตรงเลยค่ะ'},
+        ],
+        tip:'<b>เทคนิค:</b> ใช้ภาษาที่ลูกค้าเข้าใจง่าย หลีกเลี่ยงศัพท์เทคนิคในช่วงเปิดการขาย'
+      },
+    ]
+  },
+  present: {
+    intro: '<b>เป้าหมาย:</b> นำเสนอสินค้าที่ตรงกับอาการ เน้น "ประโยชน์ที่ลูกค้าจะได้รับ" มากกว่าแค่ส่วนประกอบ',
+    blocks: [
+      { title:'💎 นำเสนอสินค้าตามอาการ', sit:'หลังจากรู้ความต้องการแล้ว',
+        lines:[
+          {who:'staff', text:'สำหรับอาการปวดเข่าเสื่อม แนะนำ <b>Flexorin</b> ค่ะ ตัวนี้มีสารสกัดที่ช่วยเพิ่มน้ำหล่อเลี้ยงข้อ ลดการอักเสบ และเสริมความแข็งแรงของกระดูกไปพร้อมกัน'},
+          {who:'cust', text:'มันต่างจากตัวอื่นยังไง?'},
+          {who:'staff', text:'คำถามดีมากค่ะ <b>Flexorin เด่นเรื่องเสริมมวลกระดูกและภูมิคุ้มกัน</b> เหมาะกับผู้สูงอายุ ส่วนถ้าเน้นลดปวดเฉียบพลันจะมี Vitago กับ Flexabon ค่ะ แต่จากอาการของคุณลูกค้า Flexorin ตอบโจทย์ที่สุดค่ะ'},
+        ],
+        tip:'<b>เทคนิค:</b> เปรียบเทียบให้เห็นภาพ แต่ชี้ชัดว่าตัวไหนเหมาะกับ "เขา" ที่สุด ลูกค้าจะรู้สึกว่าเราใส่ใจ'
+      },
+      { title:'📋 อธิบายวิธีทานและผลลัพธ์', sit:'สร้างความมั่นใจก่อนตัดสินใจ',
+        lines:[
+          {who:'staff', text:'ทานวันละ 1 แคปซูลหลังอาหารค่ะ ดื่มน้ำตามเยอะๆ นะคะ'},
+          {who:'cust', text:'กี่วันถึงจะเห็นผล?'},
+          {who:'staff', text:'โดยทั่วไป <b>ทานต่อเนื่อง 4-8 สัปดาห์</b>จะเริ่มรู้สึกถึงความเปลี่ยนแปลงค่ะ แนะนำทานต่อเนื่องอย่างน้อย 3 เดือนเพื่อผลลัพธ์ที่ดีและคงที่ค่ะ'},
+        ],
+        tip:'<b>เทคนิค:</b> ให้ความคาดหวังที่เป็นจริง อย่าสัญญาเกินจริง จะช่วยให้ลูกค้ากลับมาซื้อซ้ำ'
+      },
+    ]
+  },
+  object: {
+    intro: '<b>เป้าหมาย:</b> รับมือข้อโต้แย้งด้วยความเข้าใจ ไม่โต้เถียง ใช้เทคนิค "เห็นด้วย แล้วค่อยเสริม"',
+    blocks: [
+      { title:'💰 "ราคาแพงเกินไป"', sit:'ข้อโต้แย้งที่พบบ่อยที่สุด',
+        lines:[
+          {who:'cust', text:'ราคาสูงจังเลย ตัวอื่นถูกกว่านี้'},
+          {who:'staff', text:'เข้าใจค่ะ ราคาเป็นเรื่องสำคัญ <b>แต่ขอให้มองที่คุณภาพนะคะ</b> สินค้าของเราใช้สารสกัดเข้มข้นระดับงานวิจัยรองรับ ลองคิดเป็นต่อวันดูนะคะ ตกวันละ 20-30 บาท เท่ากาแฟแก้วเดียวเองค่ะ แต่ได้ดูแลสุขภาพระยะยาว'},
+        ],
+        tip:'<b>เทคนิค:</b> แตกราคาเป็น "ต่อวัน" ทำให้ตัวเลขดูเล็กลง และเทียบกับสิ่งที่ลูกค้าจ่ายอยู่แล้ว'
+      },
+      { title:'🤔 "ขอไปคิดดูก่อน"', sit:'ลูกค้าลังเล ยังไม่ตัดสินใจ',
+        lines:[
+          {who:'cust', text:'ขอกลับไปคิดดูก่อนนะ'},
+          {who:'staff', text:'ได้เลยค่ะ ไม่กดดันนะคะ <b>ขอถามนิดนึงได้ไหมคะ</b> มีตรงไหนที่ยังไม่มั่นใจหรือเปล่าคะ เผื่อช่วยให้ข้อมูลเพิ่มได้ค่ะ?'},
+          {who:'cust', text:'ก็กลัวว่าทานแล้วจะไม่ได้ผล'},
+          {who:'staff', text:'เข้าใจความกังวลนี้เลยค่ะ <b>แนะนำลองเริ่มจาก 1 กระปุกก่อนก็ได้ค่ะ</b> ทานให้ครบตามคำแนะนำแล้วสังเกตอาการ ถ้าดีขึ้นค่อยทานต่อเนื่องค่ะ'},
+        ],
+        tip:'<b>เทคนิค:</b> หา "ข้อโต้แย้งที่แท้จริง" ที่ซ่อนอยู่ คำว่า "ขอคิดดู" มักมีเหตุผลอื่นซ่อนอยู่เสมอ'
+      },
+      { title:'⚠️ "กลัวผลข้างเคียง"', sit:'ลูกค้ากังวลเรื่องความปลอดภัย',
+        lines:[
+          {who:'cust', text:'ทานแล้วจะมีผลข้างเคียงไหม?'},
+          {who:'staff', text:'เป็นห่วงเรื่องนี้ถูกต้องแล้วค่ะ <b>สินค้าเราเป็นอาหารเสริมจากธรรมชาติ ปลอดภัยเมื่อทานตามขนาด</b> ค่ะ แต่ถ้าคุณลูกค้ามีโรคประจำตัวหรือทานยาอยู่ แนะนำปรึกษาแพทย์ก่อนนะคะ เพื่อความสบายใจค่ะ'},
+        ],
+        warn:'<b>ห้าม:</b> อย่าบอกว่า "ไม่มีผลข้างเคียงแน่นอน 100%" — ให้ข้อมูลตามจริงและแนะนำปรึกษาแพทย์เมื่อจำเป็น'
+      },
+    ]
+  },
+  close: {
+    intro: '<b>เป้าหมาย:</b> ปิดการขายอย่างนุ่มนวล ไม่กดดัน เสนอทางเลือกที่ทำให้ลูกค้าตัดสินใจง่ายขึ้น',
+    blocks: [
+      { title:'✅ ปิดการขายแบบให้ทางเลือก', sit:'เมื่อลูกค้าเริ่มสนใจชัดเจน',
+        lines:[
+          {who:'staff', text:'คุณลูกค้าสะดวกรับแบบ <b>1 กระปุกลองก่อน</b> หรือ <b>แพ็กเกจ 3 เดือน</b>ที่คุ้มกว่าดีคะ?'},
+          {who:'cust', text:'แพ็กเกจ 3 เดือนต่างกันเยอะไหม?'},
+          {who:'staff', text:'แพ็กเกจ 3 เดือนคุ้มกว่าเยอะค่ะ <b>เฉลี่ยถูกลงต่อกระปุก</b> แถมได้ทานต่อเนื่องเห็นผลชัดด้วยค่ะ ส่วนใหญ่ลูกค้าที่จริงจังเรื่องสุขภาพจะเลือกตัวนี้ค่ะ'},
+        ],
+        tip:'<b>เทคนิค:</b> เสนอ 2 ทางเลือก (ไม่ใช่ซื้อ/ไม่ซื้อ) ลูกค้าจะโฟกัสที่ "เลือกอันไหน" แทน "ซื้อดีไหม"'
+      },
+      { title:'🎁 ปิดการขายด้วย Bundle', sit:'เพิ่มยอดด้วยสินค้าเสริม',
+        lines:[
+          {who:'staff', text:'ถ้าคุณลูกค้าดูแลเรื่องข้อเข่าอยู่แล้ว <b>แนะนำเสริม Movita คู่กันค่ะ</b> ตัวนึงดูแลข้อต่อ อีกตัวเสริมมวลกระดูก ทำงานเสริมกันพอดีเลยค่ะ'},
+          {who:'cust', text:'จำเป็นต้องทานคู่กันไหม?'},
+          {who:'staff', text:'ไม่จำเป็นค่ะ แต่ถ้าทานคู่กันจะดูแลได้ครบวงจรกว่า <b>หลายท่านที่อายุ 50+ นิยมทานคู่กันค่ะ</b> เดี๋ยวจัดให้เป็นชุดเลยไหมคะ?'},
+        ],
+        tip:'<b>เทคนิค:</b> เสนอ bundle ที่ "เสริมกัน" อย่างมีเหตุผล ไม่ใช่ยัดขาย ลูกค้าจะรู้สึกว่าได้คำแนะนำที่ดี'
+      },
+      { title:'🔁 ปิดการขายเพื่อซื้อซ้ำ', sit:'สร้างลูกค้าประจำ',
+        lines:[
+          {who:'staff', text:'พอทานหมดกระปุกแล้ว <b>ทักมาได้เลยนะคะ</b> เดี๋ยวช่วยติดตามผลให้ค่ะ ว่าอาการดีขึ้นแค่ไหน จะได้ปรับให้เหมาะสมค่ะ'},
+        ],
+        tip:'<b>เทคนิค:</b> การติดตามผลหลังการขายสร้างความประทับใจ และเปิดโอกาสขายซ้ำตามธรรมชาติ'
+      },
+    ]
+  }
+};
+
+function showScript(key, btn) {
+  document.querySelectorAll('.sc-tab').forEach(t => t.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  const d = SCRIPTS[key];
+  if (!d) return;
+  let html = `<div class="sc-intro">${d.intro}</div>`;
+  d.blocks.forEach(b => {
+    html += `<div class="sc-block">
+      <div class="sc-block-title">${b.title}</div>
+      <div class="sc-block-sit">สถานการณ์: ${b.sit}</div>`;
+    b.lines.forEach(l => {
+      const cls = l.who === 'staff' ? 'staff' : 'cust';
+      const label = l.who === 'staff' ? 'พนักงาน' : 'ลูกค้า';
+      html += `<div class="sc-line">
+        <span class="sc-who ${cls}">${label}</span>
+        <span class="sc-say">${l.text}</span>
+      </div>`;
+    });
+    if (b.tip)  html += `<div class="sc-tip">💡 ${b.tip}</div>`;
+    if (b.warn) html += `<div class="sc-warn-line">⚠️ ${b.warn}</div>`;
+    html += `</div>`;
+  });
+  document.getElementById('sc-content').innerHTML = html;
+}
+
+
 document.getElementById('hc-img').src = IMGS.hc_photo || '';
 document.getElementById('me-img').src = IMGS.me_photo || '';
 document.getElementById('bt-img').src = IMGS.beauty_photo || '';
 buildSections();
 applyF();
+showScript('open', document.querySelector('.sc-tab'));
 </script>
 </body>
 </html>
