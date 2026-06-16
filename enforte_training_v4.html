@@ -635,6 +635,7 @@ function buildSections() {
       cont.appendChild(sd);
       const grid = document.createElement('div');
       grid.className = 'pgrid'; grid.id = 'grid-' + k;
+      grid.dataset.cat = p.category; grid.dataset.sub = p.sub; grid.dataset.seckey = k;
       cont.appendChild(grid);
     }
     document.getElementById('grid-' + k).insertAdjacentHTML('beforeend', buildCard(p));
@@ -656,12 +657,15 @@ function applyF() {
     card.classList.toggle('hide', !show);
     if (show) { vis++; const k=p.category+'_'+p.sub; sc[k]=(sc[k]||0)+1; }
   });
-  document.querySelectorAll('#pcont > [data-seckey], #pcont > .pgrid').forEach(el => {
-    const k = el.dataset.seckey || el.id.replace('grid-','');
-    const show = (curF === 'all' || el.dataset.cat === curF) && (sc[k]||0) > 0;
-    el.style.display = show ? '' : 'none';
+  // Show/hide each section header + its grid based on whether it has visible cards
+  document.querySelectorAll('#pcont > [data-seckey]').forEach(el => {
+    const k = el.dataset.seckey;
+    const hasVisible = (sc[k] || 0) > 0;
+    el.style.display = hasVisible ? '' : 'none';
+    const grid = document.getElementById('grid-' + k);
+    if (grid) grid.style.display = hasVisible ? '' : 'none';
     const cnt = document.getElementById('sc-' + k);
-    if (cnt) cnt.textContent = (sc[k]||0) + ' ผลิตภัณฑ์';
+    if (cnt) cnt.textContent = (sc[k] || 0) + ' ผลิตภัณฑ์';
   });
   document.getElementById('rcnt').textContent = vis + ' ผลิตภัณฑ์';
 }
