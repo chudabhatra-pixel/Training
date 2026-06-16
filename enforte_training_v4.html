@@ -46,10 +46,9 @@ nav{background:#FDF8F2;border-bottom:1px solid #E8D8C4;box-shadow:0 1px 10px rgb
 .hero-title{font-size:clamp(34px,6vw,68px);font-weight:800;line-height:1;margin-bottom:6px}
 .hero-title .g{background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero-sub{font-size:15px;color:#4A4A6A;margin:14px auto 32px;max-width:500px}
-.hero-nums{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:36px}
-.hnum{background:#FFF9F4;border:1px solid #E8D8C4;box-shadow:0 2px 8px rgba(160,110,60,.1);border-radius:var(--r);padding:14px 22px;text-align:center}
-.hnum-n{font-size:30px;font-weight:800;background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
-.hnum-l{font-size:10px;color:#9090B0;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+
+
 .cat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:860px;margin:0 auto}
 .cat-card{border-radius:var(--r);overflow:hidden;cursor:pointer;border:1px solid #DDD0BC;box-shadow:0 4px 16px rgba(160,110,60,.1);transition:transform .2s,border-color .2s,box-shadow .2s}
 .cat-card:hover{transform:translateY(-3px);border-color:rgba(108,99,255,.4)}
@@ -218,8 +217,7 @@ footer b{background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-col
   .pgrid{grid-template-columns:1fr}
   .dp-bens{grid-template-columns:1fr}
   .bens{grid-template-columns:1fr}
-  .hero-nums{gap:8px}
-  .wrap{padding:16px}
+    .wrap{padding:16px}
   .pg-wrap{padding:20px 14px}
   .sym-grid{grid-template-columns:repeat(auto-fill,minmax(115px,1fr))}
 }
@@ -247,12 +245,6 @@ footer b{background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-col
     <div class="hero-tag">Official Training Guide</div>
     <div class="hero-title"><span class="g">PRODUCTS</span><br><span style="color:#fff">TRAINING</span></div>
     <p class="hero-sub">คู่มือฝึกอบรมผลิตภัณฑ์ — เรียนรู้ เปรียบเทียบ และทดสอบความรู้</p>
-    <div class="hero-nums">
-      <div class="hnum"><div class="hnum-n">31</div><div class="hnum-l">ผลิตภัณฑ์</div></div>
-      <div class="hnum"><div class="hnum-n">3</div><div class="hnum-l">หมวดหมู่</div></div>
-      <div class="hnum"><div class="hnum-n">10</div><div class="hnum-l">กลุ่มสุขภาพ</div></div>
-      <div class="hnum"><div class="hnum-n">4</div><div class="hnum-l">โมดูล</div></div>
-    </div>
     <div class="cat-row">
       <div class="cat-card" onclick="flt('hc')" style="border-top:4px solid #6C63FF">
         <img id="hc-img" src="" alt="HC"><div class="cat-body"><div class="cat-name">HC Healthcare</div><div class="cat-info">19 ผลิตภัณฑ์</div></div>
