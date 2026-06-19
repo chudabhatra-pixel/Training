@@ -134,13 +134,27 @@
         <div class="dept-compare" id="deptCompare"></div>
         <div class="legend"><span><i style="background:#0c7359"></i> Average score (%)</span><span><i style="background:#5BC2A6"></i> Pass rate (%)</span></div>
       </div>
-      <div class="card gap-panel">
-        <div class="gap-flag">⚑ Focus area</div>
-        <div class="section-head" style="margin-bottom:6px"><span class="section-num">05</span><span class="section-title">Knowledge Gap Analysis</span></div>
-        <p class="sub">Average score by topic — topics below the line need training first</p>
-        <div id="gapRows"></div>
-        <div class="gap-callout"><span>💡</span><div>Recommended refresher training for: <b id="gapTrain">—</b></div></div>
+      <div class="card panel">
+        <div class="section-head" style="margin-bottom:6px"><span class="section-num">03</span><span class="section-title">Ranking by Position</span></div>
+        <p class="sub">Average score by Senior / Intermediate / Agent</p>
+        <table id="teamTbl"><thead><tr><th style="width:48px">#</th><th>Position</th><th class="num">Count</th><th class="num">Avg Score</th><th class="num">Pass Rate</th></tr></thead><tbody></tbody></table>
       </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="card panel">
+      <div class="section-head" style="margin-bottom:6px"><span class="section-num">04</span><span class="section-title">Individual Ranking</span></div>
+      <p class="sub">Top 20 highest scores</p>
+      <div class="scroll-tbl"><table id="topTbl"><thead><tr><th style="width:48px">#</th><th>TMS · Name</th><th>Dept</th><th class="num">Score</th><th style="width:40px">Grade</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="card gap-panel">
+      <div class="gap-flag">⚑ Focus area</div>
+      <div class="section-head" style="margin-bottom:6px"><span class="section-num">05</span><span class="section-title">Knowledge Gap Analysis</span></div>
+      <p class="sub">Average score by topic — topics below the line need training first</p>
+      <div id="gapRows"></div>
+      <div class="gap-callout"><span>💡</span><div>Recommended refresher training for: <b id="gapTrain">—</b></div></div>
     </div>
   </section>
   <section class="section">
@@ -150,24 +164,10 @@
     </div>
   </section>
   <section class="section">
-    <div class="row2">
-      <div class="card panel">
-        <div class="section-head" style="margin-bottom:6px"><span class="section-num">03</span><span class="section-title">Ranking by Position</span></div>
-        <p class="sub">Average score by Senior / Intermediate / Agent</p>
-        <table id="teamTbl"><thead><tr><th style="width:48px">#</th><th>Position</th><th class="num">Count</th><th class="num">Avg Score</th><th class="num">Pass Rate</th></tr></thead><tbody></tbody></table>
-      </div>
-      <div class="card panel">
-        <div class="section-head" style="margin-bottom:6px"><span class="section-num">04</span><span class="section-title">Individual Ranking</span></div>
-        <p class="sub">Top 20 highest scores</p>
-        <div class="scroll-tbl"><table id="topTbl"><thead><tr><th style="width:48px">#</th><th>TMS · Name</th><th>Dept</th><th class="num">Score</th><th style="width:40px">Grade</th></tr></thead><tbody></tbody></table></div>
-      </div>
-    </div>
-  </section>
-  <section class="section">
     <div class="card panel">
       <div class="section-head" style="margin-bottom:6px"><span class="section-num">07</span><span class="section-title">High-Risk Employees</span><span class="section-desc">Below 70% passing — recommend IDP / retake</span></div>
       <div class="risk-head" style="margin-bottom:10px"><span class="risk-count" id="riskCount">0</span><span style="font-size:13px;color:var(--muted)">employees to monitor (lowest score first)</span></div>
-      <div class="scroll-tbl"><table id="riskTbl"><thead><tr><th>TMS · Name</th><th>Dept</th><th>Position</th><th>Weakest Topic</th><th class="num">Score</th><th style="width:40px">Grade</th></tr></thead><tbody></tbody></table></div>
+      <div class="scroll-tbl"><table id="riskTbl"><thead><tr><th>Name</th><th>Dept</th><th>Position</th><th>Weakest Topic</th><th class="num">Score</th><th style="width:40px">Grade</th></tr></thead><tbody></tbody></table></div>
     </div>
   </section>
 </main>
