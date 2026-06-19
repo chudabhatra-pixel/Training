@@ -223,9 +223,17 @@ function colIndex(headers,...keys){
 function buildLiveEMP(jsonText){
   const rows=JSON.parse(jsonText);
   if(!rows||!rows.length) throw new Error('empty');
+  // normalize keys: trim whitespace from all keys and values
+  const clean=rows.map(row=>{
+    const obj={};
+    Object.keys(row).forEach(k=>{ obj[k.trim()]=typeof row[k]==='string'?row[k].trim():row[k]; });
+    return obj;
+  });
   const byTms={};
-  rows.forEach(row=>{
-    const tms=(row['TMS']||row['tms']||'').trim().toLowerCase();
+  clean.forEach(row=>{
+    // find TMS key flexibly
+    const tmsKey=Object.keys(row).find(k=>k.toLowerCase().includes('tms'));
+    const tms=tmsKey?(row[tmsKey]||'').toLowerCase().trim():'';
     if(tms) byTms[tms]=row;
   });
   return ROSTER.map(([name,tms,p,d])=>{
@@ -234,14 +242,13 @@ function buildLiveEMP(jsonText){
     if(!row) return {name,tms,dept,position,pcode:p,scores:{},overall:null,status:'pending'};
     const scores={};let ok=true;
     TOPICS.forEach(t=>{
-      const key=t.key.charAt(0).toUpperCase()+t.key.slice(1);
-      const raw=parseFloat(row[key]||row[t.key]||'');
-      if(isNaN(raw)){ok=false;return;}
-      // raw คือจำนวนข้อที่ถูก (0-20) ไม่ใช่ %
+      // find matching key case-insensitively
+      const key=Object.keys(row).find(k=>k.toLowerCase()===t.key.toLowerCase());
+      const raw=parseFloat(key?row[key]:'');
+      if(isNaN(raw)||raw===0&&key===undefined){ok=false;return;}
       scores[t.key]=clamp(r0(raw/PART_MAX[t.key]*100),0,100);
     });
     if(!ok) return {name,tms,dept,position,pcode:p,scores:{},overall:null,status:'pending'};
-    // คำนวณ weighted total จากคะแนนรายส่วน (ไม่ใช้ Total field จาก Form)
     const overall=r0(TOPICS.reduce((s,t)=>s+scores[t.key]*t.w,0));
     return {name,tms,dept,position,pcode:p,scores,overall,status:'done'};
   });
