@@ -500,6 +500,21 @@ $('submitBtn').addEventListener('click',()=>{
   $('submitMsg').textContent='คะแนนถูกส่งเข้า Google Sheet แล้ว — Dashboard จะอัปเดตให้อัตโนมัติ';
   setTimeout(()=>show('s-result'),1200);
 });
+
+// Event delegation for confirm overlay
+document.addEventListener('click',function(e){
+  var t=e.target;
+  if(!t)return;
+  if(t.id==='confirmOk'){
+    document.getElementById('confirmOverlay').classList.remove('show');
+    if(_pendingChoice>=0)commitAnswer(_pendingChoice);
+    _pendingChoice=-1;
+  } else if(t.id==='confirmCancel'||t.id==='confirmOverlay'){
+    document.getElementById('confirmOverlay').classList.remove('show');
+    _pendingChoice=-1;
+    document.querySelectorAll('.choice').forEach(function(b){b.style.borderColor='';b.style.background='';});
+  }
+});
 </script>
 
 <div class="confirm-overlay" id="confirmOverlay">
