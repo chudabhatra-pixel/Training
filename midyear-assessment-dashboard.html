@@ -312,7 +312,7 @@ function aggregate(filter){
   const risk=[...done].filter(e=>e.overall<70).sort((a,b)=>a.overall-b.overall);
   return {pool,done,avg:r0(avg),passed,failed,pending,topicAvg,buckets,groups,depts,top20,risk,totalPool:pool.length};
 }
-function fillColor(v){return v<70?'var(--risk)':v<80?'var(--amber)':v<90?'#5BC2A6':'var(--gooddeep)';}
+
 function render(filter){
   const d=aggregate(filter);
   const kpi=[
