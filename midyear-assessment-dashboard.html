@@ -351,6 +351,12 @@ function render(filter){
   }).join(''):`<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No employees below passing in this group ✓</td></tr>`;
 }
 document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render(b.dataset.f);});
+document.addEventListener('DOMContentLoaded',()=>{
+  const mc=document.getElementById('modalClose');
+  const mb=document.getElementById('modalBg');
+  if(mc) mc.addEventListener('click',()=>mb.classList.remove('open'));
+  if(mb) mb.addEventListener('click',e=>{if(e.target===mb)mb.classList.remove('open');});
+});
 document.getElementById('asof').textContent=new Date().toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'});
 
 
@@ -411,8 +417,6 @@ function openModal(idx){
   }
   document.getElementById('modalBg').classList.add('open');
 }
-document.getElementById('modalClose').addEventListener('click',()=>document.getElementById('modalBg').classList.remove('open'));
-document.getElementById('modalBg').addEventListener('click',e=>{if(e.target===document.getElementById('modalBg'))document.getElementById('modalBg').classList.remove('open');});
 let currentFilter='all';
 const _origFilterHandler=document.getElementById('filters');
 // track active filter (re-bind to capture into currentFilter)
