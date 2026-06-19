@@ -86,6 +86,16 @@
   .subjbox{margin:16px 0}
   .subjbox textarea{width:100%;min-height:80px;padding:11px 13px;border:1px solid var(--bdr);border-radius:10px;font-family:'Sarabun';font-size:14px;resize:vertical;background:#fff}
   .subjbox .ql{font-size:13.5px;font-weight:600;margin:12px 0 6px;color:var(--txt)}
+
+  .confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;align-items:center;justify-content:center}
+  .confirm-overlay.show{display:flex}
+  .confirm-box{background:#fff;border-radius:16px;padding:24px;max-width:320px;width:90%;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.2)}
+  .confirm-box p{font-size:15px;font-weight:600;margin-bottom:6px}
+  .confirm-box .sub{font-size:13px;color:var(--txt2);margin-bottom:20px}
+  .confirm-btns{display:flex;gap:10px}
+  .confirm-btns button{flex:1;padding:12px;border:none;border-radius:10px;font-family:'Prompt',sans-serif;font-weight:700;font-size:14px;cursor:pointer}
+  .btn-confirm{background:var(--g1);color:#fff}
+  .btn-cancel{background:#F0EDE8;color:var(--txt2)}
   .muted{font-size:12px;color:var(--txt3);text-align:center;margin-top:10px}
   .topgap{margin-top:10px}
 </style>
@@ -260,7 +270,36 @@ const BANK=[
 {p:'role',team:'Resell',q:'ลูกค้าบอก "ของยังเหลืออยู่" CIT ควรทำอย่างไร?',c:['ตื๊อให้ซื้อเดี๋ยวนี้','สอบถามปริมาณคงเหลือ แล้วนัดติดตาม/เสนอซ้ำให้พอดีช่วงของใกล้หมด','วางสาย','ตัดออกจากลิสต์'],a:1,e:'จับจังหวะ re-order ให้พอดีตอนของใกล้หมด เพิ่มโอกาสขายต่อเนื่อง'},
 {p:'role',team:'Resell',type:'sjt',scenario:'ลูกค้าทาน Protolite มา 1 เดือน ปัสสาวะกลางคืนลดลง 1 ครั้ง แต่ถาม CIT ว่า "มีอะไรช่วยให้รู้สึก energetic กว่านี้ไหม"',q:'CIT ควรตอบอย่างไร?',c:['เสนอ Duasil ทันทีเพราะเป็น Bundle คู่กัน','ถามก่อน: นอนหลับดีไหม? ออกกำลังกายบ้างไหม? → ถ้า lifestyle ปกติ Duasil เป็นทางเลือกที่สมเหตุสำหรับ energy+สมรรถภาพ — อธิบายกลไกก่อนเสนอ','บอกว่า Protolite เพียงพอแล้ว','เสนอ Diafin แทน'],a:1,e:'ฟัง lifestyle ก่อน → ถ้าเหมาะ Duasil เป็นทางเลือกที่มีเหตุผล แต่ไม่ใช่ push Bundle โดยอัตโนมัติ'},
 {p:'role',team:'Resell',type:'sjt',scenario:'ลูกค้า CIT คนหนึ่งซื้อซ้ำมาแล้ว 4 ครั้ง แต่ครั้งนี้บอกว่า "งบตึง ขอหยุดก่อนได้ไหม"',q:'CIT ควรตอบอย่างไร?',c:['กดดันให้ซื้อเพราะเป็นลูกค้าเก่า','รับฟัง ไม่กดดัน → อาจเสนอ option เล็กลง (ปริมาณน้อยกว่าปกติ) หรือนัด follow up เดือนหน้า — รักษาความสัมพันธ์ไว้ดีกว่าบังคับขาย','บอกว่าถ้าหยุดจะเสียผลทั้งหมด','วางสายทันที'],a:1,e:'ลูกค้าที่รู้สึกถูกเคารพจะกลับมา — รักษา LTV ระยะยาวสำคัญกว่ายอดขายครั้งเดียว'},
-{p:'role',team:'Resell',type:'sjt',scenario:'CIT โทรหาลูกค้าที่ซื้อครั้งแรกไป 3 สัปดาห์ ลูกค้าไม่รับสาย 2 ครั้ง ครั้งที่ 3 รับแต่บอกว่า "อย่าโทรมาอีกนะ ไม่สนใจแล้ว"',q:'ควรทำอย่างไร?',c:['โทรซ้ำต่อไปเพราะยังอยู่ในลิสต์','ขอโทษที่รบกวน บันทึกสถานะว่าลูกค้าไม่ต้องการติดต่อ และหยุดโทรทันที — เคารพสิทธิ์ลูกค้า','อ้างว่าต้องโทรตามกระบวนการ','โอนให้หัวหน้าโทรแทน'],a:1,e:'เมื่อลูกค้าขอไม่ให้ติดต่อ ต้องหยุดทันที — การโทรซ้ำหลังจากนี้อาจผิดกฎ PDPA และจริยธรรม'}
+{p:'role',team:'Resell',type:'sjt',scenario:'CIT โทรหาลูกค้าที่ซื้อครั้งแรกไป 3 สัปดาห์ ลูกค้าไม่รับสาย 2 ครั้ง ครั้งที่ 3 รับแต่บอกว่า "อย่าโทรมาอีกนะ ไม่สนใจแล้ว"',q:'ควรทำอย่างไร?',c:['โทรซ้ำต่อไปเพราะยังอยู่ในลิสต์','ขอโทษที่รบกวน บันทึกสถานะว่าลูกค้าไม่ต้องการติดต่อ และหยุดโทรทันที — เคารพสิทธิ์ลูกค้า','อ้างว่าต้องโทรตามกระบวนการ','โอนให้หัวหน้าโทรแทน'],a:1,e:'เมื่อลูกค้าขอไม่ให้ติดต่อ ต้องหยุดทันที — การโทรซ้ำหลังจากนี้อาจผิดกฎ PDPA และจริยธรรม'},
+{p:'product',type:'sjt',scenario:'ลูกค้าถามว่า "Movita กับ Flexabon ซื้อตัวเดียวพอไหม?"',q:'ควรตอบอย่างไร?',c:['เหมือนกันซื้อตัวไหนก็ได้','Movita เน้น BMD/กระดูกพรุน Flexabon เน้นข้อฝืด/กระดูกอ่อน ขึ้นอยู่กับปัญหาหลักของลูกค้า','ซื้อทั้งคู่เสมอ','ไม่สำคัญ'],a:1,e:'เลือกตามปัญหาหลัก: กระดูกพรุน→Movita, ข้อฝืดแข็ง→Flexabon'},
+{p:'product',q:'Pilonix มีบทบาทอะไรใน Bundle กับ Fitarin?',c:['บำรุงสายตา','Detox+ลดการอักเสบลำไส้ เสริม Fitarin ที่เผาผลาญ','เพิ่มฮอร์โมนผู้ชาย','ลดความดัน'],a:1,e:'Pilonix = Detox+Anti-inflammation (ลำไส้) / Fitarin = Burn+Control (เผาผลาญ+ลดความอยาก)'},
+{p:'product',type:'sjt',scenario:'ลูกค้าเพิ่งเริ่มทาน Vistorin 3 สัปดาห์ บอกว่า "ยังไม่รู้สึกต่าง"',q:'อธิบายอย่างไร?',c:['บอกว่าสินค้าไม่ได้ผล','อธิบายว่า Vistorin เน้นป้องกัน/ชะลอ ไม่ใช่เห็นผลทันที ต้องทานต่อเนื่องควบคู่กับลดเวลาหน้าจอ','เสนอเปลี่ยนสินค้าทันที','การันตีว่าอีก 1 สัปดาห์จะเห็นผล'],a:1,e:'Vistorin = Protect (ป้องกัน) ไม่ใช่ยาแก้ฉับพลัน ต้องตั้งความคาดหวังที่ถูกต้อง'},
+{p:'product',q:'Bactofin อยู่ในกลุ่มใดและทำงานอย่างไร?',c:['กลุ่มผิว ลดฝ้า','กลุ่มดีท็อกซ์/ปรับสมดุลลำไส้ ลดการอักเสบในระบบทางเดินอาหาร','กลุ่มสายตา','กลุ่มข้อ/กระดูก'],a:1,e:'Bactofin = Gut Balance & Detox ปรับสมดุลจุลินทรีย์ ลดการอักเสบในลำไส้'},
+{p:'product',type:'sjt',scenario:'ลูกค้ามีฝ้า ถามว่า Melavita กับ Fitarin ต่างกันอย่างไร',q:'ควรอธิบายว่า?',c:['เหมือนกัน ซื้อตัวไหนก็ได้','Melavita ลดเม็ดสี Melanin (ผิวใส) / Fitarin ควบคุมเผาผลาญ (ลดน้ำหนัก) — คนละ concern','ใช้คู่กันเสมอ ไม่ต้องอธิบาย','บอกให้ซื้อทั้งคู่เพราะราคาถูก'],a:1,e:'เลือกตาม concern: ต้องการผิวใส→Melavita, ต้องการลดน้ำหนัก→Fitarin'},
+{p:'product',q:'ลูกค้าถามว่า "ทาน Manuka Honey แทน Movita ได้ไหม?" ควรตอบอย่างไร?',c:['ได้เลยทดแทนกันได้','ไม่ได้ — Manuka ช่วยลดการอักเสบ/เสริมภูมิ ส่วน Movita บำรุงกระดูก/ข้อโดยตรง คนละบทบาท','Manuka ดีกว่า Movita','ไม่รู้'],a:1,e:'Manuka = Booster (เสริม) ไม่ใช่ตัวหลักสำหรับกระดูก — ไม่สามารถทดแทน Movita ได้'},
+{p:'product',type:'sjt',scenario:'ลูกค้าทาน Diafin + ยาหมอ ถามว่าควรทานเวลาเดียวกันไหม',q:'ควรแนะนำอย่างไร?',c:['ทานพร้อมกันได้เลย','แนะนำให้เว้นช่วงอย่างน้อย 1-2 ชั่วโมง และปรึกษาแพทย์เพื่อความปลอดภัย','หยุดยาหมอแล้วทาน Diafin แทน','ไม่ต้องสนใจ'],a:1,e:'ห้ามแนะนำหยุดยาแพทย์ เว้นช่วงเวลาและปรึกษาแพทย์เสมอ'},
+{p:'product',q:'Henofin ดูแลเรื่องใดหลักในกลุ่มริดสีดวง?',c:['ลดน้ำตาล','ซ่อมหลอดเลือด/ลดการอักเสบเส้นเลือดดำ','บำรุงสายตา','เพิ่มสมรรถภาพ'],a:1,e:'Henofin = Vascular Repair ซ่อมหลอดเลือด ลดการอักเสบ — เหมาะริดสีดวง/ปัญหาเส้นเลือด'},
+{p:'sales',type:'sjt',scenario:'ลูกค้าบอกว่าเคยซื้ออาหารเสริมมาแล้ว 3 แบรนด์ ไม่เห็นผล',q:'ควรเปิดการสนทนาอย่างไร?',c:['บอกว่าแบรนด์อื่นไม่ดี','รับฟัง ถามว่าทานนานแค่ไหน/สม่ำเสมอไหม แล้วอธิบายว่าผลขึ้นอยู่กับความต่อเนื่อง','เสนอขายทันที','บอกว่าของเราการันตีแน่นอน'],a:1,e:'acknowledge → เข้าใจ context → อธิบายด้วยข้อมูล ไม่โจมตีแบรนด์อื่นและไม่การันตี'},
+{p:'sales',type:'sjt',scenario:'ลูกค้าสนใจ Flexvits แต่บอกว่า "ขอดูความเห็นรีวิวก่อน"',q:'ควรตอบอย่างไร?',c:['บอกว่ารีวิวทั้งหมดเป็นบวก','สนับสนุน — แนะนำดูรีวิวได้ และเสนอข้อมูลสินค้าเพิ่มเติมที่ชัดเจน เพื่อให้ตัดสินใจได้ดีขึ้น','กดดันให้ตัดสินใจเดี๋ยวนี้','บอกว่าไม่ต้องดูรีวิว'],a:1,e:'เคารพกระบวนการตัดสินใจ + ให้ข้อมูลที่ถูกต้อง = สร้างความเชื่อมั่นระยะยาว'},
+{p:'sales',type:'sjt',scenario:'ลูกค้าถามว่า "ถ้าทานแล้วไม่เห็นผลจะคืนเงินได้ไหม"',q:'ควรตอบอย่างไร?',c:['รับประกันคืนเงินทันที','อธิบายนโยบายบริษัทที่แท้จริง และชี้แจงว่าผลขึ้นอยู่กับความสม่ำเสมอและร่างกายแต่ละคน','บอกว่าคืนได้แน่นอน','เพิกเฉย'],a:1,e:'ห้ามสัญญาเกินนโยบาย — ให้ข้อมูลจริงและตั้งความคาดหวังที่ถูกต้อง'},
+{p:'sales',type:'sjt',scenario:'หลังปิดออเดอร์แล้ว ลูกค้าถามเพิ่มว่า "มีโปรอะไรบ้าง"',q:'ควรทำอย่างไร?',c:['บอกว่าหมดโปรแล้ว','แจ้งโปรโมชั่นที่มีจริงอย่างซื่อสัตย์ และถามว่าอยากเพิ่มอะไรในออเดอร์นี้ไหม','เพิ่มสินค้าเข้าออเดอร์โดยไม่ถาม','แกล้งทำเป็นไม่ได้ยิน'],a:1,e:'แจ้งข้อมูลจริง + ถามก่อนเพิ่ม = โปร่งใสและสร้างความไว้วางใจ'},
+{p:'sales',type:'sjt',scenario:'ลูกค้าพูดวนซ้ำว่า "ขอให้แม่ตัดสินใจก่อน"',q:'ควรทำอย่างไร?',c:['กดดันให้ตัดสินใจเอง','รับฟัง + ถามว่าสะดวกให้โทรกลับหลังคุยกับแม่ได้เมื่อไหร่ + ส่งข้อมูลสรุปสั้นให้','โทรตามทุกวันจนกว่าจะซื้อ','ตัดออกจากลิสต์'],a:1,e:'เคารพกระบวนการตัดสินใจ → นัดติดตาม → ไม่กดดัน = โอกาสปิดสูงกว่า'},
+{p:'communication',type:'sjt',scenario:'ลูกค้าพูดสำเนียงภาษาถิ่น ฟังไม่ชัดเจนบางคำ',q:'ควรทำอย่างไร?',c:['พูดทับไปเรื่อยๆ','ขอโทษสุภาพแล้วขอให้พูดซ้ำหรือยืนยันสิ่งที่ได้ยิน เช่น "ขอโทษนะคะ เข้าใจว่า... ถูกต้องไหมคะ"','ทำเป็นเข้าใจแล้วขายต่อ','วางสาย'],a:1,e:'ขอยืนยันอย่างสุภาพ ดีกว่าเข้าใจผิดแล้วส่งของผิด/ออเดอร์ผิด'},
+{p:'communication',type:'sjt',scenario:'โทรหาลูกค้าแล้วมีเสียงดังมากในฉากหลัง ลูกค้าบอก "คุยได้นะ"',q:'ควรทำอย่างไร?',c:['คุยต่อไปเหมือนปกติ','ถามว่าสะดวกคุยตอนนี้จริงไหม หรืออยากนัดเวลาที่เงียบกว่านี้ — ลูกค้าจะได้ฟังข้อมูลได้ดีกว่า','รีบปิดออเดอร์ให้เร็ว','วางสาย'],a:1,e:'สภาพแวดล้อมไม่เอื้อ = โอกาสปิดน้อย การนัดใหม่ได้ผลดีกว่า'},
+{p:'communication',type:'sjt',scenario:'ลูกค้าถามคำถามที่คุณไม่แน่ใจคำตอบ',q:'ควรทำอย่างไร?',c:['ตอบมั่วๆ ไปก่อน','บอกตามตรงว่าไม่แน่ใจ จะตรวจสอบและโทรกลับพร้อมข้อมูลที่ถูกต้อง','บอกว่าไม่รู้แล้วเปลี่ยนเรื่อง','โกหกเพื่อปิดออเดอร์'],a:1,e:'ความซื่อสัตย์ + follow-up = สร้างความไว้ใจระยะยาว ดีกว่าตอบผิดแล้วเสียลูกค้า'},
+{p:'communication',type:'sjt',scenario:'หลังส่งของถึงแล้ว ลูกค้าโทรมาบอกว่าได้ของผิด',q:'ควรตอบและทำอย่างไร?',c:['บอกว่าเป็นความผิดลูกค้า','ขอโทษ รับฟัง บันทึกข้อมูล และประสานงานแก้ไขให้ทันที','วางสาย','บอกให้รอ'],a:1,e:'ปัญหาหลังการขาย = โอกาสสร้าง loyalty — แก้ไขทันทีโดยไม่โทษลูกค้า'},
+{p:'compliance',type:'spot',scenario:'สคริปต์: "Flexvits ทำให้ข้อเข่าหายเจ็บใน 2 สัปดาห์ ลองดูเลยค่ะ"',q:'ปัญหาของข้อความนี้คือ?',c:['ไม่มีปัญหา','ระบุระยะเวลาผลลัพธ์ที่ชัดเจน "2 สัปดาห์" = over-claim / การันตีผล ผิดกฎ','ผิดแค่คำว่า "ลองดู"','ผิดแค่ชื่อสินค้า'],a:1,e:'ห้ามการันตีระยะเวลาหรือผลลัพธ์ที่ชัดเจน — แต่ละคนตอบสนองต่างกัน'},
+{p:'compliance',type:'spot',scenario:'สคริปต์: "ซื้อเลยค่ะ ของมีจำนวนจำกัด วันนี้วันสุดท้ายโปรนี้" (ทั้งที่โปรไม่ได้หมด)',q:'ปัญหาคือ?',c:['ไม่มีปัญหา เป็นเทคนิคขาย','สร้าง false urgency ด้วยข้อมูลเท็จ = ผิดจริยธรรม และอาจผิดกฎหมาย','ผิดแค่เรื่องราคา','ผิดแค่คำว่าวันสุดท้าย'],a:1,e:'Fake scarcity = ผิดจริยธรรม สร้างแรงกดดันด้วยข้อมูลเท็จ ไม่ยั่งยืนและเสียความไว้ใจ'},
+{p:'compliance',type:'sjt',scenario:'ลูกค้าถามว่า "ขอให้แนะนำขนาดยาหมอเพิ่มเติมด้วย"',q:'ควรทำอย่างไร?',c:['แนะนำขนาดยาตามที่คิดว่าถูก','ปฏิเสธสุภาพ — แนะนำให้ปรึกษาแพทย์/เภสัชกรโดยตรง เพราะพนักงานขายไม่มีความสามารถทางการแพทย์','เดาขนาดยา','บอกให้ทานเยอะๆ จะได้ผลเร็ว'],a:1,e:'การแนะนำขนาดยา = ปฏิบัติการทางการแพทย์โดยไม่มีใบอนุญาต — ต้องส่งต่อผู้เชี่ยวชาญเสมอ'},
+{p:'compliance',type:'spot',scenario:'สคริปต์: "ผลิตภัณฑ์เราผ่าน อย. แล้ว แปลว่าปลอดภัย 100% ทุกคน"',q:'ปัญหาคือ?',c:['ไม่มีปัญหา','ผ่าน อย. ≠ ปลอดภัย 100% ทุกคน — กลุ่มเปราะบาง (ตั้งครรภ์/โรคประจำตัว/แพ้) ยังต้องระวัง','ผิดแค่คำว่า 100%','ผิดแค่ที่กล่าวถึง อย.'],a:1,e:'อย. รับรองมาตรฐาน ไม่ใช่รับรองว่าเหมาะกับทุกคน 100% ห้ามอ้างเกินจริง'},
+{p:'role',team:'Fresh',type:'sjt',scenario:'ลูกค้า Fresh ที่ลงทะเบียนมาสนใจ Movita ถามว่า "แล้วถ้าทานไปแล้วไม่เห็นผลต้องซื้อต่อไหม"',q:'ควรตอบอย่างไร?',c:['บอกว่าต้องซื้อต่อเสมอ','อธิบายว่าผลขึ้นอยู่กับร่างกายแต่ละคน แนะนำทานครบ Set ก่อนประเมิน ไม่บังคับ','การันตีว่าเห็นผล 100%','บอกว่าถ้าไม่เห็นผลคืนเงิน'],a:1,e:'ตั้งความคาดหวังที่ถูกต้อง + ไม่บังคับ = ลูกค้าตัดสินใจด้วยข้อมูลจริง'},
+{p:'role',team:'Fresh',type:'sjt',scenario:'ลูกค้าบอกว่า "เพื่อนซื้อ Movita แล้วบอกว่าไม่ดี"',q:'ควรตอบอย่างไร?',c:['โจมตีว่าเพื่อนเข้าใจผิด','รับฟัง ถามว่าเพื่อนทานนานแค่ไหน/ทานสม่ำเสมอไหม แล้วอธิบายว่าผลขึ้นอยู่กับความต่อเนื่อง','บอกว่าเพื่อนโกหก','เปลี่ยนเรื่องทันที'],a:1,e:'ไม่โจมตีผู้อื่น — อธิบายด้วยข้อมูลและความเข้าใจ'},
+{p:'role',team:'Fresh',type:'sjt',scenario:'Fresh กำลังคุยกับลูกค้าที่ลงทะเบียนสินค้ากลุ่มข้อ แต่ลูกค้าเริ่มถามเรื่องน้ำหนัก',q:'ควรทำอย่างไร?',c:['เสนอ Fitarin ทันที','โฟกัสสินค้าที่ลงทะเบียนก่อน แนะนำให้ลงทะเบียนสินค้ากลุ่มน้ำหนักเพิ่มเติมผ่านช่องทางปกติ','ขาย Fitarin เพิ่มเพราะ AOV สูงขึ้น','ปฏิเสธไม่คุยเรื่องน้ำหนักเลย'],a:1,e:'Fresh โฟกัสสินค้าที่ลงทะเบียน — ความต้องการอื่นแนะนำช่องทางที่ถูกต้อง'},
+{p:'role',team:'Fresh',type:'sjt',scenario:'ลูกค้ายืนยันออเดอร์แล้วบอกว่า "แต่ฉันต้องการให้ส่งด่วน ได้ไหม"',q:'ควรทำอย่างไร?',c:['รับปากว่าส่งด่วนได้แน่นอน','แจ้งระยะเวลาจัดส่งตามจริง ถ้ามีบริการส่งด่วนให้แจ้ง ถ้าไม่มีให้แจ้งตรงๆ อย่าสัญญาเกินที่ทำได้','บอกว่าส่งด่วนทุกออเดอร์','เพิกเฉย'],a:1,e:'ห้ามสัญญาเกินความสามารถ — แจ้งข้อมูลจริง รักษา DR และความน่าเชื่อถือ'},
+{p:'role',team:'Resell',type:'sjt',scenario:'ลูกค้า CIT ทานมา 2 เดือน บอกว่า "พอใจมาก อยากแนะนำเพื่อน"',q:'CIT ควรทำอย่างไร?',c:['ขอบคุณแล้ววางสาย','ขอบคุณ + ถามว่าอยากให้โทรหาเพื่อนหรือส่งข้อมูลให้เองได้เลย + เสนอ set ต่อไปให้ลูกค้าด้วย','ขอเบอร์เพื่อนทันทีโดยไม่ถาม','ไม่ทำอะไรเพิ่ม'],a:1,e:'ลูกค้าพอใจ = โอกาสทั้ง referral และ re-order — ทำอย่างสุภาพและได้รับอนุญาต'},
+{p:'role',team:'Resell',type:'sjt',scenario:'ลูกค้า CIT เพิ่งทานครบ 1 เดือน ของกำลังจะหมด',q:'CIT ควรจัดการอย่างไร?',c:['รอให้ลูกค้าโทรมาเอง','โทร proactive ถามผลการทาน + แจ้งว่าของกำลังจะหมด + เสนอสั่งต่อเนื่อง','ส่งของไปเลยโดยไม่ถาม','โทรแค่ถามว่าจะซื้อไหม'],a:1,e:'Proactive follow-up ตอนของใกล้หมด = โอกาส re-order สูงที่สุด'},
+{p:'role',team:'Resell',type:'sjt',scenario:'ลูกค้า CIT บอกว่า "ทานแล้วปวดท้อง"',q:'CIT ควรทำอย่างไร?',c:['บอกว่าปกติ ทานต่อไป','รับฟัง ถามรายละเอียด (ทานตอนไหน/ท้องว่างไหม) + แนะนำทานหลังอาหาร + ถ้าอาการไม่ดีขึ้นให้พบแพทย์','เพิ่มปริมาณ','บอกว่าไม่เกี่ยวกับสินค้า'],a:1,e:'ผลข้างเคียง = ต้องรับฟังจริงจัง แก้วิธีทาน + แนะนำพบแพทย์ถ้าไม่ดีขึ้น'},
+{p:'role',team:'Resell',type:'sjt',scenario:'ลูกค้า CIT โทรมาบอกว่า "อยากเปลี่ยนที่อยู่จัดส่ง"',q:'ควรทำอย่างไร?',c:['บอกว่าเปลี่ยนไม่ได้','รับข้อมูลที่อยู่ใหม่ ยืนยันซ้ำ และอัพเดทในระบบทันที','บันทึกแต่ไม่อัพเดทระบบ','โอนให้แผนกอื่น'],a:1,e:'อัพเดทข้อมูลทันทีและยืนยันซ้ำ = ลด RTO และสร้างความมั่นใจ'}
 ];
 /* subjective (manager-graded) by team */
 const SUBJ={
@@ -285,7 +324,18 @@ function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.re
 /* ---- TMS lookup: auto-fill nickname + team, block if already taken ---- */
 function parseCSV(t){const rows=[];let i=0,f='',row=[],q=false;while(i<t.length){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}else{if(c==='"')q=true;else if(c===','){row.push(f);f='';}else if(c==='\n'){row.push(f);rows.push(row);row=[];f='';}else if(c!=='\r')f+=c;}i++;}if(f.length||row.length){row.push(f);rows.push(row);}return rows;}
 const TAKEN=new Set();
-async function loadTaken(){if(!EXAM_CSV_URL)return;try{const res=await fetch(EXAM_CSV_URL+'?_t='+Date.now());if(!res.ok)return;const rows=JSON.parse(await res.text());if(!rows||!rows.length)return;rows.forEach(row=>{const t=(row['TMS']||row['tms']||'').trim().toLowerCase();if(t)TAKEN.add(t);});lookupTMS();}catch(e){}}
+let _takenLoaded=false;
+async function loadTaken(){
+  if(!EXAM_CSV_URL){_takenLoaded=true;return;}
+  try{
+    const res=await fetch(EXAM_CSV_URL+'?_t='+Date.now());
+    if(!res.ok){_takenLoaded=true;lookupTMS();return;}
+    const rows=JSON.parse(await res.text());
+    if(rows&&rows.length) rows.forEach(row=>{const t=(row['TMS']||row['tms']||'').trim().toLowerCase();if(t)TAKEN.add(t);});
+  }catch(e){}
+  _takenLoaded=true;
+  lookupTMS();
+}
 const tmsMsg=()=> $('tmsMsg');
 let lookupOk=false;
 function setTeamUI(team){document.querySelectorAll('#teamtog button').forEach(x=>{x.classList.remove('on');x.style.pointerEvents='none';x.style.opacity=team?'1':'.55';});if(team){const b=document.querySelector('#teamtog button[data-team="'+team+'"]');if(b){b.classList.add('on');b.style.opacity='1';}}}
@@ -293,6 +343,8 @@ function msg(show,color,html){const m=$('tmsMsg');m.style.display=show?'block':'
 function lookupTMS(){
   const code=$('i-tms').value.trim().toLowerCase();
   lookupOk=false;user.team='';user.fname='';$('i-fname').value='';$('i-nick').value='';
+  if(!code){msg(false);setTeamUI('');$('startBtn').disabled=true;return;}
+  if(!_takenLoaded){msg(true,'#637488','⏳ Checking exam records...');$('startBtn').disabled=true;return;}
   if(!code){msg(false);setTeamUI('');$('startBtn').disabled=true;return;}
   const rec=ROSTER_MAP[code];
   if(!rec){msg(true,'#E0556B','ไม่พบรหัส TMS นี้ในระบบ');setTeamUI('');$('startBtn').disabled=true;return;}
@@ -308,11 +360,21 @@ loadTaken();
 
 /* build exam: all product/sales/comm/compliance + role for chosen team, shuffle choices */
 function buildExam(){
-  let qs=BANK.filter(q=>q.p!=='role'||q.team===user.team);
-  // order parts: product, sales, comm, compliance, role
+  // สุ่มข้อสอบจาก bank ครบทุกหมวด
+  const targets={product:20,sales:12,communication:8,compliance:10,role:10};
+  const pools={};
+  Object.keys(targets).forEach(k=>{
+    pools[k]=BANK.filter(q=>q.p===k&&(k!=='role'||q.team===user.team));
+  });
+  let selected=[];
+  Object.entries(targets).forEach(([part,n])=>{
+    const pool=shuffle([...pools[part]]);
+    selected.push(...pool.slice(0,n));
+  });
+  // shuffle คำตอบแต่ละข้อ แต่คงลำดับหมวด
   const order={product:0,sales:1,communication:2,compliance:3,role:4};
-  qs.sort((a,b)=>order[a.p]-order[b.p]);
-  exam=qs.map(q=>{
+  selected.sort((a,b)=>order[a.p]-order[b.p]);
+  exam=selected.map(q=>{
     const choices=q.c.map((t,i)=>({t,correct:i===q.a}));
     return {...q, sc:shuffle(choices)};
   });
@@ -346,12 +408,29 @@ function renderQ(){
   document.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>answer(+b.dataset.i)));
 }
 
+let _pendingChoice=-1;
 function answer(i){
-  if(answered)return;answered=true;
+  if(answered)return;
+  const q=exam[idx];
+  const chosen=q.sc[i];
+  // highlight selected temporarily
+  document.querySelectorAll('.choice').forEach((b,bi)=>{
+    b.style.borderColor=bi===i?'var(--p)':'';
+    b.style.background=bi===i?'rgba(108,99,255,.07)':'';
+  });
+  _pendingChoice=i;
+  // show confirm overlay
+  $('confirmText').textContent='ยืนยันคำตอบนี้?';
+  $('confirmSub').textContent=chosen.t.substring(0,60)+(chosen.t.length>60?'...':'');
+  $('confirmOverlay').classList.add('show');
+}
+function commitAnswer(i){
+  $('confirmOverlay').classList.remove('show');
+  answered=true;
   const q=exam[idx];const chosen=q.sc[i];const correct=chosen.correct;
   picked.push({part:q.p,correct});
   document.querySelectorAll('.choice').forEach((b,bi)=>{
-    b.disabled=true;
+    b.disabled=true;b.style.borderColor='';b.style.background='';
     if(q.sc[bi].correct)b.classList.add('correct');
     else if(bi===i&&!correct)b.classList.add('wrong');
   });
@@ -422,5 +501,16 @@ $('submitBtn').addEventListener('click',()=>{
   setTimeout(()=>show('s-result'),1200);
 });
 </script>
+
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <p id="confirmText">ยืนยันคำตอบ?</p>
+    <div class="sub" id="confirmSub">—</div>
+    <div class="confirm-btns">
+      <button class="btn-cancel" id="confirmCancel">เปลี่ยนใหม่</button>
+      <button class="btn-confirm" id="confirmOk">ยืนยัน ✓</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
