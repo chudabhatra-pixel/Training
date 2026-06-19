@@ -183,7 +183,7 @@ const TOPICS=[{key:'product',label:'Product Knowledge',short:'Product',w:0.30,ba
 /* ===== DATA SOURCE CONFIG =====
    วาง URL ของ Google Sheet ที่ Publish เป็น CSV ตรงนี้ (ดูวิธีในไฟล์ SETUP)
    ปล่อยว่าง = ใช้ข้อมูลตัวอย่าง (sample) */
-const CSV_URL = 'https://script.google.com/macros/s/AKfycbxfKEUt70SUn74tMmiUNuB-IvHo7LzBA4O1FulODR-PtsCoPvxwwUU-PyqUkWHyaj8o/exec';            // เช่น 'https://docs.google.com/spreadsheets/d/e/XXXX/pub?gid=0&single=true&output=csv'
+const CSV_URL = 'https://script.google.com/macros/s/AKfycbyZDRLo8Gup98LM6hBUxvk8d6m1_g66FtlwrWlC2QeIWZycRjVhFa6aiMGXnIaD6fav/exec';            // เช่น 'https://docs.google.com/spreadsheets/d/e/XXXX/pub?gid=0&single=true&output=csv'
 const AUTO_REFRESH_SEC = 60;   // รีเฟรชอัตโนมัติทุกกี่วินาที (0 = ปิด)
 // จำนวนข้อเต็มต่อส่วน (ใช้แปลงคะแนนดิบ→%) ต้องตรงกับข้อสอบ
 const PART_MAX={product:20,sales:12,communication:8,compliance:10,role:10};
@@ -197,6 +197,7 @@ function buildSampleEMP(){
     const dept=DEPT[d],position=POS[p];
     const deptB=d==='F'?5:-5,ability=gauss(0,6);
     const scores={};TOPICS.forEach(t=>{scores[t.key]=clamp(r0(t.base+deptB+posBonus[p]+ability+gauss(0,5)),25,100);});
+    // คำนวณ weighted total จากคะแนนรายส่วน (ไม่ใช้ Total field จาก Form)
     const overall=r0(TOPICS.reduce((s,t)=>s+scores[t.key]*t.w,0));
     return {name,tms,dept,position,pcode:p,scores,overall,status:'done'};
   });
@@ -236,9 +237,11 @@ function buildLiveEMP(jsonText){
       const key=t.key.charAt(0).toUpperCase()+t.key.slice(1);
       const raw=parseFloat(row[key]||row[t.key]||'');
       if(isNaN(raw)){ok=false;return;}
+      // raw คือจำนวนข้อที่ถูก (0-20) ไม่ใช่ %
       scores[t.key]=clamp(r0(raw/PART_MAX[t.key]*100),0,100);
     });
     if(!ok) return {name,tms,dept,position,pcode:p,scores:{},overall:null,status:'pending'};
+    // คำนวณ weighted total จากคะแนนรายส่วน (ไม่ใช้ Total field จาก Form)
     const overall=r0(TOPICS.reduce((s,t)=>s+scores[t.key]*t.w,0));
     return {name,tms,dept,position,pcode:p,scores,overall,status:'done'};
   });
