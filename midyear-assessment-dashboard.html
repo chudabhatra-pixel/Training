@@ -99,6 +99,32 @@
   footer{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,48px) 48px;color:var(--muted);font-size:12.5px}
   footer .note{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px;line-height:1.7}
   footer code{background:#EEF2F6;border-radius:5px;padding:1px 6px;font-size:12px;font-family:'Space Grotesk',monospace}
+
+  /* All employees table */
+  .search-bar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .search-bar input{flex:1;min-width:180px;padding:9px 13px;border:1px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;outline:none}
+  .search-bar input:focus{border-color:var(--fresh)}
+  .search-bar select{padding:9px 13px;border:1px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;outline:none;background:#fff;cursor:pointer}
+  .all-tbl-wrap{max-height:480px;overflow:auto}
+  .all-tbl-wrap thead th{position:sticky;top:0;background:var(--surface);z-index:2}
+  tr.clickable{cursor:pointer;transition:.12s}
+  tr.clickable:hover td{background:#F4F9F6}
+
+  /* Modal */
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center}
+  .modal-bg.open{display:flex}
+  .modal{background:#fff;border-radius:18px;padding:28px 28px 24px;max-width:520px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative;max-height:90vh;overflow-y:auto}
+  .modal-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1}
+  .modal h2{font-family:'Space Grotesk';font-size:20px;font-weight:700;margin-bottom:4px}
+  .modal .meta{font-size:13px;color:var(--muted);margin-bottom:20px}
+  .modal .big-score{font-family:'Space Grotesk';font-size:52px;font-weight:800;line-height:1;text-align:center;margin:10px 0 4px}
+  .modal .big-grade{text-align:center;margin-bottom:20px}
+  .modal .part-row{display:grid;grid-template-columns:130px 1fr 46px;align-items:center;gap:10px;margin:8px 0}
+  .modal .part-label{font-size:13px;font-weight:500;color:var(--txt2)}
+  .modal .part-track{height:20px;background:#EEF2F6;border-radius:6px;overflow:hidden}
+  .modal .part-fill{height:100%;border-radius:6px}
+  .modal .part-val{font-family:'Space Grotesk';font-weight:700;font-size:13px;text-align:right}
+  .modal .weak-box{background:#FFF8EC;border:1px solid #F2E2BD;border-radius:10px;padding:12px 14px;font-size:13.5px;margin-top:16px}
   @media(max-width:980px){.kpi-grid{grid-template-columns:repeat(3,1fr)}.row2{grid-template-columns:1fr}}
   @media(max-width:620px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.gap-row{grid-template-columns:120px 1fr 42px}.section-desc{display:none}}
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -143,9 +169,19 @@
   </section>
   <section class="section">
     <div class="card panel">
-      <div class="section-head" style="margin-bottom:6px"><span class="section-num">04</span><span class="section-title">Individual Ranking</span></div>
-      <p class="sub">Top 20 highest scores</p>
-      <div class="scroll-tbl"><table id="topTbl"><thead><tr><th style="width:48px">#</th><th>TMS · Name</th><th>Dept</th><th class="num">Score</th><th style="width:40px">Grade</th></tr></thead><tbody></tbody></table></div>
+      <div class="section-head" style="margin-bottom:6px"><span class="section-num">04</span><span class="section-title">All Employees</span><span class="section-desc">Click any row to view individual breakdown</span></div>
+      <div class="search-bar">
+        <input id="empSearch" placeholder="Search name or TMS..." oninput="filterTable()">
+        <select id="empDept" onchange="filterTable()"><option value="">All Departments</option><option value="Fresh">Fresh</option><option value="Resell">Resell</option></select>
+        <select id="empStatus" onchange="filterTable()"><option value="">All Status</option><option value="done">Completed</option><option value="pending">Pending</option></select>
+      </div>
+      <div class="all-tbl-wrap">
+        <table id="allTbl">
+          <thead><tr><th style="width:40px">#</th><th>TMS · Name</th><th>Dept</th><th>Position</th><th class="num">Score</th><th style="width:40px">Grade</th><th style="width:70px">Status</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:10px" id="empCount"></div>
     </div>
   </section>
   <section class="section">
@@ -305,10 +341,9 @@ function render(filter){
     const rc=i===0?'r1':i===1?'r2':i===2?'r3':'';
     return `<tr><td><span class="rank ${rc}">${i+1}</span></td><td style="font-weight:600">${t.name}</td><td class="num">${t.n}</td><td class="num">${t.avg}%</td><td class="num">${t.pass}%</td></tr>`;
   }).join('');
-  document.querySelector('#topTbl tbody').innerHTML=d.top20.map((e,i)=>{
-    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'',g=gradeOf(e.overall);
-    return `<tr><td><span class="rank ${rc}">${i+1}</span></td><td><span class="num" style="color:var(--ink);margin-right:8px">${e.tms}</span>${e.name}</td><td><span class="tag ${e.dept.toLowerCase()}">${e.dept}</span></td><td class="num">${e.overall}</td><td><span class="grade g${g}">${g}</span></td></tr>`;
-  }).join('');
+  // All employees table
+  window._allEMP=[...d.done,...d.pool.filter(e=>e.status==='pending')].sort((a,b)=>(b.overall||0)-(a.overall||0));
+  renderAllTable(window._allEMP);
   document.getElementById('riskCount').textContent=d.risk.length;
   document.querySelector('#riskTbl tbody').innerHTML=d.risk.length?d.risk.map(e=>{
     const g=gradeOf(e.overall);
@@ -318,6 +353,66 @@ function render(filter){
 document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render(b.dataset.f);});
 document.getElementById('asof').textContent=new Date().toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'});
 
+
+function fillColor(v){return v<70?'var(--risk)':v<80?'var(--amber)':v<90?'#5BC2A6':'var(--gooddeep)';}
+function renderAllTable(list){
+  const tbody=document.querySelector('#allTbl tbody');
+  tbody.innerHTML=list.map((e,i)=>{
+    const g=e.overall!==null?gradeOf(e.overall):'—';
+    const scoreStr=e.overall!==null?e.overall+'%':'—';
+    const statusBadge=e.status==='done'?'<span style="font-size:11px;color:var(--fresh);font-weight:600">✓ Done</span>':'<span style="font-size:11px;color:var(--amber);font-weight:600">Pending</span>';
+    const gBadge=e.overall!==null?`<span class="grade g${g}">${g}</span>`:'<span class="grade" style="background:#eee;color:#aaa">—</span>';
+    return `<tr class="clickable" onclick="openModal(${i})" data-idx="${i}">
+      <td style="color:var(--muted);font-size:12px">${i+1}</td>
+      <td><span class="num" style="color:var(--muted);font-size:12px;margin-right:7px">${e.tms}</span><b>${e.name}</b></td>
+      <td><span class="tag ${e.dept.toLowerCase()}">${e.dept}</span></td>
+      <td style="font-size:12px;color:var(--muted)">${e.position.replace(' Call Center Agent','')}</td>
+      <td class="num" style="color:${e.overall!==null?fillColor(e.overall):'var(--muted)'};font-weight:700">${scoreStr}</td>
+      <td>${gBadge}</td>
+      <td>${statusBadge}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('empCount').textContent=`Showing ${list.length} employees`;
+}
+function filterTable(){
+  const q=(document.getElementById('empSearch').value||'').toLowerCase();
+  const dept=document.getElementById('empDept').value;
+  const status=document.getElementById('empStatus').value;
+  const list=(window._allEMP||[]).filter(e=>{
+    const matchQ=!q||(e.name.toLowerCase().includes(q)||e.tms.toLowerCase().includes(q));
+    const matchD=!dept||e.dept===dept;
+    const matchS=!status||e.status===status;
+    return matchQ&&matchD&&matchS;
+  });
+  renderAllTable(list);
+}
+function openModal(idx){
+  const e=(window._allEMP||[])[idx];
+  if(!e)return;
+  const g=e.overall!==null?gradeOf(e.overall):'—';
+  document.getElementById('mName').textContent=e.name+' ('+e.tms+')';
+  document.getElementById('mMeta').textContent=e.dept+' · '+e.position;
+  document.getElementById('mScore').textContent=e.overall!==null?e.overall+'%':'Not taken';
+  document.getElementById('mScore').style.color=e.overall!==null?fillColor(e.overall):'var(--muted)';
+  const gc={'A':'#0F8A6B','B':'#5BC2A6','C':'#E0A82E','D':'#EB9A5C','F':'#D64545'};
+  document.getElementById('mGrade').innerHTML=e.overall!==null?`<span class="grade g${g}" style="width:36px;height:36px;font-size:18px">${g}</span>`:'';
+  const PARTS=[{key:'product',label:'Product Knowledge',n:20},{key:'sales',label:'Sales Technique',n:12},{key:'communication',label:'Communication',n:8},{key:'compliance',label:'Compliance & QA',n:10},{key:'role',label:'Role KPI',n:10}];
+  document.getElementById('mParts').innerHTML=e.scores&&Object.keys(e.scores).length?PARTS.map(p=>{
+    const v=e.scores[p.key]||0;
+    const raw=Math.round(v/100*p.n);
+    return `<div class="part-row"><div class="part-label">${p.label}</div><div class="part-track"><div class="part-fill" style="width:${v}%;background:${fillColor(v)}"></div></div><div class="part-val" style="color:${fillColor(v)}">${raw}/${p.n}</div></div>`;
+  }).join(''):'<div style="color:var(--muted);font-size:13px;text-align:center;padding:12px">No score data yet</div>';
+  if(e.scores&&Object.keys(e.scores).length){
+    const weakKey=Object.entries(e.scores).sort((a,b)=>a[1]-b[1])[0];
+    const weakPart=PARTS.find(p=>p.key===weakKey[0]);
+    document.getElementById('mWeak').innerHTML=`💡 <b>Weakest topic:</b> ${weakPart?weakPart.label:weakKey[0]} (${weakKey[1]}%) — recommend focused review`;
+  } else {
+    document.getElementById('mWeak').innerHTML='Employee has not completed the exam yet.';
+  }
+  document.getElementById('modalBg').classList.add('open');
+}
+document.getElementById('modalClose').addEventListener('click',()=>document.getElementById('modalBg').classList.remove('open'));
+document.getElementById('modalBg').addEventListener('click',e=>{if(e.target===document.getElementById('modalBg'))document.getElementById('modalBg').classList.remove('open');});
 let currentFilter='all';
 const _origFilterHandler=document.getElementById('filters');
 // track active filter (re-bind to capture into currentFilter)
@@ -348,5 +443,18 @@ async function loadData(){
 loadData();
 if(AUTO_REFRESH_SEC>0 && CSV_URL) setInterval(loadData,AUTO_REFRESH_SEC*1000);
 </script>
+
+<!-- Individual Score Modal -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <h2 id="mName">—</h2>
+    <div class="meta" id="mMeta">—</div>
+    <div class="big-score" id="mScore">—</div>
+    <div class="big-grade" id="mGrade"></div>
+    <div id="mParts"></div>
+    <div class="weak-box" id="mWeak"></div>
+  </div>
+</div>
 </body>
 </html>
