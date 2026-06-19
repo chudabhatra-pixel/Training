@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mid-Year Knowledge Assessment 2026 — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F6F9;--surface:#FFFFFF;--ink:#16242F;--muted:#637488;--line:#E4E9F0;
+    --fresh:#0F8A6B;--resell:#E8743B;--risk:#D64545;--amber:#E0A82E;--good:#0F8A6B;--gooddeep:#0A5E49;--accent:#16242F;
+    --shadow:0 1px 2px rgba(16,36,47,.04),0 8px 24px rgba(16,36,47,.05);--radius:14px;
+    font-family:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .num{font-family:'Space Grotesk','Inter',sans-serif;font-feature-settings:"tnum";letter-spacing:-.01em}
+  header{background:var(--accent);color:#fff;padding:26px clamp(16px,4vw,48px) 0;position:relative;overflow:hidden}
+  header::after{content:"";position:absolute;right:-80px;top:-80px;width:320px;height:320px;background:radial-gradient(circle,rgba(15,138,107,.35),transparent 70%);pointer-events:none}
+  .head-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
+  .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#7FE3C6;font-weight:600}
+  h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(24px,3.4vw,34px);font-weight:700;margin-top:6px;line-height:1.1}
+  .head-sub{color:#A9B8C6;font-size:14px;margin-top:8px;max-width:600px}
+  .asof{text-align:right;color:#A9B8C6;font-size:13px}
+  .asof strong{color:#fff;display:block;font-size:15px}
+  .filters{display:flex;gap:8px;margin-top:24px;position:relative;z-index:2}
+  .filters button{font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:rgba(255,255,255,.08);color:#cdd9e3;border:1px solid rgba(255,255,255,.14);padding:10px 20px;border-radius:10px 10px 0 0;border-bottom:none;transition:.18s}
+  .filters button:hover{background:rgba(255,255,255,.16);color:#fff}
+  .filters button.active{background:var(--bg);color:var(--ink)}
+  .filters button .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:middle}
+  main{padding:clamp(16px,3vw,32px) clamp(16px,4vw,48px) 64px;max-width:1240px;margin:0 auto}
+  .section{margin-top:38px}
+  .section-head{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
+  .section-num{font-family:'Space Grotesk';font-size:13px;font-weight:700;color:var(--fresh);border:1.5px solid var(--fresh);border-radius:6px;padding:2px 8px;flex:none}
+  .section-title{font-size:18px;font-weight:700}
+  .section-desc{font-size:13px;color:var(--muted);margin-left:auto;text-align:right}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+  .kpi{padding:18px 18px 16px;position:relative;overflow:hidden}
+  .kpi .label{font-size:12.5px;color:var(--muted);font-weight:500}
+  .kpi .val{font-family:'Space Grotesk';font-size:30px;font-weight:700;margin-top:8px;line-height:1}
+  .kpi .meta{font-size:12px;color:var(--muted);margin-top:6px}
+  .kpi.accent-bar::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--fresh)}
+  .kpi.k-pass::before{background:var(--good)}.kpi.k-fail::before{background:var(--risk)}.kpi.k-pending::before{background:var(--amber)}
+  .kpi .val.pass{color:var(--gooddeep)}.kpi .val.fail{color:var(--risk)}.kpi .val.pend{color:#B9851A}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .panel{padding:20px 22px}
+  .panel h3{font-size:15px;font-weight:700;margin-bottom:4px}
+  .panel .sub{font-size:12.5px;color:var(--muted);margin-bottom:18px}
+  .dept-compare{display:flex;gap:28px;align-items:flex-end;height:230px;padding:0 8px}
+  .dept-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;height:100%;justify-content:flex-end}
+  .bars{display:flex;gap:14px;align-items:flex-end;height:100%;width:100%;justify-content:center}
+  .bar-wrap{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;width:46px}
+  .bar{width:100%;border-radius:7px 7px 0 0;position:relative;transition:height .6s cubic-bezier(.2,.7,.2,1);min-height:3px}
+  .bar .bv{position:absolute;top:-21px;left:50%;transform:translateX(-50%);font-family:'Space Grotesk';font-size:13px;font-weight:700;white-space:nowrap}
+  .bar.score{background:linear-gradient(180deg,var(--fresh),#0c7359)}
+  .bar.pass{background:linear-gradient(180deg,#5BC2A6,#3aa085)}
+  .dept-label{font-weight:700;font-size:14px}
+  .dept-label .pill{font-size:11px;font-weight:600;color:#fff;border-radius:20px;padding:2px 9px;margin-left:6px;vertical-align:middle}
+  .legend{display:flex;gap:18px;font-size:12.5px;color:var(--muted);margin-top:18px;flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .gap-panel{padding:22px 24px;position:relative}
+  .gap-flag{position:absolute;top:22px;right:24px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--risk);background:#FCEDED;border:1px solid #F4C9C9;padding:4px 10px;border-radius:20px}
+  .gap-row{display:grid;grid-template-columns:160px 1fr 50px;align-items:center;gap:14px;margin:13px 0}
+  .gap-name{font-size:13.5px;font-weight:500;text-align:right}
+  .gap-track{position:relative;height:26px;background:#F0F3F7;border-radius:7px;overflow:hidden}
+  .gap-fill{height:100%;border-radius:7px;transition:width .7s cubic-bezier(.2,.7,.2,1)}
+  .gap-val{font-family:'Space Grotesk';font-weight:700;font-size:14px}
+  .threshold{position:absolute;top:-6px;bottom:-6px;width:0;border-left:2px dashed #98a6b6;z-index:3}
+  .threshold span{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:10.5px;color:var(--muted);white-space:nowrap;font-weight:600}
+  .gap-callout{margin-top:20px;background:#FFF8EC;border:1px solid #F2E2BD;border-radius:10px;padding:14px 16px;font-size:13.5px;display:flex;gap:10px}
+  .gap-callout b{color:#9A6B00}
+  .hist{display:flex;align-items:flex-end;gap:14px;height:200px;padding:0 6px}
+  .hist-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:8px}
+  .hist-bar{width:100%;max-width:64px;border-radius:7px 7px 0 0;position:relative;transition:height .6s ease;min-height:3px}
+  .hist-bar .hv{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-family:'Space Grotesk';font-weight:700;font-size:13px}
+  .hist-x{font-size:12px;color:var(--muted);text-align:center}
+  .hist-x b{display:block;color:var(--ink);font-weight:700;font-size:12.5px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{text-align:left;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+  td{padding:9px 10px;border-bottom:1px solid #EEF1F5}
+  tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right;font-family:'Space Grotesk';font-weight:600}
+  .rank{display:inline-flex;width:24px;height:24px;border-radius:7px;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:700;font-size:12.5px;background:#EEF2F6;color:var(--muted)}
+  .rank.r1{background:#E8743B;color:#fff}.rank.r2{background:#0F8A6B;color:#fff}.rank.r3{background:#3aa085;color:#fff}
+  .tag{font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:20px;display:inline-block}
+  .tag.fresh{background:#E4F4EF;color:#0c7359}.tag.resell{background:#FCEEE5;color:#C25A26}
+  .pos{font-size:11px;color:var(--muted)}
+  .grade{font-family:'Space Grotesk';font-weight:700;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;font-size:12.5px}
+  .gA{background:#0F8A6B;color:#fff}.gB{background:#5BC2A6;color:#06392c}.gC{background:#E0A82E;color:#3a2c00}.gD{background:#EB9A5C;color:#3a1e00}.gF{background:#D64545;color:#fff}
+  .scroll-tbl{max-height:340px;overflow:auto}
+  .scroll-tbl thead th{position:sticky;top:0;background:var(--surface);z-index:2}
+  .risk-head{display:flex;align-items:center;gap:10px}
+  .risk-count{background:var(--risk);color:#fff;font-family:'Space Grotesk';font-weight:700;font-size:13px;border-radius:8px;padding:3px 11px}
+  footer{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,48px) 48px;color:var(--muted);font-size:12.5px}
+  footer .note{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px;line-height:1.7}
+  footer code{background:#EEF2F6;border-radius:5px;padding:1px 6px;font-size:12px;font-family:'Space Grotesk',monospace}
+  @media(max-width:980px){.kpi-grid{grid-template-columns:repeat(3,1fr)}.row2{grid-template-columns:1fr}}
+  @media(max-width:620px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.gap-row{grid-template-columns:120px 1fr 42px}.section-desc{display:none}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  :focus-visible{outline:2px solid var(--fresh);outline-offset:2px}
+</style>
+</head>
+<body>
+<header>
+  <div class="head-top">
+    <div>
+      <div class="eyebrow">Learning &amp; Development · H1 2026</div>
+      <h1>Mid-Year Knowledge Assessment</h1>
+      <p class="head-sub">Supplement telesales · Fresh (acquisition) &amp; Resell (retention) · 104 employees — results, knowledge gaps, and H2 training planning.</p>
+    </div>
+    <div class="asof">Last updated<strong id="asof">—</strong>Passing Score = 70%</div>
+  </div>
+  <div class="filters" id="filters">
+    <button data-f="all" class="active"><span class="dot" style="background:#7FE3C6"></span>All</button>
+    <button data-f="Fresh"><span class="dot" style="background:var(--fresh)"></span>Fresh</button>
+    <button data-f="Resell"><span class="dot" style="background:var(--resell)"></span>Resell</button>
+  </div>
+</header>
+<main>
+  <section class="section">
+    <div class="section-head"><span class="section-num">01</span><span class="section-title">Executive Summary</span><span class="section-desc">Overview for management</span></div>
+    <div class="kpi-grid" id="kpiGrid"></div>
+  </section>
+  <section class="section">
+    <div class="row2">
+      <div class="card panel">
+        <div class="section-head" style="margin-bottom:6px"><span class="section-num">02</span><span class="section-title">Department Comparison</span></div>
+        <p class="sub">Average score and pass rate: Fresh vs Resell</p>
+        <div class="dept-compare" id="deptCompare"></div>
+        <div class="legend"><span><i style="background:#0c7359"></i> Average score (%)</span><span><i style="background:#5BC2A6"></i> Pass rate (%)</span></div>
+      </div>
+      <div class="card gap-panel">
+        <div class="gap-flag">⚑ Focus area</div>
+        <div class="section-head" style="margin-bottom:6px"><span class="section-num">05</span><span class="section-title">Knowledge Gap Analysis</span></div>
+        <p class="sub">Average score by topic — topics below the line need training first</p>
+        <div id="gapRows"></div>
+        <div class="gap-callout"><span>💡</span><div>Recommended refresher training for: <b id="gapTrain">—</b></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="card panel">
+      <div class="section-head" style="margin-bottom:6px"><span class="section-num">06</span><span class="section-title">Score Distribution</span><span class="section-desc">Distribution by score band</span></div>
+      <div class="hist" id="hist"></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="row2">
+      <div class="card panel">
+        <div class="section-head" style="margin-bottom:6px"><span class="section-num">03</span><span class="section-title">Ranking by Position</span></div>
+        <p class="sub">Average score by Senior / Intermediate / Agent</p>
+        <table id="teamTbl"><thead><tr><th style="width:48px">#</th><th>Position</th><th class="num">Count</th><th class="num">Avg Score</th><th class="num">Pass Rate</th></tr></thead><tbody></tbody></table>
+      </div>
+      <div class="card panel">
+        <div class="section-head" style="margin-bottom:6px"><span class="section-num">04</span><span class="section-title">Individual Ranking</span></div>
+        <p class="sub">Top 20 highest scores</p>
+        <div class="scroll-tbl"><table id="topTbl"><thead><tr><th style="width:48px">#</th><th>TMS · Name</th><th>Dept</th><th class="num">Score</th><th style="width:40px">Grade</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="card panel">
+      <div class="section-head" style="margin-bottom:6px"><span class="section-num">07</span><span class="section-title">High-Risk Employees</span><span class="section-desc">Below 70% passing — recommend IDP / retake</span></div>
+      <div class="risk-head" style="margin-bottom:10px"><span class="risk-count" id="riskCount">0</span><span style="font-size:13px;color:var(--muted)">employees to monitor (lowest score first)</span></div>
+      <div class="scroll-tbl"><table id="riskTbl"><thead><tr><th>TMS · Name</th><th>Dept</th><th>Position</th><th>Weakest Topic</th><th class="num">Score</th><th style="width:40px">Grade</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="note"><b>Note:</b> The 104 employee names are <b>real</b> (from the uploaded file), but the scores are <b>sample data</b> shown only to demonstrate the dashboard layout. Once real scores are entered in the <code>Excel</code> file, connect the per-part score columns to <code>Looker Studio</code>, keeping the same 7-section structure, to get a live dashboard.</div>
+</footer>
+<script>
+const ROSTER=[["Nok", "ac007", "S", "R"], ["Aum", "ac012", "S", "R"], ["Boy", "ac072", "I", "R"], ["Ple", "ac087", "I", "R"], ["Ni", "ac095", "I", "R"], ["Khaeck", "ac104", "I", "R"], ["Aan", "ac169", "I", "R"], ["Yok", "ac173", "I", "R"], ["Yu", "ac182", "I", "R"], ["Lek", "ac183", "I", "R"], ["Nuch", "ac245", "I", "R"], ["Kea", "ac246", "I", "R"], ["Jee", "ac248", "I", "R"], ["Yao", "ac253", "I", "R"], ["Aor", "ac254", "I", "R"], ["Poo", "ac268", "I", "R"], ["Kai", "ac297", "I", "R"], ["Mhai", "ac325", "I", "R"], ["Song", "ac330", "I", "R"], ["Daw", "ac363", "I", "R"], ["Aae", "ac422", "I", "R"], ["Aoi", "ac461", "I", "R"], ["Eagle", "ac466", "I", "R"], ["Jang", "ac196", "I", "R"], ["Maree", "ac302", "I", "R"], ["Ploy", "ac482", "I", "R"], ["Ple", "ac490", "I", "R"], ["Nam Petch", "ar507", "I", "R"], ["Nut", "ac491", "I", "R"], ["Ying", "ac303", "I", "R"], ["Tun", "ac341", "I", "R"], ["Som", "ac544", "I", "R"], ["Kak", "ac560", "I", "R"], ["Ae", "ac356", "I", "R"], ["Nok", "ac591", "I", "R"], ["Am", "ac373", "I", "R"], ["Ja", "ac376", "I", "R"], ["Ron", "ac364", "I", "R"], ["Heng", "ac595", "I", "R"], ["Bow", "ac597", "I", "R"], ["Dao", "ac598", "I", "R"], ["Bee", "ac339", "I", "R"], ["Kwan", "ac551", "I", "R"], ["Tom", "ac485", "I", "R"], ["Jaa", "ac553", "I", "R"], ["Tom", "ac554", "I", "R"], ["Mui", "af011", "S", "F"], ["Ae", "af029", "A", "F"], ["Kriang", "af034", "A", "F"], ["Ant", "af038", "S", "F"], ["Da", "af240", "A", "F"], ["Tangmo", "af256", "A", "F"], ["Tookta", "af261", "A", "F"], ["Tai", "af313", "A", "F"], ["Van", "af316", "A", "F"], ["Kwan", "af441", "A", "F"], ["Jum", "af442", "A", "F"], ["Golf", "af009", "S", "F"], ["Phueng", "af016", "A", "F"], ["Yui", "af018", "S", "F"], ["Sathit", "af023", "A", "F"], ["Poo", "af170", "A", "F"], ["Ice", "af181", "A", "F"], ["Namwan", "af214", "A", "F"], ["Yo", "af216", "A", "F"], ["Ow", "af226", "A", "F"], ["Lek", "af247", "A", "F"], ["Sai", "af258", "A", "F"], ["Bow", "af269", "A", "F"], ["Nui", "af379", "A", "F"], ["Tong", "af006", "S", "F"], ["Nok", "af025", "A", "F"], ["Kwan", "af039", "A", "F"], ["Fon", "af040", "A", "F"], ["Nid", "af075", "A", "F"], ["Nui", "af105", "A", "F"], ["Bird", "af115", "A", "F"], ["Tae", "af123", "A", "F"], ["Aoi", "af189", "A", "F"], ["Took", "af236", "A", "F"], ["Rose", "af275", "A", "F"], ["Peemai", "af276", "A", "F"], ["Jeed", "af317", "A", "F"], ["Tem", "af432", "A", "F"], ["Nid", "af020", "S", "F"], ["Fon", "af066", "A", "F"], ["Mao", "af067", "A", "F"], ["Jeed", "af084", "A", "F"], ["Pum", "af174", "A", "F"], ["Fay", "af178", "A", "F"], ["Nana", "af241", "A", "F"], ["Add", "af279", "A", "F"], ["Lek", "af314", "A", "F"], ["Duan", "af315", "A", "F"], ["Yeens", "af381", "A", "F"], ["Peung", "af437", "A", "F"], ["Me", "af555", "A", "F"], ["Arm", "af217", "A", "F"], ["Mark", "af566", "A", "F"], ["Pakkard", "af520", "A", "F"], ["Fong", "af599", "A", "F"], ["Nuch", "af536", "A", "F"], ["Nu", "af533", "A", "F"], ["Yong", "af534", "A", "F"]];
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;}}
+const rng=mulberry32(20260618);
+function gauss(m,sd){let u=0,v=0;while(u===0)u=rng();while(v===0)v=rng();return m+sd*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+const clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x)),r0=x=>Math.round(x);
+const DEPT={F:'Fresh',R:'Resell'},POS={S:'Senior Call Center Agent',I:'Intermediate Call Center Agent',A:'Call Center Agent'};
+const TOPICS=[{key:'product',label:'Product Knowledge',short:'Product',w:0.30,base:88},{key:'sales',label:'Sales Technique',short:'Sales',w:0.20,base:75},{key:'communication',label:'Communication Skills',short:'Communication',w:0.15,base:80},{key:'compliance',label:'Compliance & QA',short:'Compliance',w:0.15,base:85},{key:'role',label:'Role KPI (Acquisition / Retention)',short:'Role KPI',w:0.20,base:72}];
+/* ===== DATA SOURCE CONFIG =====
+   วาง URL ของ Google Sheet ที่ Publish เป็น CSV ตรงนี้ (ดูวิธีในไฟล์ SETUP)
+   ปล่อยว่าง = ใช้ข้อมูลตัวอย่าง (sample) */
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQh4_L-0VxKHEWTVMeI1V_Q-YRQxlvCnyOdk4MASZyx2Z2lsLcdn7XAUop80fcij60VsW8P3P698TLb/pub?gid=0&single=true&output=csv';            // เช่น 'https://docs.google.com/spreadsheets/d/e/XXXX/pub?gid=0&single=true&output=csv'
+const AUTO_REFRESH_SEC = 60;   // รีเฟรชอัตโนมัติทุกกี่วินาที (0 = ปิด)
+// จำนวนข้อเต็มต่อส่วน (ใช้แปลงคะแนนดิบ→%) ต้องตรงกับข้อสอบ
+const PART_MAX={product:20,sales:12,communication:8,compliance:10,role:10};
+
+const posBonus={S:5,I:1,A:-2};
+let EMP=[];
+
+// ---- sample data (ใช้เมื่อยังไม่ได้เชื่อม Sheet) ----
+function buildSampleEMP(){
+  const arr=ROSTER.map(([name,tms,p,d])=>{
+    const dept=DEPT[d],position=POS[p];
+    const deptB=d==='F'?5:-5,ability=gauss(0,6);
+    const scores={};TOPICS.forEach(t=>{scores[t.key]=clamp(r0(t.base+deptB+posBonus[p]+ability+gauss(0,5)),25,100);});
+    const overall=r0(TOPICS.reduce((s,t)=>s+scores[t.key]*t.w,0));
+    return {name,tms,dept,position,pcode:p,scores,overall,status:'done'};
+  });
+  [5,33,61,88,99].forEach(i=>{if(arr[i]){arr[i].status='pending';arr[i].overall=null;}});
+  return arr;
+}
+
+// ---- minimal CSV parser ----
+function parseCSV(text){
+  const rows=[];let i=0,f='',row=[],q=false;
+  while(i<text.length){const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){f+='"';i++;}else q=false;} else f+=c; }
+    else { if(c==='"')q=true; else if(c===','){row.push(f);f='';} else if(c==='\n'){row.push(f);rows.push(row);row=[];f='';} else if(c!=='\r')f+=c; }
+    i++;}
+  if(f.length||row.length){row.push(f);rows.push(row);}
+  return rows;
+}
+function colIndex(headers,...keys){
+  return headers.findIndex(h=>{const x=h.toLowerCase();return keys.some(k=>x.includes(k));});
+}
+
+// ---- build EMP from live CSV, overlaying onto the roster by TMS ----
+function buildLiveEMP(csvText){
+  const rows=parseCSV(csvText).filter(r=>r.some(c=>c&&c.trim()));
+  if(rows.length<2) throw new Error('empty');
+  const H=rows[0].map(h=>h.trim());
+  const ci={tms:colIndex(H,'tms'),product:colIndex(H,'product'),sales:colIndex(H,'sales'),
+    communication:colIndex(H,'comm'),compliance:colIndex(H,'compliance'),role:colIndex(H,'role')};
+  if(ci.tms<0) throw new Error('no TMS column');
+  // latest submission per TMS (later rows override)
+  const byTms={};
+  for(let r=1;r<rows.length;r++){const row=rows[r];const tms=(row[ci.tms]||'').trim().toLowerCase();if(tms)byTms[tms]=row;}
+  return ROSTER.map(([name,tms,p,d])=>{
+    const dept=DEPT[d],position=POS[p];
+    const row=byTms[tms.toLowerCase()];
+    if(!row) return {name,tms,dept,position,pcode:p,scores:{},overall:null,status:'pending'};
+    const scores={};let ok=true;
+    TOPICS.forEach(t=>{const raw=parseFloat(row[ci[t.key]]);if(isNaN(raw)){ok=false;return;}scores[t.key]=clamp(r0(raw/PART_MAX[t.key]*100),0,100);});
+    if(!ok) return {name,tms,dept,position,pcode:p,scores:{},overall:null,status:'pending'};
+    const overall=r0(TOPICS.reduce((s,t)=>s+scores[t.key]*t.w,0));
+    return {name,tms,dept,position,pcode:p,scores,overall,status:'done'};
+  });
+}
+function gradeOf(s){return s>=90?'A':s>=80?'B':s>=70?'C':s>=60?'D':'F';}
+function weakest(e){let mn=999,k='';TOPICS.forEach(t=>{if(e.scores[t.key]<mn){mn=e.scores[t.key];k=t.short;}});return k;}
+function aggregate(filter){
+  const pool=EMP.filter(e=>filter==='all'?true:e.dept===filter);
+  const done=pool.filter(e=>e.status==='done');
+  const avg=done.length?done.reduce((s,e)=>s+e.overall,0)/done.length:0;
+  const passed=done.filter(e=>e.overall>=70).length,failed=done.length-passed;
+  const pending=pool.filter(e=>e.status==='pending').length;
+  const topicAvg=TOPICS.map(t=>({...t,avg:done.length?r0(done.reduce((s,e)=>s+e.scores[t.key],0)/done.length):0}));
+  const buckets=[{lo:90,hi:100,label:'90–100',g:'A'},{lo:80,hi:89,label:'80–89',g:'B'},{lo:70,hi:79,label:'70–79',g:'C'},{lo:60,hi:69,label:'60–69',g:'D'},{lo:0,hi:59,label:'< 60',g:'F'}];
+  buckets.forEach(b=>b.count=done.filter(e=>e.overall>=b.lo&&e.overall<=b.hi).length);
+  const groups=['Senior Call Center Agent','Intermediate Call Center Agent','Call Center Agent'].map(pos=>{
+    const gd=done.filter(e=>e.position===pos),gp=pool.filter(e=>e.position===pos);
+    return {name:pos,n:gp.length,avg:gd.length?r0(gd.reduce((s,e)=>s+e.overall,0)/gd.length):0,pass:gd.length?r0(100*gd.filter(e=>e.overall>=70).length/gd.length):0};
+  }).filter(g=>g.n>0).sort((a,b)=>b.avg-a.avg);
+  const depts=['Fresh','Resell'].filter(d=>filter==='all'||filter===d).map(d=>{
+    const dd=EMP.filter(e=>e.dept===d&&e.status==='done');
+    return {dept:d,avg:r0(dd.reduce((s,e)=>s+e.overall,0)/dd.length),pass:r0(100*dd.filter(e=>e.overall>=70).length/dd.length)};
+  });
+  const top20=[...done].sort((a,b)=>b.overall-a.overall).slice(0,20);
+  const risk=[...done].filter(e=>e.overall<70).sort((a,b)=>a.overall-b.overall);
+  return {pool,done,avg:r0(avg),passed,failed,pending,topicAvg,buckets,groups,depts,top20,risk,totalPool:pool.length};
+}
+function fillColor(v){return v<70?'var(--risk)':v<80?'var(--amber)':v<90?'#5BC2A6':'var(--gooddeep)';}
+function render(filter){
+  const d=aggregate(filter);
+  const kpi=[
+    {label:'Total employees',val:d.totalPool,meta:filter==='all'?'Fresh + Resell':filter,cls:'accent-bar'},
+    {label:'Completed',val:d.done.length,meta:`${(100*d.done.length/d.totalPool).toFixed(1)}%`,cls:'accent-bar'},
+    {label:'Not yet taken',val:d.pending,meta:`${(100*d.pending/d.totalPool).toFixed(1)}%`,cls:'k-pending',vcls:'pend'},
+    {label:'Average score',val:d.avg+'%',meta:'of test-takers',cls:'accent-bar'},
+    {label:'Passed',val:d.passed,meta:d.done.length?`${r0(100*d.passed/d.done.length)}% of test-takers`:'—',cls:'k-pass',vcls:'pass'},
+    {label:'Failed',val:d.failed,meta:d.done.length?`${r0(100*d.failed/d.done.length)}% of test-takers`:'—',cls:'k-fail',vcls:'fail'},
+  ];
+  document.getElementById('kpiGrid').innerHTML=kpi.map(k=>`<div class="card kpi ${k.cls}"><div class="label">${k.label}</div><div class="val num ${k.vcls||''}">${k.val}</div><div class="meta">${k.meta}</div></div>`).join('');
+  document.getElementById('deptCompare').innerHTML=d.depts.map(x=>{
+    const pillBg=x.dept==='Fresh'?'var(--fresh)':'var(--resell)';
+    return `<div class="dept-group"><div class="bars"><div class="bar-wrap"><div class="bar score" style="height:${x.avg}%"><span class="bv">${x.avg}%</span></div></div><div class="bar-wrap"><div class="bar pass" style="height:${x.pass}%"><span class="bv">${x.pass}%</span></div></div></div><div class="dept-label">${x.dept}<span class="pill" style="background:${pillBg}">${x.dept==='Fresh'?'F':'R'}</span></div></div>`;
+  }).join('');
+  const sortedTopics=[...d.topicAvg].sort((a,b)=>a.avg-b.avg);
+  document.getElementById('gapRows').innerHTML=sortedTopics.map(t=>`<div class="gap-row"><div class="gap-name">${t.label}</div><div class="gap-track"><div class="gap-fill" style="width:${t.avg}%;background:${fillColor(t.avg)}"></div><div class="threshold" style="left:70%"><span>70%</span></div></div><div class="gap-val" style="color:${fillColor(t.avg)}">${t.avg}%</div></div>`).join('');
+  const trainList=sortedTopics.filter(t=>t.avg<80).map(t=>t.label);
+  document.getElementById('gapTrain').textContent=trainList.length?trainList.join(' · '):'All topics are in good standing ✓';
+  const maxC=Math.max(...d.buckets.map(b=>b.count),1);
+  document.getElementById('hist').innerHTML=d.buckets.map(b=>{
+    const col=b.g==='F'?'var(--risk)':b.g==='D'?'#EB9A5C':b.g==='C'?'var(--amber)':b.g==='B'?'#5BC2A6':'var(--gooddeep)';
+    return `<div class="hist-col"><div class="hist-bar" style="height:${b.count/maxC*100}%;background:${col}"><span class="hv">${b.count}</span></div><div class="hist-x"><b>${b.label}</b>Grade ${b.g}</div></div>`;
+  }).join('');
+  document.querySelector('#teamTbl tbody').innerHTML=d.groups.map((t,i)=>{
+    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'';
+    return `<tr><td><span class="rank ${rc}">${i+1}</span></td><td style="font-weight:600">${t.name}</td><td class="num">${t.n}</td><td class="num">${t.avg}%</td><td class="num">${t.pass}%</td></tr>`;
+  }).join('');
+  document.querySelector('#topTbl tbody').innerHTML=d.top20.map((e,i)=>{
+    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'',g=gradeOf(e.overall);
+    return `<tr><td><span class="rank ${rc}">${i+1}</span></td><td><span class="num" style="color:var(--ink);margin-right:8px">${e.tms}</span>${e.name}</td><td><span class="tag ${e.dept.toLowerCase()}">${e.dept}</span></td><td class="num">${e.overall}</td><td><span class="grade g${g}">${g}</span></td></tr>`;
+  }).join('');
+  document.getElementById('riskCount').textContent=d.risk.length;
+  document.querySelector('#riskTbl tbody').innerHTML=d.risk.length?d.risk.map(e=>{
+    const g=gradeOf(e.overall);
+    return `<tr><td><span class="num" style="color:var(--ink);margin-right:8px">${e.tms}</span>${e.name}</td><td><span class="tag ${e.dept.toLowerCase()}">${e.dept}</span></td><td class="pos" style="font-size:12.5px">${e.position}</td><td style="color:var(--risk);font-weight:600">${weakest(e)}</td><td class="num">${e.overall}</td><td><span class="grade g${g}">${g}</span></td></tr>`;
+  }).join(''):`<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No employees below passing in this group ✓</td></tr>`;
+}
+document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render(b.dataset.f);});
+document.getElementById('asof').textContent=new Date().toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'});
+
+let currentFilter='all';
+const _origFilterHandler=document.getElementById('filters');
+// track active filter (re-bind to capture into currentFilter)
+document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('button');if(b)currentFilter=b.dataset.f;});
+
+// source badge (sits on the header filter bar)
+const badge=document.createElement('span');
+badge.id='srcBadge';
+badge.style.cssText='margin-left:auto;align-self:center;font-size:12px;font-weight:600;color:#A9B8C6;display:inline-flex;align-items:center;gap:7px;cursor:pointer';
+document.getElementById('filters').appendChild(badge);
+function setBadge(state){
+  const map={live:['#3DDC97','Live · Google Sheet'],sample:['#FFB347','Sample data (not connected)'],loading:['#7FE3C6','Loading…'],error:['#E0556B','Sheet unreachable — showing sample']};
+  const [c,t]=map[state]||map.sample;
+  badge.innerHTML=`<span style="width:8px;height:8px;border-radius:50%;background:${c};display:inline-block"></span>${t} ⟳`;
+}
+badge.addEventListener('click',()=>loadData());
+
+async function loadData(){
+  if(!CSV_URL){EMP=buildSampleEMP();setBadge('sample');render(currentFilter);return;}
+  setBadge('loading');
+  try{
+    const res=await fetch(CSV_URL+(CSV_URL.includes('?')?'&':'?')+'_t='+Date.now());
+    if(!res.ok)throw new Error(res.status);
+    EMP=buildLiveEMP(await res.text());setBadge('live');
+  }catch(err){EMP=buildSampleEMP();setBadge('error');}
+  render(currentFilter);
+}
+loadData();
+if(AUTO_REFRESH_SEC>0 && CSV_URL) setInterval(loadData,AUTO_REFRESH_SEC*1000);
+</script>
+</body>
+</html>

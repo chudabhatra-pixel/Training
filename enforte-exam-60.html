@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ข้อสอบความรู้พนักงานขาย — Mid-Year 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --p:#6C63FF;--pk:#FF6B9D;--tl:#00C9A7;--go:#FFB347;
+    --bg:#FDF8F2;--card:#FFFCF8;--bdr:#EAD9C6;--txt:#2A1F14;--txt2:#5A4A3A;--txt3:#9C8B78;
+    --g1:linear-gradient(135deg,#6C63FF,#FF6B9D);
+    --ok:#1FA97A;--no:#E0556B;
+  }
+  body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--txt);line-height:1.55;min-height:100vh;padding:20px 14px 60px}
+  h1,h2,h3,.qtext,.brand{font-family:'Prompt',sans-serif}
+  .wrap{max-width:680px;margin:0 auto}
+  .screen{display:none}.screen.on{display:block}
+  /* START */
+  .hero{text-align:center;padding:30px 0 8px}
+  .badge{display:inline-block;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.3);color:var(--p);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;border-radius:100px;margin-bottom:16px}
+  .hero h1{font-size:clamp(26px,6vw,40px);font-weight:800;line-height:1.05}
+  .hero h1 .g{background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .hero p{color:var(--txt2);font-size:14px;margin:12px auto 0;max-width:460px}
+  .meta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:24px 0}
+  .meta{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:12px 18px;text-align:center;min-width:90px}
+  .meta b{display:block;font-family:'Prompt';font-size:20px;color:var(--p)}
+  .meta span{font-size:11px;color:var(--txt3)}
+  .card{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:22px;box-shadow:0 4px 16px rgba(160,110,60,.08)}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:13px;font-weight:600;color:var(--txt2);margin-bottom:6px}
+  .field input,.field select{width:100%;padding:11px 13px;border:1px solid var(--bdr);border-radius:10px;font-family:'Sarabun';font-size:15px;background:#fff;color:var(--txt);outline:none}
+  .field input:focus,.field select:focus{border-color:var(--p)}
+  .teamtog{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .teamtog button{padding:14px;border:1.5px solid var(--bdr);border-radius:12px;background:#fff;cursor:pointer;font-family:'Prompt';font-weight:600;font-size:15px;color:var(--txt2);transition:.15s}
+  .teamtog button .s{display:block;font-family:'Sarabun';font-size:11px;font-weight:500;color:var(--txt3);margin-top:2px}
+  .teamtog button.on{border-color:var(--p);background:rgba(108,99,255,.06);color:var(--p)}
+  .teamtog button.on.fresh{border-color:var(--tl);background:rgba(0,201,167,.07);color:#0a8f78}
+  .teamtog button.on.resell{border-color:var(--pk);background:rgba(255,107,157,.07);color:#d84d77}
+  .rules{font-size:12.5px;color:var(--txt2);background:rgba(255,179,71,.08);border:1px solid rgba(255,179,71,.3);border-radius:12px;padding:13px 15px;margin:16px 0}
+  .rules li{margin-left:18px;margin-bottom:3px}
+  .btn{display:block;width:100%;padding:15px;border:none;border-radius:12px;background:var(--g1);color:#fff;font-family:'Prompt';font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 6px 20px rgba(108,99,255,.3);transition:transform .12s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .btn.ghost{background:#fff;color:var(--p);border:1.5px solid var(--p);box-shadow:none}
+  .err{color:var(--no);font-size:12.5px;margin-top:8px;display:none}
+  /* QUIZ */
+  .qtop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .qcat{font-size:11px;font-weight:700;color:#fff;padding:4px 12px;border-radius:100px}
+  .qnum{font-size:13px;color:var(--txt3);font-weight:600}
+  .timer{margin-left:auto;font-family:'Prompt';font-weight:700;font-size:15px;color:var(--txt2);background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:5px 12px}
+  .timer.warn{color:var(--no);border-color:var(--no)}
+  .pbar{height:6px;background:#EFE4D6;border-radius:100px;overflow:hidden;margin-bottom:18px}
+  .pbar i{display:block;height:100%;background:var(--g1);transition:width .3s;border-radius:100px}
+  .qtext{font-size:18px;font-weight:600;line-height:1.45;margin-bottom:8px}
+  .qscenario{font-size:13.5px;color:var(--txt2);background:#F4ECDF;border-left:3px solid var(--p);border-radius:8px;padding:10px 13px;margin-bottom:14px;white-space:pre-line}
+  .choices{display:flex;flex-direction:column;gap:9px;margin:16px 0}
+  .choice{text-align:left;padding:13px 15px;border:1.5px solid var(--bdr);border-radius:12px;background:#fff;cursor:pointer;font-family:'Sarabun';font-size:15px;color:var(--txt);transition:.13s;display:flex;gap:11px;align-items:flex-start}
+  .choice:hover{border-color:var(--p)}
+  .choice .k{font-family:'Prompt';font-weight:700;color:var(--txt3);flex-shrink:0}
+  .choice.correct{border-color:var(--ok);background:rgba(31,169,122,.09)}
+  .choice.correct .k{color:var(--ok)}
+  .choice.wrong{border-color:var(--no);background:rgba(224,85,107,.08)}
+  .choice.wrong .k{color:var(--no)}
+  .choice:disabled{cursor:default}
+  .fb{display:none;border-radius:12px;padding:13px 15px;font-size:13.5px;margin-top:6px;line-height:1.5}
+  .fb.show{display:block}
+  .fb.ok{background:rgba(31,169,122,.08);border:1px solid rgba(31,169,122,.3)}
+  .fb.no{background:rgba(224,85,107,.07);border:1px solid rgba(224,85,107,.3)}
+  .fb b{font-family:'Prompt'}
+  .nextbtn{display:none;margin-top:16px}.nextbtn.show{display:block}
+  /* RESULT */
+  .rhead{text-align:center;padding:14px 0 6px}
+  .rpct{font-family:'Prompt';font-size:54px;font-weight:800;line-height:1}
+  .rpct.pass{color:var(--ok)}.rpct.fail{color:var(--no)}
+  .rstat{display:inline-block;font-family:'Prompt';font-weight:700;padding:5px 18px;border-radius:100px;font-size:14px;margin-top:6px}
+  .rstat.pass{background:rgba(31,169,122,.12);color:var(--ok)}
+  .rstat.fail{background:rgba(224,85,107,.12);color:var(--no)}
+  .partgrid{display:grid;gap:8px;margin:18px 0}
+  .partrow{display:grid;grid-template-columns:120px 1fr 54px;align-items:center;gap:10px}
+  .partrow .pl{font-size:13px;font-weight:600;color:var(--txt2)}
+  .ptrack{height:20px;background:#EFE4D6;border-radius:6px;overflow:hidden}
+  .ptrack i{display:block;height:100%;border-radius:6px;transition:width .6s}
+  .pv{font-family:'Prompt';font-weight:700;font-size:14px;text-align:right}
+  .subjbox{margin:16px 0}
+  .subjbox textarea{width:100%;min-height:80px;padding:11px 13px;border:1px solid var(--bdr);border-radius:10px;font-family:'Sarabun';font-size:14px;resize:vertical;background:#fff}
+  .subjbox .ql{font-size:13.5px;font-weight:600;margin:12px 0 6px;color:var(--txt)}
+  .muted{font-size:12px;color:var(--txt3);text-align:center;margin-top:10px}
+  .topgap{margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============ START ============ -->
+<section id="s-start" class="screen on">
+  <div class="hero">
+    <div class="badge">● Mid-Year Knowledge Assessment 2026</div>
+    <h1>ข้อสอบความรู้<span class="g">พนักงานขาย</span></h1>
+    <p>60 ข้อ ครอบคลุม 5 ส่วน: ความรู้สินค้า · เทคนิคการขาย · การสื่อสาร · Compliance (อย.) · KPI ตามบทบาท (Fresh/Resell)</p>
+  </div>
+  <div class="meta-row">
+    <div class="meta"><b>60</b><span>ข้อ</span></div>
+    <div class="meta"><b>40</b><span>นาที</span></div>
+    <div class="meta"><b>70%</b><span>เกณฑ์ผ่าน</span></div>
+  </div>
+  <div class="card">
+    <div class="field"><label>รหัส TMS</label><input id="i-tms" placeholder="เช่น af011 / ac007" autocomplete="off"><div id="tmsMsg" style="font-size:12.5px;margin-top:7px;display:none"></div></div>
+    <div class="field"><label>ชื่อ-นามสกุล</label><input id="i-fname" placeholder="กรอกรหัส TMS แล้วชื่อจะขึ้นอัตโนมัติ" autocomplete="off" readonly style="background:#F4ECDF;color:var(--txt2)"></div>
+    <div class="field"><label>ชื่อเล่น</label><input id="i-nick" placeholder="พิมพ์รหัส TMS แล้วชื่อจะแสดงที่นี่" autocomplete="off" readonly style="background:#F4ECDF;color:var(--txt2)"></div>
+    <div class="field">
+      <label>ทีมของคุณ</label>
+      <div class="teamtog" id="teamtog">
+        <button data-team="Fresh" class="fresh">Fresh</button>
+        <button data-team="Resell" class="resell">Resell</button>
+      </div>
+    </div>
+    <div class="rules">
+      <b style="font-family:'Prompt'">กติกา</b>
+      <ul>
+        <li>ข้อสอบ 60 ข้อ มีเฉลย + คำอธิบายทันทีหลังตอบแต่ละข้อ</li>
+        <li>เวลา 40 นาที หมดเวลาระบบส่งอัตโนมัติ</li>
+        <li>ตอนจบมีคำถามอัตนัย 2 ข้อ (หัวหน้าตรวจให้คะแนนภายหลัง)</li>
+        <li>ผ่าน 70% ขึ้นไป — ส่งคะแนนเข้าระบบแล้วขึ้น Dashboard อัตโนมัติ</li>
+        <li><b>ทำข้อสอบได้ครั้งเดียว</b> — หากเคยส่งคะแนนแล้วจะทำซ้ำไม่ได้</li>
+      </ul>
+    </div>
+    <button class="btn" id="startBtn" disabled>เริ่มทำข้อสอบ →</button>
+    <div class="err" id="startErr">กรุณากรอก TMS, ชื่อเล่น และเลือกทีมให้ครบ</div>
+  </div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="s-quiz" class="screen">
+  <div class="qtop">
+    <span class="qcat" id="qcat">—</span>
+    <span class="qnum" id="qnum">ข้อ 1 / 60</span>
+    <span class="timer" id="timer">40:00</span>
+  </div>
+  <div class="pbar"><i id="pbar" style="width:0%"></i></div>
+  <div class="qtext" id="qtext"></div>
+  <div class="qscenario" id="qscenario" style="display:none"></div>
+  <div class="choices" id="choices"></div>
+  <div class="fb" id="fb"></div>
+  <button class="btn nextbtn" id="nextBtn">ข้อถัดไป →</button>
+</section>
+
+<!-- ============ RESULT ============ -->
+<section id="s-subj" class="screen"><div class="card"><div style="font-family:'Prompt';font-weight:700;font-size:18px;margin-bottom:4px">คำถามอัตนัย</div><div style="font-size:13px;color:var(--txt2);margin-bottom:18px">ตอบให้ครบทั้ง 2 ข้อก่อนส่งคะแนน — หัวหน้าจะตรวจภายหลัง</div><div class="subjbox"><div class="ql" id="subjQ1"></div><textarea id="subjA1" placeholder="พิมพ์คำตอบ..."></textarea><div class="ql" id="subjQ2" style="margin-top:14px"></div><textarea id="subjA2" placeholder="พิมพ์คำตอบ..."></textarea></div><button class="btn" id="submitBtn" style="margin-top:18px">📤 ส่งคะแนน + คำตอบเข้าระบบ</button><div class="muted" id="submitMsg" style="margin-top:8px"></div></div></section>
+
+<section id="s-result" class="screen">
+  <div class="card">
+    <div class="rhead">
+      <div class="rpct" id="rpct">0%</div>
+      <div class="rstat" id="rstat">—</div>
+      <div class="muted" id="rline">—</div>
+    </div>
+    <div class="partgrid" id="partGrid"></div>
+
+
+  </div>
+</section>
+
+</div>
+
+<script>
+const GFORM = {
+  base: 'https://docs.google.com/forms/d/e/1FAIpQLSdcYtgxxfqqhgpF8lme0MlJj9yLCw2X63wZgC0zmHkEkw7V1w/viewform',
+  fields: {
+    tms:'entry.363095055', nickname:'entry.176712976', team:'entry.1207610685',
+    product:'entry.422079527', sales:'entry.53707610', communication:'entry.1265334801',
+    compliance:'entry.2006181723', role:'entry.2082063337',
+    total:'entry.1839396589', grade:'entry.994979726', subjective:'entry.608536754'
+  }
+};
+const PASS=70, TIME=40*60;
+// วาง URL CSV เดียวกับ Dashboard เพื่อกัน 'สอบซ้ำ' (ปล่อยว่าง = ไม่เช็ค)
+const EXAM_CSV_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vQh4_L-0VxKHEWTVMeI1V_Q-YRQxlvCnyOdk4MASZyx2Z2lsLcdn7XAUop80fcij60VsW8P3P698TLb/pub?gid=0&single=true&output=csv';
+const ROSTER_MAP={"ac007": ["Nok", "Resell", "Titima Suntonpruk"], "ac012": ["Aum", "Resell", "Thitima Sonsawat"], "ac072": ["Boy", "Resell", "Nisan Panket"], "ac087": ["Ple", "Resell", "Natcha Kokilanun"], "ac095": ["Ni", "Resell", "Chalisa Phosriruang"], "ac104": ["Khaeck", "Resell", "Nucharin Cholrin"], "ac169": ["Aan", "Resell", "Jutamas Canitanont"], "ac173": ["Yok", "Resell", "Thikamphon Srisomya"], "ac182": ["Yu", "Resell", "Mayura Japo"], "ac183": ["Lek", "Resell", "Kanlayanee Phetsanghan"], "ac245": ["Nuch", "Resell", "Nutjaree khaokaew"], "ac246": ["Kea", "Resell", "Piyaporn jutaprachakul"], "ac248": ["Jee", "Resell", "Sujee Yimtonglang"], "ac253": ["Yao", "Resell", "Waraporn Tepnarin"], "ac254": ["Aor", "Resell", "Supreeya Khunsombut"], "ac268": ["Poo", "Resell", "Oranicha Akkahatsee"], "ac297": ["Kai", "Resell", "Aree Sattavorakul"], "ac325": ["Mhai", "Resell", "Piromrut Wongsitamuang"], "ac330": ["Song", "Resell", "Thongkamon Chiuaorakunnon"], "ac363": ["Daw", "Resell", "Autchara Sornklang"], "ac422": ["Aae", "Resell", "Vandee Muntukanon"], "ac461": ["Aoi", "Resell", "Voranan Bunjongtaem"], "ac466": ["Eagle", "Resell", "Sanchai  Kanoknak"], "ac196": ["Jang", "Resell", "Panprapai Phusomsaeng"], "ac302": ["Maree", "Resell", "Suwannee Isarakolvorachai"], "ac482": ["Ploy", "Resell", "Putthita Kon-tong"], "ac490": ["Ple", "Resell", "Supawadee Siripart"], "ar507": ["Nam Petch", "Resell", "Kantika Wongsa"], "ac491": ["Nut", "Resell", "Sapboonthawee Siriwongsomchit"], "ac303": ["Ying", "Resell", "Napat Sudthor"], "ac341": ["Tun", "Resell", "Prakhongsup Sormchaing"], "ac544": ["Som", "Resell", "Luddawul Umtawong"], "ac560": ["Kak", "Resell", "Porntip Kannikaklang"], "ac356": ["Ae", "Resell", "Patnaree Thadumpan"], "ac591": ["Nok", "Resell", "Vassana Kudpukaeyv"], "ac373": ["Am", "Resell", "Tippawan Santheankaew"], "ac376": ["Ja", "Resell", "Jongrak Plianphu"], "ac364": ["Ron", "Resell", "Amran Habyusoh"], "ac595": ["Heng", "Resell", "Suradech Jeerapatmaitree"], "ac597": ["Bow", "Resell", "Sirinan Yenjai"], "ac598": ["Dao", "Resell", "Khwandao Phasudathanadun"], "ac339": ["Bee", "Resell", "Rungnapha Khanti"], "ac551": ["Kwan", "Resell", "Naruchon Dujjantharangsri"], "ac485": ["Tom", "Resell", "Saowanee Sulaimarn"], "ac553": ["Jaa", "Resell", "Supannigar Gongpim"], "ac554": ["Tom", "Resell", "Supachai Phongtawee"], "af011": ["Mui", "Fresh", "Rugnthip Sriplay"], "af029": ["Ae", "Fresh", "Chonlada Ninyasai"], "af034": ["Kriang", "Fresh", "Kriangkrai Baboon"], "af038": ["Ant", "Fresh", "Sitthiporn ThaiKeay"], "af240": ["Da", "Fresh", "Farida Sadee"], "af256": ["Tangmo", "Fresh", "Panisara Kaewprasert"], "af261": ["Tookta", "Fresh", "Vipada Kadam"], "af313": ["Tai", "Fresh", "Napaporn Kruangthed"], "af316": ["Van", "Fresh", "Wasana Kamolhat"], "af441": ["Kwan", "Fresh", "Kwan Prisri"], "af442": ["Jum", "Fresh", "Kanda Kamonhat"], "af009": ["Golf", "Fresh", "Sarawut  Yimniam"], "af016": ["Phueng", "Fresh", "Chanakarn  Deenarn"], "af018": ["Yui", "Fresh", "Yupa Sriplay"], "af023": ["Sathit", "Fresh", "Sathit Petsai"], "af170": ["Poo", "Fresh", "Akchai Puthongjan"], "af181": ["Ice", "Fresh", "Phathanakorn  Rungreangkaisiri"], "af214": ["Namwan", "Fresh", "Siriluck sukkon"], "af216": ["Yo", "Fresh", "Manatsanan Meechim"], "af226": ["Ow", "Fresh", "Teerawat Poka"], "af247": ["Lek", "Fresh", "Somsak Supornchairoj"], "af258": ["Sai", "Fresh", "Acharaporn Chinkrathok"], "af269": ["Bow", "Fresh", "Krittiya Boontawee"], "af379": ["Nui", "Fresh", "Suwanna somboon"], "af006": ["Tong", "Fresh", "Anek Jaisad"], "af025": ["Nok", "Fresh", "Phakthinan Chanchaiteerapat"], "af039": ["Kwan", "Fresh", "Aunkavara Boonrod"], "af040": ["Fon", "Fresh", "Nannaphat Choowongchiranan"], "af075": ["Nid", "Fresh", "Promporn Pussatham"], "af105": ["Nui", "Fresh", "Panthita Phoosamphao"], "af115": ["Bird", "Fresh", "Surasak Khamphan"], "af123": ["Tae", "Fresh", "Yingpant Kaewraksa"], "af189": ["Aoi", "Fresh", "Nareerat Pattanapiyawach"], "af236": ["Took", "Fresh", "Lerdmongkol Sujarit"], "af275": ["Rose", "Fresh", "Rattana Phurimnak"], "af276": ["Peemai", "Fresh", "Acharaporn Phrmalam"], "af317": ["Jeed", "Fresh", "Chanthaphitchaya Taso"], "af432": ["Tem", "Fresh", "Thanadon Promson"], "af020": ["Nid", "Fresh", "Napatson Churnson"], "af066": ["Fon", "Fresh", "Namfon Songseechang"], "af067": ["Mao", "Fresh", "Mali Pornjan"], "af084": ["Jeed", "Fresh", "Parichart Prohsanoi"], "af174": ["Pum", "Fresh", "Saichon Pumman"], "af178": ["Fay", "Fresh", "Jirata Pakmai"], "af241": ["Nana", "Fresh", "Kanchana Phumchuen"], "af279": ["Add", "Fresh", "Chutikan Thaothiam"], "af314": ["Lek", "Fresh", "Monta Likibantoon"], "af315": ["Duan", "Fresh", "Saengdaun Phumcharoen"], "af381": ["Yeens", "Fresh", "Ruttikaln Maraksa"], "af437": ["Peung", "Fresh", "Kantaya Keawsha-aum"], "af555": ["Me", "Fresh", "Mewika Mhantasiri"], "af217": ["Arm", "Fresh", "Nattapon Phaowattanawaraporn"], "af566": ["Mark", "Fresh", "Kittisak Phoon"], "af520": ["Pakkard", "Fresh", "Thiptiwa Thupplean"], "af599": ["Fong", "Fresh", "Pronlaphat Jarunesiri"], "af536": ["Nuch", "Fresh", "Phatnisa Wongvisit"], "af533": ["Nu", "Fresh", "Kanurisa Waenu"], "af534": ["Yong", "Fresh", "Grianggrai Geawpratoum"]};
+// per-part question counts (raw score = correct answers)
+const PARTS=[
+  {key:'product',      label:'ความรู้สินค้า',   col:'#6C63FF', n:20},
+  {key:'sales',        label:'เทคนิคการขาย',    col:'#FF6B9D', n:12},
+  {key:'communication',label:'การสื่อสาร',      col:'#00C9A7', n:8},
+  {key:'compliance',   label:'Compliance/อย.',  col:'#FFB347', n:10},
+  {key:'role',         label:'KPI ตามบทบาท',    col:'#4FC3F7', n:10},
+];
+const PART_LBL=Object.fromEntries(PARTS.map(p=>[p.key,p.label]));
+const PART_COL=Object.fromEntries(PARTS.map(p=>[p.key,p.col]));
+
+const BANK=[
+
+{p:'product',q:'Movita ต่างจากแคลเซียมทั่วไปอย่างไร?',c:['มีแคลเซียมจาก Aquamin (สาหร่ายแดง) + Vitamin D3 + Collagen Type II ทำงานร่วมกันเพิ่ม BMD','มีแคลเซียมธรรมดา + วิตามิน C เหมือนยาสามัญ','เป็นยาแก้ปวดข้อโดยตรง','มีสารสกัดจาก CBD เป็นหลัก'],a:0,e:'Movita โดดเด่นที่ Aquamin (สาหร่ายแดงทะเล) + D3 + Collagen II ทำงานเสริมกัน เพิ่ม BMD และบำรุงข้อครบวงจร'},
+{p:'product',q:'ขนาดรับประทาน Movita ที่แนะนำและ "ปริมาณขั้นต่ำ" สำหรับผลลัพธ์ที่ดีคือ?',c:['1 แคปซูล/วัน (ปริมาณขั้นต่ำ เริ่มต้น)','2 แคปซูล/วัน (ปริมาณแนะนำเต็ม)','4 แคปซูล/วัน','ทาภายนอก'],a:1,e:'Movita แนะนำ 2 แคปซูล/วัน เพื่อผลลัพธ์เต็ม ทาน 1 ได้แต่ต่ำกว่าปริมาณที่ให้ผลดีที่สุด'},
+{p:'product',type:'sjt',scenario:'ลูกค้าทานยาความดันอยู่ถาม "ทาน Cardilite กับยาหมอพร้อมกันได้ไหม"',q:'ควรตอบอย่างไรและแนะนำ Bundle อะไร?',c:['การันตีว่าทานด้วยกันได้เลย ไม่มีปัญหา','แนะนำปรึกษาแพทย์ก่อน เพราะสารออกฤทธิ์อาจมีผลต่อยาบางชนิด — ถ้าแพทย์อนุญาต Cardilite+Diafin ช่วยดูแลระยะยาวคู่กันได้','บอกให้หยุดยาหมอแล้วทาน Cardilite แทน','ปฏิเสธไม่ขาย'],a:1,e:'กลุ่มลูกค้าที่ทานยาประจำตัว ต้องแนะนำปรึกษาแพทย์ก่อนเสมอ — ห้ามการันตีหรือแนะนำหยุดยา'},
+{p:'product',q:'Flexabon กับ Movita ต่างกันอย่างไร ควรอธิบายลูกค้าว่า?',c:['เหมือนกันทุกอย่าง ชื่อต่างกันเฉยๆ','Flexabon เน้น UC-II Collagen + Polycan สำหรับข้อ/กระดูกอ่อน เหมาะเคสข้อฝืด ส่วน Movita เน้น BMD กระดูกพรุน','Flexabon รับประทานทาภายนอก Movita รับประทาน','Movita แพงกว่าจึงดีกว่าเสมอ'],a:1,e:'Flexabon เน้นกระดูกอ่อน/ข้อฝืด (UC-II+Polycan) ส่วน Movita เน้นมวลกระดูก (BMD/Aquamin) — เลือกให้ตรงปัญหาลูกค้า'},
+{p:'product',q:'Lavite ฟื้นฟูผิวจาก "ภายนอก" อย่างไร และต่างจาก Melavita ที่ดูแลจาก "ภายใน" อย่างไร?',c:['Lavite และ Melavita เหมือนกันทุกอย่าง','Lavite ทาภายนอก เพิ่มความชุ่มชื้น/คอลลาเจน (Outer Repair) / Melavita รับประทาน ลดเม็ดสี Melanin (Inner Bright) — ทำงานคนละมิติ','Lavite รับประทาน / Melavita ทาภายนอก','ทั้งคู่ใช้รักษาโรคผิวหนัง'],a:1,e:'Lavite = Outer Repair (ทา: ชุ่มชื้น+คอลลาเจน) / Melavita = Inner Bright (กิน: ลด Melanin) — ใช้คู่จึงครบทั้ง "ใส+ฟู"'},
+{p:'product',q:'Manuka Honey UMF 5+ แนะนำรับประทานปริมาณใด และมีบทบาทอะไรใน cross-sell?',c:['ทาภายนอกวันละ 2 ครั้ง','1-2 ช้อนชา/วัน — ต้านการอักเสบ เร่งผลลัพธ์จากตัวหลัก (Synergy boost)','วันละ 10 ช้อนโต๊ะ','รับประทานแทนมื้ออาหาร'],a:1,e:'Manuka: 1-2 ช้อนชา/วัน คุณสมบัติต้านการอักเสบ + ต้านเชื้อ ช่วยเร่งประสิทธิภาพตัวหลัก — เสนอเป็น Premium Booster cross-sell'},
+{p:'product',type:'sjt',scenario:'ลูกค้าซื้อ Diafin เพราะน้ำตาลสูง ทาน 1 เดือนแล้ว',q:'ทีม CIT โทรติดตาม และลูกค้าบอก "รู้สึกดีขึ้น แต่เหนื่อยง่าย ใจสั่นบ้าง" ควรแนะนำอะไร?',c:['บอกว่าปกติ ไม่ต้องสนใจ','รับฟัง + แนะนำให้พบแพทย์ตรวจอาการใจสั่น เพราะอาจเกี่ยวกับหัวใจ/หลอดเลือด — ไม่ใช่ผล Diafin โดยตรง','เสนอ Cardilite ทันทีโดยไม่ฟังรายละเอียด','บอกว่าเป็นเพราะทาน Diafin ไม่พอ'],a:1,e:'อาการใจสั่น/เหนื่อยง่ายอาจเป็นสัญญาณโรคหัวใจ — ต้องแนะนำพบแพทย์ ไม่ใช่รีบขายต่อ'},
+{p:'product',q:'Bundle Fitarin + Pilonix มีแนวคิดหลักว่าอย่างไร?',c:['Fitarin ทาภายนอก / Pilonix รับประทาน','Fitarin เร่งเผาผลาญ (เบิร์น) / Pilonix ล้างลำไส้ (Detox) — จบทั้งคนอยากผอมและมีปัญหาขับถ่าย','Fitarin บำรุงสายตา / Pilonix บำรุงหัวใจ','ใช้ตัวใดตัวหนึ่งก็พอ ไม่ต้องซื้อคู่'],a:1,e:'Fitarin = Control+Burn (ลดอยาก+เผาผลาญ) / Pilonix = Detox+Anti-Inflammation (ขับถ่าย+ลดอักเสบ) ทำงานเสริมกัน'},
+{p:'product',type:'sjt',scenario:'ลูกค้ามีปัญหาริดสีดวง ขับถ่ายไม่ดี และบอกว่า "อยากลดน้ำหนักด้วย"',q:'ทีม CIT ควรแนะนำทางเลือกอย่างไร?',c:['เสนอสินค้าผิวเพราะลดน้ำหนักทำให้ผิวดี','อธิบายว่า Henofin ช่วยริดสีดวง + Pilonix ช่วยขับถ่าย/น้ำหนัก — ทั้งสองเป็น "ทางเลือก" ให้ลูกค้าตัดสินใจว่าจะเริ่มตัวไหนก่อน','บังคับให้ซื้อทั้งคู่พร้อมกัน','ไม่เสนออะไรเพราะมีหลายปัญหาเกินไป'],a:1,e:'CIT เสนอทางเลือกตามปัญหาลูกค้า ไม่บังคับซื้อ Bundle — ให้ลูกค้าเป็นผู้ตัดสินใจ'},
+{p:'product',q:'Vistorin กับ Vistorite ต่างกันอย่างไร?',c:['เหมือนกัน ชื่อต่างกันเฉยๆ','Vistorin = ปกป้องดวงตา/กรองแสงสีฟ้า (กัน) / Vistorite = ฟื้นฟูสายตา/ลดตาล้า (ฟื้น)','Vistorin สำหรับผู้สูงอายุเท่านั้น','Vistorite รับประทาน / Vistorin ทาตา'],a:1,e:'Vistorin = Protect (กันไม่ให้แย่) / Vistorite = Recover (ทำให้ดีขึ้น) — ใช้คู่กัน "กัน+ฟื้น ครบ"'},
+{p:'product',type:'sjt',scenario:'ลูกค้าผู้ชาย อายุ 50+ บอกว่า "ปัสสาวะกลางดึก 2-3 ครั้ง และเริ่มรู้สึกอ่อนเพลีย"',q:'ทีม CIT ควรอธิบายกลไกและเสนออย่างไร?',c:['เสนอ Vistorin เพราะอายุมากตาจะเสื่อม','อธิบายว่าอาการนี้อาจมาจากต่อมลูกหมาก + การไหลเวียนไม่ดี — Protolite ช่วยต่อมลูกหมาก เป็นตัวเลือกหลัก หาก budget อนุญาต Duasil เสริมได้','เสนอ Diafin เพราะน้ำตาลทำให้เพลีย','บอกว่าเป็นเรื่องปกติของอายุ ไม่ต้องทำอะไร'],a:1,e:'ระบุ root cause ให้ชัด (ต่อมลูกหมาก+การไหลเวียน) เสนอ Protolite เป็นหลัก Duasil เป็นทางเลือกเสริม'},
+{p:'product',type:'sjt',scenario:'ลูกค้าสนใจดูแลผิว มีฝ้าและผิวแห้ง งบจำกัด ซื้อได้แค่ 1 ตัว',q:'ควรแนะนำอย่างไร?',c:['บังคับให้ซื้อ Lavite+Melavita คู่กันไม่งั้นไม่คุ้ม','ถามว่า concern หลักคืออะไร ถ้า concern ฝ้า = Melavita ถ้า concern ผิวแห้ง/ริ้วรอย = Lavite — แล้วค่อยแนะนำเพิ่มภายหลัง','เสนอ Manuka Honey แทน','ไม่เสนออะไรเพราะงบไม่พอ'],a:1,e:'เมื่อลูกค้างบจำกัด ถาม concern หลักก่อน แล้วแนะนำตัวที่ตรงกว่า — Bundle เป็นทางเลือก ไม่ใช่บังคับ'},
+{p:'product',type:'sjt',scenario:'ลูกค้าทาน Flexvits อยู่แล้ว บอกว่า "ปวดลดลงบ้าง แต่ยังชาที่ขา ชีพจรที่เท้าเบา"',q:'ทีม CIT ควรประเมินอย่างไร?',c:['เสนอ Tensirin ทันทีเพื่อเดินเลือด','สังเกตว่าอาการชา+ชีพจรเบาอาจเป็นสัญญาณเส้นเลือดตีบ — แนะนำพบแพทย์เพื่อตรวจก่อน ไม่รีบขายต่อ','บอกว่าปกติทานต่อได้เลย','เพิ่มปริมาณ Flexvits'],a:1,e:'อาการชา+ชีพจรเบาเป็น red flag อาจต้องตรวจหัวใจ/หลอดเลือด — CIT ต้องรู้ว่าเมื่อไหรควรส่งต่อแพทย์ ไม่ใช่ขายต่อเสมอ'},
+{p:'product',q:'Manuka Honey จับคู่กับ Flexvits ให้ประโยชน์อะไรที่ Flexvits ทำเองไม่ได้?',c:['ให้รสชาติดีขึ้น','ลดการอักเสบของข้อต่อเพิ่มเติม ช่วยให้อาการปวดลดเร็วขึ้น','เปลี่ยนสีของแคปซูล','ทำให้ Flexvits ดูดซึมได้น้อยลง'],a:1,e:'Manuka + Flexvits: Flexvits บำรุงข้อ/หล่อลื่น, Manuka ลดการอักเสบข้อต่อ → ปวดลดเร็ว เคลื่อนไหวดีขึ้นเร็ว'},
+{p:'product',q:'Detarin จัดอยู่ในกลุ่มใด และ Manuka เสริมอย่างไร?',c:['กลุ่มสายตา + Manuka บำรุงดวงตา','กลุ่มดีท็อกซ์/ล้างสารพิษ (ตับ) + Manuka ลดการอักเสบและเร่งการฟื้นตัว','กลุ่มผิว + Manuka ทำให้ผิวขาว','กลุ่มข้อ + Manuka ลดปวดข้อ'],a:1,e:'Detarin = Detox ล้างสารพิษ/ฟื้นฟูตับ + Manuka = ลดการอักเสบ เร่งการฟื้นตัว → ร่างกายสดชื่นขึ้นเร็ว'},
+{p:'product',q:'Melavita จับคู่กับ Manuka ช่วยอะไรที่ลูกค้าผิวหมอง/ฝ้า?',c:['Manuka ทำให้ผิวขาวทันที','Melavita ลดเม็ดสีจากใน + Manuka ลดการอักเสบและฟื้นฟูระหว่างหลับ → ผิวใส สีสม่ำเสมอ เร็วขึ้น','Manuka เพิ่มเม็ดสี','ใช้ตัวใดตัวหนึ่งก็พอ'],a:1,e:'Melavita+Manuka: Melavita ลด Melanin, Manuka ลดการอักเสบ/ฟื้นฟูระหว่างหลับ — เห็นผลผิวใสเร็วกว่าใช้ตัวเดียว'},
+{p:'product',q:'ข้อใดคือข้อควรระวังที่ต้องแจ้งลูกค้าสำหรับ "ผลิตภัณฑ์เสริมอาหาร" ทุกตัว?',c:['สามารถใช้แทนยาหมอได้ทุกกรณี','เป็นผลิตภัณฑ์เสริมอาหาร ไม่ใช่ยา ไม่อ้างรักษาโรค กลุ่มเปราะบาง (ตั้งครรภ์/โรคประจำตัว) ควรปรึกษาแพทย์ก่อน','รับรองว่าหายขาดใน 7 วัน','ทานมากกว่าที่แนะนำยิ่งเห็นผลเร็ว'],a:1,e:'ผลิตภัณฑ์เสริมอาหาร ≠ ยา, ห้ามอ้างรักษา/หายขาด, กลุ่มเสี่ยงปรึกษาแพทย์ก่อน'},
+{p:'product',q:'ลูกค้าถามว่า "กินพร้อมกันหลายตัวได้ไหม?" ควรตอบอย่างไร?',c:['ห้ามกินพร้อมกันทุกกรณี','กินคู่กันได้ถ้าอยู่ใน Bundle ที่แนะนำ แต่แนะนำให้ปรึกษาแพทย์ถ้ามียาประจำตัว','กินพร้อมกันทุกตัวเลย ยิ่งเยอะยิ่งดี','ห้ามกินมากกว่า 1 ตัว'],a:1,e:'Bundle ที่แนะนำออกแบบให้เสริมกัน — แต่ถ้ามียาประจำตัว ควรปรึกษาแพทย์เพื่อความปลอดภัย'},
+{p:'product',q:'Cardilite จับคู่กับ Manuka ช่วยเรื่องอะไรที่ใช้แค่ Cardilite ไม่ครบ?',c:['Manuka เพิ่มรสชาติ','Manuka ลดการอักเสบของหลอดเลือด เสริมการฟื้นตัว ทำให้การไหลเวียนดีขึ้นเร็วกว่า','Manuka ทำให้ Cardilite ดูดซึมน้อยลง','Manuka เพิ่มความดัน'],a:1,e:'Cardilite+Manuka: Cardilite ดูแลหัวใจ/ลด LDL, Manuka ลดการอักเสบหลอดเลือด → การไหลเวียนดี เห็นผลเร็วขึ้น'},
+{p:'product',q:'Protolite จับคู่กับ Manuka ช่วยเรื่องอะไรสำหรับลูกค้าผู้ชาย?',c:['Manuka ทำให้ Protolite ออกฤทธิ์ช้าลง','Protolite ดูแลต่อมลูกหมาก + Manuka ลดการอักเสบภายใน → อาการดีขึ้นเร็ว ปัสสาวะคล่องขึ้น','Manuka เพิ่มฮอร์โมนโดยตรง','ใช้แค่ตัวเดียวก็พอ'],a:1,e:'Protolite+Manuka: Protolite ดูแลต่อมลูกหมาก/ลดบวม, Manuka ลดการอักเสบ → เห็นผลไว ปัสสาวะดีขึ้นชัดเจน'},
+{p:'sales',type:'sjt',scenario:'ลูกค้าบอกว่าเคยซื้อสินค้าเสริมอาหารอื่นมาแล้วไม่เห็นผล และไม่เชื่อเรื่องพวกนี้',q:'ควรเปิดบทสนทนาอย่างไร?',c:['บอกว่าสินค้าของเรา "ดีกว่าทุกแบรนด์แน่นอน"','รับฟัง acknowledge ก่อน → ถามว่าเคยทานตัวไหน ทานนานแค่ไหน เพื่อเข้าใจ context แล้วค่อยอธิบายความแตกต่าง','เริ่มเสนอขายทันที ไม่ฟัง objection','บอกว่าลูกค้าผิดที่เลือกของไม่ดี'],a:1,e:'acknowledge skepticism → เข้าใจ context เดิม → อธิบายความแตกต่างด้วยข้อมูล ไม่โจมตีแบรนด์อื่น'},
+{p:'sales',q:'ทีม Fresh มีแนวทาง "ขายสินค้าชนิดอื่น" อย่างไร?',c:['ขาย cross-sell ได้ทุกเมื่อ เหมือน Resell','ขายสินค้าอื่นได้ต่อเมื่อสินค้าที่ลูกค้าลงทะเบียนมาหมดสต็อกแล้วเท่านั้น','ห้ามขายสินค้าอื่นในทุกกรณี','ขายได้ถ้าราคาต่ำกว่า'],a:1,e:'Fresh = ขายตามที่ลูกค้าแสดงความสนใจ (ลงทะเบียนมา) — ขายสินค้าอื่นได้เฉพาะเมื่อสินค้านั้นหมดเท่านั้น'},
+{p:'sales',q:'เหตุใด Fresh จึงเน้นขายเป็น Set 3 ชิ้นขึ้นไป?',c:['เพื่อล้างสต็อก','เพราะ Set ต่อเนื่องช่วยให้ลูกค้าเห็นผล ดัน AOV และสร้าง continuity สำหรับทีม Resell ต่อ','เพื่อเก็บเงินล่วงหน้า','ไม่มีเหตุผลพิเศษ'],a:1,e:'3 ชิ้นขึ้นไป = ทานต่อเนื่องเห็นผล + AOV ดีขึ้น + สร้าง loyalty สำหรับ Resell ต่อยอด'},
+{p:'sales',type:'sjt',scenario:'ลูกค้า Fresh ลงทะเบียนมาสนใจ Movita จะซื้อ 1 ชิ้น',q:'วิธีเสนอที่ถูกต้องตาม Flow ของทีม Fresh คือ?',c:['เสนอ Diafin แทน เพราะขายง่ายกว่า','เสนอ Movita เป็น Set 3 ชิ้นขึ้นไป ทานต่อเนื่องเห็นผลชัด — ไม่เสนอสินค้าอื่นนอกจาก Movita หมดสต็อก','เสนอ Flexvits แทน เพราะอยู่กลุ่มเดียวกัน','ขาย 1 ชิ้นตามที่ลูกค้าบอก ไม่เพิ่ม'],a:1,e:'Fresh ขายตามที่ลูกค้าลงทะเบียน เน้น Set 3+ ชิ้น ห้าม cross-sell สินค้าอื่น (นอกจากหมดสต็อก)'},
+{p:'sales',q:'คำถาม probing แบบใดช่วยให้รู้ pain point ลูกค้าชัดที่สุด?',c:['"จะเอาไหมคะ?"','"ปกติมีอาการปวดข้อตอนไหนบ้างคะ และรบกวนชีวิตประจำวันแค่ไหน?"','"จ่ายเงินปลายทางนะคะ?"','"สนใจไหมคะ?"'],a:1,e:'คำถามปลายเปิด + ถามผลกระทบต่อชีวิต ทำให้ได้ข้อมูลเพิ่มและลูกค้า engage มากขึ้น'},
+{p:'sales',q:'เทคนิค "assumptive close" คือข้อใด?',c:['"จะเอาไหมคะ?"','"ให้จัดส่ง Set 3 ชิ้น พรุ่งนี้เลยนะคะ?"','"ลองคิดดูก่อนนะคะ"','"ถ้าสนใจค่อยโทรมานะคะ"'],a:1,e:'assumptive close = พูดเหมือนลูกค้าตัดสินใจซื้อแล้ว เหลือแค่ยืนยันรายละเอียด'},
+{p:'sales',type:'sjt',scenario:'ลูกค้า CIT ทาน Vistorin อยู่ 2 เดือน บอกว่า "ตาล้าดีขึ้นนิดหน่อย แต่ยังไม่ชัด"',q:'ทีม CIT ควรจัดการอย่างไร?',c:['บังคับเพิ่ม Vistorite ทันที','ถามรายละเอียดการใช้ก่อน (ทานสม่ำเสมอไหม? หน้าจอกี่ชั่วโมง/วัน?) → ถ้าทานถูกและสม่ำเสมอ → อธิบาย Vistorite เป็นทางเลือกเพื่อเร่งผล ไม่ใช่บังคับ','เปลี่ยนไปขายสินค้าอื่นเลย','บอกว่าต้องรอนานกว่านี้ วางสาย'],a:1,e:'ตรวจ compliance ก่อน → ถ้าทานถูกแล้วยังไม่ชัด ค่อยเสนอ Vistorite เป็นตัวเลือกเสริม ไม่ใช่บังคับ'},
+{p:'sales',q:'ลูกค้าบอก "ขอคิดดูก่อน" เทคนิคตอบที่ดีที่สุด?',c:['"งั้นวางสายนะคะ"','รับฟัง + ถามว่ากังวลเรื่องอะไร แล้วคลายข้อสงสัยจุดนั้น','กดดันให้ตัดสินใจเดี๋ยวนี้','ส่งของไปเลยโดยไม่ถาม'],a:1,e:'"ขอคิดดู" มักมี objection ซ่อนอยู่ — ขุดหาสาเหตุแล้วแก้ตรงจุด'},
+{p:'sales',q:'วิธี "นำเสนอราคา" ให้ลูกค้ารู้สึกคุ้มที่สุด?',c:['บอกราคารวมก้อนเดียวแล้วเงียบ','แตกเป็นราคาต่อวัน เช่น "ดูแลข้อทั้งเดือน วันละไม่กี่บาท"','บอกว่าแพงแต่ดี','ไม่บอกราคาจนกว่าจะถาม'],a:1,e:'framing ราคาต่อวัน/ต่อสัปดาห์ทำให้จับต้องได้และรู้สึกคุ้มกว่าบอกก้อนรวม'},
+{p:'sales',q:'ลูกค้าบอก "แพงจัง" ควรตอบแนวใด?',c:['ลดราคาทันทีทุกครั้ง','reframe เป็นคุณค่า/ผลลัพธ์ เทียบกับค่าใช้จ่ายถ้าปล่อยอาการไว้','บอกว่าของถูกคุณภาพต่ำ','เงียบ'],a:1,e:'จัดการ objection ราคาด้วยการเน้นคุณค่า ไม่ใช่ลดราคาทันที'},
+{p:'sales',type:'sjt',scenario:'ลูกค้าลังเล กลัวทานแล้วไม่เห็นผล',q:'คำพูดที่ช่วยปิดได้ดีที่สุดและถูก Compliance?',c:['"ไม่เห็นผลก็ไม่เป็นไรค่ะ"','"ผลิตภัณฑ์ต้องทานต่อเนื่องครบ Set จึงเห็นผล เริ่ม Set 3 เดือนเพื่อให้เห็นการเปลี่ยนแปลงชัดนะคะ"','"รับรองหายขาดแน่นอนค่ะ"','"ซื้อเยอะๆ ไว้ก่อนค่ะ"'],a:1,e:'ตั้งความคาดหวังที่ถูกต้อง (ต่อเนื่อง) โดยไม่การันตี "หายขาด" (ผิด อย.)'},
+{p:'sales',q:'ข้อใดคือการ upsell ที่ "ผิดจริยธรรม"?',c:['เสนอ Set ที่เหมาะกับอาการ','อธิบายโปรโมชั่นตามจริง','หลอกว่าต้องซื้อ 10 ชิ้นไม่งั้นไม่หาย','เสนอ Manuka เป็น Booster เร่งผล'],a:2,e:'upsell ต้องอยู่บนความจริงและความเหมาะสม ห้ามหลอก/บังคับ'},
+{p:'communication',type:'sjt',scenario:'โทรหาลูกค้า เขารับสายท่าทางยุ่ง พูดสั้นๆ ว่า "ฉันไม่มีเวลา"',q:'ควรตอบอย่างไร?',c:['เสนอสินค้าต่อทันทีเพราะโทรมาแล้ว','ขอเวลา 30 วินาที บอกวัตถุประสงค์สั้นๆ แล้วถามว่าสะดวกคุยเวลาไหน — ไม่บังคับ','วางสายทันที','ถามว่าทำไมไม่มีเวลา'],a:1,e:'เคารพเวลาลูกค้า → brief pitch → นัดเวลาใหม่ ดีกว่าฝืนคุยแล้วลูกค้าไม่ฟัง'},
+{p:'communication',q:'สัญญาณของ "การฟังอย่างตั้งใจ" (active listening) คือ?',c:['พูดแทรกตลอด','ทวนสรุปสิ่งที่ลูกค้าพูด เช่น "เข้าใจว่าคุณปวดเข่าตอนเช้าใช่ไหมคะ"','เงียบจนลูกค้าคิดว่าสายหลุด','รีบเสนอขายทับ'],a:1,e:'การทวน/สรุป (paraphrase) แสดงว่าฟังจริงและช่วยยืนยันความเข้าใจ'},
+{p:'communication',type:'sjt',scenario:'ลูกค้าโมโห ต่อว่าเรื่องของส่งช้ารอบก่อน',q:'ควรตอบอย่างไรก่อนเป็นอันดับแรก?',c:['เถียงว่าไม่ใช่ความผิดเรา','รับฟังและขอโทษในความไม่สะดวกก่อน แล้วค่อยหาทางช่วย','วางสาย','โยนให้แผนกอื่นทันที'],a:1,e:'acknowledge อารมณ์ลูกค้าก่อน จึงแก้ปัญหา — จะคลายความโกรธได้'},
+{p:'communication',type:'sjt',scenario:'ลูกค้าสูงอายุถามซ้ำหลายครั้งว่า "ทานก่อนหรือหลังอาหาร" และดูสับสน',q:'วิธีจัดการที่ดีที่สุด?',c:['บอกให้ไปอ่านฉลากเอง','อธิบายใหม่ด้วยภาษาง่าย + ยกตัวอย่างจับต้องได้ เช่น "ทานตอนเช้าพร้อมข้าว ก็ได้ค่ะ" + ถามว่าเข้าใจแล้วหรือยัง','เร่งให้ปิดออเดอร์ก่อนค่อยอธิบาย','บอกว่าไม่สำคัญทานเมื่อไหรก็ได้'],a:1,e:'ลูกค้าสูงอายุต้องการ concrete example ไม่ใช่แค่บอกซ้ำ — ยืนยันความเข้าใจก่อนปิดออเดอร์เสมอ'},
+{p:'communication',q:'เมื่อต้องอธิบายส่วนผสม ควรหลีกเลี่ยงสิ่งใด?',c:['ยกตัวอย่างที่เห็นภาพ','ใช้ศัพท์วิทยาศาสตร์ยากๆ โดยไม่อธิบาย','ถามว่าลูกค้าเข้าใจไหม','พูดประโยชน์ที่เกี่ยวกับลูกค้า'],a:1,e:'เลี่ยง jargon ที่ลูกค้าไม่เข้าใจ ทำให้สับสนและเสียโอกาสขาย'},
+{p:'communication',q:'การยืนยันความเข้าใจตอนปิดสายที่ดีคือ?',c:['วางสายทันที','ทวนออเดอร์/ที่อยู่/วันจัดส่งให้ลูกค้ายืนยันอีกครั้ง','บอกแค่ "ขอบคุณค่ะ"','ถามเบอร์เพื่อน'],a:1,e:'ทวนสรุปออเดอร์ช่วยลดความผิดพลาดและของตีกลับ'},
+{p:'communication',type:'sjt',scenario:'คุยกับลูกค้ามา 10 นาที ลูกค้าพูดวนซ้ำเรื่องเดิมและยังไม่ตัดสินใจ',q:'ควรทำอย่างไร?',c:['ปล่อยให้พูดต่อไปเรื่อยๆ','สรุปประเด็นที่ลูกค้ากังวล + ถามตรงๆ ว่า "ยังติดใจเรื่องอะไรอยู่คะ" เพื่อ unlock objection ที่แท้จริง','วางสายเพราะเสียเวลา','เร่งปิดทันทีโดยไม่ฟัง'],a:1,e:'ลูกค้าวนซ้ำ = มี unspoken objection — สรุป + ถามตรงเพื่อหาและแก้จุดนั้น'},
+{p:'communication',type:'sjt',scenario:'ลูกค้าเล่าว่ากังวลเรื่องสุขภาพมาก',q:'ประโยคแสดง "ความเห็นอกเห็นใจ" ที่เหมาะสม?',c:['"เรื่องแค่นี้เองค่ะ"','"เข้าใจความรู้สึกเลยค่ะ หลายท่านก็กังวลแบบนี้ เดี๋ยวเราดูแลให้นะคะ"','"ไม่เป็นไรหรอกค่ะ"','"รีบๆ หน่อยนะคะมีสายรอ"'],a:1,e:'empathy + ให้ความมั่นใจอย่างจริงใจ สร้างความไว้วางใจ'},
+{p:'compliance',q:'ข้อใดเป็นคำกล่าวอ้างที่ "ห้าม" พูด (ผิด อย.)?',c:['"ช่วยดูแลสุขภาพข้อ"','"เป็นผลิตภัณฑ์เสริมอาหาร"','"รักษาเบาหวานให้หายขาด"','"ทานต่อเนื่องเพื่อผลลัพธ์ที่ดี"'],a:2,e:'ห้ามอ้างว่า "รักษา/หายขาด" โรค — ผลิตภัณฑ์เสริมอาหารทำไม่ได้'},
+{p:'compliance',type:'spot',scenario:'สคริปต์: "Manuka Honey ช่วยลดการอักเสบ ทำให้หัวใจแข็งแรงขึ้น ลดความดันได้อย่างถาวร"',q:'ข้อความใดใน script นี้เป็นปัญหา?',c:['ทั้งหมดถูกต้อง พูดได้','คำว่า "อย่างถาวร" เป็น over-claim — Manuka มีคุณสมบัติต้านการอักเสบ แต่ห้ามการันตีผลถาวรหรืออ้างรักษาโรค','ผิดแค่ที่ไม่ได้บอกราคา','ผิดเพราะ Manuka ไม่เกี่ยวกับหัวใจ'],a:1,e:'คำว่า "อย่างถาวร" = การันตีผล = over-claim ผิดกฎ อย. แม้ Manuka จะมีประโยชน์จริง แต่ต้องไม่อ้างผลถาวร'},
+{p:'compliance',type:'spot',scenario:'สคริปต์: "ตัวนี้กินแล้วความดันหายขาด ไม่ต้องกินยาหมออีกเลยค่ะ รับรองผล 100%"',q:'ข้อความนี้ผิดตรงไหน?',c:['ไม่ผิดเลย','อ้างรักษาหายขาด + ให้เลิกยาหมอ + การันตี 100% (ผิดทั้งหมด)','ผิดแค่เรื่องราคา','ผิดแค่คำว่าค่ะ'],a:1,e:'มี 3 ความผิด: อ้างรักษาหาย, แนะให้หยุดยาแพทย์, การันตีผล'},
+{p:'compliance',q:'ตอนยืนยันออเดอร์ ต้องทวนข้อมูลใดบ้าง?',c:['แค่ชื่อลูกค้า','ชื่อสินค้า จำนวน ที่อยู่จัดส่ง และวิธีชำระ (เช่น COD)','แค่เบอร์โทร','ไม่ต้องทวน'],a:1,e:'ยืนยันครบ: สินค้า/จำนวน/ที่อยู่/การชำระ ลดข้อพิพาทและของตีกลับ'},
+{p:'compliance',type:'sjt',scenario:'ลูกค้าถามว่า "สายนี้อัดเสียงอยู่ไหม ฉันไม่อยากให้อัด"',q:'ควรตอบและทำอย่างไร?',c:['โกหกว่าไม่ได้อัด','แจ้งตามความเป็นจริงว่าบันทึกหรือไม่ และระบุวัตถุประสงค์ ถ้าลูกค้าไม่ยินยอม ต้องเคารพสิทธิ์นั้น','ตัดสายทันที','บอกว่าบังคับอัดตามกฎบริษัท ลูกค้าห้ามปฏิเสธ'],a:1,e:'ต้องแจ้งความจริงและเคารพสิทธิ์ลูกค้า — การหลอกว่าไม่อัดขณะที่อัดอยู่ผิดกฎหมายและจริยธรรม'},
+{p:'compliance',type:'spot',scenario:'ลูกค้าถามว่า "Diafin ช่วยรักษาเบาหวานได้จริงไหม หมอบอกว่าต้องกินยาตลอดชีวิต"',q:'คำตอบใดถูกต้องและปลอดภัยที่สุด?',c:['บอกว่า Diafin รักษาหายได้ ไม่ต้องกินยาหมออีก','Diafin เป็นผลิตภัณฑ์เสริมอาหาร ช่วยดูแล/บำรุงได้ แต่ไม่ใช่ยารักษาโรค ไม่ควรหยุดยาหมอเอง ควรปรึกษาแพทย์ก่อน','บอกว่าทานคู่กับยาหมอได้เลยไม่มีปัญหา','บอกว่าลองก่อนแล้วค่อยตัดสินใจเรื่องยา'],a:1,e:'ห้ามอ้างรักษา ห้ามแนะนำหยุดยาแพทย์ — ต้องชัดเจนว่าเป็นเสริมอาหาร และให้ปรึกษาแพทย์'},
+{p:'compliance',q:'ข้อใดคือการขาย "over-claim" ที่ต้องเลี่ยง?',c:['บอกส่วนผสมตามจริง','บอกว่า "กินแล้วผิวขาวขึ้น 5 ระดับใน 1 สัปดาห์การันตี"','บอกวิธีทานที่ถูกต้อง','อธิบายว่าเป็นเสริมอาหาร'],a:1,e:'การันตีผลลัพธ์ตัวเลขเกินจริงเป็น over-claim ผิดกฎ'},
+{p:'compliance',type:'sjt',scenario:'ลูกค้าตั้งครรภ์ 3 เดือน บอกว่าปวดหลังมากและสนใจ Flexvits',q:'ควรตอบอย่างไร?',c:['เสนอ Flexvits ได้เลยเพราะเป็นแค่เสริมอาหาร','แจ้งว่าผลิตภัณฑ์เสริมอาหารส่วนใหญ่ยังไม่มีข้อมูลการศึกษาในหญิงตั้งครรภ์ครบถ้วน แนะนำปรึกษาแพทย์ก่อน — ไม่ปิดการขายเมื่อมีความเสี่ยง','บอกว่าปลอดภัย 100% สำหรับคนท้อง','เสนอทาน 2 เท่าเพราะทานเพื่อ 2 คน'],a:1,e:'หญิงตั้งครรภ์ = กลุ่มเปราะบาง ต้องให้ปรึกษาแพทย์ก่อนเสมอ แม้จะเสียโอกาสขาย'},
+{p:'compliance',type:'spot',scenario:'สคริปต์: "ป้าลองทาน Melavita ก่อนเลยนะคะ ถ้าไม่เห็นผลใน 7 วันคืนเงินให้เลย ของเราดีที่สุดในตลาด"',q:'มีกี่จุดที่เป็นปัญหา?',c:['ไม่มีปัญหา','2 จุด: การันตีคืนเงินโดยไม่มีนโยบายรองรับ + อ้างว่า "ดีที่สุดในตลาด" โดยไม่มีหลักฐาน','ผิดแค่เรื่องระยะเวลา 7 วัน','ผิดแค่คำว่าป้า'],a:1,e:'การันตีผลลัพธ์ที่ไม่มีนโยบายรองรับ + superlative claim (ดีที่สุด) โดยไม่มีหลักฐาน = 2 จุดผิด'},
+{p:'compliance',type:'spot',scenario:'สคริปต์: "คอลลาเจนตัวนี้ อย. รับรองว่ารักษาข้อเข่าเสื่อมได้นะคะ"',q:'ปัญหาของประโยคนี้คือ?',c:['ไม่มีปัญหา','อ้างว่า อย. "รับรองการรักษาโรค" ซึ่งไม่เป็นความจริงและผิดกฎ','ผิดแค่ชนิดสินค้า','ผิดแค่ราคา'],a:1,e:'อย. ไม่ได้ "รับรองการรักษาโรค" ของเสริมอาหาร — ห้ามอ้างเช่นนี้'},
+{p:'role',team:'Fresh',type:'sjt',scenario:'ลูกค้าลงทะเบียนสนใจ Movita แต่พอโทรไปบอกว่า "ไม่แน่ใจ อยากลองแค่ 1 เดือนก่อน"',q:'Fresh ควรจัดการอย่างไร?',c:['ปิดทันที 1 ชิ้น ดีกว่าไม่ได้ขาย','รับฟัง → อธิบายว่าผลิตภัณฑ์กลุ่มข้อต้องทานต่อเนื่องอย่างน้อย 2-3 เดือนจึงเห็นผลชัด → เสนอ Set 3 เดือนพร้อมอธิบายเหตุผล ไม่ใช่กดดัน','บอกว่าซื้อน้อยไม่คุ้มไม่ขาย','เสนอ Set 6 เดือนทันที'],a:1,e:'Fresh เน้น Set 3+ แต่ต้องอธิบายเหตุผลด้านผลลัพธ์ ไม่ใช่กดดัน — ลูกค้าที่เข้าใจปิดได้ง่ายกว่า'},
+{p:'role',team:'Fresh',q:'AOV เป้าหมาย ~2,700 บาท/บิล การกระทำใดช่วยดัน AOV โดยตรงใน Flow Fresh?',c:['ขาย 1 ชิ้นให้ทุกคน','เสนอ Set 3 ชิ้นขึ้นไปตามโปร — ทานต่อเนื่อง + AOV ดีขึ้น','ลดราคาทุกบิล','รับออเดอร์เร็วๆ'],a:1,e:'Set 3 ชิ้น = ทานต่อเนื่องเห็นผล + AOV ดีขึ้น เข้าเป้า — เป็น Standard Flow ของ Fresh'},
+{p:'role',team:'Fresh',type:'sjt',scenario:'ลูกค้ายืนยันซื้อ Movita Set 3 ชิ้น แต่บอกว่าที่อยู่เป็นคอนโดต้องรอรับเอง บางวันไม่อยู่',q:'ควรทำอย่างไรเพื่อรักษา DR?',c:['ส่งไปเลยตามที่อยู่ที่ให้','ถามวันและเวลาที่สะดวกรับ + แนะนำให้โทรแจ้ง logistics เมื่อของมา — บันทึก note ไว้ในระบบ','บอกว่าต้องรับผิดชอบเองถ้าพลาด','ยกเลิกออเดอร์'],a:1,e:'การ secure การรับของล่วงหน้าเป็นหัวใจของ DR — ถามวันนัด note ไว้ ลด RTO ได้ตรงๆ'},
+{p:'role',team:'Fresh',q:'ปัจจัยใดทำให้ AR "ต่ำลง"?',c:['ยืนยันข้อมูลครบถ้วน','ให้ข้อมูลไม่ชัด/ลูกค้าไม่เข้าใจ/ไม่ยืนยันออเดอร์ชัด','เสนอ Set ที่เหมาะสม','ฟังลูกค้า'],a:1,e:'ข้อมูลคลาดเคลื่อนและการปิดที่ไม่ชัดทำให้ออเดอร์ไม่ผ่านอนุมัติ'},
+{p:'role',team:'Fresh',q:'"ของตีกลับ (RTO)" ลดได้อย่างไรในขั้นตอน Fresh?',c:['ไม่ยืนยันอะไรเลย','ยืนยันตัวตน/ที่อยู่/นัดหมายรับของ และตั้งความคาดหวังการจัดส่ง','ส่งไปก่อนถามทีหลัง','ขายให้คนที่ไม่สนใจ'],a:1,e:'ยืนยันชัดเจน + ตั้งความคาดหวัง ลด RTO โดยตรง'},
+{p:'role',team:'Fresh',type:'sjt',scenario:'หลังปิดออเดอร์แล้ว ลูกค้าถามว่า "ส่งกี่วัน" แล้วบอกว่า "วันนั้นไม่อยู่บ้าน"',q:'Fresh ควรทำอย่างไร ณ จุดนี้?',c:['บอกว่าไม่รู้ส่งกี่วัน วางสาย','แจ้งกรอบเวลาจัดส่งโดยประมาณ + ถามว่ามีคนรับแทนได้ไหม หรือต้องการให้โทรนัดก่อนส่ง — อัพเดทที่อยู่/note ในระบบ','ยกเลิกออเดอร์แล้วโทรใหม่วันหลัง','บอกว่าเป็นปัญหาของ logistics ไม่ใช่ของ Fresh'],a:1,e:'DR risk ต้องแก้ก่อนวางสาย — แจ้งกรอบเวลา หา solution ให้ลูกค้า note ในระบบ'},
+{p:'role',team:'Fresh',type:'sjt',scenario:'ลูกค้ายืนยันชื่อ ที่อยู่ แต่พอถามยืนยันออเดอร์กลับบอกว่า "อ้าว ฉันไม่ได้สั่งนะ แค่ลงทะเบียนถามข้อมูล"',q:'ควรทำอย่างไร?',c:['ยืนยันออเดอร์ต่อไปเลยเพราะลูกค้าให้ข้อมูลครบแล้ว','หยุดทันที ขอโทษในความเข้าใจผิด ชี้แจงให้ชัดว่าลูกค้าต้องยืนยันด้วยตัวเองก่อนถึงจะเกิดออเดอร์ — ไม่ส่งถ้าไม่ได้รับการยืนยัน','กดยืนยันออเดอร์แล้วค่อยแจ้ง','บอกว่าลูกค้าลงทะเบียนเองจึงต้องรับผิดชอบ'],a:1,e:'ออเดอร์ที่ไม่ได้รับการยืนยัน explicit จากลูกค้า = ไม่สามารถส่งได้ — เป็นทั้งเรื่อง compliance และ ethics'},
+{p:'role',team:'Fresh',q:'Fresh ต้องเสนอ Set อย่างน้อยกี่ชิ้น และเหตุผลหลักคือ?',c:['1 ชิ้นก็พอ ตามที่ลูกค้าขอ','3 ชิ้นขึ้นไป เพื่อให้ทานต่อเนื่องเห็นผล ดัน AOV และส่งต่อ Resell (CIT)','10 ชิ้นขึ้นไปเสมอ','ไม่มีมาตรฐาน'],a:1,e:'Standard = Set 3+ ชิ้น ทานต่อเนื่อง + AOV ดีขึ้น + สร้าง continuity ให้ CIT ต่อยอด'},
+{p:'role',team:'Fresh',q:'เมื่อสินค้าที่ลูกค้าลงทะเบียนมา "หมดสต็อก" Fresh ควรทำอย่างไร?',c:['ไม่เสนออะไร วางสาย','เสนอสินค้าทดแทนในกลุ่มเดียวกันที่ใกล้เคียง + แจ้งลูกค้าชัดเจน','เสนอสินค้าที่ราคาแพงที่สุดแทน','รอสินค้ากลับมาโดยไม่ติดต่อลูกค้า'],a:1,e:'ถ้าหมดสต็อกเท่านั้น Fresh จึงเสนอสินค้าอื่นได้ — เลือกกลุ่มใกล้เคียงและแจ้งลูกค้าโปร่งใส'},
+{p:'role',team:'Fresh',type:'sjt',scenario:'ลูกค้าที่ลงทะเบียนสินค้ากลุ่มข้อ โทรคุยแล้วบอกว่า "ที่บ้านมีคนตาไม่ดีด้วย อยากได้สินค้าตาให้ด้วยเลย"',q:'Fresh ควรทำอย่างไร?',c:['เสนอ Vistorin เพิ่มเลย เพราะลูกค้าขอเอง','อธิบายว่า Fresh โฟกัสที่ความต้องการที่ลูกค้าลงทะเบียนมาก่อน ถ้าต้องการสินค้าตา สามารถลงทะเบียนเพิ่มได้หรือทีม CIT จะดูแลต่อ','ขาย Vistorin เพิ่มเพราะ AOV สูงขึ้น','ปฏิเสธและวางสาย'],a:1,e:'Fresh ไม่ cross-sell ต่างกลุ่ม แม้ลูกค้าขอเอง — แนะนำช่องทางที่ถูกต้องแทน (ลงทะเบียนใหม่/CIT)'},
+{p:'role',team:'Resell',type:'sjt',scenario:'ลูกค้าโทรหา CIT เองและบอกว่า "ของหมดแล้ว อยากสั่งอีก แต่อยากลองเปลี่ยนตัว"',q:'CIT ควรทำอย่างไร?',c:['บอกให้ทานตัวเดิมไปเรื่อยๆ ไม่เปลี่ยน','ถามว่าทานตัวเดิมแล้วรู้สึกอย่างไร + ถามว่าอยากดูแลเรื่องอะไรเพิ่ม → แนะนำตัวที่เหมาะตาม concern ใหม่','เสนอ Bundle ทั้งชุดทันที','บอกว่าเปลี่ยนไม่ได้ ต้องทานตัวเดิม'],a:1,e:'CIT ฟัง → เข้าใจว่าลูกค้าต้องการอะไรเพิ่ม → แนะนำตัวที่เหมาะ ไม่ใช่เสนอ Bundle โดยไม่ฟัง'},
+{p:'role',team:'Resell',type:'sjt',scenario:'ลูกค้า CIT ทาน Diafin มา 2 เดือน น้ำตาลดีขึ้น แต่บอกว่า "รู้สึกอ่อนเพลีย นอนไม่หลับ"',q:'CIT ควรประเมินและแนะนำอะไร?',c:['เสนอ Cardilite เสริมทันที','ถามรายละเอียดก่อน: กินยาอื่นอยู่ไหม? น้ำตาลต่ำไปหรือเปล่า? นอนกี่ชั่วโมง? → ถ้าน้ำตาลต่ำเกินไปต้องแจ้งปรับยากับแพทย์ ไม่ใช่เพิ่มสินค้า','บอกว่าเป็นผล Diafin ปกติ ทานต่อได้','เสนอให้หยุด Diafin'],a:1,e:'อ่อนเพลีย+นอนไม่หลับในคนทาน Diafin อาจบ่งบอก hypoglycemia — ต้องตรวจสอบก่อนขายต่อ ไม่ใช่ assume ว่าต้องเพิ่มสินค้า'},
+{p:'role',team:'Resell',q:'ลูกค้าบอก "ทานแล้วยังไม่เห็นผล" ควรตอบแนวใด?',c:['"งั้นเลิกทานเลยค่ะ"','อธิบายว่าต้องทานต่อเนื่องครบ Set + เช็คว่าทานถูกวิธี/สม่ำเสมอไหม','"รับประกันคืนเงิน"','การันตีว่าหายแน่'],a:1,e:'ให้ความรู้เรื่องระยะเวลาและความสม่ำเสมอ + ตรวจวิธีทาน → รักษาลูกค้าไว้'},
+{p:'role',team:'Resell',type:'sjt',scenario:'ลูกค้าซื้อ Diafin มา 3 เดือน ผลดี อยากทาน "ตัวที่ป้องกันหัวใจ" ตามที่เพื่อนบอก',q:'CIT ควรจัดการอย่างไร?',c:['เสนอ Cardilite ทันทีเพราะลูกค้าขอเอง','ถามก่อนว่าตรวจค่าไขมัน/ความดันล่าสุดเป็นอย่างไร → ถ้ามีค่าที่น่ากังวล Cardilite เป็นทางเลือกที่สมเหตุ + อธิบายกลไก ไม่ใช่แค่ขายตามที่เพื่อนบอก','บอกว่าไม่จำเป็น Diafin พอแล้ว','เสนอ Bundle ทั้งชุดทันที'],a:1,e:'ตรวจข้อมูลสุขภาพก่อน → แนะนำตามความเหมาะสม ไม่ใช่ขายตามที่เพื่อนบอกหรือ push bundle โดยไม่ฟัง'},
+{p:'role',team:'Resell',type:'sjt',scenario:'ลูกค้าใช้มือถือ+คอม 12 ชั่วโมง/วัน ทาน Vistorin มา 1 เดือน บอกว่า "ตายังล้าเหมือนเดิม"',q:'CIT ควรประเมินและแนะนำอย่างไร?',c:['เปลี่ยนเป็น Vistorite ทันที','ถามก่อน: ทานสม่ำเสมอไหม? พักสายตาระหว่างวันไหม? → ถ้าทานถูกแต่ยังล้า → อธิบาย Vistorite เป็นทางเลือกเพิ่ม แต่แนะนำ 20-20-20 rule ด้วย','บอกว่าสินค้าไม่ได้ผล เสนอตัวอื่น','เพิ่มปริมาณ Vistorin'],a:1,e:'ตรวจ lifestyle ก่อน — ถ้าพฤติกรรมยังไม่เปลี่ยน สินค้าเพิ่มก็ไม่ช่วยเท่าที่ควร แนะนำทั้งสองทาง'},
+{p:'role',team:'Resell',type:'sjt',scenario:'ลูกค้าทาน Melavita มา 2 เดือน ฝ้าจางลงนิดหน่อย แต่ถามว่า "มีอะไรช่วยให้ผิวฟูขึ้นด้วยได้ไหม"',q:'CIT ควรตอบอย่างไร?',c:['เสนอ Lavite ทันที','อธิบายว่า Lavite ช่วยเรื่องผิวฟู/ชุ่มชื้นจากภายนอก ซึ่งตอบ concern ที่ลูกค้าถามตรงๆ — เสนอเป็นทางเลือก ไม่ใช่ "ต้องซื้อ"','บอกว่า Melavita ทำได้ทั้งคู่ไม่ต้องซื้อเพิ่ม','เสนอ Manuka Honey แทน'],a:1,e:'ลูกค้าถามเองว่าต้องการอะไร → เสนอตัวที่ตอบ concern นั้นพร้อมอธิบายเหตุผล ไม่ใช่ push bundle'},
+{p:'role',team:'Resell',q:'ลูกค้าบอก "ของยังเหลืออยู่" CIT ควรทำอย่างไร?',c:['ตื๊อให้ซื้อเดี๋ยวนี้','สอบถามปริมาณคงเหลือ แล้วนัดติดตาม/เสนอซ้ำให้พอดีช่วงของใกล้หมด','วางสาย','ตัดออกจากลิสต์'],a:1,e:'จับจังหวะ re-order ให้พอดีตอนของใกล้หมด เพิ่มโอกาสขายต่อเนื่อง'},
+{p:'role',team:'Resell',type:'sjt',scenario:'ลูกค้าทาน Protolite มา 1 เดือน ปัสสาวะกลางคืนลดลง 1 ครั้ง แต่ถาม CIT ว่า "มีอะไรช่วยให้รู้สึก energetic กว่านี้ไหม"',q:'CIT ควรตอบอย่างไร?',c:['เสนอ Duasil ทันทีเพราะเป็น Bundle คู่กัน','ถามก่อน: นอนหลับดีไหม? ออกกำลังกายบ้างไหม? → ถ้า lifestyle ปกติ Duasil เป็นทางเลือกที่สมเหตุสำหรับ energy+สมรรถภาพ — อธิบายกลไกก่อนเสนอ','บอกว่า Protolite เพียงพอแล้ว','เสนอ Diafin แทน'],a:1,e:'ฟัง lifestyle ก่อน → ถ้าเหมาะ Duasil เป็นทางเลือกที่มีเหตุผล แต่ไม่ใช่ push Bundle โดยอัตโนมัติ'},
+{p:'role',team:'Resell',type:'sjt',scenario:'ลูกค้า CIT คนหนึ่งซื้อซ้ำมาแล้ว 4 ครั้ง แต่ครั้งนี้บอกว่า "งบตึง ขอหยุดก่อนได้ไหม"',q:'CIT ควรตอบอย่างไร?',c:['กดดันให้ซื้อเพราะเป็นลูกค้าเก่า','รับฟัง ไม่กดดัน → อาจเสนอ option เล็กลง (ปริมาณน้อยกว่าปกติ) หรือนัด follow up เดือนหน้า — รักษาความสัมพันธ์ไว้ดีกว่าบังคับขาย','บอกว่าถ้าหยุดจะเสียผลทั้งหมด','วางสายทันที'],a:1,e:'ลูกค้าที่รู้สึกถูกเคารพจะกลับมา — รักษา LTV ระยะยาวสำคัญกว่ายอดขายครั้งเดียว'},
+{p:'role',team:'Resell',type:'sjt',scenario:'CIT โทรหาลูกค้าที่ซื้อครั้งแรกไป 3 สัปดาห์ ลูกค้าไม่รับสาย 2 ครั้ง ครั้งที่ 3 รับแต่บอกว่า "อย่าโทรมาอีกนะ ไม่สนใจแล้ว"',q:'ควรทำอย่างไร?',c:['โทรซ้ำต่อไปเพราะยังอยู่ในลิสต์','ขอโทษที่รบกวน บันทึกสถานะว่าลูกค้าไม่ต้องการติดต่อ และหยุดโทรทันที — เคารพสิทธิ์ลูกค้า','อ้างว่าต้องโทรตามกระบวนการ','โอนให้หัวหน้าโทรแทน'],a:1,e:'เมื่อลูกค้าขอไม่ให้ติดต่อ ต้องหยุดทันที — การโทรซ้ำหลังจากนี้อาจผิดกฎ PDPA และจริยธรรม'}
+];
+/* subjective (manager-graded) by team */
+const SUBJ={
+  Fresh:[
+    'เขียนบทเปิดสาย + คำถาม probing 2 ข้อ สำหรับลูกค้าที่เพิ่งลงทะเบียนสนใจสินค้ากลุ่มข้อ/กระดูก',
+    'ลูกค้าจะซื้อ 1 กระปุก (900฿) — เขียนสคริปต์เสนอคอร์สเพื่อดัน AOV ให้ถึง ~2,700฿ โดยไม่กดดันเกินจริง'
+  ],
+  Resell:[
+    'เขียนสคริปต์ติดตามผลการทาน + ปิดการขายซ้ำ สำหรับลูกค้าที่ซื้อไปแล้ว 2 สัปดาห์',
+    'ลูกค้าบอก "ยังไม่เห็นผล" — เขียนวิธีตอบที่รักษาลูกค้าไว้และเปิดโอกาสขายต่อเนื่อง (ห้ามการันตีหายขาด)'
+  ]
+};
+
+let user={tms:'',nick:'',fname:'',team:''}, exam=[], idx=0, answered=false, picked=[];
+let timeLeft=TIME, timerInt=null, started=0;
+const $=id=>document.getElementById(id);
+const KEYS=['ก','ข','ค','ง','จ'];
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');window.scrollTo(0,0);}
+
+/* team toggle */
+/* ---- TMS lookup: auto-fill nickname + team, block if already taken ---- */
+function parseCSV(t){const rows=[];let i=0,f='',row=[],q=false;while(i<t.length){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}else{if(c==='"')q=true;else if(c===','){row.push(f);f='';}else if(c==='\n'){row.push(f);rows.push(row);row=[];f='';}else if(c!=='\r')f+=c;}i++;}if(f.length||row.length){row.push(f);rows.push(row);}return rows;}
+const TAKEN=new Set();
+async function loadTaken(){if(!EXAM_CSV_URL)return;try{const res=await fetch(EXAM_CSV_URL+(EXAM_CSV_URL.includes('?')?'&':'?')+'_t='+Date.now());if(!res.ok)return;const rows=parseCSV(await res.text()).filter(r=>r.some(c=>c&&c.trim()));if(rows.length<2)return;const H=rows[0].map(h=>h.toLowerCase());const ti=H.findIndex(h=>h.includes('tms'));if(ti<0)return;for(let r=1;r<rows.length;r++){const t=(rows[r][ti]||'').trim().toLowerCase();if(t)TAKEN.add(t);}lookupTMS();}catch(e){}}
+const tmsMsg=()=> $('tmsMsg');
+let lookupOk=false;
+function setTeamUI(team){document.querySelectorAll('#teamtog button').forEach(x=>{x.classList.remove('on');x.style.pointerEvents='none';x.style.opacity=team?'1':'.55';});if(team){const b=document.querySelector('#teamtog button[data-team="'+team+'"]');if(b){b.classList.add('on');b.style.opacity='1';}}}
+function msg(show,color,html){const m=$('tmsMsg');m.style.display=show?'block':'none';if(show){m.style.color=color;m.innerHTML=html;}}
+function lookupTMS(){
+  const code=$('i-tms').value.trim().toLowerCase();
+  lookupOk=false;user.team='';user.fname='';$('i-fname').value='';$('i-nick').value='';
+  if(!code){msg(false);setTeamUI('');$('startBtn').disabled=true;return;}
+  const rec=ROSTER_MAP[code];
+  if(!rec){msg(true,'#E0556B','ไม่พบรหัส TMS นี้ในระบบ');setTeamUI('');$('startBtn').disabled=true;return;}
+  const nick=rec[0],team=rec[1],fname=rec[2]||'';
+  $('i-fname').value=fname;user.fname=fname;
+  $('i-nick').value=nick;user.nick=nick;user.team=team;setTeamUI(team);
+  if(TAKEN.has(code)){msg(true,'#E0556B','❌ <b>สอบไปแล้ว</b> — ไม่สามารถทำซ้ำได้');$('startBtn').disabled=true;lookupOk=false;}
+  else{msg(true,'#1FA97A','✓ '+nick+' · ทีม '+team);$('startBtn').disabled=false;lookupOk=true;}
+}
+setTeamUI('');
+$('i-tms').addEventListener('input',lookupTMS);
+loadTaken();
+
+/* build exam: all product/sales/comm/compliance + role for chosen team, shuffle choices */
+function buildExam(){
+  let qs=BANK.filter(q=>q.p!=='role'||q.team===user.team);
+  // order parts: product, sales, comm, compliance, role
+  const order={product:0,sales:1,communication:2,compliance:3,role:4};
+  qs.sort((a,b)=>order[a.p]-order[b.p]);
+  exam=qs.map(q=>{
+    const choices=q.c.map((t,i)=>({t,correct:i===q.a}));
+    return {...q, sc:shuffle(choices)};
+  });
+}
+
+$('startBtn').addEventListener('click',()=>{
+  if($('startBtn').disabled)return;
+  user.tms=$('i-tms').value.trim();
+  const code=user.tms.toLowerCase();
+  if(!lookupOk||!user.team){$('startErr').style.display='block';return;}
+  if(TAKEN.has(code)){lookupTMS();return;}   // re-block if taken
+  buildExam();idx=0;picked=[];timeLeft=TIME;started=Date.now();
+  show('s-quiz');timerInt=setInterval(tick,1000);renderQ();
+});
+
+function tick(){timeLeft--;const m=Math.floor(timeLeft/60),s=timeLeft%60;
+  const t=$('timer');t.textContent=`${m}:${String(s).padStart(2,'0')}`;
+  if(timeLeft<=120)t.classList.add('warn');
+  if(timeLeft<=0){clearInterval(timerInt);finish();}}
+
+function renderQ(){
+  answered=false;const q=exam[idx];
+  $('qcat').textContent=PART_LBL[q.p];$('qcat').style.background=PART_COL[q.p];
+  $('qnum').textContent=`ข้อ ${idx+1} / ${exam.length}`;
+  $('pbar').style.width=(idx/exam.length*100)+'%';
+  $('qtext').textContent=q.q;
+  const sc=$('qscenario');
+  if(q.scenario){sc.style.display='block';sc.textContent='สถานการณ์: '+q.scenario;}else sc.style.display='none';
+  $('choices').innerHTML=q.sc.map((c,i)=>`<button class="choice" data-i="${i}"><span class="k">${KEYS[i]}</span><span>${c.t}</span></button>`).join('');
+  $('fb').className='fb';$('fb').textContent='';$('nextBtn').classList.remove('show');
+  document.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>answer(+b.dataset.i)));
+}
+
+function answer(i){
+  if(answered)return;answered=true;
+  const q=exam[idx];const chosen=q.sc[i];const correct=chosen.correct;
+  picked.push({part:q.p,correct});
+  document.querySelectorAll('.choice').forEach((b,bi)=>{
+    b.disabled=true;
+    if(q.sc[bi].correct)b.classList.add('correct');
+    else if(bi===i&&!correct)b.classList.add('wrong');
+  });
+  const fb=$('fb');fb.classList.add('show',correct?'ok':'no');
+  fb.innerHTML=`<b>${correct?'✓ ถูกต้อง':'✗ ยังไม่ถูก'}</b> — ${q.e}`;
+  $('nextBtn').classList.add('show');
+}
+
+$('nextBtn').addEventListener('click',()=>{
+  if(idx<exam.length-1){idx++;renderQ();}else finish();
+});
+
+function finish(){
+  clearInterval(timerInt);
+  // per-part raw correct
+  const raw={};PARTS.forEach(p=>raw[p.key]=0);
+  picked.forEach(x=>{if(x.correct)raw[x.part]++;});
+  // weighted total %
+  const W={product:.30,sales:.20,communication:.15,compliance:.15,role:.20};
+  const pct={};PARTS.forEach(p=>pct[p.key]=Math.round(raw[p.key]/p.n*100));
+  const total=Math.round(PARTS.reduce((s,p)=>s+pct[p.key]*W[p.key],0));
+  const grade=total>=90?'A':total>=80?'B':total>=70?'C':total>=60?'D':'F';
+  const pass=total>=PASS;
+  window._result={raw,pct,total,grade};
+  // render
+  $('rpct').textContent=total+'%';$('rpct').className='rpct '+(pass?'pass':'fail');
+  $('rstat').textContent=pass?'ผ่านเกณฑ์ ✓':'ไม่ผ่านเกณฑ์';$('rstat').className='rstat '+(pass?'pass':'fail');
+  $('rline').textContent=`${user.fname} · ${user.nick} (${user.tms}) · ทีม ${user.team} · เกณฑ์ผ่าน ${PASS}%`;
+  $('partGrid').innerHTML=PARTS.map(p=>{
+    const v=pct[p.key];const col=v<70?'#E0556B':v<80?'#FFB347':v<90?'#5BC2A6':'#1FA97A';
+    return `<div class="partrow"><div class="pl">${p.label}</div><div class="ptrack"><i style="width:${v}%;background:${col}"></i></div><div class="pv" style="color:${col}">${raw[p.key]}/${p.n}</div></div>`;
+  }).join('');
+  window._result={raw,pct,total,grade};
+  const sj=SUBJ[user.team];
+  $('subjQ1').textContent='1) '+sj[0];$('subjQ2').textContent='2) '+sj[1];
+  // show result summary in result screen (but hidden until after submit)
+  $('rpct').textContent=total+'%';$('rpct').className='rpct '+(pass?'pass':'fail');
+  $('rstat').textContent=pass?'ผ่านเกณฑ์ ✓':'ไม่ผ่านเกณฑ์';$('rstat').className='rstat '+(pass?'pass':'fail');
+  $('rline').textContent=`${user.fname} · ${user.nick} (${user.tms}) · ทีม ${user.team} · เกณฑ์ผ่าน ${PASS}%`;
+  $('partGrid').innerHTML=PARTS.map(p=>{const v=pct[p.key];const col=v<70?'#E0556B':v<80?'#FFB347':v<90?'#5BC2A6':'#1FA97A';return `<div class="partrow"><div class="pl">${p.label}</div><div class="ptrack"><i style="width:${v}%;background:${col}"></i></div><div class="pv" style="color:${col}">${raw[p.key]}/${p.n}</div></div>`;}).join('');
+  show('s-subj');
+}
+
+
+
+let sent=false;
+$('submitBtn').addEventListener('click',()=>{
+  if(sent)return;
+  const r=window._result;const f=GFORM.fields;
+  const subj='[Q1] '+($('subjA1').value.trim()||'-')+'  ||  [Q2] '+($('subjA2').value.trim()||'-');
+  const data={
+    [f.tms]:user.tms,[f.nickname]:user.nick,[f.team]:user.team,
+    [f.product]:r.raw.product,[f.sales]:r.raw.sales,[f.communication]:r.raw.communication,
+    [f.compliance]:r.raw.compliance,[f.role]:r.raw.role,
+    [f.total]:r.total+'%',[f.grade]:r.grade,[f.subjective]:subj
+  };
+  // POST via hidden iframe so page doesn't navigate (same pattern as your sample)
+  let iframe=$('gf-sink');
+  if(!iframe){iframe=document.createElement('iframe');iframe.name='gf-sink';iframe.id='gf-sink';iframe.style.display='none';document.body.appendChild(iframe);}
+  const form=document.createElement('form');
+  form.action=GFORM.base.replace('/viewform','/formResponse');
+  form.method='POST';form.target='gf-sink';form.style.display='none';
+  Object.entries(data).forEach(([k,v])=>{const inp=document.createElement('input');inp.type='hidden';inp.name=k;inp.value=v;form.appendChild(inp);});
+  document.body.appendChild(form);form.submit();setTimeout(()=>form.remove(),1000);
+  sent=true;TAKEN.add(user.tms.toLowerCase());
+  const btn=$('submitBtn');btn.textContent='✅ ส่งคะแนนเข้าระบบแล้ว';btn.disabled=true;btn.style.opacity='.65';
+  $('submitMsg').textContent='คะแนนถูกส่งเข้า Google Sheet แล้ว — Dashboard จะอัปเดตให้อัตโนมัติ';
+  setTimeout(()=>show('s-result'),1200);
+});
+</script>
+</body>
+</html>
