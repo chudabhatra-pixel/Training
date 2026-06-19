@@ -183,7 +183,7 @@ const TOPICS=[{key:'product',label:'Product Knowledge',short:'Product',w:0.30,ba
 /* ===== DATA SOURCE CONFIG =====
    วาง URL ของ Google Sheet ที่ Publish เป็น CSV ตรงนี้ (ดูวิธีในไฟล์ SETUP)
    ปล่อยว่าง = ใช้ข้อมูลตัวอย่าง (sample) */
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQh4_L-0VxKHEWTVMeI1V_Q-YRQxlvCnyOdk4MASZyx2Z2lsLcdn7XAUop80fcij60VsW8P3P698TLb/pub?gid=816813756&single=true&output=csv';            // เช่น 'https://docs.google.com/spreadsheets/d/e/XXXX/pub?gid=0&single=true&output=csv'
+const CSV_URL = 'https://script.google.com/macros/s/AKfycbxfKEUt70SUn74tMmiUNuB-IvHo7LzBA4O1FulODR-PtsCoPvxwwUU-PyqUkWHyaj8o/exec';            // เช่น 'https://docs.google.com/spreadsheets/d/e/XXXX/pub?gid=0&single=true&output=csv'
 const AUTO_REFRESH_SEC = 60;   // รีเฟรชอัตโนมัติทุกกี่วินาที (0 = ปิด)
 // จำนวนข้อเต็มต่อส่วน (ใช้แปลงคะแนนดิบ→%) ต้องตรงกับข้อสอบ
 const PART_MAX={product:20,sales:12,communication:8,compliance:10,role:10};
@@ -218,23 +218,26 @@ function colIndex(headers,...keys){
   return headers.findIndex(h=>{const x=h.toLowerCase();return keys.some(k=>x.includes(k));});
 }
 
-// ---- build EMP from live CSV, overlaying onto the roster by TMS ----
-function buildLiveEMP(csvText){
-  const rows=parseCSV(csvText).filter(r=>r.some(c=>c&&c.trim()));
-  if(rows.length<2) throw new Error('empty');
-  const H=rows[0].map(h=>h.trim());
-  const ci={tms:colIndex(H,'tms'),product:colIndex(H,'product'),sales:colIndex(H,'sales'),
-    communication:colIndex(H,'comm'),compliance:colIndex(H,'compliance'),role:colIndex(H,'role')};
-  if(ci.tms<0) throw new Error('no TMS column');
-  // latest submission per TMS (later rows override)
+// ---- build EMP from Apps Script JSON ----
+function buildLiveEMP(jsonText){
+  const rows=JSON.parse(jsonText);
+  if(!rows||!rows.length) throw new Error('empty');
   const byTms={};
-  for(let r=1;r<rows.length;r++){const row=rows[r];const tms=(row[ci.tms]||'').trim().toLowerCase();if(tms)byTms[tms]=row;}
+  rows.forEach(row=>{
+    const tms=(row['TMS']||row['tms']||'').trim().toLowerCase();
+    if(tms) byTms[tms]=row;
+  });
   return ROSTER.map(([name,tms,p,d])=>{
     const dept=DEPT[d],position=POS[p];
     const row=byTms[tms.toLowerCase()];
     if(!row) return {name,tms,dept,position,pcode:p,scores:{},overall:null,status:'pending'};
     const scores={};let ok=true;
-    TOPICS.forEach(t=>{const raw=parseFloat(row[ci[t.key]]);if(isNaN(raw)){ok=false;return;}scores[t.key]=clamp(r0(raw/PART_MAX[t.key]*100),0,100);});
+    TOPICS.forEach(t=>{
+      const key=t.key.charAt(0).toUpperCase()+t.key.slice(1);
+      const raw=parseFloat(row[key]||row[t.key]||'');
+      if(isNaN(raw)){ok=false;return;}
+      scores[t.key]=clamp(r0(raw/PART_MAX[t.key]*100),0,100);
+    });
     if(!ok) return {name,tms,dept,position,pcode:p,scores:{},overall:null,status:'pending'};
     const overall=r0(TOPICS.reduce((s,t)=>s+scores[t.key]*t.w,0));
     return {name,tms,dept,position,pcode:p,scores,overall,status:'done'};
@@ -326,7 +329,7 @@ async function loadData(){
   if(!CSV_URL){EMP=buildSampleEMP();setBadge('sample');render(currentFilter);return;}
   setBadge('loading');
   try{
-    const res=await fetch(CSV_URL+(CSV_URL.includes('?')?'&':'?')+'_t='+Date.now());
+    const res=await fetch(CSV_URL+'?_t='+Date.now());
     if(!res.ok)throw new Error(res.status);
     EMP=buildLiveEMP(await res.text());setBadge('live');
   }catch(err){EMP=buildSampleEMP();setBadge('error');}
