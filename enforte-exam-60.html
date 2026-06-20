@@ -99,6 +99,13 @@
   .confirm-btns button{flex:1;padding:13px;border:none;border-radius:12px;font-family:'Prompt',sans-serif;font-weight:700;font-size:14px;cursor:pointer}
   .btn-confirm{background:linear-gradient(135deg,#6C63FF,#FF6B9D);color:#fff}
   .btn-cancel{background:#F0EDE8;color:var(--txt2)}
+
+  /* ── Glossary Tooltip ── */
+  .gloss{border-bottom:1px dashed var(--p);cursor:help;position:relative;display:inline}
+  .gloss::after{content:attr(data-tip);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);
+    background:#16242F;color:#fff;font-size:11px;white-space:nowrap;padding:4px 8px;border-radius:6px;
+    pointer-events:none;opacity:0;transition:.15s;z-index:50;font-weight:400}
+  .gloss:hover::after,.gloss:focus::after{opacity:1}
 </style>
 </head>
 <body>
@@ -194,9 +201,8 @@ const PARTS=[
   {key:'product',      label:'ความรู้สินค้า',   col:'#6C63FF', n:20},
   {key:'sales',        label:'เทคนิคการขาย',    col:'#FF6B9D', n:12},
   {key:'communication',label:'การสื่อสาร',      col:'#00C9A7', n:8},
-  {key:'compliance',   label:'Compliance/อย.',  col:'#FFB347', n:10},
-  {key:'tf',label:'ถูก/ผิด',col:'#27AE60',n:10},
-  {key:'role',         label:'KPI ตามบทบาท',    col:'#4FC3F7', n:10},
+  {key:'compliance',   label:'Compliance/อย.',  col:'#FFB347', n:12},
+  {key:'role',         label:'KPI ตามบทบาท',    col:'#4FC3F7', n:8},
 ];
 const PART_LBL=Object.fromEntries(PARTS.map(p=>[p.key,p.label]));
 const PART_COL=Object.fromEntries(PARTS.map(p=>[p.key,p.col]));
@@ -330,16 +336,16 @@ const BANK=[
 {p:"product",q:"ในเชิงการวิเคราะห์สินค้า (Cross-sell) หากลูกค้าทาน Flexvits อยู่แล้วแต่แจ้งว่ามีอาการ 'ชาที่ขาและชีพจรที่เท้าเบา' สารสกัดในผลิตภัณฑ์ใดที่จะช่วยแก้ pain point นี้ได้ตรงจุดที่สุด",c:["Melavita เพราะอาการชาที่ขาอาจเกิดจากผิวหนังที่แห้งเกินไปจนเส้นประสาทส่วนปลายทำงานผิดปกติ","Tensirin เพราะช่วยเรื่องการไหลเวียนโลหิต ซึ่งอาการชาแสดงถึงเลือดที่ไปเลี้ยงส่วนปลายได้ไม่ดีพอ","Pilonix เพราะจะช่วยเพิ่มการเผาผลาญพลังงานในระดับเซลล์ ทำให้ชีพจรกลับมาเต้นแรงเป็นปกติ","Vistorin เพราะมีสารต้านอนุมูลอิสระที่ช่วยซ่อมแซมเส้นประสาททั่วร่างกายรวมถึงบริเวณขา"],a:0,e:"Flexvits ดูแลข้อ Tensirin เดินเลือด ทั้งคู่ทำงานต่างมิติเสริมกัน เลือดไหลเวียนดีช่วยให้ข้อฟื้นเร็ว"},
 {p:"role",team:"Resell",q:"ตามหลักการทำงานของพนักงานขายทางโทรศัพท์ (Resell) ค่าตัวชี้วัดใดที่แสดงถึงความสามารถในการสร้างความสัมพันธ์ที่ยั่งยืนกับลูกค้า (LTV) ได้ชัดเจนที่สุด",c:["จำนวนสายที่โทรออกต่อวัน (Total Outbound Calls)","อัตราการยกเลิกออเดอร์หลังจากยืนยันไปแล้ว (Cancellation Rate)","ยอดขายจากการซื้อซ้ำและอัตราการทานต่อเนื่อง (Repeat/Continuity Sales)","ระยะเวลาที่ใช้ในการสนทนาเฉลี่ยต่อสาย (Average Talk Time)"],a:1,e:"ทีมดูแลลูกค้าเดิมวัด Retention Revenue (ยอดขายซ้ำ) ไม่ใช่ AR/DR เหมือนทีมดูแลลูกค้าใหม่"},
 {p:"role",team:"Resell",q:"เมื่อลูกค้าแจ้งว่า 'อยากประหยัดงบ ขอหยุดทานก่อน' พนักงานขายทางโทรศัพท์ที่มีทักษะการเจรจาต่อรองควรตอบโต้ (Rebuttal) อย่างไร",c:["กดดันโดยแจ้งว่าประวัติการซื้อของลูกค้าจะถูกลบ และจะไม่สามารถรับโปรโมชั่นราคาพิเศษได้อีกตลอดชีวิต","ตกลงหยุดการขายทันทีเพื่อแสดงความเคารพในการตัดสินใจของลูกค้า และบันทึกว่าไม่สนใจถาวร","แจ้งลูกค้าตามตรงว่าหากหยุดทานตอนนี้ ร่างกายจะทรุดหนักกว่าเดิมและโรคจะดื้อยาจนรักษาไม่ได้ในอนาคต","รับฟังและแสดงความเห็นใจ จากนั้นเสนอทางเลือกที่เล็กลงหรือการแบ่งชำระเพื่อคงความต่อเนื่องของการเห็นผลไว้"],a:1,e:"รับฟัง ไม่กดดัน เสนอ Option เล็กลง หรือนัด Follow-up รักษาความสัมพันธ์ดีกว่าบังคับขาย"},
-{p:"compliance",type:"tf",q:"สคริปต์: 'Movita ช่วยรักษาโรคกระดูกพรุนให้หายขาดได้' — ถูกต้องตามหลัก อย. หรือไม่?",c:["ไม่ถูก — ห้ามอ้างรักษา/หายขาด ผลิตภัณฑ์เสริมอาหาร ≠ ยา","ถูก — Movita ผ่าน อย. แล้วจึงพูดได้ทุกอย่าง","ถูก — ถ้าลูกค้าถามก่อนจึงบอก ไม่ผิด","ไม่ถูก — แต่พูดได้ถ้าเติมคำว่า 'อาจจะ' ก่อน"],a:0,e:"ห้ามอ้างรักษา/หายขาดไม่ว่ากรณีใด"},
-{p:"compliance",type:"tf",q:"สคริปต์: 'ทาน Cardilite ต่อเนื่องช่วยดูแลและบำรุงหัวใจได้' — ถูกต้องตามหลัก อย. หรือไม่?",c:["ถูก — ใช้คำว่า 'ดูแลและบำรุง' ไม่ใช่ 'รักษา' พูดได้","ไม่ถูก — ห้ามพูดเรื่องหัวใจเด็ดขาด","ไม่ถูก — ต้องได้รับอนุญาตพิเศษจาก อย. ก่อน","ถูก — แต่ต้องเติมคำว่า 'รักษา' ด้วยจึงจะครบ"],a:0,e:"'ช่วยดูแลและบำรุง' พูดได้ — ต่างจาก 'รักษา/หายขาด' ซึ่งห้าม"},
-{p:"product",type:"tf",q:"Vistorin และ Vistorite มีหน้าที่เหมือนกันทุกประการ — ถูกหรือไม่?",c:["ไม่ถูก — Vistorin เน้นป้องกัน (Protect) ส่วน Vistorite เน้นฟื้นฟู (Recover)","ถูก — ทั้งคู่บำรุงสายตาเหมือนกัน","ถูก — ต่างกันแค่ขนาดบรรจุ","ไม่ถูก — Vistorite ใช้หยอดตา ส่วน Vistorin รับประทาน"],a:0,e:"Vistorin = Protect / Vistorite = Recover คนละบทบาท ใช้คู่ 'กัน+ฟื้น' ครบ"},
-{p:"product",type:"tf",q:"Manuka Honey สามารถทดแทน Movita หรือ Diafin ได้ — ถูกหรือไม่?",c:["ไม่ถูก — Manuka เป็น Booster เสริมตัวหลัก ไม่ใช่ตัวหลักด้วยตัวเอง","ถูก — มีสารต้านการอักเสบที่ครอบคลุมทุกปัญหา","ถูก — ถ้าทานวันละ 5 ช้อนชาขึ้นไปทดแทนได้","ไม่ถูก — แต่ทดแทนได้เฉพาะผู้สูงอายุ"],a:0,e:"Manuka = Premium Booster เสริมตัวหลัก ทดแทนตัวหลักไม่ได้"},
-{p:"sales",type:"tf",q:"พนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่) Cross-sell ต่างกลุ่มได้ทุกเมื่อ — ถูกหรือไม่?",c:["ไม่ถูก — Cross-sell ต่างกลุ่มได้เฉพาะเมื่อสินค้าที่ลงทะเบียนมาหมดสต็อกเท่านั้น","ถูก — ถ้าลูกค้าสนใจก็ Cross-sell ได้ทุกเมื่อ","ถูก — ถ้า AOV ยังไม่ถึงเป้า Cross-sell ได้เลย","ไม่ถูก — Cross-sell ต่างกลุ่มไม่ได้เลยทุกกรณี"],a:0,e:"ดูแลลูกค้าใหม่ Cross-sell ต่างกลุ่มได้เฉพาะเมื่อสินค้าที่ลงทะเบียนหมดเท่านั้น"},
-{p:"compliance",type:"tf",q:"บอกลูกค้าว่า 'โปรนี้วันนี้วันสุดท้าย' ทั้งที่ยังไม่หมด ยอมรับได้ในเชิง Compliance — ถูกหรือไม่?",c:["ไม่ถูก — False Urgency ด้วยข้อมูลเท็จ ผิดจริยธรรมและอาจผิดกฎหมาย","ถูก — เป็นเทคนิคการขายมาตรฐานที่ทุกบริษัทใช้","ถูก — ถ้าโปรจะหมดในเร็วๆ นี้พูดได้","ไม่ถูก — แต่ยอมรับได้ถ้า AR ต่ำกว่าเป้า"],a:0,e:"False Urgency = ผิดจริยธรรม + พ.ร.บ.คุ้มครองผู้บริโภค ไม่มีข้อยกเว้น"},
-{p:"communication",type:"tf",q:"เมื่อลูกค้าขอหยุดติดต่อ ยังส่ง SMS แทนโทรศัพท์ได้ — ถูกหรือไม่?",c:["ไม่ถูก — ขอ Do-Not-Contact = หยุดทุกช่องทางรวม SMS","ถูก — SMS ไม่ใช่โทรศัพท์จึงทำได้","ถูก — ถ้าส่งเดือนละครั้งถือว่าไม่เกิน","ไม่ถูก — แต่ยกเว้นได้ถ้าเป็นข้อมูลบริการหลังการขาย"],a:0,e:"Do-Not-Contact = หยุดทุกช่องทาง ผิด PDPA ถ้าฝ่าฝืนแม้จะเป็น SMS"},
-{p:"product",type:"tf",q:"ผ่าน อย. แปลว่าสินค้าปลอดภัยสำหรับทุกคนรวมถึงหญิงตั้งครรภ์ — ถูกหรือไม่?",c:["ไม่ถูก — อย. รับรองมาตรฐานการผลิต ไม่ใช่ความปลอดภัยสำหรับทุกกลุ่ม","ถูก — อย. รับรองหมายถึงปลอดภัย 100% ทุกคน","ถูก — ถ้าทานตามปริมาณที่แนะนำบนฉลาก","ไม่ถูก — แต่ปลอดภัยสำหรับผู้ใหญ่ที่ไม่มีโรค"],a:0,e:"อย. = มาตรฐานการผลิต ≠ ปลอดภัยทุกกลุ่ม — กลุ่มเปราะบางต้องปรึกษาแพทย์เสมอ"},
-{p:"compliance",type:"tf",q:"พนักงานขายแนะนำขนาดยาแพทย์ได้ถ้าศึกษาข้อมูลมาเอง — ถูกหรือไม่?",c:["ไม่ถูก — ต้องมีใบอนุญาตประกอบวิชาชีพเวชกรรมเท่านั้น","ถูก — ถ้าข้อมูลถูกต้องและมาจากแหล่งน่าเชื่อถือ","ถูก — ถ้าบอกว่าเป็นแค่ความเห็นส่วนตัว","ไม่ถูก — แต่บอกเป็น Guideline ทั่วไปได้"],a:0,e:"แนะนำยา = ปฏิบัติการทางการแพทย์ ต้องมีใบอนุญาต ไม่มีข้อยกเว้น"},
-{p:"sales",type:"tf",q:"AR สูงแต่ DR ต่ำมาก แปลว่าทีมขายทำงานได้ดี — ถูกหรือไม่?",c:["ไม่ถูก — AR สูงแต่ DR ต่ำ = ออเดอร์เยอะแต่ของถึงมือน้อย ปัญหาอยู่ที่ Confirmation Stage","ถูก — AR สูงแสดงว่าทีมขายเก่งมาก","ถูก — DR เป็นเรื่อง Logistics ไม่ใช่ความผิดทีมขาย","ไม่ถูก — แต่ถ้า AR สูงกว่า 50% ถือว่าผ่านเกณฑ์"],a:0,e:"AR สูง + DR ต่ำ = Confirm ข้อมูลจัดส่งไม่ครบ ต้องแก้ที่ Confirmation Stage"}
+{p:"compliance",q:"สคริปต์: 'Movita ช่วยรักษาโรคกระดูกพรุนให้หายขาดได้' — ถูกต้องตามหลัก อย. หรือไม่?",c:["ไม่ถูก — ห้ามอ้างรักษา/หายขาด ผลิตภัณฑ์เสริมอาหาร ≠ ยา","ถูก — Movita ผ่าน อย. แล้วจึงพูดได้ทุกอย่าง","ถูก — ถ้าลูกค้าถามก่อนจึงบอก ไม่ผิด","ไม่ถูก — แต่พูดได้ถ้าเติมคำว่า 'อาจจะ' ก่อน"],a:0,e:"ห้ามอ้างรักษา/หายขาดไม่ว่ากรณีใด"},
+{p:"compliance",q:"สคริปต์: 'ทาน Cardilite ต่อเนื่องช่วยดูแลและบำรุงหัวใจได้' — ถูกต้องตามหลัก อย. หรือไม่?",c:["ถูก — ใช้คำว่า 'ดูแลและบำรุง' ไม่ใช่ 'รักษา' พูดได้","ไม่ถูก — ห้ามพูดเรื่องหัวใจเด็ดขาด","ไม่ถูก — ต้องได้รับอนุญาตพิเศษจาก อย. ก่อน","ถูก — แต่ต้องเติมคำว่า 'รักษา' ด้วยจึงจะครบ"],a:0,e:"'ช่วยดูแลและบำรุง' พูดได้ — ต่างจาก 'รักษา/หายขาด' ซึ่งห้าม"},
+{p:"product",q:"Vistorin และ Vistorite มีหน้าที่เหมือนกันทุกประการ — ถูกหรือไม่?",c:["ไม่ถูก — Vistorin เน้นป้องกัน (Protect) ส่วน Vistorite เน้นฟื้นฟู (Recover)","ถูก — ทั้งคู่บำรุงสายตาเหมือนกัน","ถูก — ต่างกันแค่ขนาดบรรจุ","ไม่ถูก — Vistorite ใช้หยอดตา ส่วน Vistorin รับประทาน"],a:0,e:"Vistorin = Protect / Vistorite = Recover คนละบทบาท ใช้คู่ 'กัน+ฟื้น' ครบ"},
+{p:"product",q:"Manuka Honey สามารถทดแทน Movita หรือ Diafin ได้ — ถูกหรือไม่?",c:["ไม่ถูก — Manuka เป็น Booster เสริมตัวหลัก ไม่ใช่ตัวหลักด้วยตัวเอง","ถูก — มีสารต้านการอักเสบที่ครอบคลุมทุกปัญหา","ถูก — ถ้าทานวันละ 5 ช้อนชาขึ้นไปทดแทนได้","ไม่ถูก — แต่ทดแทนได้เฉพาะผู้สูงอายุ"],a:0,e:"Manuka = Premium Booster เสริมตัวหลัก ทดแทนตัวหลักไม่ได้"},
+{p:"sales",q:"พนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่) Cross-sell ต่างกลุ่มได้ทุกเมื่อ — ถูกหรือไม่?",c:["ไม่ถูก — Cross-sell ต่างกลุ่มได้เฉพาะเมื่อสินค้าที่ลงทะเบียนมาหมดสต็อกเท่านั้น","ถูก — ถ้าลูกค้าสนใจก็ Cross-sell ได้ทุกเมื่อ","ถูก — ถ้า AOV ยังไม่ถึงเป้า Cross-sell ได้เลย","ไม่ถูก — Cross-sell ต่างกลุ่มไม่ได้เลยทุกกรณี"],a:0,e:"ดูแลลูกค้าใหม่ Cross-sell ต่างกลุ่มได้เฉพาะเมื่อสินค้าที่ลงทะเบียนหมดเท่านั้น"},
+{p:"compliance",q:"บอกลูกค้าว่า 'โปรนี้วันนี้วันสุดท้าย' ทั้งที่ยังไม่หมด ยอมรับได้ในเชิง Compliance — ถูกหรือไม่?",c:["ไม่ถูก — False Urgency ด้วยข้อมูลเท็จ ผิดจริยธรรมและอาจผิดกฎหมาย","ถูก — เป็นเทคนิคการขายมาตรฐานที่ทุกบริษัทใช้","ถูก — ถ้าโปรจะหมดในเร็วๆ นี้พูดได้","ไม่ถูก — แต่ยอมรับได้ถ้า AR ต่ำกว่าเป้า"],a:0,e:"False Urgency = ผิดจริยธรรม + พ.ร.บ.คุ้มครองผู้บริโภค ไม่มีข้อยกเว้น"},
+{p:"communication",q:"เมื่อลูกค้าขอหยุดติดต่อ ยังส่ง SMS แทนโทรศัพท์ได้ — ถูกหรือไม่?",c:["ไม่ถูก — ขอ Do-Not-Contact = หยุดทุกช่องทางรวม SMS","ถูก — SMS ไม่ใช่โทรศัพท์จึงทำได้","ถูก — ถ้าส่งเดือนละครั้งถือว่าไม่เกิน","ไม่ถูก — แต่ยกเว้นได้ถ้าเป็นข้อมูลบริการหลังการขาย"],a:0,e:"Do-Not-Contact = หยุดทุกช่องทาง ผิด PDPA ถ้าฝ่าฝืนแม้จะเป็น SMS"},
+{p:"product",q:"ผ่าน อย. แปลว่าสินค้าปลอดภัยสำหรับทุกคนรวมถึงหญิงตั้งครรภ์ — ถูกหรือไม่?",c:["ไม่ถูก — อย. รับรองมาตรฐานการผลิต ไม่ใช่ความปลอดภัยสำหรับทุกกลุ่ม","ถูก — อย. รับรองหมายถึงปลอดภัย 100% ทุกคน","ถูก — ถ้าทานตามปริมาณที่แนะนำบนฉลาก","ไม่ถูก — แต่ปลอดภัยสำหรับผู้ใหญ่ที่ไม่มีโรค"],a:0,e:"อย. = มาตรฐานการผลิต ≠ ปลอดภัยทุกกลุ่ม — กลุ่มเปราะบางต้องปรึกษาแพทย์เสมอ"},
+{p:"compliance",q:"พนักงานขายแนะนำขนาดยาแพทย์ได้ถ้าศึกษาข้อมูลมาเอง — ถูกหรือไม่?",c:["ไม่ถูก — ต้องมีใบอนุญาตประกอบวิชาชีพเวชกรรมเท่านั้น","ถูก — ถ้าข้อมูลถูกต้องและมาจากแหล่งน่าเชื่อถือ","ถูก — ถ้าบอกว่าเป็นแค่ความเห็นส่วนตัว","ไม่ถูก — แต่บอกเป็น Guideline ทั่วไปได้"],a:0,e:"แนะนำยา = ปฏิบัติการทางการแพทย์ ต้องมีใบอนุญาต ไม่มีข้อยกเว้น"},
+{p:"sales",q:"AR สูงแต่ DR ต่ำมาก แปลว่าทีมขายทำงานได้ดี — ถูกหรือไม่?",c:["ไม่ถูก — AR สูงแต่ DR ต่ำ = ออเดอร์เยอะแต่ของถึงมือน้อย ปัญหาอยู่ที่ Confirmation Stage","ถูก — AR สูงแสดงว่าทีมขายเก่งมาก","ถูก — DR เป็นเรื่อง Logistics ไม่ใช่ความผิดทีมขาย","ไม่ถูก — แต่ถ้า AR สูงกว่า 50% ถือว่าผ่านเกณฑ์"],a:0,e:"AR สูง + DR ต่ำ = Confirm ข้อมูลจัดส่งไม่ครบ ต้องแก้ที่ Confirmation Stage"}
 ];
 /* subjective (manager-graded) by team */
 const SUBJ={
@@ -388,17 +394,72 @@ $('i-tms').addEventListener('input',lookupTMS);
 loadTaken();
 
 /* build exam: all product/sales/comm/compliance + role for chosen team, shuffle choices */
+
+// ── Glossary: แปลคำศัพท์/ตัวย่อ ──
+const GLOSSARY={
+  'RTO':     'ของตีกลับ (Return to Origin)',
+  'AR':      'อัตราออเดอร์ที่ยืนยันสำเร็จ (Approved Rate)',
+  'AOV':     'มูลค่าออเดอร์เฉลี่ย (Average Order Value)',
+  'DR':      'อัตราส่งของถึงมือลูกค้า (Delivered Rate)',
+  'CLV':     'มูลค่าลูกค้าตลอดอายุ (Customer Lifetime Value)',
+  'BMD':     'ความหนาแน่นของกระดูก (Bone Mineral Density)',
+  'DEXA':    'การสแกนวัดมวลกระดูก (DEXA Scan)',
+  'COD':     'จ่ายเงินปลายทาง (Cash on Delivery)',
+  'UC-II':   'คอลลาเจนชนิด 2 ที่ยังไม่ผ่านความร้อน (Undenatured Collagen Type II)',
+  'UMF':     'ระดับปัจจัยมาตัฐาน Manuka (Unique Manuka Factor)',
+  'PDPA':    'กฎหมายคุ้มครองข้อมูลส่วนบุคคล (Personal Data Protection Act)',
+  'SLA':     'ข้อตกลงระดับการให้บริการ (Service Level Agreement)',
+  'KPI':     'ตัวชี้วัดผลการปฏิบัติงาน (Key Performance Indicator)',
+  'LTV':     'มูลค่าลูกค้าระยะยาว (Lifetime Value)',
+  'SJT':     'แบบทดสอบสถานการณ์สมมติ (Situational Judgement Test)',
+  'Probing': 'การถามเพื่อค้นหาความต้องการ',
+  'Upsell':  'การเสนอสินค้าที่มีมูลค่าสูงขึ้น',
+  'Segment': 'กลุ่มลูกค้า',
+  'Compliance': 'การปฏิบัติตามกฎระเบียบ',
+  'Over-claim': 'การอ้างสรรพคุณเกินจริง',
+  'Bundle':  'ชุดสินค้า',
+  'Booster': 'ตัวเสริมประสิทธิภาพ',
+  'Aquamin': 'แคลเซียมจากสาหร่ายแดงทะเล (Red Marine Algae Calcium)',
+  'Lutein':  'สารต้านอนุมูลอิสระในสายตา (พบในผักใบเขียว)',
+  'Melanin': 'เม็ดสีผิว',
+  'Vascular':'เกี่ยวกับหลอดเลือด',
+  'Detox':   'การขับสารพิษ',
+  'Lapsed':  'ลูกค้าที่หยุดซื้อไประยะหนึ่ง',
+  'Reactivation':'การดึงลูกค้าที่หยุดซื้อกลับมา',
+  'Cadence': 'ความถี่/จังหวะการติดต่อ',
+  'Retention':'การรักษาลูกค้า',
+  'Pain Point':'ปัญหาหรือความต้องการของลูกค้า',
+  'Root Cause':'สาเหตุหลัก',
+  'Hypoglycemia':'ภาวะน้ำตาลในเลือดต่ำเกิน',
+  'Red Flag':'สัญญาณเตือนที่ต้องระวัง',
+  'Cross-sell':'การเสนอสินค้าประเภทอื่นเพิ่มเติม',
+  'Assumptive Close':'เทคนิคปิดการขายโดยพูดเสมือนลูกค้าตัดสินใจแล้ว',
+  'False Urgency':'การสร้างความเร่งด่วนด้วยข้อมูลเท็จ',
+  'Do-Not-Contact':'รายชื่อที่ห้ามติดต่อ',
+};
+
+function applyGlossary(text){
+  // เรียงจากยาวไปสั้นเพื่อ match คำยาวก่อน
+  const keys=Object.keys(GLOSSARY).sort((a,b)=>b.length-a.length);
+  let result=text;
+  keys.forEach(k=>{
+    const re=new RegExp('(?<![\\w>])'+k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?![\\w<])', 'g');
+    result=result.replace(re,`<span class="gloss" data-tip="${GLOSSARY[k]}">${k}</span>`);
+  });
+  return result;
+}
+
 function buildExam(){
-  const targets={product:20,sales:12,communication:8,compliance:10,role:10,tf:10};
+  const targets={product:20,sales:12,communication:8,compliance:12,role:8};
   const pools={};
   Object.keys(targets).forEach(k=>{
-    pools[k]=k==='tf'?shuffle(BANK.filter(q=>q.type==='tf')):shuffle(BANK.filter(q=>q.p===k&&q.type!=='tf'&&(k!=='role'||q.team===user.team)));
+    pools[k]=shuffle(BANK.filter(q=>q.p===k&&(k!=='role'||q.team===user.team)));
   });
   let selected=[];
   Object.entries(targets).forEach(([part,n])=>{
     selected.push(...pools[part].slice(0,n));
   });
-  const order={product:0,sales:1,communication:2,compliance:3,role:4,tf:5};
+  const order={product:0,sales:1,communication:2,compliance:3,role:4};
   selected.sort((a,b)=>order[a.p]-order[b.p]);
   exam=selected.map(q=>{
     const choices=q.c.map((t,i)=>({t,correct:i===q.a}));
@@ -442,10 +503,10 @@ function renderQ(){
   $('qcat').textContent=PART_LBL[q.p];$('qcat').style.background=PART_COL[q.p];
   $('qnum').textContent=`ข้อ ${idx+1} / ${exam.length}`;
   $('pbar').style.width=(idx/exam.length*100)+'%';
-  $('qtext').textContent=q.q;
+  $('qtext').innerHTML=applyGlossary(q.q);
   const sc=$('qscenario');
-  if(q.scenario){sc.style.display='block';sc.textContent='สถานการณ์: '+q.scenario;}else sc.style.display='none';
-  $('choices').innerHTML=q.sc.map((c,i)=>`<button class="choice" data-i="${i}"><span class="k">${KEYS[i]}</span><span>${c.t}</span></button>`).join('');
+  if(q.scenario){sc.style.display='block';sc.innerHTML='<b>สถานการณ์:</b> '+applyGlossary(q.scenario);}else sc.style.display='none';
+  $('choices').innerHTML=q.sc.map((c,i)=>`<button class="choice" data-i="${i}"><span class="k">${KEYS[i]}</span><span>${applyGlossary(c.t)}</span></button>`).join('');
   $('fb').className='fb';$('fb').textContent='';$('nextBtn').classList.remove('show');
   document.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>answer(+b.dataset.i)));
 }
@@ -474,7 +535,7 @@ function commitAnswer(i){
     else if(bi===i&&!correct)b.classList.add('wrong');
   });
   const fb=$('fb');fb.classList.add('show',correct?'ok':'no');
-  fb.innerHTML=`<b>${correct?'✓ ถูกต้อง':'✗ ยังไม่ถูก'}</b> — ${q.e}`;
+  fb.innerHTML=`<b>${correct?'✓ ถูกต้อง':'✗ ยังไม่ถูก'}</b> — ${applyGlossary(q.e)}`;
   $('nextBtn').classList.add('show');
 }
 
@@ -488,9 +549,9 @@ function finish(){
   const raw={};PARTS.forEach(p=>raw[p.key]=0);
   picked.forEach(x=>{if(x.correct)raw[x.part]++;});
   // weighted total %
-  const W={product:.30,sales:.20,communication:.15,compliance:.15,role:.20};
+  const W={product:.30,sales:.20,communication:.12,compliance:.22,role:.16};
   const pct={};PARTS.forEach(p=>pct[p.key]=Math.round(raw[p.key]/p.n*100));
-  const total=Math.round(PARTS.reduce((s,p)=>s+pct[p.key]*W[p.key],0));
+  const total=Math.round(PARTS.reduce((s,p)=>s+(W[p.key]||0)*pct[p.key],0));
   const grade=total>=90?'A':total>=80?'B':total>=70?'C':total>=60?'D':'F';
   const pass=total>=PASS;
   window._result={raw,pct,total,grade};
