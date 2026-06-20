@@ -106,6 +106,27 @@
     background:#16242F;color:#fff;font-size:11px;white-space:nowrap;padding:4px 8px;border-radius:6px;
     pointer-events:none;opacity:0;transition:.15s;z-index:50;font-weight:400}
   .gloss:hover::after,.gloss:focus::after{opacity:1}
+
+  /* ── Already-taken screen ── */
+  .already-screen{display:none;position:fixed;inset:0;background:linear-gradient(135deg,#0f2044,#1a3260);
+    z-index:999;align-items:center;justify-content:center;padding:20px}
+  .already-screen.show{display:flex}
+  .already-card{background:#fff;border-radius:24px;padding:36px 28px;max-width:400px;width:100%;
+    text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .already-icon{font-size:64px;margin-bottom:12px}
+  .already-title{font-size:22px;font-weight:800;color:#0f2044;margin-bottom:6px}
+  .already-sub{font-size:13px;color:#64748b;margin-bottom:24px;line-height:1.6}
+  .already-info{background:#f0fdf4;border-radius:12px;padding:16px;text-align:left;margin-bottom:20px}
+  .already-info-name{font-size:18px;font-weight:800;color:#065f46;margin-bottom:2px}
+  .already-info-team{font-size:13px;color:#047857;font-weight:600;margin-bottom:8px}
+  .already-info-row{display:flex;justify-content:space-between;font-size:12px;color:#374151;margin-top:4px}
+  .already-grade{display:inline-block;background:linear-gradient(135deg,#0f2044,#1e6fbf);color:#fff;
+    font-size:28px;font-weight:800;border-radius:50%;width:56px;height:56px;line-height:56px;
+    text-align:center;margin:0 auto 8px}
+  .already-score{font-size:20px;font-weight:800;color:#0f2044;margin-bottom:4px}
+  .already-pass{font-size:14px;font-weight:700;margin-bottom:20px}
+  .already-pass.pass{color:#065f46} .already-pass.fail{color:#DC2626}
+
 </style>
 </head>
 <body>
@@ -380,8 +401,17 @@ function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.re
 /* ---- TMS lookup: auto-fill nickname + team, block if already taken ---- */
 function parseCSV(t){const rows=[];let i=0,f='',row=[],q=false;while(i<t.length){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}else{if(c==='"')q=true;else if(c===','){row.push(f);f='';}else if(c==='\n'){row.push(f);rows.push(row);row=[];f='';}else if(c!=='\r')f+=c;}i++;}if(f.length||row.length){row.push(f);rows.push(row);}return rows;}
 const TAKEN=new Set();
+const TAKEN_DATA={};
 let _takenLoaded=!EXAM_CSV_URL;
-async function loadTaken(){if(!EXAM_CSV_URL){_takenLoaded=true;lookupTMS();return;}try{const res=await fetch(EXAM_CSV_URL+'?_t='+Date.now());if(!res.ok)return;const rows=JSON.parse(await res.text());if(!rows||!rows.length)return;rows.forEach(row=>{const t=(row['TMS']||row['tms']||'').trim().toLowerCase();if(t)TAKEN.add(t);});}
+async function loadTaken(){if(!EXAM_CSV_URL){_takenLoaded=true;lookupTMS();return;}try{const res=await fetch(EXAM_CSV_URL+'?_t='+Date.now());if(!res.ok)return;const rows=JSON.parse(await res.text());if(!rows||!rows.length)return;rows.forEach(row=>{
+      const t=(row['TMS']||row['tms']||'').trim().toLowerCase();
+      if(!t)return;
+      TAKEN.add(t);
+      // เก็บข้อมูลคะแนนด้วย
+      const grade=row['Grade']||row['grade']||'';
+      const total=row['Total']||row['total']||row['คะแนนรวม']||'';
+      if(grade||total) TAKEN_DATA[t]={grade,total};
+    });}
 catch(e){}_takenLoaded=true;lookupTMS();}
 const tmsMsg=()=> $('tmsMsg');
 let lookupOk=false;
@@ -396,7 +426,12 @@ function lookupTMS(){
   const nick=rec[0],team=rec[1],fname=rec[2]||'';
   $('i-fname').value=fname;user.fname=fname;
   $('i-nick').value=nick;user.nick=nick;user.team=team;setTeamUI(team);
-  if(TAKEN.has(code)){msg(true,'#E0556B','❌ <b>สอบไปแล้ว</b> — ไม่สามารถทำซ้ำได้');$('startBtn').disabled=true;lookupOk=false;}
+  if(TAKEN.has(code)){
+    msg(true,'#E0556B','❌ <b>สอบไปแล้ว</b> — ไม่สามารถทำซ้ำได้');
+    $('startBtn').disabled=true;lookupOk=false;
+    showAlreadyTaken(code,nick,team);
+    return;
+  }
   else{msg(true,'#1FA97A','✓ '+nick+' · ทีม '+team);$('startBtn').disabled=false;lookupOk=true;}
 }
 setTeamUI('');
@@ -459,6 +494,33 @@ function applyGlossary(text){
   return result;
 }
 
+
+function showAlreadyTaken(tms, nick, team){
+  const d = TAKEN_DATA[tms];
+  if(d && d.grade){
+    const gradeEl = document.getElementById('alreadyGrade');
+    const scoreEl = document.getElementById('alreadyScore');
+    const passEl  = document.getElementById('alreadyPass');
+    gradeEl.textContent = d.grade;
+    gradeEl.style.display = 'block';
+    if(d.total){
+      scoreEl.textContent = d.total + '%';
+      scoreEl.style.display = 'block';
+    }
+    const passed = parseFloat(d.total||0) >= 70;
+    passEl.textContent = passed ? '✅ ผ่านการสอบ' : '❌ ไม่ผ่านการสอบ';
+    passEl.className = 'already-pass ' + (passed ? 'pass' : 'fail');
+    passEl.style.display = 'block';
+  }
+  const rec = ROSTER_MAP[tms];
+  const fname = rec ? (rec[2]||nick) : nick;
+  document.getElementById('alreadyName').textContent = fname + ' (' + nick + ')';
+  document.getElementById('alreadyTeam').textContent = 'ทีม ' + team;
+  document.getElementById('alreadyTms').textContent  = tms;
+  document.getElementById('alreadySub').textContent  = 'รหัส ' + tms + ' ได้บันทึกผลการสอบแล้ว ไม่สามารถทำซ้ำได้';
+  document.getElementById('alreadyScreen').classList.add('show');
+}
+
 function buildExam(){
   const targets={product:20,sales:12,communication:8,compliance:12,role:8};
   const pools={};
@@ -484,7 +546,7 @@ $('startBtn').addEventListener('click',()=>{
   user.tms=$('i-tms').value.trim();
   const code=user.tms.toLowerCase();
   if(!lookupOk||!user.team){$('startErr').style.display='block';return;}
-  if(TAKEN.has(code)){lookupTMS();return;}   // re-block if taken
+  if(TAKEN.has(code)){showAlreadyTaken(code,user.nick,user.team);return;}
   buildExam();idx=0;picked=[];
   _examStartTS=Date.now();_examDuration=TIME*1000;
   show('s-quiz');
@@ -637,6 +699,24 @@ document.addEventListener('click',function(e){
       <button class="btn-cancel" id="confirmCancel">เปลี่ยนใหม่</button>
       <button class="btn-confirm" id="confirmOk">ยืนยัน ✓</button>
     </div>
+  </div>
+</div>
+
+<div class="already-screen" id="alreadyScreen">
+  <div class="already-card">
+    <div class="already-icon">📋</div>
+    <div class="already-title">เข้าสอบเรียบร้อยแล้ว</div>
+    <div class="already-sub" id="alreadySub">รหัสนี้ได้รับการบันทึกผลการสอบแล้ว<br>ไม่สามารถทำซ้ำได้</div>
+    <div class="already-info">
+      <div class="already-info-name" id="alreadyName">—</div>
+      <div class="already-info-team" id="alreadyTeam">—</div>
+      <div class="already-info-row">
+        <span>รหัส TMS</span><span id="alreadyTms" style="font-family:monospace;font-weight:600">—</span>
+      </div>
+    </div>
+    <div class="already-grade" id="alreadyGrade" style="display:none">—</div>
+    <div class="already-score" id="alreadyScore" style="display:none">—</div>
+    <div class="already-pass" id="alreadyPass" style="display:none">—</div>
   </div>
 </div>
 </body>
