@@ -463,7 +463,7 @@ function buildExam(){
   const targets={product:20,sales:12,communication:8,compliance:12,role:8};
   const pools={};
   Object.keys(targets).forEach(k=>{
-    pools[k]=shuffle(BANK.filter(q=>q.p===k&&(k!=='role'||q.team===user.team)));
+    pools[k]=shuffle(BANK.filter(q=>q.p===k&&(!q.team||q.team===user.team)));
   });
   let selected=[];
   Object.entries(targets).forEach(([part,n])=>{
