@@ -403,16 +403,26 @@ function parseCSV(t){const rows=[];let i=0,f='',row=[],q=false;while(i<t.length)
 const TAKEN=new Set();
 const TAKEN_DATA={};
 let _takenLoaded=!EXAM_CSV_URL;
-async function loadTaken(){if(!EXAM_CSV_URL){_takenLoaded=true;lookupTMS();return;}try{const res=await fetch(EXAM_CSV_URL+'?_t='+Date.now());if(!res.ok)return;const rows=JSON.parse(await res.text());if(!rows||!rows.length)return;rows.forEach(row=>{
-      const t=(row['TMS']||row['tms']||'').trim().toLowerCase();
-      if(!t)return;
-      TAKEN.add(t);
-      // เก็บข้อมูลคะแนนด้วย
-      const grade=row['Grade']||row['grade']||'';
-      const total=row['Total']||row['total']||row['คะแนนรวม']||'';
-      if(grade||total) TAKEN_DATA[t]={grade,total};
-    });}
-catch(e){}_takenLoaded=true;lookupTMS();}
+async function loadTaken(){
+  if(!EXAM_CSV_URL){_takenLoaded=true;lookupTMS();return;}
+  try{
+    const res=await fetch(EXAM_CSV_URL+'?_t='+Date.now());
+    if(!res.ok){_takenLoaded=true;lookupTMS();return;}
+    const rows=JSON.parse(await res.text());
+    if(rows&&rows.length){
+      rows.forEach(row=>{
+        const t=(row['TMS']||row['tms']||'').trim().toLowerCase();
+        if(!t)return;
+        TAKEN.add(t);
+        const grade=row['Grade']||row['grade']||'';
+        const total=row['Total']||row['total']||row['คะแนนรวม']||'';
+        if(grade||total) TAKEN_DATA[t]={grade,total};
+      });
+    }
+  }catch(e){}
+  _takenLoaded=true;
+  lookupTMS();
+}
 const tmsMsg=()=> $('tmsMsg');
 let lookupOk=false;
 function setTeamUI(team){document.querySelectorAll('#teamtog button').forEach(x=>{x.classList.remove('on');x.style.pointerEvents='none';x.style.opacity=team?'1':'.55';});if(team){const b=document.querySelector('#teamtog button[data-team="'+team+'"]');if(b){b.classList.add('on');b.style.opacity='1';}}}
