@@ -63,8 +63,8 @@
   .legend{display:flex;gap:18px;font-size:12.5px;color:var(--muted);margin-top:18px;flex-wrap:wrap}
   .legend span{display:inline-flex;align-items:center;gap:6px}
   .legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
-  .gap-panel{padding:22px 24px;position:relative}
-  .gap-flag{position:absolute;top:22px;right:24px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--risk);background:#FCEDED;border:1px solid #F4C9C9;padding:4px 10px;border-radius:20px}
+  .gap-panel{padding:64px 24px 22px;position:relative}
+  .gap-flag{position:absolute;top:18px;right:18px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--risk);background:#FCEDED;border:1px solid #F4C9C9;padding:4px 10px;border-radius:20px;white-space:nowrap}
   .gap-row{display:grid;grid-template-columns:160px 1fr 50px;align-items:center;gap:14px;margin:13px 0}
   .gap-name{font-size:13.5px;font-weight:500;text-align:right}
   .gap-track{position:relative;height:26px;background:#F0F3F7;border-radius:7px;overflow:hidden}
@@ -154,9 +154,9 @@
   </section>
   <section class="section">
     <div class="row2">
-      <div class="card panel" id="sec02">
+      <div class="card panel">
         <div class="section-head" style="margin-bottom:6px"><span class="section-num">02</span><span class="section-title">Department Comparison</span></div>
-        <p class="sub" id="sec02sub">Average score and pass rate: Fresh vs Resell</p>
+        <p class="sub">Average score and pass rate: Fresh vs Resell</p>
         <div class="dept-compare" id="deptCompare"></div>
         <div class="legend"><span><i style="background:#0c7359"></i> Average score (%)</span><span><i style="background:#5BC2A6"></i> Pass rate (%)</span></div>
       </div>
@@ -312,7 +312,7 @@ function aggregate(filter){
   const risk=[...done].filter(e=>e.overall<70).sort((a,b)=>a.overall-b.overall);
   return {pool,done,avg:r0(avg),passed,failed,pending,topicAvg,buckets,groups,depts,top20,risk,totalPool:pool.length};
 }
-
+function fillColor(v){return v<70?'var(--risk)':v<80?'var(--amber)':v<90?'#5BC2A6':'var(--gooddeep)';}
 function render(filter){
   const d=aggregate(filter);
   const kpi=[
@@ -324,27 +324,10 @@ function render(filter){
     {label:'Failed',val:d.failed,meta:d.done.length?`${r0(100*d.failed/d.done.length)}% of test-takers`:'—',cls:'k-fail',vcls:'fail'},
   ];
   document.getElementById('kpiGrid').innerHTML=kpi.map(k=>`<div class="card kpi ${k.cls}"><div class="label">${k.label}</div><div class="val num ${k.vcls||''}">${k.val}</div><div class="meta">${k.meta}</div></div>`).join('');
-  // Department Comparison: show both when All, single dept when filtered
-  const deptSub=filter==='all'?'Average score and pass rate: Fresh vs Resell':`Average score and pass rate: ${filter} team`;
-  document.getElementById('sec02sub').textContent=deptSub;
-  if(filter==='all'){
-    document.getElementById('deptCompare').innerHTML=d.depts.map(x=>{
-      const pillBg=x.dept==='Fresh'?'var(--fresh)':'var(--resell)';
-      return `<div class="dept-group"><div class="bars"><div class="bar-wrap"><div class="bar score" style="height:${x.avg}%"><span class="bv">${x.avg}%</span></div></div><div class="bar-wrap"><div class="bar pass" style="height:${x.pass}%"><span class="bv">${x.pass}%</span></div></div></div><div class="dept-label">${x.dept}<span class="pill" style="background:${pillBg}">${x.dept==='Fresh'?'F':'R'}</span></div></div>`;
-    }).join('');
-  } else {
-    // single dept: show avg score + pass rate as 2 bars with labels
-    const x=d.depts[0];
+  document.getElementById('deptCompare').innerHTML=d.depts.map(x=>{
     const pillBg=x.dept==='Fresh'?'var(--fresh)':'var(--resell)';
-    document.getElementById('deptCompare').innerHTML=`
-      <div class="dept-group" style="flex:0.4">
-        <div class="bars">
-          <div class="bar-wrap"><div class="bar score" style="height:${x.avg}%"><span class="bv">${x.avg}%</span></div></div>
-          <div class="bar-wrap"><div class="bar pass" style="height:${x.pass}%"><span class="bv">${x.pass}%</span></div></div>
-        </div>
-        <div class="dept-label">${x.dept}<span class="pill" style="background:${pillBg}">${x.dept==='Fresh'?'F':'R'}</span></div>
-      </div>`;
-  }
+    return `<div class="dept-group"><div class="bars"><div class="bar-wrap"><div class="bar score" style="height:${x.avg}%"><span class="bv">${x.avg}%</span></div></div><div class="bar-wrap"><div class="bar pass" style="height:${x.pass}%"><span class="bv">${x.pass}%</span></div></div></div><div class="dept-label">${x.dept}<span class="pill" style="background:${pillBg}">${x.dept==='Fresh'?'F':'R'}</span></div></div>`;
+  }).join('');
   const sortedTopics=[...d.topicAvg].sort((a,b)=>a.avg-b.avg);
   document.getElementById('gapRows').innerHTML=sortedTopics.map(t=>`<div class="gap-row"><div class="gap-name">${t.label}</div><div class="gap-track"><div class="gap-fill" style="width:${t.avg}%;background:${fillColor(t.avg)}"></div><div class="threshold" style="left:70%"><span>70%</span></div></div><div class="gap-val" style="color:${fillColor(t.avg)}">${t.avg}%</div></div>`).join('');
   const trainList=sortedTopics.filter(t=>t.avg<80).map(t=>t.label);
@@ -368,12 +351,6 @@ function render(filter){
   }).join(''):`<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No employees below passing in this group ✓</td></tr>`;
 }
 document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render(b.dataset.f);});
-document.addEventListener('DOMContentLoaded',()=>{
-  const mc=document.getElementById('modalClose');
-  const mb=document.getElementById('modalBg');
-  if(mc) mc.addEventListener('click',()=>mb.classList.remove('open'));
-  if(mb) mb.addEventListener('click',e=>{if(e.target===mb)mb.classList.remove('open');});
-});
 document.getElementById('asof').textContent=new Date().toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'});
 
 
@@ -434,6 +411,7 @@ function openModal(idx){
   }
   document.getElementById('modalBg').classList.add('open');
 }
+const _mc=document.getElementById('modalClose'),_mb=document.getElementById('modalBg');if(_mc)_mc.addEventListener('click',()=>_mb.classList.remove('open'));if(_mb)_mb.addEventListener('click',e=>{if(e.target===_mb)_mb.classList.remove('open');});
 let currentFilter='all';
 const _origFilterHandler=document.getElementById('filters');
 // track active filter (re-bind to capture into currentFilter)
