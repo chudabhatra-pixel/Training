@@ -920,5 +920,152 @@ document.addEventListener('click',function(e){
     <div class="already-pass" id="alreadyPass" style="display:none">—</div>
   </div>
 </div>
+<!-- ============ ADMIN RESET PANEL ============ -->
+<div id="adminPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;overflow-y:auto;padding:24px 14px">
+  <div style="max-width:520px;margin:0 auto;background:#fff;border-radius:20px;padding:28px 24px;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:32px">🔐</div>
+      <div style="font-family:'Prompt';font-size:20px;font-weight:700;color:#2A1F14;margin-top:6px">Admin — รีเซ็ตข้อสอบ</div>
+      <div style="font-size:12px;color:#9C8B78;margin-top:4px">สำหรับผู้ดูแลระบบเท่านั้น</div>
+    </div>
+    <!-- Login -->
+    <div id="adminLogin">
+      <div style="margin-bottom:14px">
+        <label style="font-size:13px;font-weight:600;color:#5A4A3A;display:block;margin-bottom:6px">รหัสผ่านผู้ดูแล</label>
+        <input id="adminPassInput" type="password" placeholder="ใส่รหัสผ่าน..." autocomplete="off"
+          style="width:100%;border:1.5px solid #EAD9C6;border-radius:10px;padding:10px 14px;font-family:'Sarabun';font-size:15px;outline:none">
+      </div>
+      <button onclick="adminLogin()" style="width:100%;background:linear-gradient(135deg,#6C63FF,#FF6B9D);color:#fff;border:none;border-radius:10px;padding:12px;font-family:'Prompt';font-size:15px;font-weight:700;cursor:pointer">เข้าสู่ระบบ →</button>
+      <div id="adminLoginErr" style="display:none;color:#E0556B;font-size:12px;text-align:center;margin-top:8px">❌ รหัสผ่านไม่ถูกต้อง</div>
+    </div>
+    <!-- Controls (หลัง login) -->
+    <div id="adminControls" style="display:none">
+      <div style="background:#FDF8F2;border:1.5px solid #EAD9C6;border-radius:12px;padding:14px;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:600;color:#5A4A3A;margin-bottom:8px">🔄 รีเซ็ตรายคน (ใส่รหัส TMS)</div>
+        <div style="display:flex;gap:8px">
+          <input id="adminTmsInput" placeholder="เช่น ac560" autocomplete="off"
+            style="flex:1;border:1.5px solid #EAD9C6;border-radius:8px;padding:9px 12px;font-family:'Sarabun';font-size:14px;outline:none">
+          <button onclick="adminResetOne()" style="background:#6C63FF;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-family:'Prompt';font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">รีเซ็ต</button>
+        </div>
+        <div id="adminOneMsg" style="font-size:12px;margin-top:7px;display:none"></div>
+      </div>
+      <div style="background:#FFF3F3;border:1.5px solid #FFCDD2;border-radius:12px;padding:14px;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:600;color:#C62828;margin-bottom:6px">⚠️ รีเซ็ตทั้งหมด (ล้างทุก session)</div>
+        <div style="font-size:12px;color:#9C8B78;margin-bottom:10px">ใช้เพื่อรีเซ็ตการสอบของทุกคนทั้งหมด — ทำไม่ได้เลิกทำ</div>
+        <button onclick="adminResetAll()" style="width:100%;background:#E0556B;color:#fff;border:none;border-radius:8px;padding:10px;font-family:'Prompt';font-size:13px;font-weight:700;cursor:pointer">🗑️ รีเซ็ตทั้งหมด</button>
+        <div id="adminAllMsg" style="font-size:12px;margin-top:7px;display:none"></div>
+      </div>
+      <div style="background:#E8F5E9;border:1.5px solid #A5D6A7;border-radius:12px;padding:14px;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:600;color:#2E7D32;margin-bottom:6px">🧹 ล้าง LocalStorage (เครื่องนี้)</div>
+        <div style="font-size:12px;color:#9C8B78;margin-bottom:10px">ล้างข้อมูลในเบราว์เซอร์เครื่องนี้เท่านั้น — ใช้ก่อนเทสต์</div>
+        <button onclick="adminClearLocal()" style="width:100%;background:#2E7D32;color:#fff;border:none;border-radius:8px;padding:10px;font-family:'Prompt';font-size:13px;font-weight:700;cursor:pointer">🧹 ล้าง LocalStorage</button>
+        <div id="adminLocalMsg" style="font-size:12px;margin-top:7px;display:none"></div>
+      </div>
+      <button onclick="document.getElementById('adminPanel').style.display='none'" style="width:100%;background:#EAD9C6;color:#5A4A3A;border:none;border-radius:10px;padding:11px;font-family:'Prompt';font-size:14px;font-weight:600;cursor:pointer">✕ ปิดหน้าต่างนี้</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Admin Reset Logic ─────────────────────────────────────────
+const ADMIN_PASS='enforte2026';
+let _adminAuthed=false;
+
+// เปิดหน้า Admin ถ้า URL มี ?admin=reset
+(function(){
+  if(new URLSearchParams(location.search).get('admin')==='reset'){
+    document.getElementById('adminPanel').style.display='block';
+  }
+})();
+
+function adminLogin(){
+  const p=document.getElementById('adminPassInput').value;
+  if(p===ADMIN_PASS){
+    _adminAuthed=true;
+    document.getElementById('adminLogin').style.display='none';
+    document.getElementById('adminControls').style.display='block';
+    document.getElementById('adminLoginErr').style.display='none';
+  } else {
+    document.getElementById('adminLoginErr').style.display='block';
+  }
+}
+document.getElementById('adminPassInput').addEventListener('keydown',function(e){if(e.key==='Enter')adminLogin();});
+
+function showMsg(id,text,ok){
+  const el=document.getElementById(id);
+  el.style.display='block';
+  el.style.color=ok?'#1FA97A':'#E0556B';
+  el.textContent=text;
+}
+
+async function adminResetOne(){
+  if(!_adminAuthed)return;
+  const tms=document.getElementById('adminTmsInput').value.trim().toLowerCase();
+  if(!tms){showMsg('adminOneMsg','⚠️ กรุณาใส่รหัส TMS',false);return;}
+  showMsg('adminOneMsg','⏳ กำลังรีเซ็ต...','#637488');
+  // 1) ล้าง localStorage ของ TMS นี้
+  try{
+    const done=JSON.parse(localStorage.getItem('exam_done')||'[]');
+    const newDone=done.filter(t=>t.toLowerCase()!==tms);
+    localStorage.setItem('exam_done',JSON.stringify(newDone));
+    localStorage.removeItem('exam_progress_'+tms);
+  }catch(e){}
+  // 2) ลบ session ใน Sheet
+  try{
+    const res=await fetch(SESSION_URL,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'delete',tms,adminPass:ADMIN_PASS})
+    });
+    const data=await res.json();
+    if(data.ok){
+      // ลบออกจาก TAKEN ด้วย
+      TAKEN.delete(tms);delete TAKEN_DATA[tms];
+      showMsg('adminOneMsg','✅ รีเซ็ต '+tms+' เรียบร้อยแล้ว — เคลียร์ Sheet + LocalStorage แล้ว',true);
+    } else {
+      showMsg('adminOneMsg','❌ Sheet error: '+(data.error||'unknown'),false);
+    }
+  }catch(e){
+    showMsg('adminOneMsg','❌ ไม่สามารถเชื่อมต่อ Apps Script ได้: '+e.message,false);
+  }
+}
+
+async function adminResetAll(){
+  if(!_adminAuthed)return;
+  if(!confirm('⚠️ ยืนยันรีเซ็ตทุก session? ทำแล้วเลิกไม่ได้'))return;
+  showMsg('adminAllMsg','⏳ กำลังล้างทั้งหมด...','#637488');
+  // 1) ล้าง localStorage ทั้งหมด
+  try{
+    const keys=Object.keys(localStorage).filter(k=>k==='exam_done'||k.startsWith('exam_progress_'));
+    keys.forEach(k=>localStorage.removeItem(k));
+  }catch(e){}
+  // 2) ลบทุก session ใน Sheet
+  try{
+    const res=await fetch(SESSION_URL,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'deleteAll',tms:'_all',adminPass:ADMIN_PASS})
+    });
+    const data=await res.json();
+    if(data.ok){
+      TAKEN.clear();Object.keys(TAKEN_DATA).forEach(k=>delete TAKEN_DATA[k]);
+      showMsg('adminAllMsg','✅ รีเซ็ตทั้งหมดเรียบร้อย — เคลียร์ทุก session ใน Sheet + LocalStorage แล้ว',true);
+    } else {
+      showMsg('adminAllMsg','❌ Sheet error: '+(data.error||'unknown'),false);
+    }
+  }catch(e){
+    showMsg('adminAllMsg','❌ ไม่สามารถเชื่อมต่อ Apps Script ได้: '+e.message,false);
+  }
+}
+
+function adminClearLocal(){
+  if(!_adminAuthed)return;
+  try{
+    const keys=Object.keys(localStorage).filter(k=>k==='exam_done'||k.startsWith('exam_progress_'));
+    keys.forEach(k=>localStorage.removeItem(k));
+    TAKEN.clear();Object.keys(TAKEN_DATA).forEach(k=>delete TAKEN_DATA[k]);
+    showMsg('adminLocalMsg','✅ ล้าง LocalStorage เรียบร้อย ('+keys.length+' keys) — รีโหลดหน้าเพื่อให้ผลมีผล',true);
+  }catch(e){
+    showMsg('adminLocalMsg','❌ Error: '+e.message,false);
+  }
+}
+</script>
 </body>
-</html>
