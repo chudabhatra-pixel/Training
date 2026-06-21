@@ -215,7 +215,7 @@ const rng=mulberry32(20260618);
 function gauss(m,sd){let u=0,v=0;while(u===0)u=rng();while(v===0)v=rng();return m+sd*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
 const clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x)),r0=x=>Math.round(x);
 const DEPT={F:'Fresh',R:'Resell'},POS={S:'Senior Call Center Agent',I:'Intermediate Call Center Agent',A:'Call Center Agent'};
-const TOPICS=[{key:'product',label:'Product Knowledge',short:'Product',w:0.30,base:88},{key:'sales',label:'Sales Technique',short:'Sales',w:0.20,base:75},{key:'communication',label:'Communication Skills',short:'Communication',w:0.15,base:80},{key:'compliance',label:'Compliance & QA',short:'Compliance',w:0.15,base:85},{key:'role',label:'Role KPI (Acquisition / Retention)',short:'Role KPI',w:0.20,base:72}];
+const TOPICS=[{key:'product',label:'Product Knowledge',short:'Product',w:0.30,base:88},{key:'sales',label:'Sales Technique',short:'Sales',w:0.20,base:75},{key:'communication',label:'Communication Skills',short:'Communication',w:0.15,base:80},{key:'compliance',label:'Compliance & QA',short:'Compliance',w:0.15,base:85},{key:'role',label:'Role KPI',short:'Role KPI',w:0.20,base:72}];
 /* ===== DATA SOURCE CONFIG =====
    วาง URL ของ Google Sheet ที่ Publish เป็น CSV ตรงนี้ (ดูวิธีในไฟล์ SETUP)
    ปล่อยว่าง = ใช้ข้อมูลตัวอย่าง (sample) */
