@@ -837,8 +837,21 @@ function finish(){
 let sent=false;
 $('submitBtn').addEventListener('click',()=>{
   if(sent)return;
-  const r=window._result;const f=GFORM.fields;
+  const f=GFORM.fields;
   const subj='[Q1] '+($('subjA1').value.trim()||'-')+'  ||  [Q2] '+($('subjA2').value.trim()||'-');
+
+  // ── คำนวณคะแนนใหม่จาก picked[] (source of truth) ──
+  // ป้องกันการแก้ window._result ใน DevTools ก่อนกดส่ง
+  const _raw={};PARTS.forEach(p=>_raw[p.key]=0);
+  picked.forEach(x=>{if(x.correct)_raw[x.part]++;});
+  const _W={product:.30,sales:.20,communication:.12,compliance:.22,role:.16};
+  const _pct={};PARTS.forEach(p=>_pct[p.key]=Math.round(_raw[p.key]/p.n*100));
+  const _total=Math.round(PARTS.reduce((s,p)=>s+(_W[p.key]||0)*_pct[p.key],0));
+  const _grade=_total>=90?'A':_total>=80?'B':_total>=70?'C':_total>=60?'D':'F';
+  // อัปเดต window._result ให้ตรงกับคะแนนจริงด้วย (กัน race condition)
+  window._result={raw:_raw,pct:_pct,total:_total,grade:_grade};
+  const r=window._result;
+
   const data={
     [f.tms]:user.tms,[f.nickname]:user.nick,[f.team]:user.team,
     [f.product]:r.raw.product,[f.sales]:r.raw.sales,[f.communication]:r.raw.communication,
