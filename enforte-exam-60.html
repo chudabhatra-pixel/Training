@@ -637,23 +637,36 @@ $('startBtn').addEventListener('click',()=>{
     try{
       const session=JSON.parse($('startBtn').dataset.session||'{}');
       const snap=typeof session.snapshot==='string'?JSON.parse(session.snapshot||'{}'):session.snapshot||{};
-      if(snap && snap.picked){
-        // restore state
-        _sessionSeed=session.seed||'';
-        _sessionStartTS=parseInt(session.startTS)||Date.now();
-        const elapsed=Date.now()-_sessionStartTS;
-        const timeLeft=Math.max(0,(snap.timeLeft||0)-(elapsed>0?0:0)); // ใช้ elapsed จริง
-        buildExam();idx=snap.idx||0;picked=snap.picked||[];
-        _examStartTS=Date.now()-(TIME*1000-timeLeft*1000);
-        _examDuration=TIME*1000;
+      if(snap && snap.idx !== undefined){
+        // restore state — buildExam ใหม่แล้ว jump ไป idx ที่ค้างไว้
+        _sessionSeed    = session.seed || '';
+        _sessionStartTS = parseInt(session.startTS) || Date.now();
+
+        // คำนวณเวลาที่เหลือจริง (หักเวลาที่ผ่านไปตั้งแต่ save ล่าสุด)
+        const savedTimeLeft = snap.timeLeft || TIME;
+        const msSinceSave   = Date.now() - (session.savedAt ? new Date(session.savedAt).getTime() : Date.now());
+        const actualTimeLeft = Math.max(0, savedTimeLeft - Math.floor(msSinceSave/1000));
+
+        // สร้างข้อสอบใหม่ (สุ่มใหม่) แล้ว restore position
+        buildExam();
+        idx    = Math.min(snap.idx || 0, exam.length - 1);
+        picked = snap.picked || [];
+
+        // ตั้งเวลาจาก timeLeft ที่เหลือจริง
+        _examStartTS  = Date.now() - (TIME - actualTimeLeft) * 1000;
+        _examDuration = TIME * 1000;
+
         show('s-quiz');
         if(timerInt)clearInterval(timerInt);
-        timerInt=setInterval(tick,500);
+        timerInt = setInterval(tick, 500);
         if(_saveInterval)clearInterval(_saveInterval);
-        _saveInterval=setInterval(saveSession,30000);
+        _saveInterval = setInterval(saveSession, 30000);
+
+        answered = false;
         renderQ();
-        $('startBtn').textContent='เริ่มสอบ';
+        $('startBtn').textContent = 'เริ่มสอบ';
         delete $('startBtn').dataset.resume;
+        delete $('startBtn').dataset.session;
         return;
       }
     }catch(ex){}
