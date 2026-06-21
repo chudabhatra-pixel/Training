@@ -109,9 +109,9 @@
 
   /* ── Already-taken screen ── */
   .already-screen{display:none;position:fixed;inset:0;background:linear-gradient(135deg,#0f2044,#1a3260);
-    z-index:999;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+    z-index:999;align-items:center;justify-content:center;padding:20px}
   .already-screen.show{display:flex}
-  .already-card{background:#fff;border-radius:24px;padding:36px 28px;max-width:420px;width:100%;
+  .already-card{background:#fff;border-radius:24px;padding:36px 28px;max-width:400px;width:100%;
     text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}
   .already-icon{font-size:64px;margin-bottom:12px}
   .already-title{font-size:22px;font-weight:800;color:#0f2044;margin-bottom:6px}
@@ -126,17 +126,6 @@
   .already-score{font-size:20px;font-weight:800;color:#0f2044;margin-bottom:4px}
   .already-pass{font-size:14px;font-weight:700;margin-bottom:20px}
   .already-pass.pass{color:#065f46} .already-pass.fail{color:#DC2626}
-  /* score detail panel */
-  .score-detail{display:none;background:#F8F6FF;border-radius:14px;padding:16px;margin-bottom:16px;text-align:left}
-  .score-detail.show{display:block}
-  .score-detail-title{font-size:13px;font-weight:700;color:#4B3FA0;margin-bottom:12px}
-  .score-part-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-  .score-part-label{font-size:11px;color:#5A4A3A;width:110px;flex-shrink:0}
-  .score-part-bar{flex:1;background:#E8E0FF;border-radius:20px;height:10px;overflow:hidden}
-  .score-part-fill{height:100%;border-radius:20px;transition:width .4s}
-  .score-part-val{font-size:11px;font-weight:700;width:44px;text-align:right;flex-shrink:0}
-  .btn-score{background:linear-gradient(135deg,#6C63FF,#4B3FA0);color:#fff;border:none;border-radius:10px;
-    padding:10px 18px;font-family:'Prompt';font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;width:100%}
 
 </style>
 </head>
@@ -404,16 +393,9 @@ const SUBJ={
 
 let user={tms:'',nick:'',fname:'',team:''}, exam=[], idx=0, answered=false, picked=[];
 let timeLeft=TIME, timerInt=null, started=0;
-// session/exam state (ประกาศชัดเจน กัน ReferenceError ใน strict mode)
-let _saveInterval=null, _sessionSeed='', _sessionStartTS=0, _examStartTS=0, _examDuration=0;
 const $=id=>document.getElementById(id);
 const KEYS=['ก','ข','ค','ง','จ'];
-// ── Seeded PRNG: ทำให้สร้างชุดข้อสอบเดิมซ้ำได้เมื่อ resume ──
-function _hashSeed(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=(h<<13)|(h>>>19);}return function(){h=Math.imul(h^(h>>>16),2246822507);h=Math.imul(h^(h>>>13),3266489909);return ((h^=h>>>16)>>>0);};}
-function _mulberry32(a){return function(){a|=0;a=(a+0x6D2B79F5)|0;let t=Math.imul(a^(a>>>15),1|a);t=(t+Math.imul(t^(t>>>7),61|t))^t;return ((t^(t>>>14))>>>0)/4294967296;};}
-function makeRng(seed){return _mulberry32(_hashSeed(String(seed||'default'))());}
-// shuffle: ถ้าส่ง rng มาจะ deterministic, ถ้าไม่ส่งใช้ Math.random เหมือนเดิม
-function shuffle(a,rng){rng=rng||Math.random;a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');window.scrollTo(0,0);}
 
 /* team toggle */
@@ -462,58 +444,13 @@ function lookupTMS(){
   $('i-nick').value=nick;user.nick=nick;user.team=team;setTeamUI(team);
   if(TAKEN.has(code)){
     // สอบเสร็จแล้ว — แสดงหน้าสอบเรียบร้อย
-    clearProgress(code);
     msg(true,'#E0556B','❌ <b>สอบไปแล้ว</b> — ไม่สามารถทำซ้ำได้');
     $('startBtn').disabled=true;lookupOk=false;
-    // showAlreadyTaken จะดึงคะแนนจาก Session Sheet เองถ้า TAKEN_DATA ยังไม่มีข้อมูล
     showAlreadyTaken(code,nick,team);
     return;
   }
-  // มีงานค้างบนเครื่องนี้? → ขึ้นปุ่มกลับมาสอบต่อทันที (ไม่ต้องรอ Sheet)
-  const lp=readProgress(code);
-  if(lp && lp.seed && typeof lp.idx==='number'){
-    msg(true,'#F59E0B','⚠️ <b>มีข้อสอบที่ทำค้างไว้</b> — กดเพื่อกลับมาทำต่อข้อเดิม');
-    $('startBtn').textContent='📖 กลับมาสอบต่อ';
-    $('startBtn').disabled=false;lookupOk=true;
-    $('startBtn').dataset.resume='1';
-    $('startBtn').dataset.localresume='1';
-    delete $('startBtn').dataset.session;
-    return;   // ไม่ต้องไปเช็ค Sheet ซ้ำ
-  }
-  // ตรวจ session ใน Sheet (ข้าม device)
-  msg(true,'#637488','⏳ กำลังตรวจสอบ...');
-  $('startBtn').disabled=true;
-  loadSession(code).then(session=>{
-    if(!session){
-      // ไม่มี session — ยังไม่เคยสอบ
-      msg(true,'#1FA97A','✓ '+nick+' · ทีม '+team);
-      $('startBtn').disabled=false;lookupOk=true;
-    } else if(session.status==='done'){
-      // สอบเสร็จแล้วจาก device อื่น
-      TAKEN.add(code);
-      TAKEN_DATA[code]={
-        grade:session.grade, total:session.total,
-        product:session.product, sales:session.sales,
-        communication:session.communication,
-        compliance:session.compliance, role:session.role
-      };
-      clearProgress(code);
-      msg(true,'#E0556B','❌ <b>สอบไปแล้ว</b> — ไม่สามารถทำซ้ำได้');
-      $('startBtn').disabled=true;lookupOk=false;
-      showAlreadyTaken(code,nick,team);
-    } else if(session.status==='in_progress'){
-      // กำลังสอบอยู่ (เครื่องอื่น) — แสดงปุ่มกลับมาสอบต่อ
-      msg(true,'#F59E0B','⚠️ <b>มี session ที่ค้างไว้</b> — กดเริ่มเพื่อกลับมาสอบต่อ');
-      $('startBtn').textContent='📖 กลับมาสอบต่อ';
-      $('startBtn').disabled=false;lookupOk=true;
-      $('startBtn').dataset.resume='1';
-      delete $('startBtn').dataset.localresume;
-      $('startBtn').dataset.session=JSON.stringify(session);
-    }
-  }).catch(()=>{
-    msg(true,'#1FA97A','✓ '+nick+' · ทีม '+team);
-    $('startBtn').disabled=false;lookupOk=true;
-  });
+  msg(true,'#1FA97A','✓ '+nick+' · ทีม '+team);
+  $('startBtn').disabled=false;lookupOk=true;
 }
 setTeamUI('');
 $('i-tms').addEventListener('input',lookupTMS);
@@ -597,7 +534,6 @@ async function postSession(action, extra){
 function saveSession(){
   // บันทึก snapshot ระหว่างสอบ (idx + picked + timeLeft)
   if(!user.tms||idx<0) return;
-  persistProgress();   // sync localStorage ให้สดเสมอ
   const timeLeft=Math.max(0,Math.floor((_examDuration-(Date.now()-_examStartTS))/1000));
   postSession('save',{
     snapshot:{idx, picked, timeLeft,
@@ -617,7 +553,23 @@ async function loadSession(tms){
   }catch(e){ return null; }
 }
 
-async function showAlreadyTaken(tms, nick, team){
+function showAlreadyTaken(tms, nick, team){
+  const d = TAKEN_DATA[tms];
+  if(d && d.grade){
+    const gradeEl = document.getElementById('alreadyGrade');
+    const scoreEl = document.getElementById('alreadyScore');
+    const passEl  = document.getElementById('alreadyPass');
+    gradeEl.textContent = d.grade;
+    gradeEl.style.display = 'block';
+    if(d.total){
+      scoreEl.textContent = d.total + '%';
+      scoreEl.style.display = 'block';
+    }
+    const passed = parseFloat(d.total||0) >= 70;
+    passEl.textContent = passed ? '✅ ผ่านการสอบ' : '❌ ไม่ผ่านการสอบ';
+    passEl.className = 'already-pass ' + (passed ? 'pass' : 'fail');
+    passEl.style.display = 'block';
+  }
   const rec = ROSTER_MAP[tms];
   const fname = rec ? (rec[2]||nick) : nick;
   document.getElementById('alreadyName').textContent = fname + ' (' + nick + ')';
@@ -625,88 +577,13 @@ async function showAlreadyTaken(tms, nick, team){
   document.getElementById('alreadyTms').textContent  = tms;
   document.getElementById('alreadySub').textContent  = 'รหัส ' + tms + ' ได้บันทึกผลการสอบแล้ว ไม่สามารถทำซ้ำได้';
   document.getElementById('alreadyScreen').classList.add('show');
-
-  // ลองดึงจาก TAKEN_DATA ก่อน (เร็ว)
-  const d = TAKEN_DATA[tms];
-  if(d && d.grade){ renderAlreadyScore(d); }
-  else {
-    // ดึงจาก Session Sheet
-    document.getElementById('alreadyScoreLoading').style.display='block';
-    try{
-      const session = await loadSession(tms);
-      if(session && session.status==='done'){
-        const sd = {
-          grade: session.grade||'—',
-          total: session.total||'—',
-          product: session.product, sales: session.sales,
-          communication: session.communication,
-          compliance: session.compliance, role: session.role
-        };
-        TAKEN_DATA[tms]=sd;
-        renderAlreadyScore(sd);
-      }
-    }catch(e){}
-    document.getElementById('alreadyScoreLoading').style.display='none';
-  }
 }
 
-function renderAlreadyScore(d){
-  if(!d||!d.grade) return;
-  const gradeEl = document.getElementById('alreadyGrade');
-  const scoreEl = document.getElementById('alreadyScore');
-  const passEl  = document.getElementById('alreadyPass');
-  gradeEl.textContent = d.grade; gradeEl.style.display='block';
-  const totalNum = parseFloat(String(d.total||'0').replace('%',''))||0;
-  if(d.total){ scoreEl.textContent = totalNum+'%'; scoreEl.style.display='block'; }
-  const passed = totalNum >= PASS;
-  passEl.textContent = passed ? '✅ ผ่านการสอบ' : '❌ ไม่ผ่านการสอบ';
-  passEl.className = 'already-pass ' + (passed ? 'pass' : 'fail');
-  passEl.style.display='block';
-
-  // เตรียม breakdown rows (ใช้จาก d ถ้ามี)
-  const partData=[
-    {key:'product',      label:'ความรู้สินค้า',  n:20, val:d.product},
-    {key:'sales',        label:'เทคนิคการขาย',   n:12, val:d.sales},
-    {key:'communication',label:'การสื่อสาร',     n:8,  val:d.communication},
-    {key:'compliance',   label:'Compliance/อย.', n:12, val:d.compliance},
-    {key:'role',         label:'KPI ตามบทบาท',   n:8,  val:d.role},
-  ];
-  const hasBreakdown = partData.some(p=>p.val!==undefined&&p.val!==null&&p.val!=='');
-  if(hasBreakdown){
-    const rows = partData.map(p=>{
-      const raw=parseInt(p.val)||0;
-      const pct=Math.round(raw/p.n*100);
-      const col=pct<70?'#E0556B':pct<80?'#FFB347':pct<90?'#5BC2A6':'#1FA97A';
-      return `<div class="score-part-row">
-        <div class="score-part-label">${p.label}</div>
-        <div class="score-part-bar"><div class="score-part-fill" style="width:${pct}%;background:${col}"></div></div>
-        <div class="score-part-val" style="color:${col}">${raw}/${p.n}</div>
-      </div>`;
-    }).join('');
-    document.getElementById('scoreDetailRows').innerHTML=rows;
-    document.getElementById('btnShowScore').style.display='block';
-  } else {
-    // ไม่มี breakdown แต่มี total — แสดงปุ่มดูคะแนนรวมอย่างเดียว
-    document.getElementById('scoreDetailRows').innerHTML=
-      `<div style="text-align:center;color:#637488;font-size:13px;padding:8px 0">คะแนนรวม <b style="color:#0f2044">${totalNum}%</b> (เกรด ${d.grade})<br><span style="font-size:11px">ข้อมูลแยกรายหมวดไม่พร้อมใช้งาน</span></div>`;
-    document.getElementById('btnShowScore').style.display='block';
-  }
-}
-
-function toggleScoreDetail(){
-  const panel = document.getElementById('scoreDetail');
-  const btn   = document.getElementById('btnShowScore');
-  const isOpen = panel.classList.toggle('show');
-  btn.textContent = isOpen ? '▲ ซ่อนคะแนนรายพาร์ท' : '📊 ดูคะแนนรายพาร์ท';
-}
-
-function buildExam(seed){
-  // ใช้ seeded rng เดียวตลอด เพื่อให้ seed เดิม → ชุดข้อสอบเดิมเป๊ะ (ทั้งข้อและตัวเลือก)
-  const rng=makeRng(seed);
+function buildExam(){
   const targets={product:20,sales:12,communication:8,compliance:12,role:8};
   const pools={};
   Object.keys(targets).forEach(k=>{
-    pools[k]=shuffle(BANK.filter(q=>q.p===k&&(!q.team||q.team===user.team)), rng);
+    pools[k]=shuffle(BANK.filter(q=>q.p===k&&(!q.team||q.team===user.team)));
   });
   let selected=[];
   Object.entries(targets).forEach(([part,n])=>{
@@ -718,23 +595,9 @@ function buildExam(seed){
   selected.sort((a,b)=>order[a.p]-order[b.p]);
   exam=selected.map(q=>{
     const choices=q.c.map((t,i)=>({t,correct:i===q.a}));
-    return {...q,sc:shuffle(choices, rng)};
+    return {...q,sc:shuffle(choices)};
   });
 }
-
-// ── เก็บความคืบหน้าลง localStorage (กันรีเฟรช, ใช้ได้ทันทีไม่ต้องรอ Sheet) ──
-function progressKey(tms){return 'exam_progress_'+String(tms||'').toLowerCase();}
-function persistProgress(){
-  if(!user.tms||idx<0)return;
-  try{
-    localStorage.setItem(progressKey(user.tms), JSON.stringify({
-      seed:_sessionSeed, startTS:_sessionStartTS, examStartTS:_examStartTS,
-      idx:idx, picked:picked, team:user.team, nick:user.nick, savedAt:Date.now()
-    }));
-  }catch(e){}
-}
-function readProgress(tms){try{const r=localStorage.getItem(progressKey(tms));return r?JSON.parse(r):null;}catch(e){return null;}}
-function clearProgress(tms){try{localStorage.removeItem(progressKey(tms));}catch(e){}}
 
 $('startBtn').addEventListener('click',()=>{
   if($('startBtn').disabled)return;
@@ -743,72 +606,28 @@ $('startBtn').addEventListener('click',()=>{
   if(!lookupOk||!user.team){$('startErr').style.display='block';return;}
   if(TAKEN.has(code)){showAlreadyTaken(code,user.nick,user.team);return;}
 
-  // ── เริ่ม/กลับมาทำข้อสอบต่อ ──
-  function launchQuiz(){
-    show('s-quiz');
-    if(timerInt)clearInterval(timerInt);
-    timerInt=setInterval(tick,500);
-    if(_saveInterval)clearInterval(_saveInterval);
-    _saveInterval=setInterval(saveSession,30000);
-    answered=false;
-    renderQ();
-    persistProgress();
-  }
-
-  // Resume ที่ค้างไว้ (ลอง localStorage ก่อน เพราะแม่นยำและไม่ต้องรอ Sheet)
-  if($('startBtn').dataset.resume==='1'){
-    // 1) local progress (เครื่องเดิม) — restore เป๊ะด้วย examStartTS
-    const lp=readProgress(code);
-    if(lp && lp.seed && typeof lp.idx==='number'){
-      _sessionSeed=lp.seed;
-      _sessionStartTS=parseInt(lp.startTS)||Date.now();
-      buildExam(_sessionSeed);                 // ← seed เดิม = ข้อสอบเดิมเป๊ะ
-      idx=Math.min(lp.idx, exam.length-1);
-      picked=Array.isArray(lp.picked)?lp.picked:[];
-      _examStartTS=parseInt(lp.examStartTS)||Date.now();
-      _examDuration=TIME*1000;
-      delete $('startBtn').dataset.resume;
-      delete $('startBtn').dataset.session;
-      delete $('startBtn').dataset.localresume;
-      $('startBtn').textContent='เริ่มสอบ';
-      launchQuiz();
-      return;
-    }
-    // 2) fallback: session จาก Sheet (ข้ามเครื่อง)
-    try{
-      const session=JSON.parse($('startBtn').dataset.session||'{}');
-      const snap=typeof session.snapshot==='string'?JSON.parse(session.snapshot||'{}'):session.snapshot||{};
-      if(session.seed && snap && snap.idx!==undefined){
-        _sessionSeed=session.seed;
-        _sessionStartTS=parseInt(session.startTS)||Date.now();
-        const savedTimeLeft=snap.timeLeft||TIME;
-        const msSinceSave=Date.now()-(session.savedAt?new Date(session.savedAt).getTime():Date.now());
-        const actualTimeLeft=Math.max(0,savedTimeLeft-Math.floor(msSinceSave/1000));
-        buildExam(_sessionSeed);               // ← seed เดิม = ข้อสอบเดิมเป๊ะ
-        idx=Math.min(snap.idx||0, exam.length-1);
-        picked=Array.isArray(snap.picked)?snap.picked:[];
-        _examStartTS=Date.now()-(TIME-actualTimeLeft)*1000;
-        _examDuration=TIME*1000;
-        delete $('startBtn').dataset.resume;
-        delete $('startBtn').dataset.session;
-        delete $('startBtn').dataset.localresume;
-        $('startBtn').textContent='เริ่มสอบ';
-        launchQuiz();
-        return;
-      }
-    }catch(ex){}
-  }
-
-  // เริ่มสอบใหม่ — สร้าง seed แล้วผูกกับ buildExam
-  _sessionSeed=Math.random().toString(36).slice(2)+Date.now().toString(36);
-  _sessionStartTS=Date.now();
-  buildExam(_sessionSeed);idx=0;picked=[];
+  // สร้าง seed สำหรับ restore ข้อสอบ
+  _sessionSeed = Math.random().toString(36).slice(2)+Date.now().toString(36);
+  _sessionStartTS = Date.now();
+  buildExam();idx=0;picked=[];
   _examStartTS=Date.now();_examDuration=TIME*1000;
 
-  // บันทึก session ขึ้น Sheet ทันที (กันสอบซ้ำข้ามเครื่อง)
-  postSession('start',{seed:_sessionSeed, startTS:_sessionStartTS, team:user.team, nick:user.nick});
+  // บันทึก session ขึ้น Sheet ทันที (กัน สอบซ้ำข้าม device)
+  postSession('start',{
+    seed:_sessionSeed, startTS:_sessionStartTS,
+    team:user.team, nick:user.nick
+  });
 
-  launchQuiz();
+  show('s-quiz');
+  if(timerInt)clearInterval(timerInt);
+  timerInt=setInterval(tick,500);
+
+  // Auto-save ทุก 30 วิ
+  if(_saveInterval)clearInterval(_saveInterval);
+  _saveInterval=setInterval(saveSession,60000); // backup ทุก 60 วิ
+  saveSession(); // บันทึกทันทีตอน start
+
+  renderQ();
 });
 
 
@@ -860,6 +679,7 @@ function commitAnswer(i){
   answered=true;
   const q=exam[idx];const chosen=q.sc[i];const correct=chosen.correct;
   picked.push({part:q.p,correct});
+  saveSession(); // บันทึกหลังตอบทุกข้อ
   document.querySelectorAll('.choice').forEach((b,bi)=>{
     b.disabled=true;b.style.borderColor='';b.style.background='';
     if(q.sc[bi].correct)b.classList.add('correct');
@@ -868,11 +688,10 @@ function commitAnswer(i){
   const fb=$('fb');fb.classList.add('show',correct?'ok':'no');
   fb.innerHTML=`<b>${correct?'✓ ถูกต้อง':'✗ ยังไม่ถูก'}</b> — ${applyGlossary(q.e)}`;
   $('nextBtn').classList.add('show');
-  persistProgress();   // เซฟทันทีหลังตอบ (กันรีเฟรช ไม่ต้องรอ 30 วิ)
 }
 
 $('nextBtn').addEventListener('click',()=>{
-  if(idx<exam.length-1){idx++;renderQ();persistProgress();}else finish();
+  if(idx<exam.length-1){idx++;renderQ();}else finish();
 });
 
 function finish(){
@@ -911,21 +730,8 @@ function finish(){
 let sent=false;
 $('submitBtn').addEventListener('click',()=>{
   if(sent)return;
-  const f=GFORM.fields;
+  const r=window._result;const f=GFORM.fields;
   const subj='[Q1] '+($('subjA1').value.trim()||'-')+'  ||  [Q2] '+($('subjA2').value.trim()||'-');
-
-  // ── คำนวณคะแนนใหม่จาก picked[] (source of truth) ──
-  // ป้องกันการแก้ window._result ใน DevTools ก่อนกดส่ง
-  const _raw={};PARTS.forEach(p=>_raw[p.key]=0);
-  picked.forEach(x=>{if(x.correct)_raw[x.part]++;});
-  const _W={product:.30,sales:.20,communication:.12,compliance:.22,role:.16};
-  const _pct={};PARTS.forEach(p=>_pct[p.key]=Math.round(_raw[p.key]/p.n*100));
-  const _total=Math.round(PARTS.reduce((s,p)=>s+(_W[p.key]||0)*_pct[p.key],0));
-  const _grade=_total>=90?'A':_total>=80?'B':_total>=70?'C':_total>=60?'D':'F';
-  // อัปเดต window._result ให้ตรงกับคะแนนจริงด้วย (กัน race condition)
-  window._result={raw:_raw,pct:_pct,total:_total,grade:_grade};
-  const r=window._result;
-
   const data={
     [f.tms]:user.tms,[f.nickname]:user.nick,[f.team]:user.team,
     [f.product]:r.raw.product,[f.sales]:r.raw.sales,[f.communication]:r.raw.communication,
@@ -943,13 +749,10 @@ $('submitBtn').addEventListener('click',()=>{
   sent=true;
   const _tms=user.tms.toLowerCase();
   TAKEN.add(_tms);
-  clearProgress(_tms);   // สอบจบแล้ว ลบงานค้างทิ้ง
   // บันทึก done ขึ้น Sheet (block ทุก device)
   postSession('done',{
-    grade:_total>=90?'A':_total>=80?'B':_total>=70?'C':_total>=60?'D':'F',
-    total:_total,
-    product:_raw.product, sales:_raw.sales,
-    communication:_raw.communication, compliance:_raw.compliance, role:_raw.role,
+    grade:window._result?window._result.grade:'',
+    total:window._result?window._result.total:'',
     startedAt:new Date(_sessionStartTS).toISOString(),
   });
   // หยุด auto-save
@@ -1007,146 +810,7 @@ document.addEventListener('click',function(e){
     <div class="already-grade" id="alreadyGrade" style="display:none">—</div>
     <div class="already-score" id="alreadyScore" style="display:none">—</div>
     <div class="already-pass" id="alreadyPass" style="display:none">—</div>
-    <!-- ปุ่มดูคะแนน -->
-    <button class="btn-score" id="btnShowScore" style="display:none" onclick="toggleScoreDetail()">
-      📊 ดูคะแนนรายพาร์ท
-    </button>
-    <!-- breakdown panel -->
-    <div class="score-detail" id="scoreDetail">
-      <div class="score-detail-title">📈 คะแนนแยกรายหมวด</div>
-      <div id="scoreDetailRows"></div>
-      <div style="font-size:11px;color:#9C8B78;margin-top:10px;text-align:center">คะแนนอัตนัยจะถูกเพิ่มโดย L&D ภายหลัง</div>
-    </div>
-    <div id="alreadyScoreLoading" style="display:none;font-size:12px;color:#9C8B78;margin-bottom:8px">⏳ กำลังดึงคะแนน...</div>
   </div>
 </div>
-<!-- ============ ADMIN RESET PANEL ============ -->
-<div id="adminPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;overflow-y:auto;padding:24px 14px">
-  <div style="max-width:520px;margin:0 auto;background:#fff;border-radius:20px;padding:28px 24px;box-shadow:0 20px 60px rgba(0,0,0,.3)">
-    <div style="text-align:center;margin-bottom:20px">
-      <div style="font-size:32px">🔐</div>
-      <div style="font-family:'Prompt';font-size:20px;font-weight:700;color:#2A1F14;margin-top:6px">Admin — รีเซ็ตข้อสอบ</div>
-      <div style="font-size:12px;color:#9C8B78;margin-top:4px">สำหรับผู้ดูแลระบบเท่านั้น</div>
-    </div>
-    <!-- Login -->
-    <div id="adminLogin">
-      <div style="margin-bottom:14px">
-        <label style="font-size:13px;font-weight:600;color:#5A4A3A;display:block;margin-bottom:6px">รหัสผ่านผู้ดูแล</label>
-        <input id="adminPassInput" type="password" placeholder="ใส่รหัสผ่าน..." autocomplete="off"
-          style="width:100%;border:1.5px solid #EAD9C6;border-radius:10px;padding:10px 14px;font-family:'Sarabun';font-size:15px;outline:none">
-      </div>
-      <button onclick="adminLogin()" style="width:100%;background:linear-gradient(135deg,#6C63FF,#FF6B9D);color:#fff;border:none;border-radius:10px;padding:12px;font-family:'Prompt';font-size:15px;font-weight:700;cursor:pointer">เข้าสู่ระบบ →</button>
-      <div id="adminLoginErr" style="display:none;color:#E0556B;font-size:12px;text-align:center;margin-top:8px">❌ รหัสผ่านไม่ถูกต้อง</div>
-    </div>
-    <!-- Controls (หลัง login) -->
-    <div id="adminControls" style="display:none">
-      <div style="background:#FDF8F2;border:1.5px solid #EAD9C6;border-radius:12px;padding:14px;margin-bottom:16px">
-        <div style="font-size:13px;font-weight:600;color:#5A4A3A;margin-bottom:8px">🔄 รีเซ็ตรายคน (ใส่รหัส TMS)</div>
-        <div style="display:flex;gap:8px">
-          <input id="adminTmsInput" placeholder="เช่น ac560" autocomplete="off"
-            style="flex:1;border:1.5px solid #EAD9C6;border-radius:8px;padding:9px 12px;font-family:'Sarabun';font-size:14px;outline:none">
-          <button onclick="adminResetOne()" style="background:#6C63FF;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-family:'Prompt';font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">รีเซ็ต</button>
-        </div>
-        <div id="adminOneMsg" style="font-size:12px;margin-top:7px;display:none"></div>
-      </div>
-      <div style="background:#FFF3F3;border:1.5px solid #FFCDD2;border-radius:12px;padding:14px;margin-bottom:16px">
-        <div style="font-size:13px;font-weight:600;color:#C62828;margin-bottom:6px">⚠️ รีเซ็ตทั้งหมด (ล้างทุก session)</div>
-        <div style="font-size:12px;color:#9C8B78;margin-bottom:10px">ใช้เพื่อรีเซ็ตการสอบของทุกคนทั้งหมด — ทำไม่ได้เลิกทำ</div>
-        <button onclick="adminResetAll()" style="width:100%;background:#E0556B;color:#fff;border:none;border-radius:8px;padding:10px;font-family:'Prompt';font-size:13px;font-weight:700;cursor:pointer">🗑️ รีเซ็ตทั้งหมด</button>
-        <div id="adminAllMsg" style="font-size:12px;margin-top:7px;display:none"></div>
-      </div>
-      <div style="background:#E8F5E9;border:1.5px solid #A5D6A7;border-radius:12px;padding:14px;margin-bottom:16px">
-        <div style="font-size:13px;font-weight:600;color:#2E7D32;margin-bottom:6px">🧹 ล้าง LocalStorage (เครื่องนี้)</div>
-        <div style="font-size:12px;color:#9C8B78;margin-bottom:10px">ล้างข้อมูลในเบราว์เซอร์เครื่องนี้เท่านั้น — ใช้ก่อนเทสต์</div>
-        <button onclick="adminClearLocal()" style="width:100%;background:#2E7D32;color:#fff;border:none;border-radius:8px;padding:10px;font-family:'Prompt';font-size:13px;font-weight:700;cursor:pointer">🧹 ล้าง LocalStorage</button>
-        <div id="adminLocalMsg" style="font-size:12px;margin-top:7px;display:none"></div>
-      </div>
-      <button onclick="document.getElementById('adminPanel').style.display='none'" style="width:100%;background:#EAD9C6;color:#5A4A3A;border:none;border-radius:10px;padding:11px;font-family:'Prompt';font-size:14px;font-weight:600;cursor:pointer">✕ ปิดหน้าต่างนี้</button>
-    </div>
-  </div>
-</div>
-
-<script>
-// ── Admin Reset Logic ─────────────────────────────────────────
-const ADMIN_PASS='enforte2026';
-let _adminAuthed=false;
-
-// เปิดหน้า Admin ถ้า URL มี ?admin=reset
-(function(){
-  if(new URLSearchParams(location.search).get('admin')==='reset'){
-    document.getElementById('adminPanel').style.display='block';
-  }
-})();
-
-function adminLogin(){
-  const p=document.getElementById('adminPassInput').value;
-  if(p===ADMIN_PASS){
-    _adminAuthed=true;
-    document.getElementById('adminLogin').style.display='none';
-    document.getElementById('adminControls').style.display='block';
-    document.getElementById('adminLoginErr').style.display='none';
-  } else {
-    document.getElementById('adminLoginErr').style.display='block';
-  }
-}
-document.getElementById('adminPassInput').addEventListener('keydown',function(e){if(e.key==='Enter')adminLogin();});
-
-function showMsg(id,text,ok){
-  const el=document.getElementById(id);
-  el.style.display='block';
-  el.style.color=ok?'#1FA97A':'#E0556B';
-  el.textContent=text;
-}
-
-async function adminResetOne(){
-  if(!_adminAuthed)return;
-  const tms=document.getElementById('adminTmsInput').value.trim().toLowerCase();
-  if(!tms){showMsg('adminOneMsg','⚠️ กรุณาใส่รหัส TMS',false);return;}
-
-  // ล้าง LocalStorage ก่อนเลย
-  try{
-    const done=JSON.parse(localStorage.getItem('exam_done')||'[]');
-    localStorage.setItem('exam_done',JSON.stringify(done.filter(t=>t.toLowerCase()!==tms)));
-    localStorage.removeItem('exam_progress_'+tms);
-    TAKEN.delete(tms);delete TAKEN_DATA[tms];
-  }catch(e){}
-
-  // เปิด tab ใหม่ไปยัง Apps Script โดยตรง (ไม่มี CORS)
-  const url=SESSION_URL+'?action=delete&tms='+encodeURIComponent(tms)+'&adminPass='+encodeURIComponent(ADMIN_PASS)+'&_t='+Date.now();
-  const w=window.open(url,'_blank');
-  showMsg('adminOneMsg','✅ ล้าง LocalStorage แล้ว และเปิด tab ใหม่เพื่อลบ Sheet — ปิด tab นั้นได้เลย แล้วรีโหลดหน้านี้',true);
-  // ปิด tab อัตโนมัติหลัง 4 วิ (ถ้าเบราว์เซอร์อนุญาต)
-  setTimeout(()=>{try{w&&w.close();}catch(e){}},4000);
-}
-
-async function adminResetAll(){
-  if(!_adminAuthed)return;
-  if(!confirm('⚠️ ยืนยันรีเซ็ตทุก session? ทำแล้วเลิกไม่ได้'))return;
-
-  // ล้าง LocalStorage ทั้งหมดก่อน
-  try{
-    const keys=Object.keys(localStorage).filter(k=>k==='exam_done'||k.startsWith('exam_progress_'));
-    keys.forEach(k=>localStorage.removeItem(k));
-    TAKEN.clear();Object.keys(TAKEN_DATA).forEach(k=>delete TAKEN_DATA[k]);
-  }catch(e){}
-
-  // เปิด tab ใหม่ไปยัง Apps Script (ไม่มี CORS)
-  const url=SESSION_URL+'?action=deleteAll&tms=_all&adminPass='+encodeURIComponent(ADMIN_PASS)+'&_t='+Date.now();
-  const w=window.open(url,'_blank');
-  showMsg('adminAllMsg','✅ ล้าง LocalStorage แล้ว และเปิด tab ใหม่เพื่อล้าง Sheet — ปิด tab นั้นได้เลย แล้วรีโหลดหน้านี้',true);
-  setTimeout(()=>{try{w&&w.close();}catch(e){}},4000);
-}
-
-function adminClearLocal(){
-  if(!_adminAuthed)return;
-  try{
-    const keys=Object.keys(localStorage).filter(k=>k==='exam_done'||k.startsWith('exam_progress_'));
-    keys.forEach(k=>localStorage.removeItem(k));
-    TAKEN.clear();Object.keys(TAKEN_DATA).forEach(k=>delete TAKEN_DATA[k]);
-    showMsg('adminLocalMsg','✅ ล้าง LocalStorage เรียบร้อย ('+keys.length+' keys) — รีโหลดหน้าเพื่อให้ผลมีผล',true);
-  }catch(e){
-    showMsg('adminLocalMsg','❌ Error: '+e.message,false);
-  }
-}
-</script>
 </body>
+</html>
