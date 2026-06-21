@@ -411,8 +411,7 @@ function openModal(idx){
   }
   document.getElementById('modalBg').classList.add('open');
 }
-document.getElementById('modalClose').addEventListener('click',()=>document.getElementById('modalBg').classList.remove('open'));
-document.getElementById('modalBg').addEventListener('click',e=>{if(e.target===document.getElementById('modalBg'))document.getElementById('modalBg').classList.remove('open');});
+var _mc=document.getElementById('modalClose'),_mb=document.getElementById('modalBg');if(_mc)_mc.addEventListener('click',function(){_mb.classList.remove('open');});if(_mb)_mb.addEventListener('click',function(e){if(e.target===_mb)_mb.classList.remove('open');});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&_mb)_mb.classList.remove('open');});
 let currentFilter='all';
 const _origFilterHandler=document.getElementById('filters');
 // track active filter (re-bind to capture into currentFilter)
