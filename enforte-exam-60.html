@@ -462,9 +462,10 @@ function lookupTMS(){
   $('i-nick').value=nick;user.nick=nick;user.team=team;setTeamUI(team);
   if(TAKEN.has(code)){
     // สอบเสร็จแล้ว — แสดงหน้าสอบเรียบร้อย
-    clearProgress(code);   // เคลียร์งานค้างทิ้ง กันเด้งปุ่ม resume
+    clearProgress(code);
     msg(true,'#E0556B','❌ <b>สอบไปแล้ว</b> — ไม่สามารถทำซ้ำได้');
     $('startBtn').disabled=true;lookupOk=false;
+    // showAlreadyTaken จะดึงคะแนนจาก Session Sheet เองถ้า TAKEN_DATA ยังไม่มีข้อมูล
     showAlreadyTaken(code,nick,team);
     return;
   }
@@ -490,7 +491,12 @@ function lookupTMS(){
     } else if(session.status==='done'){
       // สอบเสร็จแล้วจาก device อื่น
       TAKEN.add(code);
-      TAKEN_DATA[code]={grade:session.grade,total:session.total};
+      TAKEN_DATA[code]={
+        grade:session.grade, total:session.total,
+        product:session.product, sales:session.sales,
+        communication:session.communication,
+        compliance:session.compliance, role:session.role
+      };
       clearProgress(code);
       msg(true,'#E0556B','❌ <b>สอบไปแล้ว</b> — ไม่สามารถทำซ้ำได้');
       $('startBtn').disabled=true;lookupOk=false;
