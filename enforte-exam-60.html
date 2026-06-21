@@ -1002,53 +1002,39 @@ async function adminResetOne(){
   if(!_adminAuthed)return;
   const tms=document.getElementById('adminTmsInput').value.trim().toLowerCase();
   if(!tms){showMsg('adminOneMsg','⚠️ กรุณาใส่รหัส TMS',false);return;}
-  showMsg('adminOneMsg','⏳ กำลังรีเซ็ต...','#637488');
-  // 1) ล้าง localStorage ของ TMS นี้ก่อน (ทำได้เสมอ ไม่ติด CORS)
+
+  // ล้าง LocalStorage ก่อนเลย
   try{
     const done=JSON.parse(localStorage.getItem('exam_done')||'[]');
     localStorage.setItem('exam_done',JSON.stringify(done.filter(t=>t.toLowerCase()!==tms)));
     localStorage.removeItem('exam_progress_'+tms);
     TAKEN.delete(tms);delete TAKEN_DATA[tms];
   }catch(e){}
-  // 2) ลบ session ใน Sheet ผ่าน GET (หลีกเลี่ยง CORS)
-  try{
-    const url=SESSION_URL+'?action=delete&tms='+encodeURIComponent(tms)+'&adminPass='+encodeURIComponent(ADMIN_PASS)+'&_t='+Date.now();
-    const res=await fetch(url,{mode:'cors'});
-    const data=await res.json();
-    if(data.ok){
-      showMsg('adminOneMsg','✅ รีเซ็ต '+tms+' เรียบร้อย — ล้าง Sheet + LocalStorage แล้ว',true);
-    } else {
-      showMsg('adminOneMsg','⚠️ ล้าง LocalStorage แล้ว แต่ Sheet: '+(data.error||'unknown')+' — ลองลบแถวใน ExamSessions เอง',false);
-    }
-  }catch(e){
-    // CORS ยังบล็อกอยู่ — LocalStorage ล้างแล้ว แจ้งให้ลบ Sheet เอง
-    showMsg('adminOneMsg','⚠️ ล้าง LocalStorage แล้ว ✓ แต่เชื่อม Sheet ไม่ได้ → กรุณาลบแถว '+tms+' ใน ExamSessions ด้วยตัวเองครับ',false);
-  }
+
+  // เปิด tab ใหม่ไปยัง Apps Script โดยตรง (ไม่มี CORS)
+  const url=SESSION_URL+'?action=delete&tms='+encodeURIComponent(tms)+'&adminPass='+encodeURIComponent(ADMIN_PASS)+'&_t='+Date.now();
+  const w=window.open(url,'_blank');
+  showMsg('adminOneMsg','✅ ล้าง LocalStorage แล้ว และเปิด tab ใหม่เพื่อลบ Sheet — ปิด tab นั้นได้เลย แล้วรีโหลดหน้านี้',true);
+  // ปิด tab อัตโนมัติหลัง 4 วิ (ถ้าเบราว์เซอร์อนุญาต)
+  setTimeout(()=>{try{w&&w.close();}catch(e){}},4000);
 }
 
 async function adminResetAll(){
   if(!_adminAuthed)return;
   if(!confirm('⚠️ ยืนยันรีเซ็ตทุก session? ทำแล้วเลิกไม่ได้'))return;
-  showMsg('adminAllMsg','⏳ กำลังล้างทั้งหมด...','#637488');
-  // 1) ล้าง localStorage ทั้งหมดก่อน
+
+  // ล้าง LocalStorage ทั้งหมดก่อน
   try{
     const keys=Object.keys(localStorage).filter(k=>k==='exam_done'||k.startsWith('exam_progress_'));
     keys.forEach(k=>localStorage.removeItem(k));
     TAKEN.clear();Object.keys(TAKEN_DATA).forEach(k=>delete TAKEN_DATA[k]);
   }catch(e){}
-  // 2) ลบทุก session ใน Sheet ผ่าน GET
-  try{
-    const url=SESSION_URL+'?action=deleteAll&tms=_all&adminPass='+encodeURIComponent(ADMIN_PASS)+'&_t='+Date.now();
-    const res=await fetch(url,{mode:'cors'});
-    const data=await res.json();
-    if(data.ok){
-      showMsg('adminAllMsg','✅ รีเซ็ตทั้งหมดเรียบร้อย — ล้าง Sheet + LocalStorage แล้ว',true);
-    } else {
-      showMsg('adminAllMsg','⚠️ ล้าง LocalStorage แล้ว แต่ Sheet: '+(data.error||'unknown'),false);
-    }
-  }catch(e){
-    showMsg('adminAllMsg','⚠️ ล้าง LocalStorage แล้ว ✓ แต่เชื่อม Sheet ไม่ได้ → กรุณาเปิด ExamSessions แล้วลบทุกแถว (เหลือหัว) ด้วยตัวเองครับ',false);
-  }
+
+  // เปิด tab ใหม่ไปยัง Apps Script (ไม่มี CORS)
+  const url=SESSION_URL+'?action=deleteAll&tms=_all&adminPass='+encodeURIComponent(ADMIN_PASS)+'&_t='+Date.now();
+  const w=window.open(url,'_blank');
+  showMsg('adminAllMsg','✅ ล้าง LocalStorage แล้ว และเปิด tab ใหม่เพื่อล้าง Sheet — ปิด tab นั้นได้เลย แล้วรีโหลดหน้านี้',true);
+  setTimeout(()=>{try{w&&w.close();}catch(e){}},4000);
 }
 
 function adminClearLocal(){
