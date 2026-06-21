@@ -439,8 +439,19 @@ async function loadTaken(){
         if(!t)return;
         TAKEN.add(t);
         const grade=row['Grade']||row['grade']||'';
-        const total=row['Total']||row['total']||row['คะแนนรวม']||'';
-        if(grade||total) TAKEN_DATA[t]={grade,total};
+        let total=row['Total']||row['total']||row['คะแนนรวม']||'';
+        // แปลง total: ถ้าเป็นทศนิยม (เช่น 0.41) ให้คูณ 100 → 41
+        if(total!==''){
+          const n=parseFloat(String(total).replace('%',''));
+          if(!isNaN(n)) total = n<=1 ? Math.round(n*100) : Math.round(n);
+        }
+        // ดึง breakdown รายพาร์ทจาก Form_Responses
+        const product     = row['Product']||row['product']||'';
+        const sales       = row['Sales']||row['sales']||'';
+        const communication = row['Communication']||row['communication']||'';
+        const compliance  = row['Compliance']||row['compliance']||'';
+        const role        = row['Role']||row['role']||'';
+        if(grade||total) TAKEN_DATA[t]={grade,total,product,sales,communication,compliance,role};
       });
     }
   }catch(e){}
@@ -626,28 +637,33 @@ async function showAlreadyTaken(tms, nick, team){
   document.getElementById('alreadySub').textContent  = 'รหัส ' + tms + ' ได้บันทึกผลการสอบแล้ว ไม่สามารถทำซ้ำได้';
   document.getElementById('alreadyScreen').classList.add('show');
 
-  // ลองดึงจาก TAKEN_DATA ก่อน (เร็ว)
+  // 1) ลองจาก TAKEN_DATA ก่อน (โหลดมาจาก Form_Responses แล้ว)
   const d = TAKEN_DATA[tms];
-  if(d && d.grade){ renderAlreadyScore(d); }
-  else {
-    // ดึงจาก Session Sheet
-    document.getElementById('alreadyScoreLoading').style.display='block';
-    try{
-      const session = await loadSession(tms);
-      if(session && session.status==='done'){
-        const sd = {
-          grade: session.grade||'—',
-          total: session.total||'—',
-          product: session.product, sales: session.sales,
-          communication: session.communication,
-          compliance: session.compliance, role: session.role
-        };
-        TAKEN_DATA[tms]=sd;
-        renderAlreadyScore(sd);
-      }
-    }catch(e){}
-    document.getElementById('alreadyScoreLoading').style.display='none';
+  if(d && (d.grade||d.total)){
+    renderAlreadyScore(d);
+    return;
   }
+  // 2) fallback: ดึงจาก Session Sheet
+  document.getElementById('alreadyScoreLoading').style.display='block';
+  try{
+    const session = await loadSession(tms);
+    if(session && session.status==='done'){
+      let stotal = session.total||'';
+      if(stotal!==''){
+        const n=parseFloat(String(stotal).replace('%',''));
+        if(!isNaN(n)) stotal = n<=1 ? Math.round(n*100) : Math.round(n);
+      }
+      const sd = {
+        grade: session.grade||'—', total: stotal,
+        product: session.product, sales: session.sales,
+        communication: session.communication,
+        compliance: session.compliance, role: session.role
+      };
+      TAKEN_DATA[tms]=sd;
+      renderAlreadyScore(sd);
+    }
+  }catch(e){}
+  document.getElementById('alreadyScoreLoading').style.display='none';
 }
 
 function renderAlreadyScore(d){
