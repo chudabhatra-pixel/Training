@@ -422,13 +422,15 @@ function parseCSV(t){const rows=[];let i=0,f='',row=[],q=false;while(i<t.length)
 const TAKEN=new Set();
 const TAKEN_DATA={};
 let _takenLoaded=!EXAM_CSV_URL;
+let _takenResolve;
+const _takenPromise=new Promise(res=>{_takenResolve=res;});
 async function loadTaken(){
   // โหลดจาก localStorage ก่อนเลย (กัน refresh ระหว่างรอ Sheet sync)
   try{
     const _done=JSON.parse(localStorage.getItem('exam_done')||'[]');
     _done.forEach(t=>{ if(t) TAKEN.add(t.toLowerCase()); });
   }catch(e){}
-  if(!EXAM_CSV_URL){_takenLoaded=true;lookupTMS();return;}
+  if(!EXAM_CSV_URL){_takenLoaded=true;_takenResolve();lookupTMS();return;}
   try{
     const res=await fetch(EXAM_CSV_URL+'?_t='+Date.now());
     if(!res.ok){_takenLoaded=true;lookupTMS();return;}
@@ -456,6 +458,7 @@ async function loadTaken(){
     }
   }catch(e){}
   _takenLoaded=true;
+  _takenResolve();
   lookupTMS();
 }
 const tmsMsg=()=> $('tmsMsg');
@@ -636,15 +639,19 @@ async function showAlreadyTaken(tms, nick, team){
   document.getElementById('alreadyTms').textContent  = tms;
   document.getElementById('alreadySub').textContent  = 'รหัส ' + tms + ' ได้บันทึกผลการสอบแล้ว ไม่สามารถทำซ้ำได้';
   document.getElementById('alreadyScreen').classList.add('show');
+  document.getElementById('alreadyScoreLoading').style.display='block';
+
+  // รอ loadTaken เสร็จก่อนเสมอ (กันแข่งกัน)
+  await _takenPromise;
 
   // 1) ลองจาก TAKEN_DATA ก่อน (โหลดมาจาก Form_Responses แล้ว)
   const d = TAKEN_DATA[tms];
   if(d && (d.grade||d.total)){
+    document.getElementById('alreadyScoreLoading').style.display='none';
     renderAlreadyScore(d);
     return;
   }
   // 2) fallback: ดึงจาก Session Sheet
-  document.getElementById('alreadyScoreLoading').style.display='block';
   try{
     const session = await loadSession(tms);
     if(session && session.status==='done'){
