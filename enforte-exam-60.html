@@ -109,9 +109,9 @@
 
   /* ── Already-taken screen ── */
   .already-screen{display:none;position:fixed;inset:0;background:linear-gradient(135deg,#0f2044,#1a3260);
-    z-index:999;align-items:center;justify-content:center;padding:20px}
+    z-index:999;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
   .already-screen.show{display:flex}
-  .already-card{background:#fff;border-radius:24px;padding:36px 28px;max-width:400px;width:100%;
+  .already-card{background:#fff;border-radius:24px;padding:36px 28px;max-width:420px;width:100%;
     text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}
   .already-icon{font-size:64px;margin-bottom:12px}
   .already-title{font-size:22px;font-weight:800;color:#0f2044;margin-bottom:6px}
@@ -126,6 +126,17 @@
   .already-score{font-size:20px;font-weight:800;color:#0f2044;margin-bottom:4px}
   .already-pass{font-size:14px;font-weight:700;margin-bottom:20px}
   .already-pass.pass{color:#065f46} .already-pass.fail{color:#DC2626}
+  /* score detail panel */
+  .score-detail{display:none;background:#F8F6FF;border-radius:14px;padding:16px;margin-bottom:16px;text-align:left}
+  .score-detail.show{display:block}
+  .score-detail-title{font-size:13px;font-weight:700;color:#4B3FA0;margin-bottom:12px}
+  .score-part-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .score-part-label{font-size:11px;color:#5A4A3A;width:110px;flex-shrink:0}
+  .score-part-bar{flex:1;background:#E8E0FF;border-radius:20px;height:10px;overflow:hidden}
+  .score-part-fill{height:100%;border-radius:20px;transition:width .4s}
+  .score-part-val{font-size:11px;font-weight:700;width:44px;text-align:right;flex-shrink:0}
+  .btn-score{background:linear-gradient(135deg,#6C63FF,#4B3FA0);color:#fff;border:none;border-radius:10px;
+    padding:10px 18px;font-family:'Prompt';font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;width:100%}
 
 </style>
 </head>
@@ -600,23 +611,7 @@ async function loadSession(tms){
   }catch(e){ return null; }
 }
 
-function showAlreadyTaken(tms, nick, team){
-  const d = TAKEN_DATA[tms];
-  if(d && d.grade){
-    const gradeEl = document.getElementById('alreadyGrade');
-    const scoreEl = document.getElementById('alreadyScore');
-    const passEl  = document.getElementById('alreadyPass');
-    gradeEl.textContent = d.grade;
-    gradeEl.style.display = 'block';
-    if(d.total){
-      scoreEl.textContent = d.total + '%';
-      scoreEl.style.display = 'block';
-    }
-    const passed = parseFloat(d.total||0) >= 70;
-    passEl.textContent = passed ? '✅ ผ่านการสอบ' : '❌ ไม่ผ่านการสอบ';
-    passEl.className = 'already-pass ' + (passed ? 'pass' : 'fail');
-    passEl.style.display = 'block';
-  }
+async function showAlreadyTaken(tms, nick, team){
   const rec = ROSTER_MAP[tms];
   const fname = rec ? (rec[2]||nick) : nick;
   document.getElementById('alreadyName').textContent = fname + ' (' + nick + ')';
@@ -624,6 +619,79 @@ function showAlreadyTaken(tms, nick, team){
   document.getElementById('alreadyTms').textContent  = tms;
   document.getElementById('alreadySub').textContent  = 'รหัส ' + tms + ' ได้บันทึกผลการสอบแล้ว ไม่สามารถทำซ้ำได้';
   document.getElementById('alreadyScreen').classList.add('show');
+
+  // ลองดึงจาก TAKEN_DATA ก่อน (เร็ว)
+  const d = TAKEN_DATA[tms];
+  if(d && d.grade){ renderAlreadyScore(d); }
+  else {
+    // ดึงจาก Session Sheet
+    document.getElementById('alreadyScoreLoading').style.display='block';
+    try{
+      const session = await loadSession(tms);
+      if(session && session.status==='done'){
+        const sd = {
+          grade: session.grade||'—',
+          total: session.total||'—',
+          product: session.product, sales: session.sales,
+          communication: session.communication,
+          compliance: session.compliance, role: session.role
+        };
+        TAKEN_DATA[tms]=sd;
+        renderAlreadyScore(sd);
+      }
+    }catch(e){}
+    document.getElementById('alreadyScoreLoading').style.display='none';
+  }
+}
+
+function renderAlreadyScore(d){
+  if(!d||!d.grade) return;
+  const gradeEl = document.getElementById('alreadyGrade');
+  const scoreEl = document.getElementById('alreadyScore');
+  const passEl  = document.getElementById('alreadyPass');
+  gradeEl.textContent = d.grade; gradeEl.style.display='block';
+  const totalNum = parseFloat(String(d.total||'0').replace('%',''))||0;
+  if(d.total){ scoreEl.textContent = totalNum+'%'; scoreEl.style.display='block'; }
+  const passed = totalNum >= PASS;
+  passEl.textContent = passed ? '✅ ผ่านการสอบ' : '❌ ไม่ผ่านการสอบ';
+  passEl.className = 'already-pass ' + (passed ? 'pass' : 'fail');
+  passEl.style.display='block';
+
+  // เตรียม breakdown rows (ใช้จาก d ถ้ามี)
+  const partData=[
+    {key:'product',      label:'ความรู้สินค้า',  n:20, val:d.product},
+    {key:'sales',        label:'เทคนิคการขาย',   n:12, val:d.sales},
+    {key:'communication',label:'การสื่อสาร',     n:8,  val:d.communication},
+    {key:'compliance',   label:'Compliance/อย.', n:12, val:d.compliance},
+    {key:'role',         label:'KPI ตามบทบาท',   n:8,  val:d.role},
+  ];
+  const hasBreakdown = partData.some(p=>p.val!==undefined&&p.val!==null&&p.val!=='');
+  if(hasBreakdown){
+    const rows = partData.map(p=>{
+      const raw=parseInt(p.val)||0;
+      const pct=Math.round(raw/p.n*100);
+      const col=pct<70?'#E0556B':pct<80?'#FFB347':pct<90?'#5BC2A6':'#1FA97A';
+      return `<div class="score-part-row">
+        <div class="score-part-label">${p.label}</div>
+        <div class="score-part-bar"><div class="score-part-fill" style="width:${pct}%;background:${col}"></div></div>
+        <div class="score-part-val" style="color:${col}">${raw}/${p.n}</div>
+      </div>`;
+    }).join('');
+    document.getElementById('scoreDetailRows').innerHTML=rows;
+    document.getElementById('btnShowScore').style.display='block';
+  } else {
+    // ไม่มี breakdown แต่มี total — แสดงปุ่มดูคะแนนรวมอย่างเดียว
+    document.getElementById('scoreDetailRows').innerHTML=
+      `<div style="text-align:center;color:#637488;font-size:13px;padding:8px 0">คะแนนรวม <b style="color:#0f2044">${totalNum}%</b> (เกรด ${d.grade})<br><span style="font-size:11px">ข้อมูลแยกรายหมวดไม่พร้อมใช้งาน</span></div>`;
+    document.getElementById('btnShowScore').style.display='block';
+  }
+}
+
+function toggleScoreDetail(){
+  const panel = document.getElementById('scoreDetail');
+  const btn   = document.getElementById('btnShowScore');
+  const isOpen = panel.classList.toggle('show');
+  btn.textContent = isOpen ? '▲ ซ่อนคะแนนรายพาร์ท' : '📊 ดูคะแนนรายพาร์ท';
 }
 
 function buildExam(seed){
@@ -872,8 +940,10 @@ $('submitBtn').addEventListener('click',()=>{
   clearProgress(_tms);   // สอบจบแล้ว ลบงานค้างทิ้ง
   // บันทึก done ขึ้น Sheet (block ทุก device)
   postSession('done',{
-    grade:window._result?window._result.grade:'',
-    total:window._result?window._result.total:'',
+    grade:_total>=90?'A':_total>=80?'B':_total>=70?'C':_total>=60?'D':'F',
+    total:_total,
+    product:_raw.product, sales:_raw.sales,
+    communication:_raw.communication, compliance:_raw.compliance, role:_raw.role,
     startedAt:new Date(_sessionStartTS).toISOString(),
   });
   // หยุด auto-save
@@ -931,6 +1001,17 @@ document.addEventListener('click',function(e){
     <div class="already-grade" id="alreadyGrade" style="display:none">—</div>
     <div class="already-score" id="alreadyScore" style="display:none">—</div>
     <div class="already-pass" id="alreadyPass" style="display:none">—</div>
+    <!-- ปุ่มดูคะแนน -->
+    <button class="btn-score" id="btnShowScore" style="display:none" onclick="toggleScoreDetail()">
+      📊 ดูคะแนนรายพาร์ท
+    </button>
+    <!-- breakdown panel -->
+    <div class="score-detail" id="scoreDetail">
+      <div class="score-detail-title">📈 คะแนนแยกรายหมวด</div>
+      <div id="scoreDetailRows"></div>
+      <div style="font-size:11px;color:#9C8B78;margin-top:10px;text-align:center">คะแนนอัตนัยจะถูกเพิ่มโดย L&D ภายหลัง</div>
+    </div>
+    <div id="alreadyScoreLoading" style="display:none;font-size:12px;color:#9C8B78;margin-bottom:8px">⏳ กำลังดึงคะแนน...</div>
   </div>
 </div>
 <!-- ============ ADMIN RESET PANEL ============ -->
