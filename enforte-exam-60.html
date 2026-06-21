@@ -663,6 +663,7 @@ $('startBtn').addEventListener('click',()=>{
         _saveInterval = setInterval(saveSession, 30000);
 
         answered = false;
+        saveSession(); // บันทึก snapshot เริ่มต้น
         renderQ();
         $('startBtn').textContent = 'เริ่มสอบ';
         delete $('startBtn').dataset.resume;
@@ -670,6 +671,10 @@ $('startBtn').addEventListener('click',()=>{
         return;
       }
     }catch(ex){}
+    // snapshot ไม่สมบูรณ์ → reset แล้ว start ใหม่
+    delete $('startBtn').dataset.resume;
+    delete $('startBtn').dataset.session;
+    $('startBtn').textContent='เริ่มสอบ';
   }
 
   // สร้าง seed สำหรับ restore ข้อสอบ
@@ -690,7 +695,8 @@ $('startBtn').addEventListener('click',()=>{
 
   // Auto-save ทุก 30 วิ
   if(_saveInterval)clearInterval(_saveInterval);
-  _saveInterval=setInterval(saveSession,30000);
+  _saveInterval=setInterval(saveSession,60000); // backup ทุก 60 วิ
+  saveSession(); // บันทึกทันทีตอน start
 
   renderQ();
 });
@@ -744,6 +750,7 @@ function commitAnswer(i){
   answered=true;
   const q=exam[idx];const chosen=q.sc[i];const correct=chosen.correct;
   picked.push({part:q.p,correct});
+  saveSession(); // บันทึกหลังตอบทุกข้อ
   document.querySelectorAll('.choice').forEach((b,bi)=>{
     b.disabled=true;b.style.borderColor='';b.style.background='';
     if(q.sc[bi].correct)b.classList.add('correct');
