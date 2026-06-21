@@ -411,7 +411,15 @@ function openModal(idx){
   }
   document.getElementById('modalBg').classList.add('open');
 }
-const _mc=document.getElementById('modalClose'),_mb=document.getElementById('modalBg');if(_mc)_mc.addEventListener('click',()=>_mb.classList.remove('open'));if(_mb)_mb.addEventListener('click',e=>{if(e.target===_mb)_mb.classList.remove('open');});
+// modal close handlers — defer until after modal HTML exists
+setTimeout(function(){
+  var mc=document.getElementById('modalClose');
+  var mb=document.getElementById('modalBg');
+  if(mc) mc.addEventListener('click',function(){mb.classList.remove('open');});
+  if(mb) mb.addEventListener('click',function(e){if(e.target===mb)mb.classList.remove('open');});
+  // keyboard ESC
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&mb)mb.classList.remove('open');});
+},0);
 let currentFilter='all';
 const _origFilterHandler=document.getElementById('filters');
 // track active filter (re-bind to capture into currentFilter)
