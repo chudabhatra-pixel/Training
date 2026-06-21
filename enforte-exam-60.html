@@ -436,23 +436,25 @@ async function loadTaken(){
     if(!res.ok){_takenLoaded=true;lookupTMS();return;}
     const rows=JSON.parse(await res.text());
     if(rows&&rows.length){
+      // normalize keys: trim whitespace จาก field names (Google Sheet มักมี space ต่อท้าย)
       rows.forEach(row=>{
-        const t=(row['TMS']||row['tms']||'').trim().toLowerCase();
+        const norm={};
+        Object.keys(row).forEach(k=>norm[k.trim()]=typeof row[k]==='string'?row[k].trim():row[k]);
+        const t=(norm['TMS']||norm['tms']||'').trim().toLowerCase();
         if(!t)return;
         TAKEN.add(t);
-        const grade=row['Grade']||row['grade']||'';
-        let total=row['Total']||row['total']||row['คะแนนรวม']||'';
+        const grade=norm['Grade']||norm['grade']||'';
+        let total=norm['Total']||norm['total']||norm['คะแนนรวม']||'';
         // แปลง total: ถ้าเป็นทศนิยม (เช่น 0.41) ให้คูณ 100 → 41
         if(total!==''){
           const n=parseFloat(String(total).replace('%',''));
           if(!isNaN(n)) total = n<=1 ? Math.round(n*100) : Math.round(n);
         }
-        // ดึง breakdown รายพาร์ทจาก Form_Responses
-        const product     = row['Product']||row['product']||'';
-        const sales       = row['Sales']||row['sales']||'';
-        const communication = row['Communication']||row['communication']||'';
-        const compliance  = row['Compliance']||row['compliance']||'';
-        const role        = row['Role']||row['role']||'';
+        const product      = norm['Product']||norm['product']||'';
+        const sales        = norm['Sales']||norm['sales']||'';
+        const communication= norm['Communication']||norm['communication']||'';
+        const compliance   = norm['Compliance']||norm['compliance']||'';
+        const role         = norm['Role']||norm['role']||'';
         if(grade||total) TAKEN_DATA[t]={grade,total,product,sales,communication,compliance,role};
       });
     }
