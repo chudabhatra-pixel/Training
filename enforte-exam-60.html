@@ -162,7 +162,7 @@
   </div>
   <div class="meta-row">
     <div class="meta"><b>60</b><span>ข้อ</span></div>
-    <div class="meta"><b>40</b><span>นาที</span></div>
+    <div class="meta"><b>60</b><span>นาที</span></div>
     <div class="meta"><b>70%</b><span>เกณฑ์ผ่าน</span></div>
   </div>
   <div class="card">
@@ -180,7 +180,7 @@
       <b style="font-family:'Prompt'">กติกา</b>
       <ul>
         <li>ข้อสอบ 60 ข้อ มีเฉลย + คำอธิบายทันทีหลังตอบแต่ละข้อ</li>
-        <li>เวลา 40 นาที หมดเวลาระบบส่งอัตโนมัติ</li>
+        <li>เวลา 60 นาที หมดเวลาระบบส่งอัตโนมัติ</li>
         <li>ตอนจบมีคำถามอัตนัย 2 ข้อ (L&D ตรวจให้คะแนนภายหลัง)</li>
         <li>ผ่าน 70% ขึ้นไป — ส่งคะแนนเข้าระบบแล้วขึ้น Dashboard อัตโนมัติ</li>
         <li><b>ทำข้อสอบได้ครั้งเดียว</b> — หากเคยส่งคะแนนแล้วจะทำซ้ำไม่ได้</li>
@@ -234,7 +234,7 @@ const GFORM = {
     total:'entry.1839396589', grade:'entry.994979726', subjective:'entry.608536754'
   }
 };
-const PASS=70, TIME=30*60;
+const PASS=70, TIME=60*60;
 // วาง URL CSV เดียวกับ Dashboard เพื่อกัน 'สอบซ้ำ' (ปล่อยว่าง = ไม่เช็ค)
 const EXAM_CSV_URL='https://script.google.com/macros/s/AKfycbxHlYnzRyZfhzucRzs1w-67f5RCESWMf1aCIc8uGTngWtGkWQnT1gHjDityQYMiIhTf/exec';
 const SESSION_URL=EXAM_CSV_URL; // ใช้ URL เดียวกัน doPost จัดการ session
