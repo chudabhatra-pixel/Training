@@ -1,460 +1,1306 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mid-Year Knowledge Assessment 2026 — Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<title>ข้อสอบความรู้พนักงานขาย — Mid-Year 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#F4F6F9;--surface:#FFFFFF;--ink:#16242F;--muted:#637488;--line:#E4E9F0;
-    --fresh:#0F8A6B;--resell:#E8743B;--risk:#D64545;--amber:#E0A82E;--good:#0F8A6B;--gooddeep:#0A5E49;--accent:#16242F;
-    --shadow:0 1px 2px rgba(16,36,47,.04),0 8px 24px rgba(16,36,47,.05);--radius:14px;
-    font-family:'Inter',system-ui,sans-serif;
-  }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
-  .num{font-family:'Space Grotesk','Inter',sans-serif;font-feature-settings:"tnum";letter-spacing:-.01em}
-  header{background:var(--accent);color:#fff;padding:26px clamp(16px,4vw,48px) 0;position:relative;overflow:hidden}
-  header::after{content:"";position:absolute;right:-80px;top:-80px;width:320px;height:320px;background:radial-gradient(circle,rgba(15,138,107,.35),transparent 70%);pointer-events:none}
-  .head-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
-  .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#7FE3C6;font-weight:600}
-  h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(24px,3.4vw,34px);font-weight:700;margin-top:6px;line-height:1.1}
-  .head-sub{color:#A9B8C6;font-size:14px;margin-top:8px;max-width:600px}
-  .asof{text-align:right;color:#A9B8C6;font-size:13px}
-  .asof strong{color:#fff;display:block;font-size:15px}
-  .filters{display:flex;gap:8px;margin-top:24px;position:relative;z-index:2}
-  .filters button{font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:rgba(255,255,255,.08);color:#cdd9e3;border:1px solid rgba(255,255,255,.14);padding:10px 20px;border-radius:10px 10px 0 0;border-bottom:none;transition:.18s}
-  .filters button:hover{background:rgba(255,255,255,.16);color:#fff}
-  .filters button.active{background:var(--bg);color:var(--ink)}
-  .filters button .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:middle}
-  main{padding:clamp(16px,3vw,32px) clamp(16px,4vw,48px) 64px;max-width:1240px;margin:0 auto}
-  .section{margin-top:38px}
-  .section-head{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
-  .section-num{font-family:'Space Grotesk';font-size:13px;font-weight:700;color:var(--fresh);border:1.5px solid var(--fresh);border-radius:6px;padding:2px 8px;flex:none}
-  .section-title{font-size:18px;font-weight:700}
-  .section-desc{font-size:13px;color:var(--muted);margin-left:auto;text-align:right}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
-  .kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
-  .kpi{padding:18px 18px 16px;position:relative;overflow:hidden}
-  .kpi .label{font-size:12.5px;color:var(--muted);font-weight:500}
-  .kpi .val{font-family:'Space Grotesk';font-size:30px;font-weight:700;margin-top:8px;line-height:1}
-  .kpi .meta{font-size:12px;color:var(--muted);margin-top:6px}
-  .kpi.accent-bar::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--fresh)}
-  .kpi.k-pass::before{background:var(--good)}.kpi.k-fail::before{background:var(--risk)}.kpi.k-pending::before{background:var(--amber)}
-  .kpi .val.pass{color:var(--gooddeep)}.kpi .val.fail{color:var(--risk)}.kpi .val.pend{color:#B9851A}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .panel{padding:20px 22px}
-  .panel h3{font-size:15px;font-weight:700;margin-bottom:4px}
-  .panel .sub{font-size:12.5px;color:var(--muted);margin-bottom:18px}
-  .dept-compare{display:flex;gap:28px;align-items:flex-end;height:230px;padding:0 8px}
-  .dept-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;height:100%;justify-content:flex-end}
-  .bars{display:flex;gap:14px;align-items:flex-end;height:100%;width:100%;justify-content:center}
-  .bar-wrap{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;width:46px}
-  .bar{width:100%;border-radius:7px 7px 0 0;position:relative;transition:height .6s cubic-bezier(.2,.7,.2,1);min-height:3px}
-  .bar .bv{position:absolute;top:-21px;left:50%;transform:translateX(-50%);font-family:'Space Grotesk';font-size:13px;font-weight:700;white-space:nowrap}
-  .bar.score{background:linear-gradient(180deg,var(--fresh),#0c7359)}
-  .bar.pass{background:linear-gradient(180deg,#5BC2A6,#3aa085)}
-  .dept-label{font-weight:700;font-size:14px}
-  .dept-label .pill{font-size:11px;font-weight:600;color:#fff;border-radius:20px;padding:2px 9px;margin-left:6px;vertical-align:middle}
-  .legend{display:flex;gap:18px;font-size:12.5px;color:var(--muted);margin-top:18px;flex-wrap:wrap}
-  .legend span{display:inline-flex;align-items:center;gap:6px}
-  .legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
-  .gap-panel{padding:64px 24px 22px;position:relative}
-  .gap-flag{position:absolute;top:18px;right:18px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--risk);background:#FCEDED;border:1px solid #F4C9C9;padding:4px 10px;border-radius:20px;white-space:nowrap}
-  .gap-row{display:grid;grid-template-columns:160px 1fr 50px;align-items:center;gap:14px;margin:13px 0}
-  .gap-name{font-size:13.5px;font-weight:500;text-align:right}
-  .gap-track{position:relative;height:26px;background:#F0F3F7;border-radius:7px;overflow:hidden}
-  .gap-fill{height:100%;border-radius:7px;transition:width .7s cubic-bezier(.2,.7,.2,1)}
-  .gap-val{font-family:'Space Grotesk';font-weight:700;font-size:14px}
-  .threshold{position:absolute;top:-6px;bottom:-6px;width:0;border-left:2px dashed #98a6b6;z-index:3}
-  .threshold span{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:10.5px;color:var(--muted);white-space:nowrap;font-weight:600}
-  .gap-callout{margin-top:20px;background:#FFF8EC;border:1px solid #F2E2BD;border-radius:10px;padding:14px 16px;font-size:13.5px;display:flex;gap:10px}
-  .gap-callout b{color:#9A6B00}
-  .hist{display:flex;align-items:flex-end;gap:14px;height:200px;padding:0 6px}
-  .hist-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:8px}
-  .hist-bar{width:100%;max-width:64px;border-radius:7px 7px 0 0;position:relative;transition:height .6s ease;min-height:3px}
-  .hist-bar .hv{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-family:'Space Grotesk';font-weight:700;font-size:13px}
-  .hist-x{font-size:12px;color:var(--muted);text-align:center}
-  .hist-x b{display:block;color:var(--ink);font-weight:700;font-size:12.5px}
-  table{width:100%;border-collapse:collapse;font-size:13.5px}
-  th{text-align:left;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
-  td{padding:9px 10px;border-bottom:1px solid #EEF1F5}
-  tr:last-child td{border-bottom:none}
-  td.num,th.num{text-align:right;font-family:'Space Grotesk';font-weight:600}
-  .rank{display:inline-flex;width:24px;height:24px;border-radius:7px;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:700;font-size:12.5px;background:#EEF2F6;color:var(--muted)}
-  .rank.r1{background:#E8743B;color:#fff}.rank.r2{background:#0F8A6B;color:#fff}.rank.r3{background:#3aa085;color:#fff}
-  .tag{font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:20px;display:inline-block}
-  .tag.fresh{background:#E4F4EF;color:#0c7359}.tag.resell{background:#FCEEE5;color:#C25A26}
-  .pos{font-size:11px;color:var(--muted)}
-  .grade{font-family:'Space Grotesk';font-weight:700;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;font-size:12.5px}
-  .gA{background:#0F8A6B;color:#fff}.gB{background:#5BC2A6;color:#06392c}.gC{background:#E0A82E;color:#3a2c00}.gD{background:#EB9A5C;color:#3a1e00}.gF{background:#D64545;color:#fff}
-  .scroll-tbl{max-height:340px;overflow:auto}
-  .scroll-tbl thead th{position:sticky;top:0;background:var(--surface);z-index:2}
-  .risk-head{display:flex;align-items:center;gap:10px}
-  .risk-count{background:var(--risk);color:#fff;font-family:'Space Grotesk';font-weight:700;font-size:13px;border-radius:8px;padding:3px 11px}
-  footer{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,48px) 48px;color:var(--muted);font-size:12.5px}
-  footer .note{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px;line-height:1.7}
-  footer code{background:#EEF2F6;border-radius:5px;padding:1px 6px;font-size:12px;font-family:'Space Grotesk',monospace}
+  :root{
+    --p:#6C63FF;--pk:#FF6B9D;--tl:#00C9A7;--go:#FFB347;
+    --bg:#FDF8F2;--card:#FFFCF8;--bdr:#EAD9C6;--txt:#2A1F14;--txt2:#5A4A3A;--txt3:#9C8B78;
+    --g1:linear-gradient(135deg,#6C63FF,#FF6B9D);
+    --ok:#1FA97A;--no:#E0556B;
+  }
+  body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--txt);line-height:1.55;min-height:100vh;padding:20px 14px 60px}
+  h1,h2,h3,.qtext,.brand{font-family:'Prompt',sans-serif}
+  .wrap{max-width:680px;margin:0 auto}
+  .screen{display:none}.screen.on{display:block}
+  /* START */
+  .hero{text-align:center;padding:30px 0 8px}
+  .badge{display:inline-block;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.3);color:var(--p);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;border-radius:100px;margin-bottom:16px}
+  .hero h1{font-size:clamp(26px,6vw,40px);font-weight:800;line-height:1.05}
+  .hero h1 .g{background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .hero p{color:var(--txt2);font-size:14px;margin:12px auto 0;max-width:460px}
+  .meta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:24px 0}
+  .meta{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:12px 18px;text-align:center;min-width:90px}
+  .meta b{display:block;font-family:'Prompt';font-size:20px;color:var(--p)}
+  .meta span{font-size:11px;color:var(--txt3)}
+  .card{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:22px;box-shadow:0 4px 16px rgba(160,110,60,.08)}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:13px;font-weight:600;color:var(--txt2);margin-bottom:6px}
+  .field input,.field select{width:100%;padding:11px 13px;border:1px solid var(--bdr);border-radius:10px;font-family:'Sarabun';font-size:15px;background:#fff;color:var(--txt);outline:none}
+  .field input:focus,.field select:focus{border-color:var(--p)}
+  .teamtog{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .teamtog button{padding:14px;border:1.5px solid var(--bdr);border-radius:12px;background:#fff;cursor:pointer;font-family:'Prompt';font-weight:600;font-size:15px;color:var(--txt2);transition:.15s}
+  .teamtog button .s{display:block;font-family:'Sarabun';font-size:11px;font-weight:500;color:var(--txt3);margin-top:2px}
+  .teamtog button.on{border-color:var(--p);background:rgba(108,99,255,.06);color:var(--p)}
+  .teamtog button.on.fresh{border-color:var(--tl);background:rgba(0,201,167,.07);color:#0a8f78}
+  .teamtog button.on.resell{border-color:var(--pk);background:rgba(255,107,157,.07);color:#d84d77}
+  .rules{font-size:12.5px;color:var(--txt2);background:rgba(255,179,71,.08);border:1px solid rgba(255,179,71,.3);border-radius:12px;padding:13px 15px;margin:16px 0}
+  .rules li{margin-left:18px;margin-bottom:3px}
+  .btn{display:block;width:100%;padding:15px;border:none;border-radius:12px;background:var(--g1);color:#fff;font-family:'Prompt';font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 6px 20px rgba(108,99,255,.3);transition:transform .12s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .btn.ghost{background:#fff;color:var(--p);border:1.5px solid var(--p);box-shadow:none}
+  .err{color:var(--no);font-size:12.5px;margin-top:8px;display:none}
+  /* QUIZ */
+  .qtop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .qcat{font-size:11px;font-weight:700;color:#fff;padding:4px 12px;border-radius:100px}
+  .qnum{font-size:13px;color:var(--txt3);font-weight:600}
+  .timer{margin-left:auto;font-family:'Prompt';font-weight:700;font-size:15px;color:var(--txt2);background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:5px 12px}
+  .timer.warn{color:var(--no);border-color:var(--no)}
+  .pbar{height:6px;background:#EFE4D6;border-radius:100px;overflow:hidden;margin-bottom:18px}
+  .pbar i{display:block;height:100%;background:var(--g1);transition:width .3s;border-radius:100px}
+  .qtext{font-size:18px;font-weight:600;line-height:1.45;margin-bottom:8px}
+  .qscenario{font-size:13.5px;color:var(--txt2);background:#F4ECDF;border-left:3px solid var(--p);border-radius:8px;padding:10px 13px;margin-bottom:14px;white-space:pre-line}
+  .choices{display:flex;flex-direction:column;gap:9px;margin:16px 0}
+  .choice{text-align:left;padding:13px 15px;border:1.5px solid var(--bdr);border-radius:12px;background:#fff;cursor:pointer;font-family:'Sarabun';font-size:15px;color:var(--txt);transition:.13s;display:flex;gap:11px;align-items:flex-start}
+  .choice:hover{border-color:var(--p)}
+  .choice .k{font-family:'Prompt';font-weight:700;color:var(--txt3);flex-shrink:0}
+  .choice.correct{border-color:var(--ok);background:rgba(31,169,122,.09)}
+  .choice.correct .k{color:var(--ok)}
+  .choice.wrong{border-color:var(--no);background:rgba(224,85,107,.08)}
+  .choice.wrong .k{color:var(--no)}
+  .choice:disabled{cursor:default}
+  .fb{display:none;border-radius:12px;padding:13px 15px;font-size:13.5px;margin-top:6px;line-height:1.5}
+  .fb.show{display:block}
+  .fb.ok{background:rgba(31,169,122,.08);border:1px solid rgba(31,169,122,.3)}
+  .fb.no{background:rgba(224,85,107,.07);border:1px solid rgba(224,85,107,.3)}
+  .fb b{font-family:'Prompt'}
+  .nextbtn{display:none;margin-top:16px}.nextbtn.show{display:block}
+  /* RESULT */
+  .rhead{text-align:center;padding:14px 0 6px}
+  .rpct{font-family:'Prompt';font-size:54px;font-weight:800;line-height:1}
+  .rpct.pass{color:var(--ok)}.rpct.fail{color:var(--no)}
+  .rstat{display:inline-block;font-family:'Prompt';font-weight:700;padding:5px 18px;border-radius:100px;font-size:14px;margin-top:6px}
+  .rstat.pass{background:rgba(31,169,122,.12);color:var(--ok)}
+  .rstat.fail{background:rgba(224,85,107,.12);color:var(--no)}
+  .partgrid{display:grid;gap:8px;margin:18px 0}
+  .partrow{display:grid;grid-template-columns:120px 1fr 54px;align-items:center;gap:10px}
+  .partrow .pl{font-size:13px;font-weight:600;color:var(--txt2)}
+  .ptrack{height:20px;background:#EFE4D6;border-radius:6px;overflow:hidden}
+  .ptrack i{display:block;height:100%;border-radius:6px;transition:width .6s}
+  .pv{font-family:'Prompt';font-weight:700;font-size:14px;text-align:right}
+  .subjbox{margin:16px 0}
+  .subjbox textarea{width:100%;min-height:80px;padding:11px 13px;border:1px solid var(--bdr);border-radius:10px;font-family:'Sarabun';font-size:14px;resize:vertical;background:#fff}
+  .subjbox .ql{font-size:13.5px;font-weight:600;margin:12px 0 6px;color:var(--txt)}
+  .muted{font-size:12px;color:var(--txt3);text-align:center;margin-top:10px}
+  .topgap{margin-top:10px}
 
-  /* All employees table */
-  .search-bar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-  .search-bar input{flex:1;min-width:180px;padding:9px 13px;border:1px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;outline:none}
-  .search-bar input:focus{border-color:var(--fresh)}
-  .search-bar select{padding:9px 13px;border:1px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;outline:none;background:#fff;cursor:pointer}
-  .all-tbl-wrap{max-height:480px;overflow:auto}
-  .all-tbl-wrap thead th{position:sticky;top:0;background:var(--surface);z-index:2}
-  tr.clickable{cursor:pointer;transition:.12s}
-  tr.clickable:hover td{background:#F4F9F6}
+  /* ── Confirm Overlay ── */
+  .confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
+  .confirm-overlay.show{display:flex}
+  .confirm-box{background:#fff;border-radius:18px;padding:28px 24px 22px;max-width:340px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+  .confirm-box p{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--ink)}
+  .confirm-box .sub{font-size:13px;color:var(--txt2);margin-bottom:22px;line-height:1.5}
+  .confirm-btns{display:flex;gap:10px}
+  .confirm-btns button{flex:1;padding:13px;border:none;border-radius:12px;font-family:'Prompt',sans-serif;font-weight:700;font-size:14px;cursor:pointer}
+  .btn-confirm{background:linear-gradient(135deg,#6C63FF,#FF6B9D);color:#fff}
+  .btn-cancel{background:#F0EDE8;color:var(--txt2)}
 
-  /* Modal */
-  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center}
-  .modal-bg.open{display:flex}
-  .modal{background:#fff;border-radius:18px;padding:28px 28px 24px;max-width:520px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative;max-height:90vh;overflow-y:auto}
-  .modal-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1}
-  .modal h2{font-family:'Space Grotesk';font-size:20px;font-weight:700;margin-bottom:4px}
-  .modal .meta{font-size:13px;color:var(--muted);margin-bottom:20px}
-  .modal .big-score{font-family:'Space Grotesk';font-size:52px;font-weight:800;line-height:1;text-align:center;margin:10px 0 4px}
-  .modal .big-grade{text-align:center;margin-bottom:20px}
-  .modal .part-row{display:grid;grid-template-columns:130px 1fr 46px;align-items:center;gap:10px;margin:8px 0}
-  .modal .part-label{font-size:13px;font-weight:500;color:var(--txt2)}
-  .modal .part-track{height:20px;background:#EEF2F6;border-radius:6px;overflow:hidden}
-  .modal .part-fill{height:100%;border-radius:6px}
-  .modal .part-val{font-family:'Space Grotesk';font-weight:700;font-size:13px;text-align:right}
-  .modal .weak-box{background:#FFF8EC;border:1px solid #F2E2BD;border-radius:10px;padding:12px 14px;font-size:13.5px;margin-top:16px}
-  @media(max-width:980px){.kpi-grid{grid-template-columns:repeat(3,1fr)}.row2{grid-template-columns:1fr}}
-  @media(max-width:620px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.gap-row{grid-template-columns:120px 1fr 42px}.section-desc{display:none}}
-  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
-  :focus-visible{outline:2px solid var(--fresh);outline-offset:2px}
+  /* ── Glossary Tooltip ── */
+  .gloss{border-bottom:1px dashed var(--p);cursor:help;position:relative;display:inline}
+  .gloss::after{content:attr(data-tip);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);
+    background:#16242F;color:#fff;font-size:11px;white-space:nowrap;padding:4px 8px;border-radius:6px;
+    pointer-events:none;opacity:0;transition:.15s;z-index:50;font-weight:400}
+  .gloss:hover::after,.gloss:focus::after{opacity:1}
+
+  /* ── Already-taken screen ── */
+  .already-screen{display:none;position:fixed;inset:0;background:linear-gradient(135deg,#0f2044,#1a3260);
+    z-index:999;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+  .already-screen.show{display:flex}
+  .already-card{background:#fff;border-radius:24px;padding:36px 28px;max-width:420px;width:100%;
+    text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .already-icon{font-size:64px;margin-bottom:12px}
+  .already-title{font-size:22px;font-weight:800;color:#0f2044;margin-bottom:6px}
+  .already-sub{font-size:13px;color:#64748b;margin-bottom:24px;line-height:1.6}
+  .already-info{background:#f0fdf4;border-radius:12px;padding:16px;text-align:left;margin-bottom:20px}
+  .already-info-name{font-size:18px;font-weight:800;color:#065f46;margin-bottom:2px}
+  .already-info-team{font-size:13px;color:#047857;font-weight:600;margin-bottom:8px}
+  .already-info-row{display:flex;justify-content:space-between;font-size:12px;color:#374151;margin-top:4px}
+  .already-grade{display:inline-block;background:linear-gradient(135deg,#0f2044,#1e6fbf);color:#fff;
+    font-size:28px;font-weight:800;border-radius:50%;width:56px;height:56px;line-height:56px;
+    text-align:center;margin:0 auto 8px}
+  .already-score{font-size:20px;font-weight:800;color:#0f2044;margin-bottom:4px}
+  .already-pass{font-size:14px;font-weight:700;margin-bottom:20px}
+  .already-pass.pass{color:#065f46} .already-pass.fail{color:#DC2626}
+  /* score detail panel */
+  .score-detail{display:none;background:#F8F6FF;border-radius:14px;padding:16px;margin-bottom:16px;text-align:left}
+  .score-detail.show{display:block}
+  .score-detail-title{font-size:13px;font-weight:700;color:#4B3FA0;margin-bottom:12px}
+  .score-part-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .score-part-label{font-size:11px;color:#5A4A3A;width:110px;flex-shrink:0}
+  .score-part-bar{flex:1;background:#E8E0FF;border-radius:20px;height:10px;overflow:hidden}
+  .score-part-fill{height:100%;border-radius:20px;transition:width .4s}
+  .score-part-val{font-size:11px;font-weight:700;width:44px;text-align:right;flex-shrink:0}
+  .btn-score{background:linear-gradient(135deg,#6C63FF,#4B3FA0);color:#fff;border:none;border-radius:10px;
+    padding:10px 18px;font-family:'Prompt';font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;width:100%}
+
 </style>
 </head>
 <body>
-<header>
-  <div class="head-top">
-    <div>
-      <div class="eyebrow">Learning &amp; Development · H1 2026</div>
-      <h1>Mid-Year Knowledge Assessment</h1>
-      <p class="head-sub">Fresh &amp; Resell · 104 employees</p>
-    </div>
-    <div class="asof">Last updated<strong id="asof">—</strong>Passing Score = 70%</div>
+<div class="wrap">
+
+<!-- ============ EXAM WINDOW BLOCKED ============ -->
+<section id="s-window" class="screen" style="display:none;align-items:center;justify-content:center;min-height:100vh">
+  <div class="card" style="max-width:420px;text-align:center;padding:36px 28px">
+    <div style="font-size:52px;margin-bottom:12px" id="windowIcon">🕐</div>
+    <div style="font-family:'Prompt';font-size:20px;font-weight:800;color:#2A1F14;margin-bottom:8px" id="windowTitle">—</div>
+    <div style="font-size:14px;color:#9C8B78;line-height:1.7" id="windowMsg">—</div>
+    <div style="margin-top:20px;background:#FDF8F2;border-radius:12px;padding:14px;font-size:13px;color:#5A4A3A" id="windowTime"></div>
   </div>
-  <div class="filters" id="filters">
-    <button data-f="all" class="active"><span class="dot" style="background:#7FE3C6"></span>All</button>
-    <button data-f="Fresh"><span class="dot" style="background:var(--fresh)"></span>Fresh</button>
-    <button data-f="Resell"><span class="dot" style="background:var(--resell)"></span>Resell</button>
+</section>
+
+<!-- ============ START ============ -->
+<section id="s-start" class="screen on">
+  <div class="hero">
+    <div class="badge">● Mid-Year Knowledge Assessment 2026</div>
+    <h1>ข้อสอบความรู้<span class="g">พนักงานขาย</span></h1>
+    <p>60 ข้อ ครอบคลุม 5 ส่วน: ความรู้สินค้า · เทคนิคการขาย · การสื่อสาร · Compliance (อย.) · KPI ตามบทบาท (Fresh/Resell)</p>
   </div>
-</header>
-<main>
-  <section class="section">
-    <div class="section-head"><span class="section-num">01</span><span class="section-title">Executive Summary</span><span class="section-desc">Overview for management</span></div>
-    <div class="kpi-grid" id="kpiGrid"></div>
-  </section>
-  <section class="section">
-    <div class="row2">
-      <div class="card panel">
-        <div class="section-head" style="margin-bottom:6px"><span class="section-num">02</span><span class="section-title">Department Comparison</span></div>
-        <p class="sub">Average score and pass rate: Fresh vs Resell</p>
-        <div class="dept-compare" id="deptCompare"></div>
-        <div class="legend"><span><i style="background:#0c7359"></i> Average score (%)</span><span><i style="background:#5BC2A6"></i> Pass rate (%)</span></div>
-      </div>
-      <div class="card panel">
-        <div class="section-head" style="margin-bottom:6px"><span class="section-num">03</span><span class="section-title">Ranking by Position</span></div>
-        <p class="sub">Average score by Senior / Intermediate / Agent</p>
-        <table id="teamTbl"><thead><tr><th style="width:48px">#</th><th>Position</th><th class="num">Count</th><th class="num">Avg Score</th><th class="num">Pass Rate</th></tr></thead><tbody></tbody></table>
+  <div class="meta-row">
+    <div class="meta"><b>60</b><span>ข้อ</span></div>
+    <div class="meta"><b>40</b><span>นาที</span></div>
+    <div class="meta"><b>70%</b><span>เกณฑ์ผ่าน</span></div>
+  </div>
+  <div class="card">
+    <div class="field"><label>รหัส TMS</label><input id="i-tms" placeholder="เช่น af011 / ac007" autocomplete="off"><div id="tmsMsg" style="font-size:12.5px;margin-top:7px;display:none"></div></div>
+    <div class="field"><label>ชื่อ-นามสกุล</label><input id="i-fname" placeholder="พิมพ์รหัส TMS แล้วชื่อจะแสดงที่นี่" autocomplete="off" readonly style="background:#F4ECDF;color:var(--txt2)"></div>
+    <div class="field"><label>ชื่อเล่น</label><input id="i-nick" placeholder="พิมพ์รหัส TMS แล้วชื่อจะแสดงที่นี่" autocomplete="off" readonly style="background:#F4ECDF;color:var(--txt2)"></div>
+    <div class="field">
+      <label>ทีมของคุณ</label>
+      <div class="teamtog" id="teamtog">
+        <button data-team="Fresh" class="fresh">Fresh</button>
+        <button data-team="Resell" class="resell">Resell</button>
       </div>
     </div>
-  </section>
-  <section class="section">
-    <div class="card panel">
-      <div class="section-head" style="margin-bottom:6px"><span class="section-num">04</span><span class="section-title">All Employees</span><span class="section-desc">Click any row to view individual breakdown</span></div>
-      <div class="search-bar">
-        <input id="empSearch" placeholder="Search name or TMS..." oninput="filterTable()">
-        <select id="empDept" onchange="filterTable()"><option value="">All Departments</option><option value="Fresh">Fresh</option><option value="Resell">Resell</option></select>
-        <select id="empStatus" onchange="filterTable()"><option value="">All Status</option><option value="done">Completed</option><option value="pending">Pending</option></select>
-      </div>
-      <div class="all-tbl-wrap">
-        <table id="allTbl">
-          <thead><tr><th style="width:40px">#</th><th>TMS · Name</th><th>Dept</th><th>Position</th><th class="num">Score</th><th style="width:40px">Grade</th><th style="width:70px">Status</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div style="font-size:12px;color:var(--muted);margin-top:10px" id="empCount"></div>
+    <div class="rules">
+      <b style="font-family:'Prompt'">กติกา</b>
+      <ul>
+        <li>ข้อสอบ 60 ข้อ มีเฉลย + คำอธิบายทันทีหลังตอบแต่ละข้อ</li>
+        <li>เวลา 40 นาที หมดเวลาระบบส่งอัตโนมัติ</li>
+        <li>ตอนจบมีคำถามอัตนัย 2 ข้อ (L&D ตรวจให้คะแนนภายหลัง)</li>
+        <li>ผ่าน 70% ขึ้นไป — ส่งคะแนนเข้าระบบแล้วขึ้น Dashboard อัตโนมัติ</li>
+        <li><b>ทำข้อสอบได้ครั้งเดียว</b> — หากเคยส่งคะแนนแล้วจะทำซ้ำไม่ได้</li>
+      </ul>
     </div>
-  </section>
-  <section class="section">
-    <div class="card gap-panel">
-      <div class="gap-flag">⚑ Focus area</div>
-      <div class="section-head" style="margin-bottom:6px"><span class="section-num">05</span><span class="section-title">Knowledge Gap Analysis</span></div>
-      <p class="sub">Average score by topic — topics below the line need training first</p>
-      <div id="gapRows"></div>
-      <div class="gap-callout"><span>💡</span><div>Recommended refresher training for: <b id="gapTrain">—</b></div></div>
+    <button class="btn" id="startBtn" disabled>เริ่มทำข้อสอบ →</button>
+    <div class="err" id="startErr">กรุณากรอก TMS, ชื่อเล่น และเลือกทีมให้ครบ</div>
+  </div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="s-quiz" class="screen">
+  <div class="qtop">
+    <span class="qcat" id="qcat">—</span>
+    <span class="qnum" id="qnum">ข้อ 1 / 60</span>
+    <span class="timer" id="timer">40:00</span>
+  </div>
+  <div class="pbar"><i id="pbar" style="width:0%"></i></div>
+  <div class="qtext" id="qtext"></div>
+  <div class="qscenario" id="qscenario" style="display:none"></div>
+  <div class="choices" id="choices"></div>
+  <div class="fb" id="fb"></div>
+  <button class="btn nextbtn" id="nextBtn">ข้อถัดไป →</button>
+</section>
+
+<!-- ============ RESULT ============ -->
+<section id="s-subj" class="screen"><div class="card"><div style="font-family:'Prompt';font-weight:700;font-size:18px;margin-bottom:4px">คำถามอัตนัย</div><div style="font-size:13px;color:var(--txt2);margin-bottom:18px">ตอบให้ครบทั้ง 2 ข้อก่อนส่งคะแนน — L&Dจะตรวจภายหลัง</div><div class="subjbox"><div class="ql" id="subjQ1"></div><textarea id="subjA1" placeholder="พิมพ์คำตอบ..."></textarea><div class="ql" id="subjQ2" style="margin-top:14px"></div><textarea id="subjA2" placeholder="พิมพ์คำตอบ..."></textarea></div><button class="btn" id="submitBtn" style="margin-top:18px">📤 ส่งคะแนน + คำตอบเข้าระบบ</button><div class="muted" id="submitMsg" style="margin-top:8px"></div></div></section>
+
+<section id="s-result" class="screen">
+  <div class="card">
+    <div class="rhead">
+      <div class="rpct" id="rpct">0%</div>
+      <div class="rstat" id="rstat">—</div>
+      <div class="muted" id="rline">—</div>
     </div>
-  </section>
-  <section class="section">
-    <div class="card panel">
-      <div class="section-head" style="margin-bottom:6px"><span class="section-num">06</span><span class="section-title">Score Distribution</span><span class="section-desc">Distribution by score band</span></div>
-      <div class="hist" id="hist"></div>
-    </div>
-  </section>
-  <section class="section">
-    <div class="card panel">
-      <div class="section-head" style="margin-bottom:6px"><span class="section-num">07</span><span class="section-title">High-Risk Employees</span><span class="section-desc">Below 70% passing — recommend IDP / retake</span></div>
-      <div class="risk-head" style="margin-bottom:10px"><span class="risk-count" id="riskCount">0</span><span style="font-size:13px;color:var(--muted)">employees to monitor (lowest score first)</span></div>
-      <div class="scroll-tbl"><table id="riskTbl"><thead><tr><th>Name</th><th>Dept</th><th>Position</th><th>Weakest Topic</th><th class="num">Score</th><th style="width:40px">Grade</th></tr></thead><tbody></tbody></table></div>
-    </div>
-  </section>
-</main>
+    <div class="partgrid" id="partGrid"></div>
+
+
+  </div>
+</section>
+
+</div>
 
 <script>
-const ROSTER=[["Nok", "ac007", "S", "R"], ["Aum", "ac012", "S", "R"], ["Boy", "ac072", "I", "R"], ["Ple", "ac087", "I", "R"], ["Ni", "ac095", "I", "R"], ["Khaeck", "ac104", "I", "R"], ["Aan", "ac169", "I", "R"], ["Yok", "ac173", "I", "R"], ["Yu", "ac182", "I", "R"], ["Lek", "ac183", "I", "R"], ["Nuch", "ac245", "I", "R"], ["Kea", "ac246", "I", "R"], ["Jee", "ac248", "I", "R"], ["Yao", "ac253", "I", "R"], ["Aor", "ac254", "I", "R"], ["Poo", "ac268", "I", "R"], ["Kai", "ac297", "I", "R"], ["Mhai", "ac325", "I", "R"], ["Song", "ac330", "I", "R"], ["Daw", "ac363", "I", "R"], ["Aae", "ac422", "I", "R"], ["Aoi", "ac461", "I", "R"], ["Eagle", "ac466", "I", "R"], ["Jang", "ac196", "I", "R"], ["Maree", "ac302", "I", "R"], ["Ploy", "ac482", "I", "R"], ["Ple", "ac490", "I", "R"], ["Nam Petch", "ar507", "I", "R"], ["Nut", "ac491", "I", "R"], ["Ying", "ac303", "I", "R"], ["Tun", "ac341", "I", "R"], ["Som", "ac544", "I", "R"], ["Kak", "ac560", "I", "R"], ["Ae", "ac356", "I", "R"], ["Nok", "ac591", "I", "R"], ["Am", "ac373", "I", "R"], ["Ja", "ac376", "I", "R"], ["Ron", "ac364", "I", "R"], ["Heng", "ac595", "I", "R"], ["Bow", "ac597", "I", "R"], ["Dao", "ac598", "I", "R"], ["Bee", "ac339", "I", "R"], ["Kwan", "ac551", "I", "R"], ["Tom", "ac485", "I", "R"], ["Jaa", "ac553", "I", "R"], ["Tom", "ac554", "I", "R"], ["Mui", "af011", "S", "F"], ["Ae", "af029", "A", "F"], ["Kriang", "af034", "A", "F"], ["Ant", "af038", "S", "F"], ["Da", "af240", "A", "F"], ["Tangmo", "af256", "A", "F"], ["Tookta", "af261", "A", "F"], ["Tai", "af313", "A", "F"], ["Van", "af316", "A", "F"], ["Kwan", "af441", "A", "F"], ["Jum", "af442", "A", "F"], ["Golf", "af009", "S", "F"], ["Phueng", "af016", "A", "F"], ["Yui", "af018", "S", "F"], ["Sathit", "af023", "A", "F"], ["Poo", "af170", "A", "F"], ["Ice", "af181", "A", "F"], ["Namwan", "af214", "A", "F"], ["Yo", "af216", "A", "F"], ["Ow", "af226", "A", "F"], ["Lek", "af247", "A", "F"], ["Sai", "af258", "A", "F"], ["Bow", "af269", "A", "F"], ["Nui", "af379", "A", "F"], ["Tong", "af006", "S", "F"], ["Nok", "af025", "A", "F"], ["Kwan", "af039", "A", "F"], ["Fon", "af040", "A", "F"], ["Nid", "af075", "A", "F"], ["Nui", "af105", "A", "F"], ["Bird", "af115", "A", "F"], ["Tae", "af123", "A", "F"], ["Aoi", "af189", "A", "F"], ["Took", "af236", "A", "F"], ["Rose", "af275", "A", "F"], ["Peemai", "af276", "A", "F"], ["Jeed", "af317", "A", "F"], ["Tem", "af432", "A", "F"], ["Nid", "af020", "S", "F"], ["Fon", "af066", "A", "F"], ["Mao", "af067", "A", "F"], ["Jeed", "af084", "A", "F"], ["Pum", "af174", "A", "F"], ["Fay", "af178", "A", "F"], ["Nana", "af241", "A", "F"], ["Add", "af279", "A", "F"], ["Lek", "af314", "A", "F"], ["Duan", "af315", "A", "F"], ["Yeens", "af381", "A", "F"], ["Peung", "af437", "A", "F"], ["Me", "af555", "A", "F"], ["Arm", "af217", "A", "F"], ["Mark", "af566", "A", "F"], ["Pakkard", "af520", "A", "F"], ["Fong", "af599", "A", "F"], ["Nuch", "af536", "A", "F"], ["Nu", "af533", "A", "F"], ["Yong", "af534", "A", "F"]];
-function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;}}
-const rng=mulberry32(20260618);
-function gauss(m,sd){let u=0,v=0;while(u===0)u=rng();while(v===0)v=rng();return m+sd*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
-const clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x)),r0=x=>Math.round(x);
-const DEPT={F:'Fresh',R:'Resell'},POS={S:'Senior Call Center Agent',I:'Intermediate Call Center Agent',A:'Call Center Agent'};
-const TOPICS=[{key:'product',label:'Product Knowledge',short:'Product',w:0.30,base:88},{key:'sales',label:'Sales Technique',short:'Sales',w:0.20,base:75},{key:'communication',label:'Communication Skills',short:'Communication',w:0.15,base:80},{key:'compliance',label:'Compliance & QA',short:'Compliance',w:0.15,base:85},{key:'role',label:'Role KPI',short:'Role KPI',w:0.20,base:72}];
-/* ===== DATA SOURCE CONFIG =====
-   วาง URL ของ Google Sheet ที่ Publish เป็น CSV ตรงนี้ (ดูวิธีในไฟล์ SETUP)
-   ปล่อยว่าง = ใช้ข้อมูลตัวอย่าง (sample) */
-const CSV_URL = 'https://script.google.com/macros/s/AKfycbxHlYnzRyZfhzucRzs1w-67f5RCESWMf1aCIc8uGTngWtGkWQnT1gHjDityQYMiIhTf/exec';            // เช่น 'https://docs.google.com/spreadsheets/d/e/XXXX/pub?gid=0&single=true&output=csv'
-const AUTO_REFRESH_SEC = 60;   // รีเฟรชอัตโนมัติทุกกี่วินาที (0 = ปิด)
-// จำนวนข้อเต็มต่อส่วน (ใช้แปลงคะแนนดิบ→%) ต้องตรงกับข้อสอบ
-const PART_MAX={product:20,sales:12,communication:8,compliance:10,role:10};
-
-const posBonus={S:5,I:1,A:-2};
-let EMP=[];
-
-// ---- sample data (ใช้เมื่อยังไม่ได้เชื่อม Sheet) ----
-function buildSampleEMP(){
-  const arr=ROSTER.map(([name,tms,p,d])=>{
-    const dept=DEPT[d],position=POS[p];
-    const deptB=d==='F'?5:-5,ability=gauss(0,6);
-    const scores={};TOPICS.forEach(t=>{scores[t.key]=clamp(r0(t.base+deptB+posBonus[p]+ability+gauss(0,5)),25,100);});
-    // คำนวณ weighted total จากคะแนนรายส่วน (ไม่ใช้ Total field จาก Form)
-    const overall=r0(TOPICS.reduce((s,t)=>s+scores[t.key]*t.w,0));
-    return {name,tms,dept,position,pcode:p,scores,overall,status:'done'};
-  });
-  [5,33,61,88,99].forEach(i=>{if(arr[i]){arr[i].status='pending';arr[i].overall=null;}});
-  return arr;
-}
-
-// ---- minimal CSV parser ----
-function parseCSV(text){
-  const rows=[];let i=0,f='',row=[],q=false;
-  while(i<text.length){const c=text[i];
-    if(q){ if(c==='"'){ if(text[i+1]==='"'){f+='"';i++;}else q=false;} else f+=c; }
-    else { if(c==='"')q=true; else if(c===','){row.push(f);f='';} else if(c==='\n'){row.push(f);rows.push(row);row=[];f='';} else if(c!=='\r')f+=c; }
-    i++;}
-  if(f.length||row.length){row.push(f);rows.push(row);}
-  return rows;
-}
-function colIndex(headers,...keys){
-  return headers.findIndex(h=>{const x=h.toLowerCase();return keys.some(k=>x.includes(k));});
-}
-
-// ---- build EMP from Apps Script JSON ----
-function buildLiveEMP(jsonText){
-  const rows=JSON.parse(jsonText);
-  if(!rows||!rows.length) throw new Error('empty');
-  // normalize keys: trim whitespace from all keys and values
-  const clean=rows.map(row=>{
-    const obj={};
-    Object.keys(row).forEach(k=>{ obj[k.trim()]=typeof row[k]==='string'?row[k].trim():row[k]; });
-    return obj;
-  });
-  const byTms={};
-  clean.forEach(row=>{
-    // find TMS key flexibly
-    const tmsKey=Object.keys(row).find(k=>k.toLowerCase().includes('tms'));
-    const tms=tmsKey?(row[tmsKey]||'').toLowerCase().trim():'';
-    if(tms) byTms[tms]=row;
-  });
-  return ROSTER.map(([name,tms,p,d])=>{
-    const dept=DEPT[d],position=POS[p];
-    const row=byTms[tms.toLowerCase()];
-    if(!row) return {name,tms,dept,position,pcode:p,scores:{},overall:null,status:'pending'};
-    const scores={};let ok=true;
-    TOPICS.forEach(t=>{
-      // find matching key case-insensitively
-      const key=Object.keys(row).find(k=>k.toLowerCase()===t.key.toLowerCase());
-      const raw=parseFloat(key?row[key]:'');
-      if(isNaN(raw)||raw===0&&key===undefined){ok=false;return;}
-      scores[t.key]=clamp(r0(raw/PART_MAX[t.key]*100),0,100);
-    });
-    if(!ok) return {name,tms,dept,position,pcode:p,scores:{},overall:null,status:'pending'};
-    const overall=r0(TOPICS.reduce((s,t)=>s+scores[t.key]*t.w,0));
-    return {name,tms,dept,position,pcode:p,scores,overall,status:'done'};
-  });
-}
-function gradeOf(s){return s>=90?'A':s>=80?'B':s>=70?'C':s>=60?'D':'F';}
-function weakest(e){let mn=999,k='';TOPICS.forEach(t=>{if(e.scores[t.key]<mn){mn=e.scores[t.key];k=t.short;}});return k;}
-function aggregate(filter){
-  const pool=EMP.filter(e=>filter==='all'?true:e.dept===filter);
-  const done=pool.filter(e=>e.status==='done');
-  const avg=done.length?done.reduce((s,e)=>s+e.overall,0)/done.length:0;
-  const passed=done.filter(e=>e.overall>=70).length,failed=done.length-passed;
-  const pending=pool.filter(e=>e.status==='pending').length;
-  const topicAvg=TOPICS.map(t=>({...t,avg:done.length?r0(done.reduce((s,e)=>s+e.scores[t.key],0)/done.length):0}));
-  const buckets=[{lo:90,hi:100,label:'90–100',g:'A'},{lo:80,hi:89,label:'80–89',g:'B'},{lo:70,hi:79,label:'70–79',g:'C'},{lo:60,hi:69,label:'60–69',g:'D'},{lo:0,hi:59,label:'< 60',g:'F'}];
-  buckets.forEach(b=>b.count=done.filter(e=>e.overall>=b.lo&&e.overall<=b.hi).length);
-  const groups=['Senior Call Center Agent','Intermediate Call Center Agent','Call Center Agent'].map(pos=>{
-    const gd=done.filter(e=>e.position===pos),gp=pool.filter(e=>e.position===pos);
-    return {name:pos,n:gp.length,avg:gd.length?r0(gd.reduce((s,e)=>s+e.overall,0)/gd.length):0,pass:gd.length?r0(100*gd.filter(e=>e.overall>=70).length/gd.length):0};
-  }).filter(g=>g.n>0).sort((a,b)=>b.avg-a.avg);
-  const depts=['Fresh','Resell'].filter(d=>filter==='all'||filter===d).map(d=>{
-    const dd=EMP.filter(e=>e.dept===d&&e.status==='done');
-    return {dept:d,avg:r0(dd.reduce((s,e)=>s+e.overall,0)/dd.length),pass:r0(100*dd.filter(e=>e.overall>=70).length/dd.length)};
-  });
-  const top20=[...done].sort((a,b)=>b.overall-a.overall).slice(0,20);
-  const risk=[...done].filter(e=>e.overall<70).sort((a,b)=>a.overall-b.overall);
-  return {pool,done,avg:r0(avg),passed,failed,pending,topicAvg,buckets,groups,depts,top20,risk,totalPool:pool.length};
-}
-function fillColor(v){return v<70?'var(--risk)':v<80?'var(--amber)':v<90?'#5BC2A6':'var(--gooddeep)';}
-function render(filter){
-  const d=aggregate(filter);
-  const kpi=[
-    {label:'Total employees',val:d.totalPool,meta:filter==='all'?'Fresh + Resell':filter,cls:'accent-bar'},
-    {label:'Completed',val:d.done.length,meta:`${(100*d.done.length/d.totalPool).toFixed(1)}%`,cls:'accent-bar'},
-    {label:'Not yet taken',val:d.pending,meta:`${(100*d.pending/d.totalPool).toFixed(1)}%`,cls:'k-pending',vcls:'pend'},
-    {label:'Average score',val:d.avg+'%',meta:'of test-takers',cls:'accent-bar'},
-    {label:'Passed',val:d.passed,meta:d.done.length?`${r0(100*d.passed/d.done.length)}% of test-takers`:'—',cls:'k-pass',vcls:'pass'},
-    {label:'Failed',val:d.failed,meta:d.done.length?`${r0(100*d.failed/d.done.length)}% of test-takers`:'—',cls:'k-fail',vcls:'fail'},
-  ];
-  document.getElementById('kpiGrid').innerHTML=kpi.map(k=>`<div class="card kpi ${k.cls}"><div class="label">${k.label}</div><div class="val num ${k.vcls||''}">${k.val}</div><div class="meta">${k.meta}</div></div>`).join('');
-  document.getElementById('deptCompare').innerHTML=d.depts.map(x=>{
-    const pillBg=x.dept==='Fresh'?'var(--fresh)':'var(--resell)';
-    return `<div class="dept-group"><div class="bars"><div class="bar-wrap"><div class="bar score" style="height:${x.avg}%"><span class="bv">${x.avg}%</span></div></div><div class="bar-wrap"><div class="bar pass" style="height:${x.pass}%"><span class="bv">${x.pass}%</span></div></div></div><div class="dept-label">${x.dept}<span class="pill" style="background:${pillBg}">${x.dept==='Fresh'?'F':'R'}</span></div></div>`;
-  }).join('');
-  const sortedTopics=[...d.topicAvg].sort((a,b)=>a.avg-b.avg);
-  document.getElementById('gapRows').innerHTML=sortedTopics.map(t=>`<div class="gap-row"><div class="gap-name">${t.label}</div><div class="gap-track"><div class="gap-fill" style="width:${t.avg}%;background:${fillColor(t.avg)}"></div><div class="threshold" style="left:70%"><span>70%</span></div></div><div class="gap-val" style="color:${fillColor(t.avg)}">${t.avg}%</div></div>`).join('');
-  const trainList=sortedTopics.filter(t=>t.avg<80).map(t=>t.label);
-  document.getElementById('gapTrain').textContent=trainList.length?trainList.join(' · '):'All topics are in good standing ✓';
-  const maxC=Math.max(...d.buckets.map(b=>b.count),1);
-  document.getElementById('hist').innerHTML=d.buckets.map(b=>{
-    const col=b.g==='F'?'var(--risk)':b.g==='D'?'#EB9A5C':b.g==='C'?'var(--amber)':b.g==='B'?'#5BC2A6':'var(--gooddeep)';
-    return `<div class="hist-col"><div class="hist-bar" style="height:${b.count/maxC*100}%;background:${col}"><span class="hv">${b.count}</span></div><div class="hist-x"><b>${b.label}</b>Grade ${b.g}</div></div>`;
-  }).join('');
-  document.querySelector('#teamTbl tbody').innerHTML=d.groups.map((t,i)=>{
-    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'';
-    return `<tr><td><span class="rank ${rc}">${i+1}</span></td><td style="font-weight:600">${t.name}</td><td class="num">${t.n}</td><td class="num">${t.avg}%</td><td class="num">${t.pass}%</td></tr>`;
-  }).join('');
-  // All employees table
-  window._allEMP=[...d.done,...d.pool.filter(e=>e.status==='pending')].sort((a,b)=>(b.overall||0)-(a.overall||0));
-  renderAllTable(window._allEMP);
-  document.getElementById('riskCount').textContent=d.risk.length;
-  document.querySelector('#riskTbl tbody').innerHTML=d.risk.length?d.risk.map(e=>{
-    const g=gradeOf(e.overall);
-    return `<tr><td><span class="num" style="color:var(--ink);margin-right:8px">${e.tms}</span>${e.name}</td><td><span class="tag ${e.dept.toLowerCase()}">${e.dept}</span></td><td class="pos" style="font-size:12.5px">${e.position}</td><td style="color:var(--risk);font-weight:600">${weakest(e)}</td><td class="num">${e.overall}</td><td><span class="grade g${g}">${g}</span></td></tr>`;
-  }).join(''):`<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No employees below passing in this group ✓</td></tr>`;
-}
-document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#filters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render(b.dataset.f);});
-document.getElementById('asof').textContent=new Date().toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'});
-
-
-function fillColor(v){return v<70?'var(--risk)':v<80?'var(--amber)':v<90?'#5BC2A6':'var(--gooddeep)';}
-function renderAllTable(list){
-  const tbody=document.querySelector('#allTbl tbody');
-  tbody.innerHTML=list.map((e,i)=>{
-    const g=e.overall!==null?gradeOf(e.overall):'—';
-    const scoreStr=e.overall!==null?e.overall+'%':'—';
-    const statusBadge=e.status==='done'?'<span style="font-size:11px;color:var(--fresh);font-weight:600">✓ Done</span>':'<span style="font-size:11px;color:var(--amber);font-weight:600">Pending</span>';
-    const gBadge=e.overall!==null?`<span class="grade g${g}">${g}</span>`:'<span class="grade" style="background:#eee;color:#aaa">—</span>';
-    return `<tr class="clickable" onclick="openModal(${i})" data-idx="${i}">
-      <td style="color:var(--muted);font-size:12px">${i+1}</td>
-      <td><span class="num" style="color:var(--muted);font-size:12px;margin-right:7px">${e.tms}</span><b>${e.name}</b></td>
-      <td><span class="tag ${e.dept.toLowerCase()}">${e.dept}</span></td>
-      <td style="font-size:12px;color:var(--muted)">${e.position.replace(' Call Center Agent','')}</td>
-      <td class="num" style="color:${e.overall!==null?fillColor(e.overall):'var(--muted)'};font-weight:700">${scoreStr}</td>
-      <td>${gBadge}</td>
-      <td>${statusBadge}</td>
-    </tr>`;
-  }).join('');
-  document.getElementById('empCount').textContent=`Showing ${list.length} employees`;
-}
-function filterTable(){
-  const q=(document.getElementById('empSearch').value||'').toLowerCase();
-  const dept=document.getElementById('empDept').value;
-  const status=document.getElementById('empStatus').value;
-  const list=(window._allEMP||[]).filter(e=>{
-    const matchQ=!q||(e.name.toLowerCase().includes(q)||e.tms.toLowerCase().includes(q));
-    const matchD=!dept||e.dept===dept;
-    const matchS=!status||e.status===status;
-    return matchQ&&matchD&&matchS;
-  });
-  renderAllTable(list);
-}
-function openModal(idx){
-  const e=(window._allEMP||[])[idx];
-  if(!e)return;
-  const g=e.overall!==null?gradeOf(e.overall):'—';
-  document.getElementById('mName').textContent=e.name+' ('+e.tms+')';
-  document.getElementById('mMeta').textContent=e.dept+' · '+e.position;
-  document.getElementById('mScore').textContent=e.overall!==null?e.overall+'%':'Not taken';
-  document.getElementById('mScore').style.color=e.overall!==null?fillColor(e.overall):'var(--muted)';
-  const gc={'A':'#0F8A6B','B':'#5BC2A6','C':'#E0A82E','D':'#EB9A5C','F':'#D64545'};
-  document.getElementById('mGrade').innerHTML=e.overall!==null?`<span class="grade g${g}" style="width:36px;height:36px;font-size:18px">${g}</span>`:'';
-  const PARTS=[{key:'product',label:'Product Knowledge',n:20},{key:'sales',label:'Sales Technique',n:12},{key:'communication',label:'Communication',n:8},{key:'compliance',label:'Compliance & QA',n:10},{key:'role',label:'Role KPI',n:10}];
-  document.getElementById('mParts').innerHTML=e.scores&&Object.keys(e.scores).length?PARTS.map(p=>{
-    const v=e.scores[p.key]||0;
-    const raw=Math.round(v/100*p.n);
-    return `<div class="part-row"><div class="part-label">${p.label}</div><div class="part-track"><div class="part-fill" style="width:${v}%;background:${fillColor(v)}"></div></div><div class="part-val" style="color:${fillColor(v)}">${raw}/${p.n}</div></div>`;
-  }).join(''):'<div style="color:var(--muted);font-size:13px;text-align:center;padding:12px">No score data yet</div>';
-  if(e.scores&&Object.keys(e.scores).length){
-    const weakKey=Object.entries(e.scores).sort((a,b)=>a[1]-b[1])[0];
-    const weakPart=PARTS.find(p=>p.key===weakKey[0]);
-    document.getElementById('mWeak').innerHTML=`💡 <b>Weakest topic:</b> ${weakPart?weakPart.label:weakKey[0]} (${weakKey[1]}%) — recommend focused review`;
-  } else {
-    document.getElementById('mWeak').innerHTML='Employee has not completed the exam yet.';
+const GFORM = {
+  base: 'https://docs.google.com/forms/d/e/1FAIpQLSdcYtgxxfqqhgpF8lme0MlJj9yLCw2X63wZgC0zmHkEkw7V1w/viewform',
+  fields: {
+    tms:'entry.363095055', nickname:'entry.176712976', team:'entry.1207610685',
+    product:'entry.422079527', sales:'entry.53707610', communication:'entry.1265334801',
+    compliance:'entry.2006181723', role:'entry.2082063337',
+    total:'entry.1839396589', grade:'entry.994979726', subjective:'entry.608536754'
   }
-  document.getElementById('modalBg').classList.add('open');
-}
-var _mc=document.getElementById('modalClose'),_mb=document.getElementById('modalBg');if(_mc)_mc.addEventListener('click',function(){_mb.classList.remove('open');});if(_mb)_mb.addEventListener('click',function(e){if(e.target===_mb)_mb.classList.remove('open');});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&_mb)_mb.classList.remove('open');});
-let currentFilter='all';
-const _origFilterHandler=document.getElementById('filters');
-// track active filter (re-bind to capture into currentFilter)
-document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('button');if(b)currentFilter=b.dataset.f;});
+};
+const PASS=70, TIME=30*60;
+// วาง URL CSV เดียวกับ Dashboard เพื่อกัน 'สอบซ้ำ' (ปล่อยว่าง = ไม่เช็ค)
+const EXAM_CSV_URL='https://script.google.com/macros/s/AKfycbxHlYnzRyZfhzucRzs1w-67f5RCESWMf1aCIc8uGTngWtGkWQnT1gHjDityQYMiIhTf/exec';
+const SESSION_URL=EXAM_CSV_URL; // ใช้ URL เดียวกัน doPost จัดการ session
 
-// source badge (sits on the header filter bar)
-const badge=document.createElement('span');
-badge.id='srcBadge';
-badge.style.cssText='margin-left:auto;align-self:center;font-size:12px;font-weight:600;color:#A9B8C6;display:inline-flex;align-items:center;gap:7px;cursor:pointer';
-document.getElementById('filters').appendChild(badge);
-function setBadge(state){
-  const map={live:['#3DDC97','Live · Google Sheet'],sample:['#FFB347','Sample data (not connected)'],loading:['#7FE3C6','Loading…'],error:['#E0556B','Sheet unreachable — showing sample']};
-  const [c,t]=map[state]||map.sample;
-  badge.innerHTML=`<span style="width:8px;height:8px;border-radius:50%;background:${c};display:inline-block"></span>${t} ⟳`;
-}
-badge.addEventListener('click',()=>loadData());
+// ════════════════════════════════════════════════════
+// ⏰ ตั้งเวลาสอบแยกรายทีม — แก้ได้ที่นี่ที่เดียว
+// ENABLED: false = เปิดตลอดเวลา (ปิดล็อค)
+// DATE: '' = ไม่ล็อควัน
+// ════════════════════════════════════════════════════
+const EXAM_SCHEDULE = {
+  ENABLED: false,
+  DATE: '2026-06-26',   // วันสอบ (YYYY-MM-DD) หรือ '' = ทุกวัน
+  // Resell — ทุก TMS ที่ dept='Resell'
+  Resell: { START:'08:50', END:'09:30' },
+  // Fresh — แบ่งตามทีมย่อย
+  Fresh: {
+    'First Class':  { START:'14:20', END:'15:00',
+      tms:['af011','af029','af034','af038','af240','af256','af261','af313','af316','af441','af442','af520','af534','af599'] },
+    'Black Diamond':{ START:'15:00', END:'15:40',
+      tms:['af009','af016','af018','af170','af181','af214','af216','af226','af247','af258','af269','af379','af536','af555'] },
+    'Fantacy':      { START:'15:45', END:'16:25',
+      tms:['af006','af025','af039','af040','af105','af115','af123','af189','af236','af275','af276','af317','af432','af217','af566'] },
+    'Peppermint':   { START:'16:30', END:'17:10',
+      tms:['af020','af023','af066','af067','af075','af084','af174','af178','af241','af279','af314','af315','af381','af437','af533'] },
+  }
+};
 
-async function loadData(){
-  if(!CSV_URL){EMP=buildSampleEMP();setBadge('sample');render(currentFilter);return;}
-  setBadge('loading');
+// หาช่วงเวลาสอบของ TMS นี้
+function getWindowForTMS(tms, dept){
+  if(!EXAM_SCHEDULE.ENABLED) return {ok:true};
+  const t = (tms||'').toLowerCase().trim();
+  let slot = null;
+  let teamName = '';
+  if(dept==='Resell'){
+    slot = EXAM_SCHEDULE.Resell;
+    teamName = 'Resell';
+  } else {
+    // Fresh — หาทีมย่อย
+    for(const [name, cfg] of Object.entries(EXAM_SCHEDULE.Fresh)){
+      if(cfg.tms.includes(t)){ slot=cfg; teamName=name; break; }
+    }
+  }
+  if(!slot) return {ok:true}; // ไม่พบใน schedule → ไม่ล็อค
+  return checkWindow(slot.START, slot.END, teamName);
+}
+
+function checkWindow(start, end, teamName){
+  const now = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Bangkok'}));
+  const dateStr = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  const timeStr = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  if(EXAM_SCHEDULE.DATE && dateStr !== EXAM_SCHEDULE.DATE){
+    if(dateStr < EXAM_SCHEDULE.DATE) return {ok:false, reason:'before_date', start, end, teamName};
+    return {ok:false, reason:'after_date', start, end, teamName};
+  }
+  if(timeStr < start) return {ok:false, reason:'before', start, end, teamName};
+  if(timeStr >= end)  return {ok:false, reason:'after',  start, end, teamName};
+  return {ok:true};
+}
+
+// (legacy) checkExamWindow ใช้สำหรับ global check ตอนโหลดหน้า (ก่อนรู้ TMS)
+function checkExamWindow(){
+  if(!EXAM_SCHEDULE.ENABLED) return {ok:true};
+  // เช็คแค่วัน ไม่เช็คเวลา (เวลาเช็คตาม TMS หลังกรอกรหัส)
+  if(!EXAM_SCHEDULE.DATE) return {ok:true};
+  const now = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Bangkok'}));
+  const dateStr = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  if(dateStr < EXAM_SCHEDULE.DATE) return {ok:false, reason:'before_date', start:'08:50', end:'17:10'};
+  if(dateStr > EXAM_SCHEDULE.DATE) return {ok:false, reason:'after_date',  start:'08:50', end:'17:10'};
+  return {ok:true};
+}
+const ROSTER_MAP={"ac007": ["Nok", "Resell", "Titima Suntonpruk"], "ac012": ["Aum", "Resell", "Thitima Sonsawat"], "ac072": ["Boy", "Resell", "Nisan Panket"], "ac087": ["Ple", "Resell", "Natcha Kokilanun"], "ac095": ["Ni", "Resell", "Chalisa Phosriruang"], "ac104": ["Khaeck", "Resell", "Nucharin Cholrin"], "ac169": ["Aan", "Resell", "Jutamas Canitanont"], "ac173": ["Yok", "Resell", "Thikamphon Srisomya"], "ac182": ["Yu", "Resell", "Mayura Japo"], "ac183": ["Lek", "Resell", "Kanlayanee Phetsanghan"], "ac245": ["Nuch", "Resell", "Nutjaree khaokaew"], "ac246": ["Kea", "Resell", "Piyaporn jutaprachakul"], "ac248": ["Jee", "Resell", "Sujee Yimtonglang"], "ac253": ["Yao", "Resell", "Waraporn Tepnarin"], "ac254": ["Aor", "Resell", "Supreeya Khunsombut"], "ac268": ["Poo", "Resell", "Oranicha Akkahatsee"], "ac297": ["Kai", "Resell", "Aree Sattavorakul"], "ac325": ["Mhai", "Resell", "Piromrut Wongsitamuang"], "ac330": ["Song", "Resell", "Thongkamon Chiuaorakunnon"], "ac363": ["Daw", "Resell", "Autchara Sornklang"], "ac422": ["Aae", "Resell", "Vandee Muntukanon"], "ac461": ["Aoi", "Resell", "Voranan Bunjongtaem"], "ac466": ["Eagle", "Resell", "Sanchai  Kanoknak"], "ac196": ["Jang", "Resell", "Panprapai Phusomsaeng"], "ac302": ["Maree", "Resell", "Suwannee Isarakolvorachai"], "ac482": ["Ploy", "Resell", "Putthita Kon-tong"], "ac490": ["Ple", "Resell", "Supawadee Siripart"], "ar507": ["Nam Petch", "Resell", "Kantika Wongsa"], "ac491": ["Nut", "Resell", "Sapboonthawee Siriwongsomchit"], "ac303": ["Ying", "Resell", "Napat Sudthor"], "ac341": ["Tun", "Resell", "Prakhongsup Sormchaing"], "ac544": ["Som", "Resell", "Luddawul Umtawong"], "ac560": ["Kak", "Resell", "Porntip Kannikaklang"], "ac356": ["Ae", "Resell", "Patnaree Thadumpan"], "ac591": ["Nok", "Resell", "Vassana Kudpukaeyv"], "ac373": ["Am", "Resell", "Tippawan Santheankaew"], "ac376": ["Ja", "Resell", "Jongrak Plianphu"], "ac364": ["Ron", "Resell", "Amran Habyusoh"], "ac595": ["Heng", "Resell", "Suradech Jeerapatmaitree"], "ac597": ["Bow", "Resell", "Sirinan Yenjai"], "ac598": ["Dao", "Resell", "Khwandao Phasudathanadun"], "ac339": ["Bee", "Resell", "Rungnapha Khanti"], "ac551": ["Kwan", "Resell", "Naruchon Dujjantharangsri"], "ac485": ["Tom", "Resell", "Saowanee Sulaimarn"], "ac552": ["Jaa", "Resell", "Supannigar Gongpim"], "ac553": ["Tom", "Resell", "Supachai Phongtawee"], "af011": ["Mui", "Fresh", "Rugnthip Sriplay"], "af029": ["Ae", "Fresh", "Chonlada Ninyasai"], "af034": ["Kriang", "Fresh", "Kriangkrai Baboon"], "af038": ["Ant", "Fresh", "Sitthiporn ThaiKeay"], "af240": ["Da", "Fresh", "Farida Sadee"], "af256": ["Tangmo", "Fresh", "Panisara Kaewprasert"], "af261": ["Tookta", "Fresh", "Vipada Kadam"], "af313": ["Tai", "Fresh", "Napaporn Kruangthed"], "af316": ["Van", "Fresh", "Wasana Kamolhat"], "af441": ["Kwan", "Fresh", "Kwan Prisri"], "af442": ["Jum", "Fresh", "Kanda Kamonhat"], "af009": ["Golf", "Fresh", "Sarawut  Yimniam"], "af016": ["Phueng", "Fresh", "Chanakarn  Deenarn"], "af018": ["Yui", "Fresh", "Yupa Sriplay"], "af023": ["Sathit", "Fresh", "Sathit Petsai"], "af170": ["Poo", "Fresh", "Akchai Puthongjan"], "af181": ["Ice", "Fresh", "Phathanakorn  Rungreangkaisiri"], "af214": ["Namwan", "Fresh", "Siriluck sukkon"], "af216": ["Yo", "Fresh", "Manatsanan Meechim"], "af226": ["Ow", "Fresh", "Teerawat Poka"], "af247": ["Lek", "Fresh", "Somsak Supornchairoj"], "af258": ["Sai", "Fresh", "Acharaporn Chinkrathok"], "af269": ["Bow", "Fresh", "Krittiya Boontawee"], "af379": ["Nui", "Fresh", "Suwanna somboon"], "af006": ["Tong", "Fresh", "Anek Jaisad"], "af025": ["Nok", "Fresh", "Phakthinan Chanchaiteerapat"], "af039": ["Kwan", "Fresh", "Aunkavara Boonrod"], "af040": ["Fon", "Fresh", "Nannaphat Choowongchiranan"], "af075": ["Nid", "Fresh", "Promporn Pussatham"], "af105": ["Nui", "Fresh", "Panthita Phoosamphao"], "af115": ["Bird", "Fresh", "Surasak Khamphan"], "af123": ["Tae", "Fresh", "Yingpant Kaewraksa"], "af189": ["Aoi", "Fresh", "Nareerat Pattanapiyawach"], "af236": ["Took", "Fresh", "Lerdmongkol Sujarit"], "af275": ["Rose", "Fresh", "Rattana Phurimnak"], "af276": ["Peemai", "Fresh", "Acharaporn Phrmalam"], "af317": ["Jeed", "Fresh", "Chanthaphitchaya Taso"], "af432": ["Tem", "Fresh", "Thanadon Promson"], "af020": ["Nid", "Fresh", "Napatson Churnson"], "af066": ["Fon", "Fresh", "Namfon Songseechang"], "af067": ["Mao", "Fresh", "Mali Pornjan"], "af084": ["Jeed", "Fresh", "Parichart Prohsanoi"], "af174": ["Pum", "Fresh", "Saichon Pumman"], "af178": ["Fay", "Fresh", "Jirata Pakmai"], "af241": ["Nana", "Fresh", "Kanchana Phumchuen"], "af279": ["Add", "Fresh", "Chutikan Thaothiam"], "af314": ["Lek", "Fresh", "Monta Likibantoon"], "af315": ["Duan", "Fresh", "Saengdaun Phumcharoen"], "af381": ["Yeens", "Fresh", "Ruttikaln Maraksa"], "af437": ["Peung", "Fresh", "Kantaya Keawsha-aum"], "af555": ["Me", "Fresh", "Mewika Mhantasiri"], "af217": ["Arm", "Fresh", "Nattapon Phaowattanawaraporn"], "af566": ["Mark", "Fresh", "Kittisak Phoon"], "af520": ["Pakkard", "Fresh", "Thiptiwa Thupplean"], "af599": ["Fong", "Fresh", "Pronlaphat Jarunesiri"], "af536": ["Nuch", "Fresh", "Phatnisa Wongvisit"], "af533": ["Nu", "Fresh", "Kanurisa Waenu"], "af534": ["Yong", "Fresh", "Grianggrai Geawpratoum"]};
+// per-part question counts (raw score = correct answers)
+const PARTS=[
+  {key:'product',      label:'ความรู้สินค้า',   col:'#6C63FF', n:20},
+  {key:'sales',        label:'เทคนิคการขาย',    col:'#FF6B9D', n:12},
+  {key:'communication',label:'การสื่อสาร',      col:'#00C9A7', n:8},
+  {key:'compliance',   label:'Compliance/อย.',  col:'#FFB347', n:12},
+  {key:'role',         label:'KPI ตามบทบาท',    col:'#4FC3F7', n:8}
+];
+const PART_LBL=Object.fromEntries(PARTS.map(p=>[p.key,p.label]));
+const PART_COL=Object.fromEntries(PARTS.map(p=>[p.key,p.col]));
+
+const BANK=[
+{p:"product",q:"Movita ใช้แคลเซียมจากแหล่งใด และสิ่งนั้นต่างจากแคลเซียมทั่วไปอย่างไร?",c:["แคลเซียมจากหินปูนสังเคราะห์ที่ผ่านกระบวนการทำให้บริสุทธิ์สูง","แคลเซียมจาก Aquamin (สาหร่ายแดงทะเล) ที่มีแร่ธาตุร่วมกว่า 70 ชนิดช่วยเพิ่ม BMD","แคลเซียมจากนมพาสเจอร์ไรส์ที่ร่างกายดูดซึมได้เร็วกว่าแหล่งอื่น","แคลเซียมจากเปลือกหอยทะเลที่ปราศจากสารปนเปื้อนและมีความบริสุทธิ์สูง"],a:1,e:"Movita ใช้ Aquamin (สาหร่ายแดงทะเล) มีแร่ธาตุร่วมกว่า 70 ชนิด + D3 + Collagen II ทำงานเสริมกันเพิ่ม BMD"},
+{p:"product",q:"Manuka Honey UMF 5+ แนะนำรับประทานปริมาณใดต่อวัน และมีบทบาทอะไรในการ Cross-sell?",c:["รับประทาน 5 ช้อนชา/วัน หลังอาหารเช้าและเย็น เพื่อให้ได้ประโยชน์สูงสุด","รับประทาน 1–2 ช้อนชา/วัน ช่วยต้านการอักเสบและเสริมภูมิ ใช้เป็น Premium Booster เสริมตัวหลัก","รับประทาน 1 ช้อนโต๊ะ/มื้อ ติดต่อกัน 3 มื้อ เพื่อผลลัพธ์ที่ดีที่สุด","รับประทานตามต้องการโดยไม่จำกัด เพราะเป็นน้ำผึ้งธรรมชาติที่ปลอดภัยสำหรับทุกคน"],a:1,e:"Manuka: 1–2 ช้อนชา/วัน บทบาทหลักคือต้านการอักเสบ+เสริมภูมิ ใช้ Cross-sell เป็น Booster เร่งผลตัวหลัก"},
+{p:"product",q:"ผลิตภัณฑ์ใดในกลุ่มดูแลสายตาเน้นการ 'ฟื้นฟู' (Recover) มากกว่าการ 'ป้องกัน' (Protect)?",c:["Vistorin เพราะมีสาร Lutein ซึ่งฟื้นฟูจอประสาทตาโดยตรงและลดตาล้าได้ทันที","Octavis เพราะมีสาร DHA ในปริมาณสูงสำหรับการซ่อมแซมเซลล์ตาเป็นพิเศษ","Vistorite เพราะมุ่งฟื้นฟูสายตาที่เริ่มเสื่อมและลดอาการตาล้าสะสมอย่างเป็นระบบ","ทั้ง Vistorin และ Vistorite มีหน้าที่เดียวกันทุกประการ แตกต่างกันเพียงขนาดบรรจุ"],a:2,e:"Vistorin = Protect (ป้องกัน/ชะลอ) / Vistorite = Recover (ฟื้นฟู/ลดตาล้า) — ใช้คู่กัน 'กัน+ฟื้น ครบ'"},
+{p:"product",q:"Henofin มีกลไกหลักในการดูแลลูกค้าที่มีปัญหาริดสีดวงอย่างไร?",c:["เพิ่มการบีบตัวของลำไส้ใหญ่ทำให้ขับถ่ายสม่ำเสมอและลดแรงเบ่ง","ลดการอักเสบและซ่อมแซมหลอดเลือดดำบริเวณทวารหนัก (Vascular Repair) เป็นกลไกหลัก","เพิ่มปริมาณน้ำในลำไส้ทำให้อุจจาระนุ่มและไม่เจ็บตอนถ่ายได้ผลในระยะสั้น","ยับยั้งแบคทีเรียที่ทำให้เกิดการอักเสบในลำไส้ส่วนล่างและเพิ่มจุลินทรีย์ดี"],a:1,e:"Henofin = Vascular Repair ซ่อมหลอดเลือดดำ ลดการอักเสบ — ต่างจาก Bactofin ที่เน้น Gut Balance"},
+{p:"product",team:"Resell",q:"Fitarin และ Pilonix ทำงานเสริมกันอย่างไรใน Bundle?",c:["Fitarin เผาผลาญไขมันโดยตรง ส่วน Pilonix ดูดซับแคลอรีส่วนเกิน ทำงานคู่กันลดน้ำหนักได้เร็วขึ้น","Fitarin ควบคุมความอยากและเผาผลาญ (Control+Burn) ส่วน Pilonix ล้างสารพิษและลดการอักเสบในลำไส้ (Detox+Anti-inflammation)","Fitarin บำรุงระบบเผาผลาญในตับ ส่วน Pilonix ดูแลระบบย่อยในกระเพาะอาหารเป็นหลัก","ทั้งคู่ทำงานด้านเดียวกันคือเผาผลาญ แต่ Pilonix ออกฤทธิ์เร็วกว่า Fitarin ถึง 2 เท่า"],a:1,e:"Fitarin = Control+Burn / Pilonix = Detox+Anti-Inflammation — คนละ mechanism เสริมกันครบวงจร"},
+{p:"product",q:"Bactofin แตกต่างจาก Detarin อย่างไรในกลุ่มดีท็อกซ์?",c:["Bactofin เน้นล้างสารพิษในตับโดยตรง ส่วน Detarin เน้นล้างสารพิษออกทางไต","Bactofin ปรับสมดุลจุลินทรีย์และลดการอักเสบในลำไส้ ส่วน Detarin เน้นล้างสารพิษและฟื้นฟูตับโดยตรง","Bactofin ออกฤทธิ์เร็วกว่าเหมาะกับระยะเฉียบพลัน ส่วน Detarin เหมาะกับการดูแลเรื้อรังระยะยาว","Bactofin และ Detarin มีสูตรเหมือนกันทุกประการ แตกต่างเพียงขนาดแคปซูลและบรรจุภัณฑ์"],a:1,e:"Bactofin = Gut Balance & Detox (Target: ลำไส้) / Detarin = Liver Detox (Target: ตับ) — คนละ Target Organ"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าถามว่า 'ถ้าต้องเลือกระหว่าง Movita กับ Flexabon ซื้อตัวเดียวควรเลือกตัวไหน?'",q:"คำตอบที่แสดงความเข้าใจความแตกต่างของสินค้าได้ดีที่สุดคือ?",c:["แนะนำ Movita เสมอ เพราะมีส่วนผสมมากกว่าและครอบคลุมการดูแลกระดูกได้ครบกว่า Flexabon","ต้องถามก่อนว่า concern หลักคือกระดูกพรุน/BMD ต่ำ หรือข้อฝืดแข็ง เพราะ Movita เน้น BMD ส่วน Flexabon เน้นกระดูกอ่อน/ข้อ","แนะนำ Flexabon เพราะมี UC-II Collagen ซึ่งดูดซึมได้ดีกว่า Collagen Type II ใน Movita ทุกกรณี","แนะนำให้ซื้อทั้งคู่เสมอ เพราะการใช้เพียงตัวเดียวจะไม่ได้ผลลัพธ์ที่ดี"],a:1,e:"ต้อง Probe ก่อน: กระดูกพรุน/BMD ต่ำ → Movita | ข้อฝืด/กระดูกอ่อน → Flexabon — เลือกตาม Root Cause"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าสนใจ Bundle กลุ่มผิว ถามว่า Lavite และ Melavita ต่างกันอย่างไร จะได้ตัดสินใจว่าต้องการทั้งคู่หรือแค่ตัวเดียว",q:"คำอธิบายที่ถูกต้องและช่วยให้ลูกค้าตัดสินใจได้ดีที่สุดคือ?",c:["Lavite ออกฤทธิ์เร็วกว่าจึงควรใช้ก่อน แล้วค่อยต่อด้วย Melavita เมื่อผิวฟื้นตัวแล้ว โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","Melavita ลดเม็ดสี Melanin จากภายใน (Inner Bright) ส่วน Lavite ทาภายนอกเพิ่มความชุ่มชื้นและฟื้นฟูคอลลาเจน (Outer Repair) ทำงานคนละมิติ","ทั้งคู่ทำสิ่งเดียวกันคือลดฝ้า แต่ Lavite มีสารออกฤทธิ์เข้มข้นกว่า Melavita สองเท่า โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","Lavite เหมาะสำหรับอายุต่ำกว่า 40 ปี ส่วน Melavita เหมาะสำหรับอายุ 40 ปีขึ้นไปเท่านั้น โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"Melavita = Inner Bright (รับประทาน ลด Melanin) / Lavite = Outer Repair (ทา ฟื้นฟูผิว) — คนละมิติ"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าที่ทาน Cardilite อยู่ถามว่า Manuka Honey จะช่วยเพิ่มประสิทธิภาพได้จริงหรือเปล่า",q:"คำอธิบายที่ถูกต้องเกี่ยวกับ Synergy ระหว่าง Cardilite และ Manuka คือ?",c:["Manuka เพิ่มระดับยาใน Cardilite ทำให้ออกฤทธิ์แรงขึ้น 2 เท่า แต่ต้องระวังผลข้างเคียง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","Cardilite ดูแลหัวใจและลด LDL ส่วน Manuka ลดการอักเสบของหลอดเลือดซึ่ง Cardilite ไม่ครอบคลุม ทำให้การไหลเวียนดีขึ้นมากกว่าใช้ตัวเดียว","Manuka ช่วยให้ร่างกายดูดซึม Cardilite ได้เร็วขึ้น แต่ไม่มีผลต่อประสิทธิภาพโดยตรง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ทั้งคู่ทำงานด้านเดียวกันจึงทับซ้อนกัน ไม่ควรใช้พร้อมกันเพราะสิ้นเปลือง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"Cardilite = บำรุงหัวใจ/ลด LDL + Manuka = ลดการอักเสบหลอดเลือด → เสริมกัน ไม่ทับซ้อน"},
+{p:"product",type:"sjt",scenario:"สถานการณ์: ลูกค้าผู้ชายบอกว่า 'รู้สึกอ่อนเพลีย นอนหลับไม่ดี มีปัญหาปัสสาวะกลางคืน 2–3 ครั้ง'",q:"สินค้าใดควรเสนอเป็นหลัก และด้วยเหตุผลใดจึงเลือกตัวนั้น?",c:["เสนอ Diafin เป็นหลัก เพราะน้ำตาลสูงทำให้ปัสสาวะบ่อยและรู้สึกอ่อนเพลียเป็นประจำ","เสนอ Cardilite เป็นหลัก เพราะอาการเหนื่อยและนอนไม่หลับมักเกี่ยวกับการทำงานของหัวใจ","เสนอ Protolite เป็นหลัก เพราะอาการชุดนี้ชี้ไปที่ต่อมลูกหมากซึ่งเป็น Root Cause ของทั้งปัสสาวะบ่อยและอ่อนเพลีย","เสนอ Vistorin เป็นหลัก เพราะการนอนไม่หลับมักมาจากแสงหน้าจอที่ทำลายจอประสาทตา"],a:2,e:"Root Cause = ต่อมลูกหมาก → Protolite เป็นหลัก Duasil เสริมได้ถ้า budget อนุญาต"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าถามว่า 'เพื่อนบอกว่า Manuka Honey ทานแทน Movita ได้ ประหยัดกว่า จริงไหม?'",q:"คำตอบที่ถูกต้องตามหน้าที่ของสินค้าแต่ละตัวคือ?",c:["จริงบางส่วน Manuka มีสารต้านการอักเสบที่แรงพอจะทดแทน Movita ได้ในระยะสั้น","ไม่จริง Manuka มีบทบาทต้านการอักเสบและเสริมภูมิ แต่ไม่ใช่ตัวบำรุงกระดูก/ข้อโดยตรง จึงทดแทน Movita ไม่ได้","จริงถ้าลูกค้าทาน Manuka วันละ 5 ช้อนชาขึ้นไป ปริมาณนี้เทียบเท่าการทาน Movita 1 แคปซูล","ขึ้นอยู่กับอายุ อายุต่ำกว่า 50 ปี Manuka เพียงพอ แต่เกิน 50 ปีต้องใช้ Movita เสริม"],a:1,e:"Manuka = Booster เสริมฤทธิ์ตัวหลัก ไม่ใช่ตัวหลักสำหรับกระดูก ทดแทน Movita ไม่ได้"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าถามว่า 'ในกลุ่มผลิตภัณฑ์ดูแลต่อมลูกหมาก Protolite กับ Duasil ใช้ตัวเดียวได้ไหม'",q:"คำอธิบายความแตกต่างและการใช้งานที่ถูกต้องคือ?",c:["ใช้ตัวเดียวได้เพราะทั้งคู่มีสูตรเหมือนกันเพียงแต่ขนาดบรรจุภัณฑ์ต่างกัน โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","Protolite ดูแล 'ต้นเหตุ' (ต่อมลูกหมาก/ฮอร์โมน) ส่วน Duasil เสริม 'ผลลัพธ์' (สมรรถภาพ) ใช้ตัวเดียวได้แต่ใช้คู่กันครอบคลุมกว่า","ควรใช้ Duasil ก่อนเสมอ เพราะต้องเพิ่มการไหลเวียนก่อนแล้วค่อยดูแลต่อมลูกหมากทีหลัง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ทั้งคู่เหมาะสำหรับคนละกลุ่มอายุ Protolite สำหรับ 40–55 ปี Duasil สำหรับ 55 ปีขึ้นไป โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"Protolite = Restore (ต้นเหตุ/ฮอร์โมน) / Duasil = Boost (ผลลัพธ์/สมรรถภาพ) — ใช้คู่กันครอบคลุมกว่า"},
+{p:"product",type:"sjt",scenario:"สถานการณ์: ลูกค้าถามว่า 'อาหารเสริมที่บริษัทขาย ผ่าน อย. ทานได้ทุกคนเลยใช่ไหม?'",q:"คำตอบที่ถูกต้องตามหลัก Compliance คือ?",c:["ใช่ สินค้าที่ผ่าน อย. ได้รับการรับรองว่าปลอดภัยสำหรับทุกคนทุกวัยทุกสภาวะ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ผ่าน อย. หมายถึงมาตรฐานการผลิต ไม่ใช่การรับรองว่าเหมาะกับทุกคน กลุ่มเปราะบางเช่น ตั้งครรภ์หรือมีโรคประจำตัว ควรปรึกษาแพทย์ก่อน","ผ่าน อย. หมายถึงรักษาโรคได้ตามที่ระบุบนฉลาก สามารถใช้แทนยาหมอได้ทุกกรณี โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ผ่าน อย. รับรองผลลัพธ์ 100% จึงแนะนำให้ทุกคนซื้อได้ทันทีโดยไม่ต้องปรึกษาใคร เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ"],a:1,e:"ผ่าน อย. = มาตรฐานการผลิต ไม่ใช่การันตีความปลอดภัยทุกคน — กลุ่มเปราะบางต้องปรึกษาแพทย์"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าทาน Diafin มา 1 เดือน น้ำตาลดีขึ้น แต่ยังกังวลเรื่องหัวใจด้วย ถามว่า Cardilite จะช่วยได้ไหม",q:"การแนะนำที่แสดงความเข้าใจความสัมพันธ์ระหว่าง Diafin และ Cardilite คือ?",c:["แนะนำหยุด Diafin แล้วเปลี่ยนมาทาน Cardilite แทน เพราะรักษาได้ครอบคลุมกว่า เพื่อประเมินผลก่อนตัดสินใจซื้อต่อหรือเปลี่ยนสินค้า","Diafin ดูแลน้ำตาล/ไขมัน/ความดัน (ตัวแก้) ส่วน Cardilite บำรุงหัวใจ (ตัวกัน) ทั้งคู่ทำงานต่างมิติกัน สามารถทานคู่กันได้โดยปรึกษาแพทย์","Cardilite ทำงานซ้ำซ้อนกับ Diafin จึงไม่จำเป็นต้องเพิ่ม แนะนำเพิ่มปริมาณ Diafin แทน พร้อมอธิบายเหตุผลและประโยชน์ที่ลูกค้าจะได้รับ","แนะนำ Manuka แทน Cardilite เพราะต้านการอักเสบได้ดีกว่าในราคาที่ถูกกว่ามาก พร้อมอธิบายเหตุผลและประโยชน์ที่ลูกค้าจะได้รับ"],a:1,e:"Diafin = Fix (แก้ต้นเหตุ) + Cardilite = Protect (ป้องกันระยะยาว) — คนละบทบาท ใช้คู่ได้"},
+{p:"product",type:"sjt",scenario:"สถานการณ์: ลูกค้าอายุ 68 ปี ผล DEXA Scan ต่ำกว่าเกณฑ์ปกติ ปวดเข่าเรื้อรัง งบจำกัดเลือกได้แค่ 1 ตัวในช่วง 3 เดือนแรก",q:"ควรเสนอสินค้าใดก่อน และเหตุผลใดสนับสนุนการตัดสินใจนั้น?",c:["เสนอ Flexabon เพราะลูกค้าปวดเข่า ซึ่งชี้ว่าต้องการบำรุงข้อมากกว่ากระดูก โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","เสนอ Movita เพราะ DEXA ต่ำชี้ชัดว่ากระดูกพรุนคือ Root Cause หลัก การเพิ่ม BMD จะแก้ปัญหาได้ตรงจุดกว่าข้อเดียว","เสนอ Manuka เพราะลดการอักเสบได้ทั้งกระดูกและข้อในตัวเดียว ประหยัดกว่า โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","เสนอ Bundle Movita+Flexabon ก่อนเสมอ งบจำกัดค่อยคุยกันทีหลัง โดยเริ่มจากตัวที่เหมาะสมกับความต้องการของลูกค้าก่อน"],a:1,e:"DEXA ต่ำ = กระดูกพรุนคือ Root Cause → Movita (BMD) ก่อน ข้อปวดอาจดีตาม ถ้างบเพิ่มค่อย +Flexabon"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าหญิง 45 ปี มีปัญหาฝ้ากระ และผิวหน้าแห้งกรอบ งบซื้อได้แค่ 1 ตัว",q:"ควรถามและแนะนำอย่างไรให้ตรงกับ Concern หลักของลูกค้า?",c:["แนะนำ Melavita+Lavite พร้อมกันเสมอ เพราะแยกกันให้ผลได้ไม่ถึง 50% พร้อมอธิบายเหตุผลและประโยชน์ที่ลูกค้าจะได้รับ","ถามว่า Concern หลักคือ 'ฝ้าจางลง' หรือ 'ผิวชุ่มชื้น/ฟู' เพราะ Melavita ตอบเรื่องเม็ดสี ส่วน Lavite ตอบเรื่องผิวฟู/คอลลาเจน","แนะนำ Manuka แทนทั้งคู่เพราะดูแลได้ทั้งฝ้าและผิวแห้งในราคาต่ำกว่ามาก พร้อมอธิบายเหตุผลและประโยชน์ที่ลูกค้าจะได้รับ","ถามงบก่อน ถ้าซื้อได้แค่ตัวเดียวแนะนำหยุดแล้วรอสะสมเงินซื้อทั้งคู่จะดีกว่า พร้อมอธิบายเหตุผลและประโยชน์ที่ลูกค้าจะได้รับ"],a:1,e:"ถาม Concern ก่อน: ฝ้า → Melavita / ผิวแห้ง/คอลลาเจน → Lavite — Bundle เป็นทางเลือก ไม่บังคับ"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าทาน Flexvits อยู่ 2 เดือน บอกว่า 'ปวดข้อลดลงบ้าง แต่ยังชาที่ขา และชีพจรที่เท้าเบามาก'",q:"การประเมินสถานการณ์นี้อย่างถูกต้องคือ?",c:["เสนอ Tensirin เพิ่มทันที เพราะอาการชาแสดงว่าเลือดไหลเวียนไม่ดี Tensirin จะช่วยได้","อาการชา+ชีพจรเบาเป็น Red Flag ของเส้นเลือดตีบ ควรแนะนำพบแพทย์ก่อน ไม่รีบขายสินค้าเพิ่ม","บอกลูกค้าว่าอาการชาเป็นผลปกติของ Flexvits ในช่วงแรก ทานต่อไปจะดีขึ้นเอง","เพิ่มปริมาณ Flexvits เป็น 3 แคปซูล/วัน เพื่อให้สารอาหารเข้าถึงเส้นประสาทมากขึ้น"],a:1,e:"ชา+ชีพจรเบา = Red Flag เส้นเลือด ต้องส่งต่อแพทย์ก่อน ไม่ใช่ขายเพิ่ม — รู้ว่าเมื่อไหรควรหยุดขาย"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าทาน Diafin มา 2 เดือน น้ำตาลดีขึ้น แต่แจ้งว่า 'รู้สึกใจสั่น เวียนหัวหลังทาน'",q:"การตอบสนองที่ถูกต้องตามจริยธรรมและความปลอดภัยคือ?",c:["บอกว่าอาการเหล่านี้เป็นผลข้างเคียงปกติของ Diafin ที่จะหายไปเองใน 2–3 สัปดาห์ โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","แนะนำให้ลูกค้าพบแพทย์เพื่อตรวจสอบ เพราะใจสั่น+เวียนหัวอาจเป็นสัญญาณน้ำตาลต่ำเกิน (Hypoglycemia) ที่ต้องการการดูแลจากผู้เชี่ยวชาญ","เสนอ Cardilite เพิ่มทันที เพราะใจสั่นแสดงว่าหัวใจต้องการการดูแลเพิ่มเติม เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","แนะนำลดปริมาณ Diafin ลงครึ่งหนึ่งและสังเกตอาการเองอีก 1 เดือนก่อน เพราะราคาที่เหมาะสมช่วยให้ลูกค้าตัดสินใจได้ง่ายขึ้น"],a:1,e:"ใจสั่น+เวียนหัวในคนทาน Diafin อาจเป็น Hypoglycemia — ต้องส่งแพทย์ ไม่ใช่แก้เองหรือเพิ่มสินค้า"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าทาน Vistorin มา 1 เดือน บอกว่า 'ตายังล้าเหมือนเดิม ทำงานหน้าจอ 10 ชม./วัน'",q:"การประเมินและแนะนำที่เหมาะสมที่สุดคือ?",c:["เสนอเปลี่ยนเป็น Vistorite ทันที เพราะ Vistorin ไม่ได้ผลกับลูกค้ารายนี้ เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","ถามว่าทานสม่ำเสมอไหม และพักสายตาตามกฎ 20-20-20 ไหม เพราะ Vistorin เน้นป้องกัน ถ้าพฤติกรรมไม่เปลี่ยนสินค้าเพิ่มก็ไม่ช่วย","เพิ่มปริมาณ Vistorin เป็น 3 แคปซูล/วัน เพื่อให้ Lutein สะสมในร่างกายเร็วขึ้น โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","แนะนำให้ลูกค้าลดเวลาหน้าจอและยกเลิกสินค้า เพราะสินค้าไม่มีผลถ้ายังทำงานหนัก พร้อมอธิบายเหตุผลและประโยชน์ที่ลูกค้าจะได้รับ"],a:1,e:"Vistorin เน้นป้องกัน ไม่ใช่รักษาฉับพลัน ต้องตรวจ Compliance+Lifestyle ก่อน ค่อยพิจารณา Vistorite"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าอายุ 55 ปี มีปัญหาลำไส้ไม่ดี ริดสีดวง และอยากลดน้ำหนักด้วย งบจำกัดซื้อได้ 1–2 ตัว",q:"ลำดับการเสนอสินค้าที่เหมาะสมที่สุดคือ?",c:["เสนอ Fitarin+Pilonix ทันที เพราะช่วยได้ทั้งน้ำหนักและลำไส้พร้อมกัน เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","ถาม Pain Point เร่งด่วนก่อน: ถ้าริดสีดวงรุนแรง → Henofin ก่อน ถ้าลำไส้+น้ำหนัก → Bactofin หรือ Pilonix ตามลำดับความสำคัญ","เสนอ Bundle ทั้ง 3 ตัวแล้วค่อยปรับงบทีหลัง เพราะการเสนอน้อยทำให้ลูกค้าพอใจน้อยลง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","แนะนำ Manuka เพียงตัวเดียวเพราะดูแลได้ทุกปัญหาที่ลูกค้ามีในราคาประหยัด พร้อมอธิบายเหตุผลและประโยชน์ที่ลูกค้าจะได้รับ"],a:1,e:"ถาม Pain Point เร่งด่วนก่อนเสมอ: ริดสีดวง → Henofin ก่อน / ลำไส้+น้ำหนัก → Bactofin หรือ Pilonix"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าถามว่า 'ฉันทานยาความดันอยู่ สนใจ Cardilite ด้วย ทานพร้อมกันได้ไหม?'",q:"การตอบที่ถูกต้องทั้งด้านข้อมูลและ Compliance คือ?",c:["บอกว่าทานพร้อมกันได้เลย เพราะ Cardilite เป็นอาหารเสริม ไม่ใช่ยา จึงไม่กระทบยาความดัน","แนะนำให้ปรึกษาแพทย์ก่อนเสมอ เพราะสารออกฤทธิ์บางชนิดอาจมีปฏิกิริยากับยาความดัน และการแนะนำเองอาจเป็นอันตรายต่อลูกค้า","บอกให้หยุดยาหมอ 1 สัปดาห์แล้วเริ่ม Cardilite เพื่อดูว่าตัวไหนให้ผลดีกว่า","แนะนำเว้นช่วงอย่างน้อย 4 ชั่วโมงระหว่างยาหมอกับ Cardilite เพราะเพียงพอสำหรับทุกกรณี"],a:1,e:"ห้ามแนะนำว่าปลอดภัย ห้ามบอกให้หยุดยา — ต้องให้ปรึกษาแพทย์เสมอ เพื่อความปลอดภัยลูกค้า"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าซื้อ Melavita อยู่ บอกว่า 'ฝ้าจางลงนิดหน่อย อยากให้ผิวฟูและชุ่มชื้นด้วย' สนใจเพิ่ม Lavite",q:"การ Cross-sell ที่แสดงความเข้าใจกลไกสินค้าได้ดีที่สุดคือ?",c:["บอกว่า Lavite ทำงานซ้ำซ้อนกับ Melavita จึงไม่จำเป็น แนะนำเพิ่มปริมาณ Melavita แทน","อธิบายว่า Lavite ดูแลมิติ Outer Repair (คอลลาเจน/ความชุ่มชื้น) ซึ่ง Melavita ไม่ครอบคลุม ใช้คู่กันจึงครบทั้ง 'ใส+ฟู'","แนะนำให้ลูกค้าเพิ่ม Manuka แทน Lavite เพราะราคาถูกกว่าและดูแลผิวได้ไม่แพ้กัน","บอกว่า Lavite จำเป็นต้องใช้คู่กับ Melavita เสมอ ถ้าไม่ใช้คู่กัน Melavita จะไม่ออกฤทธิ์"],a:1,e:"Lavite = Outer Repair (ทา) / Melavita = Inner Bright (กิน) — ทำงานต่างมิติ ใช้คู่ 'ใส+ฟู' ครบ"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้า 3 ราย — รายที่ 1: ปวดข้อเข่า กระดูกพรุน | รายที่ 2: ริดสีดวง ลำไส้ไม่ดี | รายที่ 3: ฝ้า ผิวแห้ง ต้องการ Bundle",q:"คู่ Bundle ที่ถูกต้องสำหรับแต่ละรายคือ?",c:["รายที่ 1: Movita+Flexabon | รายที่ 2: Henofin+Bactofin | รายที่ 3: Melavita+Lavite","รายที่ 1: Vistorin+Vistorite | รายที่ 2: Fitarin+Pilonix | รายที่ 3: Protolite+Duasil","รายที่ 1: Cardilite+Tensirin | รายที่ 2: Detarin+Bactofin | รายที่ 3: Lavite+Manuka","รายที่ 1: Protolite+Duasil | รายที่ 2: Henofin+Pilonix | รายที่ 3: Fitarin+Melavita"],a:0,e:"ข้อ/กระดูก → Movita+Flexabon | ริดสีดวง/ลำไส้ → Henofin+Bactofin | ผิว → Melavita+Lavite"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าทาน Movita มา 3 เดือน กระดูกดีขึ้น แต่บอกว่า 'ข้อยังฝืดอยู่' ต้องการเพิ่มสินค้า",q:"การวิเคราะห์และ Cross-sell ที่ถูกต้องตามกลไกสินค้าคือ?",c:["เพิ่ม Manuka Honey เพราะต้านการอักเสบและจะช่วยข้อฝืดโดยตรง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","เพิ่ม Flexabon เพราะ Movita ดูแล BMD แล้ว Flexabon จะดูแลกระดูกอ่อน/ข้อที่ฝืดซึ่ง Movita ไม่ครอบคลุม","เพิ่ม Tensirin เพราะข้อฝืดมาจากการไหลเวียนไม่ดีเป็นหลัก โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","เพิ่มปริมาณ Movita เป็น 4 แคปซูล/วัน เพราะขนาดมาตรฐานยังไม่เพียงพอ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"Movita ทำงาน BMD ดีแล้ว ข้อฝืด = Flexabon (UC-II+Polycan เน้นกระดูกอ่อน) — ต่างกลไก ไม่ซ้อน"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าผู้ชาย 58 ปี ทาน Protolite อยู่ 2 เดือน ปัสสาวะดีขึ้น แต่บอกว่า 'ยังรู้สึกอ่อนเพลีย ไม่มีพลัง' ถาม พนง ขาย ว่ามีอะไรช่วยได้บ้าง",q:"การวิเคราะห์ก่อนเสนอสินค้าที่เหมาะสมที่สุดคือ?",c:["เสนอ Duasil ทันที เพราะเป็น Bundle คู่กับ Protolite สำหรับผู้ชาย เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","ถามว่านอนหลับดีไหม ออกกำลังกายบ้างไหม ความเครียดสูงไหม เพราะอ่อนเพลียมีหลาย Root Cause ก่อนเสนอ Duasil ซึ่งเป็น Option ไม่ใช่บังคับ","เสนอ Diafin เพราะน้ำตาลต่ำมักทำให้อ่อนเพลียและไม่มีพลัง โดยเริ่มจากตัวที่เหมาะสมกับความต้องการของลูกค้าก่อน","เสนอ Cardilite เพราะอาการเหนื่อยชี้ไปที่หัวใจที่ต้องการการดูแล โดยเริ่มจากตัวที่เหมาะสมกับความต้องการของลูกค้าก่อน"],a:1,e:"ก่อนเสนอ Duasil ต้องตรวจ Lifestyle ก่อน (นอน/ออกกำลัง/ความเครียด) — Bundle ต้องมีเหตุผล ไม่ใช่อัตโนมัติ"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าทาน Diafin+Cardilite อยู่ 3 เดือน น้ำตาลและความดันดีขึ้นมาก แต่ตรวจพบว่า LDL ยังสูง",q:"การแนะนำที่แสดงความเข้าใจกลไก Diafin ได้ดีที่สุดคือ?",c:["แนะนำหยุด Diafin แล้วเพิ่ม Cardilite เป็น 2 เท่าเพื่อจัดการ LDL โดยตรง พร้อมอธิบายเหตุผลและประโยชน์ที่ลูกค้าจะได้รับ","Diafin มีหน้าที่ดูแลน้ำตาล ไขมัน และความดันอยู่แล้ว LDL ที่ยังสูงอาจต้องตรวจ Compliance หรือปรึกษาแพทย์เพื่อปรับยาร่วม","เพิ่ม Manuka Honey เพราะ Manuka ลด LDL ได้โดยตรง เพราะราคาที่เหมาะสมช่วยให้ลูกค้าตัดสินใจได้ง่ายขึ้น","เพิ่ม Detarin เพราะ LDL สูงมาจากตับทำงานหนัก Detarin จะช่วยล้างสารพิษในตับ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"Diafin ดูแล LDL อยู่แล้ว ถ้ายังสูง → ตรวจ Compliance ก่อน แล้วปรึกษาแพทย์ ไม่ใช่เพิ่มสินค้าทันที"},
+{p:"product",team:"Resell",type:"sjt",scenario:"สถานการณ์: ทีมขายแจ้งว่าลูกค้า 3 รายที่ซื้อสินค้ากลุ่มข้อไปต่างรายงานว่า 'ทาน 2 เดือนยังไม่เห็นผล'",q:"การวิเคราะห์สาเหตุที่น่าจะถูกต้องที่สุดคือ?",c:["สินค้ากลุ่มข้อไม่ได้ผลสำหรับทุกคน ควรเปลี่ยนไปขาย Bundle กลุ่มอื่นแทน โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ควรตรวจสอบ Compliance: ทานสม่ำเสมอ 2 แคปซูล/วันไหม มีโรคประจำตัวชะลอผลไหม และเข้าใจ Timeline ที่ถูกต้องไหม (ส่วนใหญ่เห็นผลชัดที่ 3–6 เดือน)","ลูกค้าทั้ง 3 รายน่าจะซื้อสินค้าปลอมหรือเก็บรักษาผิดวิธี ควรส่งสินค้าใหม่ให้ฟรี โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","สูตรสินค้าในรอบนี้อาจมีปัญหา ควรรายงานให้ฝ่ายผลิตตรวจสอบทันที เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ"],a:1,e:"ก่อนสรุปว่าสินค้าไม่ดี ต้องตรวจ Compliance+Timeline ก่อน: 3–6 เดือนจึงเห็นผลชัด"},
+{p:"product",type:"sjt",scenario:"สถานการณ์: ลูกค้าบอกว่า 'เพื่อนแนะนำให้ทาน Manuka ก่อนอื่นเลย เพราะดีทุกอย่าง ไม่ต้องซื้อตัวอื่น'",q:"การตอบที่แสดงความเข้าใจบทบาท Manuka ได้ถูกต้องที่สุดคือ?",c:["เห็นด้วยกับเพื่อน เพราะ Manuka มีคุณสมบัติต้านการอักเสบที่ครอบคลุมทุกปัญหาสุขภาพ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","Manuka มีบทบาทเป็น Booster เสริมประสิทธิภาพตัวหลัก ถ้าไม่มีตัวหลักที่ตรงกับปัญหา Manuka เพียงอย่างเดียวไม่เพียงพอ","เพื่อนพูดถูกครึ่งหนึ่ง Manuka ดูแลได้ทุกอย่างแต่ต้องทานวันละ 5 ช้อนชาขึ้นไป โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ไม่ควรฟังเพื่อน เพราะ Manuka เหมาะสำหรับคนที่ไม่มีโรคประจำตัวเท่านั้น โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"Manuka = Booster เสริมตัวหลัก ไม่ใช่ตัวหลักด้วยตัวเอง — ต้องมีตัวหลักที่ตรงปัญหาก่อน"},
+{p:"sales",q:"ขั้นตอนใดใน Call Flow ที่ต้องทำ 'ก่อน' การเสนอสินค้าเสมอ?",c:["แจ้งโปรโมชั่นและราคาพิเศษเพื่อสร้างความสนใจตั้งแต่ต้นสาย","ถามความต้องการและปัญหาสุขภาพ (Probing) เพื่อให้รู้ว่าจะเสนออะไรให้ตรงจุด","ยืนยันที่อยู่จัดส่งเพื่อเตรียมออเดอร์ล่วงหน้าก่อนลูกค้าตัดสินใจ","เสนอ Set 3 ชิ้นทันทีเพื่อดัน AOV ตามเป้าโดยไม่เสียเวลา"],a:1,e:"Greet → Verify → Probe → Present/Close → Confirm — Probe ก่อนเสนอเสมอเพื่อให้ตรง Pain Point"},
+{p:"sales",q:"Assumptive Close คือเทคนิคการปิดการขายแบบใด?",c:["ถามตรงๆ ว่าลูกค้าจะซื้อหรือไม่ซื้อ เพื่อให้ได้คำตอบชัดเจนโดยเร็ว","สร้างความกดดันด้วยการบอกว่าของเหลือน้อย ต้องตัดสินใจเดี๋ยวนี้เท่านั้น","พูดเสมือนลูกค้าตัดสินใจซื้อแล้ว เช่น 'ให้จัดส่ง Set 3 ชิ้น พรุ่งนี้เลยนะคะ'","ให้ส่วนลดพิเศษเพื่อกระตุ้นการตัดสินใจในสายเดียวโดยไม่รอ"],a:2,e:"Assumptive Close = พูดเหมือนลูกค้าซื้อแล้ว เหลือแค่ยืนยันรายละเอียด ไม่ถามว่าจะเอาไหม"},
+{p:"sales",q:"วิธีนำเสนอราคาที่ทำให้ลูกค้ารู้สึกคุ้มค่าที่สุดคือ?",c:["บอกราคารวมทั้งหมดก่อน แล้วรอให้ลูกค้าตัดสินใจโดยไม่เพิ่มเติมข้อมูลอะไร โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ไม่บอกราคาจนกว่าลูกค้าจะถาม เพื่อรักษาความสนใจในสินค้าไว้ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","แตกราคาเป็นต่อวัน เช่น 'ดูแลสุขภาพข้อทั้งเดือนวันละไม่กี่บาท' แล้วเปรียบเทียบกับค่าใช้จ่ายถ้าปล่อยอาการ","เปรียบเทียบราคากับยี่ห้ออื่นในตลาดเพื่อแสดงว่าของเราถูกกว่าทุกแบรนด์ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:2,e:"Price Framing: แตกเป็นต่อวัน + เปรียบเทียบกับค่าใช้จ่ายถ้าปล่อยอาการ = รู้สึกคุ้มค่ากว่า"},
+{p:"sales",q:"คำถาม Probing แบบใดที่ช่วยให้รู้ Pain Point ของลูกค้าได้ชัดเจนที่สุด?",c:["'สนใจซื้อเลยไหมคะ มีสินค้าหลายรูปแบบให้เลือก'","'ปกติมีอาการปวดข้อตอนไหนบ้างคะ และรบกวนชีวิตประจำวันมากแค่ไหน'","'จ่ายเงินปลายทางนะคะ สะดวกรับของช่วงไหน'","'เคยทานอาหารเสริมมาก่อนไหมคะ ราคาเท่าไหร่'"],a:1,e:"คำถามปลายเปิด+ถามผลกระทบต่อชีวิต = เข้าใจ Pain Point จริงและ Engage ลูกค้ามากขึ้น"},
+{p:"sales",type:"sjt",scenario:"สถานการณ์: ลูกค้าบอกว่า 'แพงจัง ขอลดได้ไหม?'",q:"การตอบ Objection ราคาที่ถูกต้องตามหลักการขายคือ?",c:["ลดราคาทันที 10% เพื่อปิดการขายให้ได้ในสายนี้โดยเร็ว เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","Reframe คุณค่าโดยอธิบายว่าเมื่อเทียบกับค่าใช้จ่ายสุขภาพที่จะตามมา ราคานี้คุ้มค่า ไม่ลดราคาโดยไม่มีเหตุผล","บอกว่าของดีราคาต้องสูง ถ้าอยากของถูกต้องยอมรับคุณภาพที่ต่ำกว่านั้น โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","สัญญาว่าจะให้ส่วนลดพิเศษครั้งต่อไปเมื่อสั่งซื้อเพิ่มอีก เพราะราคาที่เหมาะสมช่วยให้ลูกค้าตัดสินใจได้ง่ายขึ้น"],a:1,e:"Objection ราคา → Reframe ด้วยคุณค่า ไม่ใช่ลดทันที เพราะจะทำให้ลูกค้าคาดหวังส่วนลดทุกครั้ง"},
+{p:"sales",type:"sjt",scenario:"สถานการณ์: ลูกค้าบอกว่า 'ขอคิดดูก่อนนะคะ'",q:"การตอบ Objection ที่แสดงทักษะการขายที่ดีที่สุดคือ?",c:["บอกว่า OK แล้วนัดโทรกลับใหม่พรุ่งนี้โดยไม่ถามอะไรเพิ่มเติม โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","กดดันว่าโปรนี้จะหมดวันนี้ ถ้ารอคิดจะพลาดโอกาสนี้ไป โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","รับฟัง แล้วถามตรงๆ ว่ากังวลเรื่องอะไร เพราะ 'ขอคิดดู' มักมี Hidden Objection ที่ต้องขุดออกมาแก้","บอกว่าเข้าใจ แล้วส่งข้อมูลผ่าน Line แทน ให้ลูกค้าตัดสินใจเอง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:2,e:"'ขอคิดดู' = Hidden Objection — ต้อง Probe ว่ากังวลเรื่องอะไร แล้วแก้ตรงจุดนั้น"},
+{p:"sales",team:"Fresh",type:"sjt",scenario:"สถานการณ์: พนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่) โทรหาลูกค้าที่ลงทะเบียนสนใจ Movita แต่ลูกค้าบอกว่าจะซื้อแค่ 1 ชิ้น",q:"การเสนอ Set ที่เหมาะสมตาม Flow ของพนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่) คือ?",c:["ปิดออเดอร์ 1 ชิ้นตามที่ลูกค้าบอก เพื่อไม่ให้กดดัน","เสนอ Set 3 ชิ้นพร้อมอธิบายว่าทานต่อเนื่องเห็นผลชัดกว่า และ AOV ดีกว่า โดยไม่เสนอสินค้าอื่น","เสนอ Bundle Movita+Flexabon เพื่อเพิ่ม AOV ให้สูงขึ้นมากขึ้น","เสนอ Manuka เพิ่มเพราะลูกค้าซื้อน้อย ต้อง Cross-sell เพื่อให้ถึงเป้า"],a:1,e:"พนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่) = ขายสินค้าที่ลงทะเบียน เน้น Set 3+ ไม่ Cross-sell สินค้าอื่น"},
+{p:"sales",team:"Resell",type:"sjt",scenario:"สถานการณ์: พนักงานขายทางโทรศัพท์  โทรติดตามลูกค้าที่ทาน Flexvits มา 2 เดือน ลูกค้าพอใจมาก",q:"การ Cross-sell ที่เหมาะสมสำหรับพนักงานขายทางโทรศัพท์ (ดูแลลูกค้าเดิม) คือ?",c:["เสนอ Bundle ทั้ง 5 ตัวในกลุ่มข้อ/กระดูกพร้อมกันเพื่อดัน AOV สูงสุด โดยเริ่มจากตัวที่เหมาะสมกับความต้องการของลูกค้าก่อน","ถามว่ามีอาการหรือความต้องการส่วนไหนที่ยังไม่ครอบคลุม แล้วพิจารณาเสนอ Tensirin เป็นทางเลือกเพราะเลือดไหลเวียนดีช่วยให้ Flexvits ทำงานได้ดีขึ้น","ไม่เสนออะไรเพิ่ม รอให้ลูกค้าของหมดก่อนแล้วค่อยสั่งซ้ำ เพราะปริมาณที่มากขึ้นจะช่วยให้เห็นผลได้เร็วและชัดขึ้น","เสนอเปลี่ยนจาก Flexvits เป็น Movita เพราะครอบคลุมมากกว่า โดยเริ่มจากตัวที่เหมาะสมกับความต้องการของลูกค้าก่อน"],a:1,e:"ดูแลลูกค้าเดิม Cross-sell ได้ — ถามก่อน ฟังก่อน แล้วเสนอตัวที่มีเหตุผลสัมพันธ์กับสินค้าเดิม"},
+{p:"sales",type:"sjt",scenario:"สถานการณ์: ลูกค้าลังเลเพราะ 'กลัวทานแล้วไม่เห็นผล'",q:"การปิดการขายที่ถูกต้องตาม Compliance และหลักจริยธรรมคือ?",c:["การันตีว่าถ้าทาน 1 เดือนไม่เห็นผลจะคืนเงินทันที เพื่อลดความเสี่ยงให้ลูกค้า","บอกว่าลูกค้าทุกรายที่ทานเห็นผลใน 2 สัปดาห์ โดยอ้างผลลัพธ์ของลูกค้าอื่น","อธิบายว่าผลิตภัณฑ์กลุ่มนี้ต้องทานต่อเนื่องอย่างน้อย 3 เดือนจึงเห็นผลชัด เพราะแต่ละร่างกายตอบสนองต่างกัน","บอกว่าถ้าไม่เชื่อก็ไม่ต้องซื้อ เพราะลูกค้าที่ไม่เชื่อมักทานไม่สม่ำเสมอ"],a:2,e:"ตั้ง Expectation ที่ถูกต้อง: 3 เดือน+ความสม่ำเสมอ ไม่การันตีผล = หลัก Compliance ที่ถูกต้อง"},
+{p:"sales",team:"Fresh",type:"sjt",scenario:"สถานการณ์: ลูกค้าที่ลงทะเบียนสนใจสินค้ากลุ่มข้อ ระหว่างคุยสายบอกว่า 'ที่บ้านมีคนตาไม่ดีด้วย อยากได้สินค้าตาด้วยเลย'",q:"พนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่) ควรทำอย่างไร?",c:["เสนอ Vistorin เพิ่มทันที เพราะลูกค้าขอเอง AOV ก็สูงขึ้น เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","โฟกัสสินค้ากลุ่มข้อที่ลูกค้าลงทะเบียน และแนะนำให้ลงทะเบียนสินค้ากลุ่มตาแยกต่างหากผ่านช่องทางที่ถูกต้อง","เสนอ Bundle ข้อ+ตาพร้อมกันเพราะลูกค้าต้องการทั้งสองอย่าง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ถามว่าอยากได้ตัวไหนมากกว่า แล้วขายตัวนั้นแทนสินค้ากลุ่มข้อที่ลงทะเบียนมา โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"พนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่) ขายตามที่ลงทะเบียน ไม่ Cross-sell ต่างกลุ่ม แนะนำช่องทางที่ถูกต้อง"},
+{p:"sales",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าบอกว่า 'ฉันไม่ค่อยเชื่อเรื่องอาหารเสริม เคยซื้อมาหลายแบรนด์แล้วไม่เห็นผล'",q:"การเปิดบทสนทนาที่มีประสิทธิภาพสูงสุดคือ?",c:["บอกว่าแบรนด์อื่นไม่ดี ส่วนของเราดีกว่าเพราะมีงานวิจัยรองรับมากกว่า โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","การันตีว่าถ้าลองซื้อและไม่เห็นผลจะคืนเงินทันที เพื่อลดความกังวล โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","รับฟังและ Acknowledge ก่อน ถามว่าเคยทานตัวไหน ทานนานแค่ไหน เพื่อเข้าใจ Context ก่อนอธิบายความแตกต่าง","บอกให้ลองก่อนสัก 1 ชิ้น ถ้าเห็นผลค่อยซื้อเพิ่มทีหลัง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:2,e:"Acknowledge → Probe Context → อธิบายด้วยข้อมูล ไม่โจมตีแบรนด์อื่น ไม่การันตีผล"},
+{p:"sales",team:"Resell",type:"sjt",scenario:"สถานการณ์: พนักงานขายทางโทรศัพท์ โทรติดตามลูกค้าที่ทาน Diafin มา 3 เดือน ผลดีมาก ลูกค้าบอก 'อยากแนะนำเพื่อน'",q:"การจัดการสถานการณ์นี้ให้ได้ประโยชน์สูงสุดทั้ง Referral และ Re-order คือ?",c:["ขอเบอร์เพื่อนทันทีก่อนวางสาย เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","ขอบคุณและถามว่าสะดวกให้โทรหาเพื่อนหรือส่งข้อมูลให้เองได้เลย พร้อมกับถามว่าสินค้าของลูกค้าเองใกล้หมดหรือยัง","บอกลูกค้าให้นำเพื่อนมาลงทะเบียนเองในเว็บไซต์ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ขอบคุณแล้วโฟกัสเรื่อง Re-order ก่อน ค่อยถามเรื่องเพื่อนในสายหน้า โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"ลูกค้าพอใจ = โอกาสทั้ง Referral+Re-order ทำพร้อมกันในสายเดียวอย่างสุภาพ"},
+{p:"sales",type:"sjt",scenario:"สถานการณ์: หลังปิดออเดอร์แล้ว ลูกค้าถามว่า 'มีโปรโมชั่นอะไรบ้างคะ?'",q:"การตอบที่ถูกต้องและสร้างความน่าเชื่อถือสูงสุดคือ?",c:["บอกว่าหมดโปรแล้ว เพื่อป้องกันไม่ให้ลูกค้าขอส่วนลด","แจ้งโปรโมชั่นที่มีอยู่จริงทั้งหมด และถามว่าอยากเพิ่มอะไรในออเดอร์นี้ไหม","สร้างโปรพิเศษเฉพาะสายนี้เพื่อดัน AOV ให้ถึงเป้า","บอกให้ติดตาม Social Media เพื่อรับโปรในอนาคต ไม่แจ้งโปรปัจจุบัน"],a:1,e:"Transparency = ความน่าเชื่อถือระยะยาว แจ้งข้อมูลจริงและถามก่อนเพิ่มออเดอร์"},
+{p:"sales",type:"sjt",scenario:"สถานการณ์: ลูกค้าบอกว่า 'ขอให้แม่ตัดสินใจก่อน อาจต้องรอ 2–3 วัน'",q:"การจัดการสถานการณ์นี้ที่ดีที่สุดคือ?",c:["กดดันว่าโปรนี้วันนี้วันสุดท้าย ให้ตัดสินใจเดี๋ยวนี้ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","รับฟัง เคารพการตัดสินใจ ถามว่าสะดวกให้โทรกลับหลังคุยกับแม่วันไหน และสรุปข้อมูลสั้นๆ ให้ลูกค้าใช้อ้างอิง","บอกว่าลูกค้าโตแล้วตัดสินใจได้เองไม่ต้องง้อแม่ โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","โทรตามทุกวันจนกว่าจะตัดสินใจ เพราะลูกค้าที่โทรซ้ำมักปิดได้ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"เคารพกระบวนการตัดสินใจ → นัดติดตาม → ให้ข้อมูลพอดี ไม่กดดัน = โอกาสปิดสูงกว่า"},
+{p:"sales",type:"sjt",scenario:"สถานการณ์: ลูกค้าคุยมา 15 นาที ยังไม่ตัดสินใจ วนซ้ำเรื่องเดิมว่า 'กลัวไม่เห็นผล' และ 'แพง'",q:"การวิเคราะห์สถานการณ์และตัดสินใจที่ถูกต้องคือ?",c:["พูดซ้ำข้อมูลสินค้าดังขึ้นและเร็วขึ้น เพราะลูกค้าอาจยังไม่เข้าใจดีพอ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","สังเกตว่ามี 2 Objection ซ่อน: ราคาและความเชื่อมั่น ควรแยกแก้ทีละจุด เริ่มจาก Objection ที่ดูหนักกว่า","บอกว่าไม่สะดวกคุยต่อแล้วโทรใหม่วันหน้า โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","ลดราคา 20% เพื่อปิดการขายให้ได้ในสายนี้ เพราะราคาที่เหมาะสมช่วยให้ลูกค้าตัดสินใจได้ง่ายขึ้น"],a:1,e:"วิเคราะห์ Hidden Objection ก่อน: มี 2 จุด (ราคา+ความเชื่อมั่น) → แยกแก้ทีละจุดตามลำดับความสำคัญ"},
+{p:"sales",team:"Fresh",type:"sjt",scenario:"สถานการณ์: พนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่) ทำงานมา 2 เดือน AR = 35% ต่ำกว่าเป้า 40–45% สังเกตว่าลูกค้าส่วนใหญ่บอกว่า 'ขอคิดดูก่อน' หลังฟังเสนอสินค้า",q:"สาเหตุที่น่าจะทำให้ AR ต่ำที่สุดคือ?",c:["เสนอสินค้าราคาสูงเกินไปจึงลูกค้าไม่กล้าซื้อ โดยเริ่มจากตัวที่เหมาะสมกับความต้องการของลูกค้าก่อน","ข้ามขั้นตอน Probing ไปเสนอสินค้าโดยตรง ทำให้ข้อเสนอไม่ตรง Pain Point และลูกค้าไม่รู้สึกว่าจำเป็น","โทรช่วงเวลาที่ลูกค้าไม่สะดวกและไม่พร้อมรับสาย โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","พูดเร็วเกินไปทำให้ลูกค้าฟังไม่ทันและไม่เข้าใจข้อมูล โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"AR ต่ำ + 'ขอคิดดู' = Skip Probing → ข้อเสนอไม่ตรงจุด → ลูกค้าไม่เห็น Value"},
+{p:"sales",team:"Fresh",type:"sjt",scenario:"สถานการณ์: ลูกค้าลงทะเบียนสนใจสินค้ากลุ่มสายตา แต่ตอนคุยสายบอกว่า 'ที่บ้านมีคนปวดข้อด้วย และตัวเองก็อยากลดน้ำหนัก'",q:"พนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่) ควรจัดลำดับการจัดการอย่างไร?",c:["เสนอ Bundle ครอบคลุมทั้งสายตา+ข้อ+น้ำหนักในสายเดียว เพื่อให้ได้ AOV สูงสุด","โฟกัสสินค้าสายตาที่ลงทะเบียน เป็น Priority หลัก ส่วนข้อและน้ำหนักแนะนำช่องทางลงทะเบียนเพิ่มเติม","ถามว่าลูกค้าต้องการแก้ปัญหาไหนมากที่สุด แล้วขายตัวนั้นแทนสินค้าที่ลงทะเบียนมา","โทรกลับใหม่วันหลัง เพราะมีหลายประเด็นเกินไปไม่สามารถจัดการได้ในสายเดียว"],a:1,e:"พนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่) = โฟกัสสินค้าที่ลงทะเบียน ความต้องการอื่นแนะนำช่องทางที่ถูกต้อง"},
+{p:"sales",team:"Fresh",type:"sjt",scenario:"สถานการณ์: ทีมขายทางโทรศัพท์ AOV เฉลี่ยอยู่ที่ 1,200 บาท ต่ำกว่าเป้า 2,700 มาก Supervisor ฟัง Call แล้วพบว่าพนักงานส่วนใหญ่เสนอ Set ก่อน Probe (ตรวจหาสาเหตุ)",q:"ปัญหาหลักของพฤติกรรมนี้คือ?",c:["การเสนอ Set ก่อน Probe ทำให้ AOV สูงขึ้นเพราะลูกค้าเห็น Option มากกว่า โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ถ้า Probe ไม่ดีก่อน ข้อเสนอ Set ไม่มีเหตุผลที่ลูกค้าจะเชื่อ ลูกค้าจึงซื้อแค่ 1 ชิ้นเพราะไม่เห็น Value ของ Set","การเสนอ Set ก่อน Probe เป็นเทคนิคที่ถูกต้อง แต่ต้องปิดให้ได้ใน 5 นาทีแรก โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ปัญหาอยู่ที่ราคา Set สูงเกินไป ควรลดราคาลง 20% เพราะราคาที่เหมาะสมช่วยให้ลูกค้าตัดสินใจได้ง่ายขึ้น"],a:1,e:"Probe ก่อน → เข้าใจ Pain → เสนอ Set ที่ตรงจุด → ลูกค้าเห็น Value → AOV สูง ลัดขั้นตอนไม่ได้"},
+{p:"sales",team:"Fresh",type:"sjt",scenario:"สถานการณ์: เดือนนี้ RTO (เรทการไม่รับสินคา) สูงถึง 48% ซึ่งปกติอยู่ที่ 15% Supervisor พบว่าเดือนที่แล้วมีการเปลี่ยน Script ให้ปิดออเดอร์เร็วขึ้น ลด Confirmation Step",q:"การวิเคราะห์และแนวทางแก้คือ?",c:["RTO สูงเพราะบริษัทขนส่งผิดพลาดเพิ่มขึ้นพร้อมกัน ต้องเปลี่ยน Logistics Partner โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","การลด Confirmation Step ทำให้ที่อยู่และความพร้อม COD ไม่ถูก Verify ส่งผลโดยตรงให้ RTO พุ่ง ต้องคืน Confirmation Step เพิ่ม DR","RTO สูงเพราะ Lead Quality ต่ำ ควรเปลี่ยน Target Segment โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","RTO สูงเพราะสินค้าไม่ตรง Pain Point ควรเพิ่มสินค้าใหม่ เพราะปริมาณที่มากขึ้นจะช่วยให้เห็นผลได้เร็วและชัดขึ้น"],a:1,e:"ลด Confirmation Step = ไม่ Verify ข้อมูลจัดส่ง = RTO พุ่ง: Correlation ชัดเจน → คืน Step ที่ตัดออก"},
+{p:"communication",q:"สัญญาณของการฟังอย่างตั้งใจ (Active Listening) ที่สำคัญที่สุดในการขายทางโทรศัพท์คือ?",c:["พูดให้บ่อยกว่าลูกค้าเพื่อแสดงว่ามีข้อมูลมากกว่าและเชี่ยวชาญกว่า โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","เงียบสนิทตลอดจนกว่าลูกค้าจะพูดจบ โดยไม่ส่งสัญญาณตอบรับใดๆ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ทวนสรุปสิ่งที่ลูกค้าพูดเพื่อยืนยันความเข้าใจ เช่น 'เข้าใจว่าคุณปวดเข่าตอนเช้าและรบกวนการออกกำลังกาย ถูกต้องไหมคะ'","จดบันทึกทุกคำโดยไม่ตอบสนองเลย เพราะการขัดจังหวะถือว่าไม่สุภาพ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:2,e:"Active Listening = ทวนสรุป (Paraphrase) เพื่อยืนยันความเข้าใจ + แสดงว่าฟังจริง"},
+{p:"communication",q:"เมื่อต้องอธิบายส่วนผสมที่มีชื่อเทคนิคซับซ้อน ควรปฏิบัติอย่างไร?",c:["ใช้ชื่อทางวิทยาศาสตร์ทั้งหมดเพื่อแสดงความเป็นมืออาชีพและสร้างความน่าเชื่อถือ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","แปลชื่อเทคนิคเป็นภาษาง่ายๆ ที่ลูกค้าเข้าใจได้ทันที เช่น 'Aquamin คือแคลเซียมจากสาหร่ายทะเล' แล้วเชื่อมกับประโยชน์ที่ลูกค้าจะได้รับ","ส่ง Brochure ดิจิทัลให้ลูกค้าอ่านเองแทน เพราะข้อมูลซับซ้อนเกินอธิบายทางโทรศัพท์ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","บอกว่าข้อมูลส่วนผสมเป็นความลับทางการค้า ไม่สามารถเปิดเผยได้ในขณะนี้ โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ"],a:1,e:"แปลศัพท์เทคนิค + เชื่อมกับประโยชน์ที่ลูกค้าได้รับ = เข้าใจง่ายและตัดสินใจได้ไวกว่า"},
+{p:"communication",type:"sjt",scenario:"สถานการณ์: ลูกค้าโมโหมากเรื่องของส่งช้า พูดเสียงดัง",q:"ควรตอบสนองอย่างไรก่อนเป็นอันดับแรก?",c:["อธิบายทันทีว่าเป็นความผิดของบริษัทขนส่ง ไม่ใช่ความผิดของเรา","รับฟังจนลูกค้าพูดจบ กล่าวขอโทษในความไม่สะดวก แล้วค่อยหาทางแก้ไขร่วมกัน","ขอโอนสายให้L&Dจัดการทันที เพราะตัวเองไม่มีอำนาจตัดสินใจในเรื่องนี้","แจ้ง SLA มาตรฐานและอธิบายขั้นตอนการร้องเรียนอย่างเป็นทางการตามนโยบาย"],a:1,e:"Acknowledge อารมณ์ก่อน → ขอโทษ → แก้ปัญหา ห้ามโต้เถียงหรือโยนความผิดก่อนฟังจบ"},
+{p:"communication",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าสูงอายุถามว่า 'ทาน Movita ก่อนหรือหลังอาหาร?' แล้วยังสับสนซ้ำหลายรอบ",q:"วิธีการสื่อสารที่เหมาะสมที่สุดคือ?",c:["พูดให้เร็วขึ้นเพื่อทบทวนข้อมูลให้ครบในเวลาน้อยที่สุด โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ส่ง SMS สรุปข้อมูลหลังวางสาย แทนการอธิบายซ้ำทางโทรศัพท์ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ใช้ตัวอย่างจากชีวิตจริงที่จับต้องได้ เช่น 'ทานพร้อมข้าวเช้าเลยค่ะ' แล้วถามว่าเข้าใจแล้วหรือยัง","บอกให้อ่านฉลากเองเพราะข้อมูลครบอยู่แล้ว โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:2,e:"ลูกค้าสูงอายุ = Concrete Example + ยืนยันความเข้าใจ ไม่ใช่พูดซ้ำด้วยคำเดิม"},
+{p:"communication",type:"sjt",scenario:"สถานการณ์: โทรหาลูกค้า มีเสียงดังมากในฉากหลัง ลูกค้าบอก 'คุยได้นะ'",q:"ควรตัดสินใจอย่างไร?",c:["รีบเสนอสินค้าและปิดออเดอร์ให้เร็วที่สุดก่อนสายหลุด โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ถามว่าสะดวกคุยตอนนี้จริงไหม หรืออยากนัดเวลาที่เงียบกว่า เพราะสภาพแวดล้อมมีผลต่อการตัดสินใจ","พูดดังขึ้นเพื่อให้ลูกค้าได้ยินชัดเจนกว่าเดิม โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","คุยต่อตามปกติเพราะลูกค้าบอกว่าได้เอง โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ"],a:1,e:"สภาพแวดล้อมไม่เอื้อ = โอกาสปิดต่ำ → นัดใหม่ดีกว่า แม้ลูกค้าบอกว่าได้ก็ตาม"},
+{p:"communication",type:"sjt",scenario:"สถานการณ์: ลูกค้าถามคำถามเกี่ยวกับส่วนผสมที่คุณไม่แน่ใจคำตอบ",q:"การตอบสนองที่รักษาความน่าเชื่อถือได้ดีที่สุดคือ?",c:["ตอบตามที่คิดว่าน่าจะถูก เพราะการบอกว่าไม่รู้ทำให้ดูไม่มีความรู้","บอกตรงๆ ว่าไม่แน่ใจ จะตรวจสอบข้อมูลที่ถูกต้องและโทรกลับพร้อมคำตอบที่ชัดเจน","เปลี่ยนหัวข้อทันทีโดยไม่ตอบคำถาม","บอกว่าข้อมูลนั้นเป็นความลับทางการค้า"],a:1,e:"ซื่อสัตย์ + Follow-up = ความน่าเชื่อถือระยะยาว ดีกว่าตอบผิดๆ แล้วเสียลูกค้า"},
+{p:"communication",type:"sjt",scenario:"สถานการณ์: ลูกค้าพูดสำเนียงภาษาถิ่น ฟังคำสำคัญบางคำไม่ชัด",q:"ควรทำอย่างไรเพื่อลดความเสี่ยงออเดอร์ผิดพลาด?",c:["ทำเป็นเข้าใจและขายต่อไป เพราะกลัวลูกค้าอายถ้าถามซ้ำ","ขอโทษอย่างสุภาพแล้วขอให้พูดซ้ำหรือยืนยันข้อมูลสำคัญ เช่น 'ขอโทษนะคะ ที่อยู่คือ... ถูกต้องไหมคะ'","วางสายแล้วโทรกลับใหม่หวังว่าจะฟังชัดขึ้น","ถามให้ลูกค้าส่งข้อมูลทาง SMS แทน เพราะปัญหาอยู่ที่การสื่อสารทางเสียง"],a:1,e:"ยืนยันข้อมูลสำคัญอย่างสุภาพ ดีกว่าเดาและเกิด Error ที่ทำให้ RTO สูง"},
+{p:"communication",type:"sjt",scenario:"สถานการณ์: ลูกค้าร้องไห้ระหว่างคุยสาย เล่าว่ากังวลเรื่องสุขภาพของแม่มาก",q:"ควรตอบสนองอย่างไร?",c:["รีบเสนอสินค้าที่เหมาะกับอาการแม่ทันที เพื่อแก้ปัญหาให้ลูกค้าโดยเร็ว โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","รับฟังอย่างตั้งใจ แสดงความเห็นอกเห็นใจก่อน เช่น 'เข้าใจความรู้สึกเลยค่ะ' แล้วค่อยถามว่าจะช่วยอะไรได้บ้าง","แนะนำให้ลูกค้าพาแม่ไปหาหมอและจบสายโดยไม่เสนอสินค้า โดยเริ่มจากตัวที่เหมาะสมกับความต้องการของลูกค้าก่อน","บอกว่าไม่ต้องเป็นห่วงเพราะสินค้าของเราดีมาก แม่จะหายแน่นอน โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ"],a:1,e:"Empathy ก่อนเสมอ → ฟัง → ถามว่าจะช่วยอะไรได้ ห้ามเสนอขายทันทีเมื่อลูกค้าแสดงอารมณ์"},
+{p:"communication",type:"sjt",scenario:"สถานการณ์: หลังส่งของถึง ลูกค้าโทรมาบอกว่าได้ของผิดชนิด",q:"ควรตอบสนองอย่างไร?",c:["อธิบายว่าลูกค้าอาจจำออเดอร์ผิดเอง แล้วให้ตรวจสอบใบเสร็จก่อน","ขอโทษทันที รับฟัง บันทึกรายละเอียด และประสานแก้ไขให้เร็วที่สุด","โอนสายให้แผนก Customer Service จัดการ โดยไม่รับปากอะไร","บอกว่าต้องรอตรวจสอบกับ Warehouse ก่อน จะโทรกลับภายใน 3–5 วันทำการ"],a:1,e:"ปัญหาหลังการขาย = โอกาสสร้าง Loyalty ขอโทษทันที+แก้ไขเร็ว ดีกว่าโยนความรับผิดชอบ"},
+{p:"communication",type:"sjt",scenario:"สถานการณ์: คุยกับลูกค้ามา 20 นาที ลูกค้าวนซ้ำเรื่องเดิมและยังไม่ตัดสินใจ",q:"การวิเคราะห์สถานการณ์และตัดสินใจที่ถูกต้องคือ?",c:["พูดซ้ำข้อมูลสินค้าดังขึ้นและเร็วขึ้นเพื่อแสดงความมั่นใจ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","สรุป Objection ที่ได้ยิน แล้วถามตรงๆ ว่า 'ยังมีข้อสงสัยเรื่องอะไรอีกบ้างคะ?' เพื่อ Unlock Hidden Objection","วางสายทันทีเพราะลูกค้าไม่จริงจัง เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","ลดราคา 30% เพื่อปิดการขายให้ได้ในสายนี้ เพราะราคาที่เหมาะสมช่วยให้ลูกค้าตัดสินใจได้ง่ายขึ้น"],a:1,e:"วนซ้ำ = Hidden Objection ที่ยังไม่ถูกแก้ → สรุปและถามตรงๆ ดีกว่าพูดซ้ำหรือลดราคา"},
+{p:"communication",type:"sjt",scenario:"สถานการณ์: ลูกค้าถามว่า 'สายนี้อัดเสียงอยู่ไหม ไม่อยากให้อัด'",q:"ควรตอบอย่างไร?",c:["โกหกว่าไม่ได้อัด เพราะถ้าบอกความจริงลูกค้าอาจระวังตัวและไม่ซื้อ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","แจ้งความจริงเกี่ยวกับการบันทึกสาย ระบุวัตถุประสงค์ และเคารพสิทธิ์ลูกค้าตามนโยบายที่แท้จริง","บอกว่าอัดตามกฎบริษัท ลูกค้าไม่มีสิทธิ์ปฏิเสธ โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","หยุดอัดสายทันทีเพราะลูกค้าขอ โดยไม่แจ้งขั้นตอนที่ถูกต้อง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"ซื่อสัตย์ + เคารพสิทธิ์ลูกค้า = จริยธรรมขั้นพื้นฐาน การโกหกผิดทั้งจริยธรรมและกฎหมาย"},
+{p:"communication",team:"Resell",type:"sjt",scenario:"สถานการณ์: พนักงานขายทางโทรศัพท์ (ดูแลลูกค้าเดิม) สังเกตว่า 3 ใน 5 สายที่คุยวันนี้ ลูกค้าพูดว่า 'โทรมาบ่อยไปนะ'",q:"การวิเคราะห์สัญญาณนี้และปรับพฤติกรรมที่เหมาะสมคือ?",c:["ถือว่าเป็น Objection ปกติ คุยต่อและ Push ให้ปิดออเดอร์ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","สัญญาณนี้บ่งชี้ว่า Contact Frequency สูงเกินไปสำหรับ Segment นี้ ต้องปรับแผนการติดตามให้เหมาะสมกับแต่ละกลุ่ม","เปลี่ยนจากโทรศัพท์เป็น SMS ทุกราย โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","หยุดโทรหาลูกค้าทั้งหมดรอให้โทรมาเอง เพื่อประเมินผลก่อนตัดสินใจซื้อต่อหรือเปลี่ยนสินค้า"],a:1,e:"3/5 = Systemic Issue ไม่ใช่ Individual Objection → ต้องปรับ Contact Strategy ตาม Segment"},
+{p:"compliance",q:"ข้อใดคือคำกล่าวอ้างที่ผิดกฎหมาย อย. สำหรับผลิตภัณฑ์เสริมอาหาร?",c:["'ช่วยบำรุงและดูแลระบบกระดูกเมื่อทานต่อเนื่องสม่ำเสมอ'","'รักษาโรคเบาหวานให้หายขาดและทดแทนยาหมอได้'","'เป็นผลิตภัณฑ์เสริมอาหารที่ผ่านมาตรฐาน อย. ของประเทศไทย'","'ทานสม่ำเสมอเพื่อผลลัพธ์ที่ดีขึ้นอย่างยั่งยืนในระยะยาว'"],a:1,e:"ห้ามอ้าง 'รักษา/หายขาด/แทนยา' — ผลิตภัณฑ์เสริมอาหารทำไม่ได้ตามกฎหมาย อย."},
+{p:"compliance",q:"สคริปต์ใดต่อไปนี้ใช้ได้อย่างปลอดภัยตามหลัก อย.?",c:["'สินค้านี้การันตีผลใน 2 สัปดาห์ ถ้าไม่เห็นผลคืนเงิน 100%'","'ทานแล้วเลิกยาหมอได้เลยค่ะ เพราะเป็นธรรมชาติ 100%'","'ช่วยดูแลและบำรุงข้อเข่า ทานต่อเนื่องเพื่อผลลัพธ์ที่ดีขึ้น'","'อย. รับรองว่ารักษาข้อเข่าเสื่อมได้ภายใน 3 เดือน'"],a:2,e:"'ช่วยดูแล/บำรุง' + ไม่การันตีผล + ไม่อ้าง อย. รักษาโรค = พูดได้ถูกต้องตามกฎหมาย"},
+{p:"compliance",type:"sjt",scenario:"สถานการณ์: สคริปต์: 'Flexvits ทำให้ข้อเข่าหายเจ็บใน 2 สัปดาห์ ลองดูเลยค่ะ'",q:"ข้อความนี้มีปัญหาด้าน Compliance ตรงไหน?",c:["ไม่มีปัญหา เป็นการบอกระยะเวลาโดยประมาณเพื่อช่วยลูกค้าวางแผน","ปัญหาอยู่ที่คำว่า 'ลองดู' ควรพูดว่า 'ซื้อเลย' แทนเพื่อแสดงความมั่นใจ","การระบุระยะเวลาผลลัพธ์ชัดเจน '2 สัปดาห์' เป็น Over-Claim ห้ามการันตีผลในรูปแบบนี้","ปัญหาอยู่ที่ชื่อสินค้า Flexvits ที่ไม่ได้ระบุว่าเป็นผลิตภัณฑ์เสริมอาหาร"],a:2,e:"ระบุเวลาชัด = การันตีผล = Over-Claim ผิดกฎ อย. แม้จะตั้งใจแค่บอก 'โดยประมาณ'"},
+{p:"compliance",team:"Resell",type:"sjt",scenario:"สถานการณ์: สคริปต์: 'ซื้อเลยนะคะ ของเหลือน้อยมาก วันนี้วันสุดท้ายโปรนี้' ทั้งที่สต็อกยังมากและโปรไม่ได้หมด",q:"ปัญหาหลักของสคริปต์นี้คือ?",c:["ไม่มีปัญหา เป็น Sales Technique มาตรฐานที่ใช้กันทั่วไปในธุรกิจ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ปัญหาอยู่ที่ภาษาที่ใช้ไม่เป็นทางการ ควรพูดสุภาพและเป็นมืออาชีพมากกว่านี้ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","การสร้าง False Urgency ด้วยข้อมูลเท็จเป็นการหลอกลวงลูกค้า ผิดจริยธรรมและอาจผิดกฎหมายคุ้มครองผู้บริโภค","ปัญหาอยู่ที่ไม่ได้บอกราคาที่ชัดเจนในสคริปต์ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:2,e:"False Urgency + ข้อมูลเท็จ = หลอกลวง ผิดจริยธรรม + พ.ร.บ.คุ้มครองผู้บริโภค"},
+{p:"compliance",type:"sjt",scenario:"สถานการณ์: ลูกค้าถามว่า 'สายนี้บันทึกอยู่ไหม ฉันไม่อยากให้บันทึก'",q:"การตอบที่ถูกต้องตามหลักจริยธรรมและกฎหมายคือ?",c:["โกหกว่าไม่ได้บันทึก เพราะถ้าบอกจริงลูกค้าอาจระวังตัว โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","แจ้งความจริงเกี่ยวกับการบันทึก ระบุวัตถุประสงค์ และปฏิบัติตามนโยบายบริษัทที่สอดคล้องกับ PDPA","หยุดบันทึกทันทีเพราะลูกค้าขอ โดยไม่แจ้งขั้นตอนที่ถูกต้อง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","โอนสายให้L&Dจัดการ เพราะตัวเองไม่มีอำนาจตัดสินใจเรื่องนี้ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"โปร่งใสตาม PDPA + แจ้งวัตถุประสงค์ = ถูกต้องทั้งจริยธรรมและกฎหมาย"},
+{p:"compliance",type:"sjt",scenario:"สถานการณ์: ลูกค้าถามว่า 'ขอให้แนะนำขนาดยาหมอสำหรับความดันด้วยนะคะ ฉันไม่ได้ไปหาหมอนาน'",q:"การตอบที่ถูกต้องตามขอบเขตหน้าที่คือ?",c:["แนะนำขนาดยาตามที่เคยเห็นใน Internet เพื่อช่วยเหลือลูกค้า","ปฏิเสธอย่างสุภาพ แนะนำให้พบแพทย์หรือเภสัชกร เพราะพนักงานขายไม่มีใบอนุญาตประกอบวิชาชีพเวชกรรม","แนะนำขนาดยาตามน้ำหนักตัวมาตรฐาน เพราะเป็นข้อมูลทั่วไปที่หาได้ใน Internet","แนะนำให้ใช้ Cardilite แทนยาความดัน เพราะเป็นธรรมชาติและปลอดภัยกว่า"],a:1,e:"การแนะนำยา = ปฏิบัติการทางการแพทย์ ต้องมีใบอนุญาต — พนักงานขายต้องส่งต่อผู้เชี่ยวชาญเสมอ"},
+{p:"compliance",type:"sjt",scenario:"สถานการณ์: ลูกค้าตั้งครรภ์ 4 เดือน บอกว่า 'ปวดหลังมาก อยากทาน Flexvits'",q:"การตอบสนองที่ถูกต้องตามหลัก Compliance คือ?",c:["เสนอ Flexvits ได้เลย เพราะเป็นแค่อาหารเสริมจากธรรมชาติ ไม่ใช่ยา ปลอดภัยสำหรับทุกคน","แนะนำปรึกษาแพทย์ที่ดูแลการตั้งครรภ์ก่อนเสมอ เพราะข้อมูลความปลอดภัยในหญิงตั้งครรภ์ยังจำกัด","แนะนำทาน Manuka แทน เพราะปลอดภัยกว่า Flexvits สำหรับคนท้องทุกไตรมาส","แนะนำทาน Flexvits ในปริมาณครึ่งหนึ่งของปกติ เพื่อลดความเสี่ยง"],a:1,e:"หญิงตั้งครรภ์ = กลุ่มเปราะบาง ต้องปรึกษาแพทย์ก่อนเสมอ ไม่แนะนำเองแม้จะเป็นอาหารเสริม"},
+{p:"compliance",type:"sjt",scenario:"สถานการณ์: ลูกค้าผู้สูงอายุ 75 ปี อยู่คนเดียว ตัดสินใจช้ามาก",q:"พฤติกรรมการขายที่ถูกต้องตามจริยธรรมคือ?",c:["กดดันให้ตัดสินใจเร็วเพราะผู้สูงอายุมักถูกคนในบ้านยับยั้งทีหลัง","ให้ข้อมูลครบถ้วน ไม่สร้างความกดดัน ให้เวลาตัดสินใจ และไม่ใช้ประโยชน์จากความโดดเดี่ยว","อ้างสรรพคุณมากขึ้นเพราะผู้สูงอายุต้องการความมั่นใจสูงกว่ากลุ่มอื่น","เร่งปิดออเดอร์เพราะ Conversion Rate ของผู้สูงอายุสูงกว่าถ้าไม่ให้เวลาคิดมาก"],a:1,e:"ห้ามเอาเปรียบกลุ่มเปราะบาง — ให้ข้อมูลครบ ไม่กดดัน ให้เวลา = จริยธรรมพื้นฐาน"},
+{p:"compliance",type:"sjt",scenario:"สถานการณ์: ลูกค้าถามว่า 'Diafin ช่วยรักษาเบาหวานให้หายได้ไหม หมอบอกว่าต้องกินยาตลอดชีวิต'",q:"คำตอบที่ถูกต้องตามหลัก Compliance คือ?",c:["บอกว่า Diafin รักษาหายได้ ไม่ต้องกินยาหมออีก เพราะเป็นธรรมชาติ โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","Diafin เป็นผลิตภัณฑ์เสริมอาหาร ช่วยดูแลระดับน้ำตาลได้แต่ไม่ใช่ยารักษาโรค ไม่ควรหยุดยาหมอเองและควรปรึกษาแพทย์","บอกว่า Diafin + ยาหมอทานคู่กันได้ปลอดภัย 100% ไม่มีผลข้างเคียงใดๆ โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","แนะนำให้ทาน Diafin แทนยาหมอทดลอง 3 เดือน ถ้าดีขึ้นค่อยหยุดยา เพื่อประเมินผลก่อนตัดสินใจซื้อต่อหรือเปลี่ยนสินค้า"],a:1,e:"ห้ามอ้างรักษา ห้ามแนะนำหยุดยาหมอ — ผลิตภัณฑ์เสริมอาหาร ≠ ยา เสมอ"},
+{p:"compliance",type:"sjt",scenario:"สถานการณ์: พนักงานขายเสนอสินค้ากลุ่มความดัน แล้วพบว่าลูกค้าไม่ได้วัดความดันมา 2 ปี และมีอาการปวดหัวบ่อย",q:"การตอบสนองที่ถูกต้องที่สุดคือ?",c:["เสนอ Tensirin+Cardilite ทันที เพราะอาการชี้ชัดว่าน่าจะเป็นความดันสูง","แนะนำให้ไปวัดความดันและพบแพทย์ก่อน ไม่เสนอสินค้าในสถานการณ์ที่ยังไม่มีการวินิจฉัยที่ชัดเจน","วินิจฉัยว่าน่าจะเป็นความดันสูง แล้วเสนอสินค้าพร้อมอธิบายว่าเสริมอาหารปลอดภัยกว่ายา","บอกว่าปวดหัวบ่อยเป็นเรื่องปกติของคนทำงาน ไม่ต้องกังวล เสนอสินค้าต่อไป"],a:1,e:"ไม่วินิจฉัยเอง ไม่เสนอสินค้าเมื่ออาการไม่ชัดเจน — ส่งต่อแพทย์ก่อน = ความปลอดภัยลูกค้า"},
+{p:"compliance",type:"sjt",scenario:"สถานการณ์: ลูกค้าบอกว่า 'เพื่อนซื้อของคุณแล้วบอกว่า อย. รับรองว่ารักษาปวดข้อได้'",q:"ควรแก้ไขข้อมูลที่ผิดนี้อย่างไร?",c:["เห็นด้วยกับเพื่อนลูกค้า เพราะช่วยให้ปิดการขายได้ง่ายขึ้น โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","อธิบายให้ถูกต้องว่า อย. รับรองมาตรฐานการผลิต ไม่ใช่การรักษาโรค สินค้าของเราช่วยดูแล/บำรุง ไม่ใช่รักษาโรค","บอกว่าเพื่อนพูดผิด ไม่ควรเชื่อ และให้ฟังจากพนักงานขายโดยตรงแทน โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","บอกว่าเรื่อง อย. ซับซ้อน ไม่ขอตอบ ให้ดูในเว็บไซต์เอง โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ"],a:1,e:"แก้ข้อมูลผิดด้วยข้อเท็จจริง: อย. รับรองมาตรฐานการผลิต ≠ รับรองการรักษาโรค"},
+{p:"compliance",type:"sjt",scenario:"สถานการณ์: ทีมขายพบว่าลูกค้า 10 รายในเดือนนี้โทรมาถามเรื่องผลข้างเคียงที่ไม่เคยได้รับแจ้งมาก่อน",q:"การวิเคราะห์และตัดสินใจที่ถูกต้องคือ?",c:["ถือว่าเป็น Objection (ข้อโต้แย้ง)ปกติ ฝึกพนักงานให้ตอบ Objection ได้ดีขึ้น","รวบรวมข้อมูล รายงานต่อผู้บังคับบัญชา และทบทวนว่าสคริปต์ขายแจ้งข้อควรระวังครบถ้วนไหม อาจต้องปรับ","บอกลูกค้าทั้ง 10 รายว่าผลข้างเคียงเป็นเรื่องปกติและไม่น่ากังวล","ลด Touchpoint ในการติดตามลูกค้าเพื่อให้มีโอกาส Complain น้อยลง"],a:1,e:"10 รายในเดือนเดียว = Pattern ไม่ใช่ Objection เดี่ยว → รายงาน+ทบทวนสคริปต์ = Compliance ที่ถูกต้อง"},
+{p:"compliance",type:"sjt",scenario:"สถานการณ์: ลูกค้าบอกว่า 'ฉันอยากหยุดยาหมอแล้วใช้อาหารเสริมแทน ถูกกว่าและธรรมชาติกว่า'",q:"การตอบที่ถูกต้องและปลอดภัยสูงสุดคือ?",c:["เห็นด้วยและเสนอสินค้าทันที เพราะลูกค้าตัดสินใจแล้ว เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","อธิบายว่าผลิตภัณฑ์เสริมอาหารและยาแพทย์มีบทบาทต่างกัน การหยุดยาแพทย์เองอาจเป็นอันตราย ต้องปรึกษาแพทย์ก่อนเสมอ","บอกว่าธรรมชาติดีกว่ายาเสมอ และสนับสนุนให้ลูกค้าหยุดยาหมอทีละน้อย โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","บอกว่าสินค้าของเราสามารถทดแทนยาได้เฉพาะบางชนิดขึ้นอยู่กับอาการ โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ"],a:1,e:"ห้ามสนับสนุนการหยุดยาหมอเอง — อธิบายความแตกต่าง+ความเสี่ยง+ให้ปรึกษาแพทย์"},
+{p:"role",q:"AR (Approved Rate) วัดอะไร และส่งผลต่อรายได้ธุรกิจอย่างไร?",c:["วัดจำนวนสายที่โทรออกต่อวัน ยิ่งโทรมาก AR ยิ่งสูงตามไปด้วย โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","วัดสัดส่วนออเดอร์ที่ได้รับการยืนยันสำเร็จจากสายทั้งหมด ถ้า AR สูงแปลว่าเปลี่ยน Lead เป็น Order ได้มีประสิทธิภาพ","วัดความพึงพอใจของลูกค้าหลังซื้อสินค้า ใช้ประเมินคุณภาพบริการ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","วัดยอดขายรวมต่อเดือน หารด้วยจำนวนสายที่โทรออกทั้งหมด โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"AR = ประสิทธิภาพในการเปลี่ยน Lead → Order สูง = Conversion ดี = รายได้จริง"},
+{p:"role",q:"DR (Delivered Rate) แตกต่างจาก AR อย่างไร?",c:["DR วัดความเร็วในการจัดส่ง ส่วน AR วัดคุณภาพสินค้าที่ส่งไป","DR วัดว่าลูกค้าพอใจกับสินค้าหรือไม่ ส่วน AR วัดความเร็วในการปิดออเดอร์","AR วัดการยืนยันออเดอร์ ส่วน DR วัดว่าของที่ส่งถึงมือลูกค้าจริงและไม่ตีกลับ (ไม่ RTO)","ทั้ง DR และ AR วัดสิ่งเดียวกัน แต่ DR ใช้สำหรับรายงานต่อผู้บริหาร"],a:2,e:"AR = ยืนยันออเดอร์ | DR = ส่งถึงมือลูกค้าจริง — Linked แต่ไม่เหมือนกัน"},
+{p:"role",q:"ปัจจัยใดทำให้เกิด RTO (Return to Origin / ของตีกลับ) มากที่สุด?",c:["ลูกค้าสั่งสินค้ามากเกินไปจนไม่มีเงินจ่าย COD โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ที่อยู่จัดส่งผิด ลูกค้าไม่อยู่รับของ หรือลูกค้าปฏิเสธรับเพราะไม่แน่ใจ — ป้องกันได้ด้วยการยืนยันข้อมูลครบก่อนปิด","สินค้าราคาสูงเกินไปทำให้ลูกค้าเปลี่ยนใจ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","บริษัทขนส่งทำงานผิดพลาดซึ่งพนักงานขายควบคุมไม่ได้ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"RTO ป้องกันได้จากต้นทาง: ยืนยันที่อยู่+เบอร์+ความพร้อม COD+นัดรับ = DR สูงขึ้น"},
+{p:"role",team:"Fresh",q:"เหตุใดพนักงานขายทางโทรศัพท์  จึงควรเน้นเสนอ Set 3 ชิ้นขึ้นไป?",c:["เพราะโปรโมชั่น 3 ชิ้นเท่านั้นที่มีส่วนลด ซึ่งดึงดูดลูกค้าได้ดีที่สุด","เพราะ Set 3 ชิ้นช่วยให้ลูกค้าทานต่อเนื่องเห็นผล ดัน AOV ให้ถึงเป้า และลูกค้าที่เห็นผลจะซื้อซ้ำเอง","เพราะบริษัทกำหนดให้ทุกออเดอร์ต้องมีอย่างน้อย 3 ชิ้น ถ้าน้อยกว่าจะไม่คิดค่าส่ง","เพราะลูกค้าที่ซื้อ 1 ชิ้นมักเปลี่ยนใจตีกลับบ่อยกว่าลูกค้าที่ซื้อ 3 ชิ้น"],a:1,e:"Set 3 ชิ้น = ทานต่อเนื่องเห็นผล + AOV ดีขึ้น + ลูกค้าพอใจซื้อซ้ำ = Win-Win"},
+{p:"role",team:"Fresh",type:"sjt",scenario:"สถานการณ์: ลูกค้าลงทะเบียนสนใจ Movita แต่สินค้านั้นหมดสต็อก",q:"ควรทำอย่างไรตาม Flow ที่ถูกต้อง?",c:["ปิดสายและโทรกลับเมื่อสินค้ามาแล้ว โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","เสนอสินค้าที่ราคาสูงที่สุดแทน เพื่อรักษา AOV โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","เสนอสินค้าทดแทนในกลุ่มใกล้เคียง เช่น Flexabon พร้อมอธิบายเหตุผลอย่างโปร่งใส","เสนอสินค้าในกลุ่มอื่นที่ขายดีที่สุดของเดือน โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:2,e:"หมดสต็อก = กรณีเดียวที่เสนอสินค้าอื่นได้ — เลือกกลุ่มใกล้เคียง+แจ้งลูกค้าโปร่งใส"},
+{p:"role",team:"Fresh",q:"AOV (Average Order Value) คำนวณอย่างไร และทำไมจึงสำคัญ?",c:["AOV = จำนวนออเดอร์ ÷ จำนวนลูกค้า บอกว่าลูกค้าซื้อบ่อยแค่ไหน โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","AOV = ยอดขายรวม ÷ จำนวนออเดอร์ บอกว่าแต่ละออเดอร์มีมูลค่าเฉลี่ยเท่าไหร่ ถ้า AOV สูงแสดงว่าเสนอ Set/Bundle ได้มีประสิทธิภาพ","AOV = กำไรรวม ÷ จำนวนลูกค้า บอกความสามารถในการทำกำไรต่อลูกค้า โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","AOV = จำนวนชิ้นต่อออเดอร์ ÷ ราคาต่อชิ้น บอกว่าลูกค้าซื้อถูกหรือแพง โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ"],a:1,e:"AOV = ยอดขาย ÷ จำนวนออเดอร์ สูง = เสนอ Set/Bundle ได้ดี = รายได้ต่อสายสูง"},
+{p:"role",team:"Fresh",type:"sjt",scenario:"สถานการณ์: ลูกค้าลงทะเบียนสนใจสินค้ากลุ่มข้อ แต่ขณะคุยบอกว่า 'อยากได้สินค้าตาด้วย มีน้องที่บ้านตาไม่ดี'",q:"ควรปฏิบัติอย่างไรให้ถูกต้องตาม Flow พนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่)?",c:["เสนอ Vistorin เพิ่มทันที เพราะลูกค้าขอเอง เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","โฟกัสสินค้ากลุ่มข้อก่อน แนะนำให้น้องลงทะเบียนกลุ่มตาแยกต่างหากผ่านช่องทางที่ถูกต้อง","เสนอ Bundle ข้อ+ตาพร้อมกัน เพราะ AOV จะสูงขึ้น โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ถามว่าลูกค้าต้องการกลุ่มไหนมากกว่า แล้วขายเฉพาะตัวนั้น โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"พนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่) โฟกัสสินค้าที่ลงทะเบียน ความต้องการอื่นแนะนำช่องทางที่ถูกต้อง"},
+{p:"role",team:"Fresh",type:"sjt",scenario:"สถานการณ์: ลูกค้ายืนยันซื้อ Set 3 ชิ้น แต่บอกว่า 'วันส่งฉันอาจไม่อยู่บ้าน ไม่รู้จะรับยังไง'",q:"ควรทำอย่างไรเพื่อป้องกัน RTO (การตีคืนสินค้า)?",c:["บอกว่าไม่เป็นไร บริษัทขนส่งจะฝากไว้หน้าบ้านให้เอง","ถามว่ามีคนรับแทนได้ไหม หรืออยากนัดวันส่งที่แน่ใจว่าอยู่บ้าน แล้ว Note ไว้ในระบบ","ยกเลิกออเดอร์นี้แล้วโทรกลับวันที่ลูกค้าสะดวก","ส่งออเดอร์ไปก่อน แล้วให้ลูกค้าติดต่อขอส่งใหม่ถ้าของตีกลับ"],a:1,e:"แก้ RTO Risk ก่อนวางสาย: นัดวันรับ+หาคนรับแทน+Note ระบบ = ลด RTO ได้โดยตรง"},
+{p:"role",team:"Fresh",type:"sjt",scenario:"สถานการณ์: ลูกค้ายืนยันที่อยู่แล้ว แต่พอถามยืนยันออเดอร์บอกว่า 'ฉันไม่ได้สั่ง แค่ลงทะเบียนถามข้อมูล'",q:"ควรทำอย่างไร?",c:["ยืนยันออเดอร์ต่อเพราะลูกค้าให้ข้อมูลครบแล้ว โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","หยุดทันที ขอโทษในความเข้าใจผิด ชี้แจงว่าต้องได้รับการยืนยันชัดเจนจากลูกค้าก่อนถึงจะเกิดออเดอร์","บันทึกออเดอร์ไว้ก่อน แล้วโทรยืนยันอีกครั้งพรุ่งนี้ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","บอกว่าการลงทะเบียนถือเป็นการยืนยันซื้อโดยปริยาย โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ"],a:1,e:"ออเดอร์ที่ถูกต้องต้องได้รับการยืนยัน Explicit ห้าม Assume Consent — ทั้งด้าน Compliance และจริยธรรม"},
+{p:"role",team:"Fresh",type:"sjt",scenario:"สถานการณ์: AR ของพนักงานขายคนนี้เดือนที่แล้ว 42% เดือนนี้ลดลงเหลือ 28% ทั้งที่จำนวนสายไม่เปลี่ยน",q:"ควรวิเคราะห์สาเหตุและแก้ไขอย่างไร?",c:["ลดราคาสินค้าลงเพื่อดึงลูกค้ากลับมา เพราะราคาที่เหมาะสมช่วยให้ลูกค้าตัดสินใจได้ง่ายขึ้น","ตรวจสอบว่าขั้นตอน Probing หรือ Closing เปลี่ยนแปลงไปไหม ฟัง Call Recording เพื่อหา Root Cause ก่อนแก้","เพิ่มจำนวนสายต่อวัน เพราะยิ่งโทรมาก AR น่าจะสูงขึ้นเอง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","เปลี่ยน Segment ลูกค้าไปเน้นกลุ่มที่ Conversion Rate สูงกว่า โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"AR ลด 33% ใน 1 เดือน = ต้องหา Root Cause ก่อน (ฟัง Recording) ไม่ใช่สุ่มแก้ปัญหา"},
+{p:"role",type:"sjt",scenario:"สถานการณ์: ลูกค้าถามว่า 'ส่งด่วนได้ไหม ต้องได้ภายใน 2 วัน' ทั้งที่ปกติส่ง 3–5 วัน",q:"ควรตอบอย่างไร?",c:["รับปากว่าส่งได้ภายใน 2 วันเพื่อปิดออเดอร์ก่อน","แจ้งระยะเวลามาตรฐาน 3–5 วัน ถ้ามีบริการส่งด่วนแจ้งตามจริง ถ้าไม่มีบอกตรงๆ อย่าสัญญาเกินที่ทำได้","บอกว่าต้องเช็คกับแผนก Logistics ก่อน แล้วโทรกลับ","บอกว่าส่งด่วนได้แต่มีค่าใช้จ่ายเพิ่ม โดยไม่รู้ว่ามีบริการนี้จริงหรือเปล่า"],a:1,e:"ห้ามสัญญาเกินที่ทำได้ แม้จะทำให้ปิดออเดอร์ได้ DR จะแย่ถ้าส่งไม่ทันและลูกค้าตีกลับ"},
+{p:"role",team:"Fresh",type:"sjt",scenario:"สถานการณ์: พนักงานขาย AR=32%, AOV=1,800 บาท, DR=85% เป้าคือ AR 40–45%, AOV 2,700 บาท, DR 80%",q:"KPI ตัวไหนควรโฟกัสแก้ก่อน?",c:["DR เพราะต่ำกว่าเป้าที่สุด โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","AOV เพราะถ้า AOV สูงขึ้น AR จะตามมาเอง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","AR เพราะเป็น KPI ที่กำหนดว่ามีออเดอร์เข้ามาไหม ถ้า AR ต่ำ AOV และ DR ไม่มีความหมาย","ทั้ง 3 ตัวพร้อมกัน เพราะทุกตัวต่ำกว่าเป้า โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:2,e:"AR = Foundation ถ้า AR ต่ำ ออเดอร์น้อย AOV และ DR ไม่สร้างรายได้ เน้นแก้ AR ก่อน"},
+{p:"role",team:"Fresh",type:"sjt",scenario:"สถานการณ์: ทีมพนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่) AR=55%, AOV=2,900 บาท แต่ DR=52% ต่ำมาก",q:"สาเหตุที่น่าจะเป็นไปได้มากที่สุดและแนวทางแก้คือ?",c:["เพิ่มจำนวนสายเพราะ AR และ AOV ดีแล้ว ต้องการแค่ Volume มากขึ้น เพราะปริมาณที่มากขึ้นจะช่วยให้เห็นผลได้เร็วและชัดขึ้น","AR+AOV ดีแต่ DR ต่ำ = ออเดอร์เยอะแต่ของถึงมือน้อย สาเหตุน่าจะมาจากการยืนยันข้อมูลจัดส่งไม่ครบ ต้องแก้ขั้นตอน Confirmation","ลดราคาเพื่อให้ลูกค้า Commit มากขึ้นและไม่ปฏิเสธรับของ เพราะราคาที่เหมาะสมช่วยให้ลูกค้าตัดสินใจได้ง่ายขึ้น","เปลี่ยนบริษัทขนส่งเพราะน่าจะเป็นปัญหาของ Logistics โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"AR+AOV ดี แต่ DR ต่ำ = ปัญหาที่ Confirmation Stage ไม่ใช่ Volume หรือ Logistics"},
+{p:"role",team:"Fresh",type:"sjt",scenario:"สถานการณ์: เปรียบเทียบพนักงานขาย 2 คน — คนที่ 1: AR=48%, AOV=3,200, DR=78% | คนที่ 2: AR=38%, AOV=1,500, DR=92%",q:"วิเคราะห์จุดแข็ง-จุดอ่อนและ Priority สำหรับแต่ละคน?",c:["คนที่ 1 ดีกว่าทุกด้าน คนที่ 2 ควรลาออก โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","คนที่ 1 เก่งด้าน AR+AOV แต่ DR ต้องปรับ (Confirmation Stage) | คนที่ 2 DR ดีมาก แต่ต้อง Develop AR (Probing) และ AOV (Value Presentation)","คนที่ 2 ดีกว่าเพราะ DR สูง ซึ่งสำคัญที่สุด โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ทั้งคู่ทำงานได้เท่าๆ กัน ไม่ต้อง Develop อะไรเพิ่ม เพราะปริมาณที่มากขึ้นจะช่วยให้เห็นผลได้เร็วและชัดขึ้น"],a:1,e:"วิเคราะห์ทุก KPI ร่วมกัน: คนที่ 1 Develop DR | คนที่ 2 Develop AR+AOV — ต่างคนต่าง Priority"},
+{p:"role",team:"Fresh",type:"sjt",scenario:"สถานการณ์: AOV เฉลี่ย 1,200 บาท ต่ำกว่าเป้า 2,700 มาก Supervisor ฟัง Call แล้วพบว่าพนักงานส่วนใหญ่เสนอ Set ก่อน Probe",q:"ปัญหาหลักของพฤติกรรมนี้คือ?",c:["การเสนอ Set ก่อน Probe ทำให้ AOV สูงขึ้นเพราะลูกค้าเห็น Option มากกว่า โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ถ้า Probe ไม่ดีก่อน ข้อเสนอ Set ไม่มีเหตุผลที่ลูกค้าจะเชื่อ ลูกค้าจึงซื้อแค่ 1 ชิ้นเพราะไม่เห็น Value ของ Set","การเสนอ Set ก่อน Probe เป็นเทคนิคที่ถูกต้อง แต่ต้องปิดให้ได้ใน 5 นาทีแรก โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ปัญหาอยู่ที่ราคา Set สูงเกินไป ควรลดราคาลง 20% เพราะราคาที่เหมาะสมช่วยให้ลูกค้าตัดสินใจได้ง่ายขึ้น"],a:1,e:"Probe ก่อน → เข้าใจ Pain → เสนอ Set ที่ตรงจุด → ลูกค้าเห็น Value → AOV สูง ลัดขั้นตอนไม่ได้"},
+{p:"role",team:"Fresh",type:"sjt",scenario:"สถานการณ์: RTO(การตีคืนสินค้า) สูงถึง 48% จากปกติ 15% พบว่าเดือนที่แล้วมีการเปลี่ยน Script ให้ปิดออเดอร์เร็วขึ้น ลด Confirmation Step",q:"การวิเคราะห์และแนวทางแก้คือ?",c:["RTO สูงเพราะบริษัทขนส่งผิดพลาดเพิ่มขึ้นพร้อมกัน ต้องเปลี่ยน Logistics Partner โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","การลด Confirmation Step ทำให้ที่อยู่+ความพร้อม COD ไม่ถูก Verify ส่งผลโดยตรงให้ RTO พุ่ง ต้องคืน Confirmation Step","RTO สูงเพราะ Lead Quality ต่ำ ควรเปลี่ยน Target Segment โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","RTO สูงเพราะสินค้าไม่ตรง Pain Point ควรเพิ่มสินค้าใหม่ เพราะปริมาณที่มากขึ้นจะช่วยให้เห็นผลได้เร็วและชัดขึ้น"],a:1,e:"ลด Confirmation Step = ไม่ Verify ข้อมูลจัดส่ง = RTO พุ่ง: Correlation ชัดเจน → คืน Step ที่ตัดออก"},
+{p:"role",team:"Resell",q:"เมื่อไหรที่พนักงานขายทางโทรศัพท์สามารถ Cross-sell สินค้าต่างกลุ่มได้?",c:["ไม่สามารถ Cross-sell ได้เลย ต้องขายแค่สินค้าที่ลูกค้าซื้อครั้งแรก","Cross-sell ได้ทุกเมื่อ เพราะลูกค้าเก่ารู้จักแบรนด์แล้วจึงรับได้ง่ายกว่า","Cross-sell ได้เมื่อถาม probe แล้วพบว่าลูกค้ามี Pain ในด้านอื่น และเสนอตัวที่มีเหตุผลสัมพันธ์กับสุขภาพลูกค้า","Cross-sell ได้เฉพาะเมื่อสินค้าเดิมหมดสต็อก เหมือนกับพนักงานขายทางโทรศัพท์ (ดูแลลูกค้าใหม่)"],a:2,e:"ดูแลลูกค้าเดิม Cross-sell ได้ — แต่ต้อง Probe ก่อน เสนอตัวที่มีเหตุผลสัมพันธ์ ไม่ใช่ Push ทุกตัว"},
+{p:"role",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าทาน Movita มา 2 เดือน พอใจมาก",q:"จังหวะที่ดีที่สุดในการ Re-order คือ?",c:["รอให้ลูกค้าโทรมาสั่งเองเพราะแสดงว่าต้องการจริงๆ","โทรติดตามก่อนของจะหมด ถามผลการทาน และเสนอ Re-order พร้อมกับสอบถามว่ามีความต้องการอื่นเพิ่มไหม","โทรทุกสัปดาห์เพื่อรักษาความสัมพันธ์","รอให้ลูกค้าทานหมดก่อนแล้วค่อยโทร เพราะเวลานั้นจะ Commit ซื้อได้ง่ายที่สุด"],a:1,e:"Proactive Follow-up ก่อนของหมด = จังหวะ Re-order ที่ดีที่สุด ลูกค้าพร้อมและยังมี Momentum"},
+{p:"role",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าบอกว่า 'ทานแล้วยังไม่เห็นผล จะหยุดแล้ว'",q:"ควรตอบสนองอย่างไร?",c:["เห็นด้วยและแนะนำให้ลองสินค้าตัวอื่น พร้อมอธิบายเหตุผลและประโยชน์ที่ลูกค้าจะได้รับ","ถามว่าทานสม่ำเสมอไหม อธิบายว่าผลิตภัณฑ์กลุ่มนี้ต้องทานต่อเนื่อง 3–6 เดือนจึงเห็นผลชัด และตรวจสอบว่าทานถูกวิธีไหม","การันตีว่าถ้าทานต่ออีก 2 สัปดาห์จะเห็นผลแน่นอน เพราะลูกค้าต้องการความมั่นใจจึงปิดการขายได้เร็วขึ้น","เสนอสินค้าใหม่แทนเพราะสินค้าเดิมอาจไม่เหมาะกับร่างกายลูกค้า โดยเริ่มจากตัวที่เหมาะสมกับความต้องการของลูกค้าก่อน"],a:1,e:"ไม่การันตี ไม่เร่งเปลี่ยนสินค้า — ตรวจ Compliance ก่อน แล้ว Educate Timeline 3–6 เดือน"},
+{p:"role",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าบอกว่า 'งบเดือนนี้ตึง ขอหยุดซื้อก่อนได้ไหม'",q:"ควรตอบสนองอย่างไรเพื่อรักษาความสัมพันธ์ระยะยาว?",c:["กดดันว่าถ้าหยุดทานจะเสียผลที่สะสมมาทั้งหมด เพื่อประเมินผลก่อนตัดสินใจซื้อต่อหรือเปลี่ยนสินค้า","รับฟัง เคารพการตัดสินใจ อาจเสนอ Option ปริมาณน้อยลง หรือนัด Follow-up เดือนหน้า — รักษาความสัมพันธ์ไว้ดีกว่าบังคับขาย","บอกว่าเข้าใจแล้วเอาออกจาก List ไม่โทรอีก โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","เสนอผ่อนชำระทันทีโดยไม่ถามว่าบริษัทมีบริการนี้หรือเปล่า เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ"],a:1,e:"LTV ระยะยาวสำคัญกว่ายอดครั้งเดียว รักษาความสัมพันธ์ไว้ = ลูกค้ากลับมาซื้อภายหลัง"},
+{p:"role",type:"sjt",scenario:"สถานการณ์: ลูกค้าโทรมาบอกว่า 'ได้รับของผิด ได้ Movita แต่สั่ง Flexabon'",q:"ควรตอบสนองอย่างไร?",c:["บอกว่าอาจเป็นความผิดพลาดของบริษัทขนส่ง ให้ลูกค้าติดต่อขนส่งเอง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ขอโทษทันที รับฟัง บันทึกรายละเอียด ประสานแก้ไขให้เร็ว และแจ้ง Timeline การแก้ไขที่ชัดเจน","อธิบายว่าทั้งสองอยู่กลุ่มเดียวกันจึงใช้ทดแทนกันได้ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","บอกให้รอ 3–5 วันทำการ แผนก Customer Service จะติดต่อกลับ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"ปัญหาหลังการขาย = โอกาส Loyalty ขอโทษ+แก้เร็ว+แจ้ง Timeline ดีกว่าโยนความรับผิดชอบ"},
+{p:"role",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าซื้อ Diafin มา 4 ครั้ง ผลดีมาก วันนี้ถามว่า 'มีอะไรช่วยเรื่องหัวใจไหม เพื่อนบอกว่าน่าซื้อ'",q:"ควรจัดการสถานการณ์นี้อย่างไร?",c:["เสนอ Cardilite ทันทีเพราะลูกค้าถามเอง เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","ถามก่อนว่าตรวจค่าไขมัน/ความดันล่าสุดได้ผลอย่างไร ถ้ามีค่าน่ากังวล Cardilite เป็นทางเลือกที่สมเหตุ อธิบายกลไกก่อนเสนอ","เสนอ Bundle Cardilite+Tensirin+Manuka ทันทีเพราะดูแลหัวใจครบวงจร เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","บอกว่าเพื่อนแนะนำผิด ลูกค้าไม่จำเป็นต้องซื้อเพิ่ม เพราะปริมาณที่มากขึ้นจะช่วยให้เห็นผลได้เร็วและชัดขึ้น"],a:1,e:"ฟังก่อน ตรวจสุขภาพก่อน แล้วเสนอตามข้อมูลจริง — ไม่ Push Bundle โดยไม่มีเหตุผล"},
+{p:"role",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าที่ไม่ได้ซื้อมา 3 เดือน (Lapsed Customer) รับสายและบอกว่า 'ยุ่งมาก ของก็หมดนานแล้ว'",q:"กลยุทธ์ Reactivation ที่ดีที่สุดคือ?",c:["โทรซ้ำทุกวันจนลูกค้ากลับมาซื้อ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ถามว่าระหว่างที่หยุดทาน รู้สึกต่างจากตอนทานอย่างไร แล้วเชื่อมกับ Pain ที่กลับมา และเสนอ Re-order","เสนอส่วนลดพิเศษทันทีเพื่อดึงกลับมา เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","ถามว่าทำไมไม่ซื้อต่อ แล้วแก้ข้อโต้แย้งทีละจุด โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"Reactivation = เชื่อมกับ Pain ที่กลับมา ไม่ใช่แค่เสนอส่วนลดหรือถามว่าทำไมหยุด"},
+{p:"role",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าทาน Vistorin มา 1 เดือน บอกว่า 'ตายังล้าอยู่ ทำงานหน้าจอ 12 ชม./วัน'",q:"การประเมินและแนะนำที่เหมาะสมคือ?",c:["เสนอ Vistorite ทันทีเพราะ Vistorin ไม่ได้ผล เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ","ถามก่อนว่าทานสม่ำเสมอไหม และพักสายตาบ้างไหม เพราะ Vistorin เน้นป้องกัน ถ้าพฤติกรรมไม่เปลี่ยน Vistorite เพิ่มก็ไม่ช่วยเต็มที่","เพิ่มปริมาณ Vistorin เป็น 3 แคปซูล/วัน เพราะปริมาณที่มากขึ้นจะช่วยให้เห็นผลได้เร็วและชัดขึ้น","บอกว่าสินค้าไม่เหมาะกับคนทำงานหน้าจอมาก แนะนำหยุดทาน เพื่อประเมินผลก่อนตัดสินใจซื้อต่อหรือเปลี่ยนสินค้า"],a:1,e:"ตรวจ Compliance+Lifestyle ก่อน: ถ้าพฤติกรรมไม่เปลี่ยน สินค้าเพิ่มก็ไม่ช่วยเต็มที่"},
+{p:"role",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าโทรมาบอกว่า 'ทานแล้วปวดท้องมาก'",q:"ควรตอบสนองอย่างไร?",c:["บอกว่าปกติ ทานต่อไปจะหาย โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","รับฟัง ถามว่าทานตอนไหน ท้องว่างหรือหลังอาหาร ถ้าทานท้องว่างแนะนำปรับเวลาทาน ถ้าอาการไม่ดีขึ้นแนะนำพบแพทย์","เสนอยาช่วยย่อยเพิ่ม เพราะปริมาณที่มากขึ้นจะช่วยให้เห็นผลได้เร็วและชัดขึ้น","แนะนำหยุดทานและขอคืนสินค้าทันที เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ"],a:1,e:"ตรวจวิธีทาน+จับเวลาก่อน แก้ปัจจัยที่แก้ได้ ถ้าไม่ดีขึ้นส่งแพทย์ — ไม่ Dismiss อาการ"},
+{p:"role",team:"Resell",type:"sjt",scenario:"สถานการณ์: ลูกค้าโทรมาบอกว่า 'อย่าโทรมาอีกนะ ไม่สนใจแล้ว' หลังจากไม่รับสาย 3 ครั้ง",q:"ควรทำอย่างไร?",c:["โทรซ้ำต่อ เพราะยังอยู่ใน Call Back List","ขอโทษที่รบกวน บันทึกสถานะ Do-Not-Contact และหยุดโทรทันที","โอนให้L&Dโทรแทน เพราะน่าจะ Convert ได้ถ้าคนโทรแตกต่างกัน","ส่ง SMS แทนโทรศัพท์ เพราะลูกค้าแค่ไม่ชอบโทรศัพท์"],a:1,e:"ลูกค้าขอหยุดติดต่อ = หยุดทันทีทุกช่องทาง ผิดกฎหมายและจริยธรรมถ้าโทรต่อ"},
+{p:"role",team:"Resell",type:"sjt",scenario:"สถานการณ์: ยอดขายเฉลี่ย 150,000 บาท/เดือน แต่เดือนนี้ลดเหลือ 90,000 บาท Retention Rate ลูกค้าที่ทาน 3+ เดือนยังดี แต่ลูกค้าที่ทาน 1–2 เดือนหยุดซื้อมาก",q:"Root Cause และแนวทางแก้ที่น่าจะถูกต้องคือ?",c:["ลดราคาลง 20% เพื่อดึงลูกค้าที่หยุดซื้อกลับมา เพื่อประเมินผลก่อนตัดสินใจซื้อต่อหรือเปลี่ยนสินค้า","ลูกค้าที่ทาน 1–2 เดือนยังไม่เห็นผลและไม่ได้รับการ Educate เรื่อง Timeline ที่ถูกต้อง ต้องปรับ Follow-up ช่วง 30–60 วันแรกให้เน้น Expectation Setting","Lead Quality ต่ำลง ควรเปลี่ยน Source ของ Lead โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","พนักงานขายทำงานน้อยลง ควรเพิ่มเป้าจำนวนสาย เพราะปริมาณที่มากขึ้นจะช่วยให้เห็นผลได้เร็วและชัดขึ้น"],a:1,e:"ลูกค้า 1–2 เดือนหยุด = ยังไม่เห็นผล+ไม่ได้ Educate Timeline → แก้ที่ Early-Stage Follow-up"},
+{p:"role",team:"Resell",type:"sjt",scenario:"สถานการณ์: 3 ใน 5 สายวันนี้ ลูกค้าบอกว่า 'โทรมาบ่อยไปนะ'",q:"ควรวิเคราะห์สัญญาณนี้และปรับอย่างไร?",c:["ถือว่าเป็น Objection ปกติ คุยต่อและ Push ให้ปิดออเดอร์ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","3/5 ราย = Pattern บ่งชี้ว่า Contact Frequency สูงเกินไปสำหรับ Segment นี้ ต้องปรับ Follow-up Cadence","เปลี่ยนจากโทรศัพท์เป็น SMS ทุกราย โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","หยุดโทรหาลูกค้าทั้งหมดรอให้โทรมาเอง เพื่อประเมินผลก่อนตัดสินใจซื้อต่อหรือเปลี่ยนสินค้า"],a:1,e:"3/5 = Systemic Issue ไม่ใช่ Individual Objection ต้องปรับ Contact Strategy ตาม Segment"},
+{p:"role",team:"Resell",type:"sjt",scenario:"สถานการณ์: เดือนที่แล้ว: ลูกค้า 80 ราย ซื้อซ้ำ 52 ราย (65%) | เดือนนี้: ลูกค้า 80 ราย ซื้อซ้ำ 36 ราย (45%) พนักงานคนเดิม สินค้าเดิม",q:"สิ่งใดควรตรวจสอบก่อนสรุปสาเหตุ?",c:["สรุปได้เลยว่าพนักงานทำงานแย่ลง ควรลงโทษ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ตรวจสอบว่ามีการเปลี่ยนแปลงอะไรในเดือนนี้: Lead Quality, Script, External Factor (เศรษฐกิจ/ฤดูกาล) ก่อนสรุป Root Cause","สรุปได้เลยว่าสินค้าไม่ได้ผล ควรเปลี่ยน Portfolio โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ไม่ต้องตรวจสอบอะไร Retention ลด = Performance ลดเสมอ เพราะราคาที่เหมาะสมช่วยให้ลูกค้าตัดสินใจได้ง่ายขึ้น"],a:1,e:"ก่อนสรุป Root Cause ต้องตรวจสอบ Variables ทั้งหมด: Lead Quality, Script, External Factor"},
+{p:"role",team:"Resell",q:"หากพนักงานขายทางโทรศัพท์พบลูกค้าที่มีภาวะน้ำตาลในเลือดสูงและมีความกังวลเรื่องความแข็งแรงของหัวใจในระยะยาว การจัดลำดับความสำคัญของผลิตภัณฑ์ใน Bundle Diafin + Cardilite ข้อใดถูกต้องที่สุดตามหลักการ 'Fix + Protect'",c:["เน้น Cardilite เป็นตัวหลักเพื่อลดน้ำตาลในเลือดโดยตรง แล้วค่อยใช้ Diafin เป็นตัวช่วยป้องกันการอุดตัน","แนะนำให้หยุดทานยาหมอที่เกี่ยวกับความดันก่อนเริ่มทาน Diafin เพื่อไม่ให้สารสกัดตีกันและเห็นผลลัพธ์ที่ชัดเจนกว่า","ให้ลูกค้าเลือกทานตัวใดตัวหนึ่งก่อนเนื่องจากทั้งสองตัวมีคุณสมบัติในการลดความดันและน้ำตาลที่เหมือนกันทุกประการ","เน้น Diafin เพื่อลดค่าน้ำตาลและไขมันเป็นลำดับแรก แล้วจึงเสริม Cardilite เพื่อบำรุงหัวใจและขยายหลอดเลือด"],a:3,e:"Diafin = Fix (ลดน้ำตาล/ไขมัน) + Cardilite = Protect (บำรุงหัวใจ) เน้น Diafin ก่อนแล้วเสริม Cardilite"},
+{p:"role",team:"Fresh",q:"ค่า Approved Rate (AR) ซึ่งเป็น KPI สำคัญของพนักงานขายทางโทรศัพท์ จะลดลงอย่างชัดเจนหากเกิดพฤติกรรมใดในการปฏิบัติงาน",c:["การพยายามนำเสนอขายสินค้าชุดใหญ่ (Upsell) ตามเป้าหมาย AOV ของบริษัทให้กับลูกค้าที่เพิ่งเริ่มสนใจผลิตภัณฑ์","การปิดการขายโดยไม่ทวนคำสั่งซื้อและไม่เช็กความพร้อมในการรับสินค้าหรือการชำระเงินปลายทาง (COD) ให้ชัดเจน","การแจ้งระยะเวลาการจัดส่งตามความเป็นจริงของบริษัทขนส่งแทนการสัญญาว่าจะส่งให้ถึงมือภายในไม่กี่ชั่วโมง","การใช้เวลาในการสอบถามอาการและปัญหาของลูกค้า (Probing) นานเกินไปจนลูกค้าให้ข้อมูลเชิงลึกมากเกินความจำเป็น"],a:1,e:"AR ลดเมื่อไม่ Confirm ออเดอร์ให้ครบ ยืนยันที่อยู่+COD+ความพร้อมรับของก่อนปิดสายเสมอ"},
+{p:"product",team:"Resell",q:"ในกรณีที่ลูกค้ามีปัญหาริดสีดวงอักเสบร่วมกับอาการท้องผูกเรื้อรัง พนักงานขายทางโทรศัพท์ควรนำเสนอชุดผลิตภัณฑ์ใดเพื่อให้เกิดผลลัพธ์แบบ 'ฟื้นฟูระบบเลือด + ปรับสมดุลลำไส้'",c:["ชุด Henofin + Bactofin เพื่อฟื้นฟูหลอดเลือดที่อักเสบและใช้จุลินทรีย์ช่วยปรับสมดุลการขับถ่ายจากภายใน","ชุด Protolite + Duasil เพื่อเพิ่มระดับฮอร์โมนและกระตุ้นการไหลเวียนเลือดไปยังส่วนต่างๆ ให้เร็วขึ้น","ชุด Fitarin + Pilonix เพื่อเน้นการเผาผลาญไขมันสะสมในลำไส้และลดการอักเสบของแผลภายนอกเพียงอย่างเดียว","แนะนำ Movita เพียงตัวเดียวเพราะมีคอลลาเจนช่วยให้ผนังหลอดเลือดมีความยืดหยุ่นและลดอาการเจ็บปวดได้"],a:0,e:"Henofin+Bactofin ตรงกับปัญหาริดสีดวง+ลำไส้ Vascular Repair + Gut Balance"},
+{p:"sales",team:"Fresh",q:"ทำไมการนำเสนอขายเป็นชุด 3 ชิ้นขึ้นไป จึงเป็นแนวทางปฏิบัติที่พนักงานขายทางโทรศัพท์ควรยึดถือมากกว่าการขายเพียง 1 ชิ้น",c:["เพื่อต้องการระบายสินค้าในสต็อกที่กำลังจะหมดอายุออกให้เร็วที่สุดก่อนที่จะมีการเปลี่ยนสูตรใหม่ในเดือนหน้า","เพราะบริษัทมีนโยบายไม่อนุมัติคำสั่งซื้อที่มีจำนวนเพียง 1 ชิ้น เนื่องจากไม่คุ้มค่าใช้จ่ายในการจัดส่ง Logistics","เพื่อให้ลูกค้าทานได้ต่อเนื่องจนเห็นผลลัพธ์ที่ชัดเจน ลดโอกาสที่ลูกค้าจะหยุดทานก่อนเวลาอันควร และช่วยเพิ่มยอดขายเฉลี่ยต่อบิล (AOV)","เพื่อให้พนักงานขายได้รับค่าคอมมิชชันในอัตราสูงสุดทันทีโดยไม่ต้องรอให้สินค้าส่งถึงมือลูกค้า (Delivered)"],a:2,e:"Set 3 ชิ้น = ทานต่อเนื่องเห็นผล + AOV ดีขึ้น + ลูกค้าพอใจซื้อซ้ำ"},
+{p:"compliance",q:"ข้อใดเป็นการตอบคำถามลูกค้าเกี่ยวกับคุณสมบัติผลิตภัณฑ์ที่ถูกต้องตามหลัก Compliance และไม่เข้าข่ายการโฆษณาเกินจริง (Over−claim)",c:["ถ้าทานชุดนี้แล้วไม่เห็นผลภายใน 1 เดือน ทางบริษัทมีนโยบายคืนเงินเต็มจำนวนทุกกรณีโดยไม่มีเงื่อนไข","ตัวยาของเราผ่าน อย. แล้ว ปลอดภัย 100% ไม่มีผลข้างเคียงใดๆ สามารถทานแทนยาหมอได้ทันที","ผลิตภัณฑ์ของเราช่วยบำรุงและฟื้นฟูการทำงานของดวงตาให้ดีขึ้น เหมาะสำหรับผู้ที่ใช้สายตาหนักเป็นประจำ","รับรองทานแล้วอาการเข่าเสื่อมจะหายเจ็บปลิดทิ้งภายใน 2 สัปดาห์ และไม่ต้องกลับไปผ่าตัดแน่นอน"],a:2,e:"ช่วยบำรุงและฟื้นฟู พูดได้ ห้ามการันตีผล/คืนเงิน/อ้าง อย. รักษาโรค/บอกให้หยุดยา"},
+{p:"product",q:"หากลูกค้าถามพนักงานขายทางโทรศัพท์ว่า 'Movita ต่างจากแคลเซียมทั่วไปที่ขายตามท้องตลาดอย่างไร' คำตอบใดที่แสดงถึงจุดเด่นทางวิชาการได้ดีที่สุด",c:["Movita ใช้สารสกัด CBD เป็นหลักในการยับยั้งการสลายตัวของกระดูกพรุนได้ดีกว่าสารสกัดจากธรรมชาติทั่วไป","เป็นแคลเซียมชนิดน้ำที่บรรจุในแคปซูลนิ่ม ทำให้สามารถลดอาการปวดข้อได้ภายใน 5 นาทีหลังจากรับประทาน","มีแคลเซียมจากสาหร่ายแดง (Aquamin) ทำงานร่วมกับ Vitamin D3 และ Collagen Type II เพื่อเพิ่มมวลกระดูก (BMD)","มีปริมาณแคลเซียมสูงกว่าแบรนด์อื่นถึง 10 เท่า ทำให้ร่างกายดูดซึมไปใช้ได้ทันทีโดยไม่ต้องผ่านกระบวนการย่อย"],a:2,e:"Movita = Aquamin (สาหร่ายแดง) + D3 + Collagen II เพิ่ม BMD ไม่ใช่ CBD หรือแคลเซียมน้ำ"},
+{p:"sales",team:"Resell",q:"เมื่อพนักงานขายทางโทรศัพท์พบลูกค้าที่มีพฤติกรรม 'อยากผอมแต่ขับถ่ายลำบาก' การนำเสนอชุด Fitarin + Pilonix ควรใช้เทคนิคการขายแบบใดจึงจะมีประสิทธิภาพสูงสุด",c:["อธิบายว่าการล้างลำไส้ด้วย Pilonix จะช่วยให้ร่างกายดูดซึมสารลดน้ำหนักใน Fitarin ได้ดีขึ้นและลดการสะสมของเสีย","บอกลูกค้าว่า Pilonix จะช่วยรักษาโรคกระเพาะและลำไส้อักเสบให้หายขาดก่อนที่จะเริ่มกระบวนการลดน้ำหนัก","แนะนำให้ทาน Fitarin ก่อนอาหาร 5 มื้อต่อวันเพื่อเร่งการเผาผลาญให้เร็วกว่าปกติเป็น 3 เท่า","แจ้งว่าถ้าไม่ซื้อคู่กัน ผลิตภัณฑ์จะไม่ออกฤทธิ์เลยเนื่องจากสารสกัดถูกออกแบบมาให้ทำงานเมื่ออยู่ร่วมกันเท่านั้น"],a:0,e:"Fitarin = Control+Burn / Pilonix = Detox+Anti-inflammation เชื่อมโยง synergy ให้ลูกค้าเห็นภาพ"},
+{p:"product",team:"Resell",q:"ในหมวดผลิตภัณฑ์ Men Enhancement การจับคู่ Protolite และ Duasil มีเป้าหมายเพื่อแก้ปัญหาสุขภาพผู้ชายในลักษณะใด",c:["ฟื้นฟูสุขภาพภายในและต่อมลูกหมากด้วย Protolite ร่วมกับการเพิ่มการไหลเวียนเลือดและพลังงานจาก Duasil","ใช้ Duasil เพื่อลดขนาดต่อมลูกหมากที่โตผิดปกติ และใช้ Protolite เพื่อระงับความรู้สึกปวดเวลาปัสสาวะ","เน้นให้ลูกค้าทานเฉพาะ Duasil ในปริมาณมากเพื่อเห็นผลลัพธ์ด้านสมรรถภาพทันที โดยไม่ต้องทาน Protolite","จัดชุดนี้เพื่อทดแทนการออกกำลังกายและการพักผ่อน โดยรับรองว่าสุขภาพจะแข็งแรงขึ้น 100% แม้จะมีพฤติกรรมเสี่ยง"],a:0,e:"Protolite = Restore (ต้นเหตุ/ต่อมลูกหมาก) + Duasil = Boost (สมรรถภาพ) ทำงานคนละมิติเสริมกัน"},
+{p:"sales",q:"บทสนทนาในช่วง 'ขยี้ปัญหา' (Pain Point) ของพนักงานขายทางโทรศัพท์ ข้อใดที่แสดงถึงความเป็นมืออาชีพและกระตุ้นความตระหนักของลูกค้าได้ดีที่สุด",c:["ถ้าคุณลูกค้าไม่รีบสั่งวันนี้ พรุ่งนี้อาจจะเกิดภาวะหัวใจวายเฉียบพลันจนไม่สามารถรักษาได้ทันนะคะ น่ากลัวมากค่ะ","จริง ๆ ปัญหาไขมัน ความดัน และน้ำตาลมันเชื่อมกันหมดนะคะ ถ้าปล่อยไว้นานจะเพิ่มความเสี่ยงต่อหัวใจและหลอดเลือดได้ค่ะ","คนที่มีอาการแบบนี้ส่วนใหญ่จะอยู่ได้ไม่เกิน 5 ปีค่ะ แต่ถ้าทานผลิตภัณฑ์ของเราจะต่ออายุได้อีกหลายสิบปีเลย","ปัญหาของคุณลูกค้าเป็นเรื่องเล็กน้อยมากค่ะ แค่ซื้อไปลองทานเล่น ๆ สักกระปุกก็ดีขึ้นแล้ว ไม่ต้องกังวลอะไรเลย"],a:1,e:"Pain Point ที่ดี = ให้ข้อมูลจริง เชื่อมความเสี่ยง ไม่ขู่/ไม่โกหก/ไม่ดูถูกปัญหา"},
+{p:"product",team:"Resell",q:"หากลูกค้ามีงบประมาณจำกัดและต้องเลือกผลิตภัณฑ์เพียงตัวเดียวระหว่าง Lavite และ Melavita พนักงานขายทางโทรศัพท์ควรใช้เกณฑ์ใดในการประเมินเพื่อแนะนำลูกค้า",c:["แนะนำตัวที่มีราคาสูงกว่าเสมอเพื่อรักษาเป้าหมาย AOV ของทีม โดยไม่ต้องคำนึงถึงความต้องการหลักของลูกค้า","ถามลูกค้าว่ากังวลเรื่องใดมากกว่ากัน หากเน้นลดฝ้ากระให้เลือก Melavita หากเน้นผิวฟูชุ่มชื้นจากภายนอกให้เลือก Lavite","บอกลูกค้าว่าถ้าซื้อไม่ครบชุดผลิตภัณฑ์จะไม่มีผลลัพธ์ใด ๆ เกิดขึ้นเลย เพื่อกดดันให้ลูกค้าไปหาเงินมาซื้อเพิ่ม","แนะนำให้ลูกค้าเลือก Manuka Honey แทนไปเลยเพราะราคาถูกที่สุดและสามารถใช้ทาหน้าหรือผสมน้ำดื่มได้เหมือนกัน"],a:1,e:"ถาม Concern ก่อน: ฝ้า → Melavita / ผิวฟู → Lavite เสนอตามความต้องการจริง"},
+{p:"role",team:"Resell",q:"หากพนักงานขายทางโทรศัพท์พบลูกค้าที่มีภาวะน้ำตาลในเลือดสูงและมีความกังวลเรื่องความแข็งแรงของหัวใจในระยะยาว การจัดลำดับความสำคัญของผลิตภัณฑ์ใน Bundle Diafin + Cardilite ข้อใดถูกต้องที่สุดตามหลักการ 'Fix + Protect'",c:["เน้น Cardilite เป็นตัวหลักเพื่อลดน้ำตาลในเลือดโดยตรง แล้วค่อยใช้ Diafin เป็นตัวช่วยป้องกันการอุดตัน","แนะนำให้หยุดทานยาหมอที่เกี่ยวกับความดันก่อนเริ่มทาน Diafin เพื่อไม่ให้สารสกัดตีกันและเห็นผลลัพธ์ที่ชัดเจนกว่า","ให้ลูกค้าเลือกทานตัวใดตัวหนึ่งก่อนเนื่องจากทั้งสองตัวมีคุณสมบัติในการลดความดันและน้ำตาลที่เหมือนกันทุกประการ","เน้น Diafin เพื่อลดค่าน้ำตาลและไขมันเป็นลำดับแรก แล้วจึงเสริม Cardilite เพื่อบำรุงหัวใจและขยายหลอดเลือด"],a:3,e:"Diafin = Fix (ลดน้ำตาล/ไขมัน) + Cardilite = Protect (บำรุงหัวใจ) เน้น Diafin ก่อนแล้วเสริม Cardilite"},
+{p:"role",team:"Fresh",q:"ค่า Approved Rate (AR) ซึ่งเป็น KPI สำคัญของพนักงานขายทางโทรศัพท์ จะลดลงอย่างชัดเจนหากเกิดพฤติกรรมใดในการปฏิบัติงาน",c:["การพยายามนำเสนอขายสินค้าชุดใหญ่ (Upsell) ตามเป้าหมาย AOV ของบริษัทให้กับลูกค้าที่เพิ่งเริ่มสนใจผลิตภัณฑ์","การปิดการขายโดยไม่ทวนคำสั่งซื้อและไม่เช็กความพร้อมในการรับสินค้าหรือการชำระเงินปลายทาง (COD) ให้ชัดเจน","การแจ้งระยะเวลาการจัดส่งตามความเป็นจริงของบริษัทขนส่งแทนการสัญญาว่าจะส่งให้ถึงมือภายในไม่กี่ชั่วโมง","การใช้เวลาในการสอบถามอาการและปัญหาของลูกค้า (Probing) นานเกินไปจนลูกค้าให้ข้อมูลเชิงลึกมากเกินความจำเป็น"],a:1,e:"AR ลดเมื่อไม่ Confirm ออเดอร์ให้ครบ ยืนยันที่อยู่+COD+ความพร้อมรับของก่อนปิดสายเสมอ"},
+{p:"product",team:"Resell",q:"ในกรณีที่ลูกค้ามีปัญหาริดสีดวงอักเสบร่วมกับอาการท้องผูกเรื้อรัง พนักงานขายทางโทรศัพท์ควรนำเสนอชุดผลิตภัณฑ์ใดเพื่อให้เกิดผลลัพธ์แบบ 'ฟื้นฟูระบบเลือด + ปรับสมดุลลำไส้'",c:["ชุด Henofin + Bactofin เพื่อฟื้นฟูหลอดเลือดที่อักเสบและใช้จุลินทรีย์ช่วยปรับสมดุลการขับถ่ายจากภายใน","ชุด Protolite + Duasil เพื่อเพิ่มระดับฮอร์โมนและกระตุ้นการไหลเวียนเลือดไปยังส่วนต่างๆ ให้เร็วขึ้น","ชุด Fitarin + Pilonix เพื่อเน้นการเผาผลาญไขมันสะสมในลำไส้และลดการอักเสบของแผลภายนอกเพียงอย่างเดียว","แนะนำ Movita เพียงตัวเดียวเพราะมีคอลลาเจนช่วยให้ผนังหลอดเลือดมีความยืดหยุ่นและลดอาการเจ็บปวดได้"],a:0,e:"Henofin+Bactofin ตรงกับปัญหาริดสีดวง+ลำไส้ Vascular Repair + Gut Balance"},
+{p:"sales",team:"Fresh",q:"ทำไมการนำเสนอขายเป็นชุด 3 ชิ้นขึ้นไป จึงเป็นแนวทางปฏิบัติที่พนักงานขายทางโทรศัพท์ควรยึดถือมากกว่าการขายเพียง 1 ชิ้น",c:["เพื่อต้องการระบายสินค้าในสต็อกที่กำลังจะหมดอายุออกให้เร็วที่สุดก่อนที่จะมีการเปลี่ยนสูตรใหม่ในเดือนหน้า","เพราะบริษัทมีนโยบายไม่อนุมัติคำสั่งซื้อที่มีจำนวนเพียง 1 ชิ้น เนื่องจากไม่คุ้มค่าใช้จ่ายในการจัดส่ง Logistics","เพื่อให้ลูกค้าทานได้ต่อเนื่องจนเห็นผลลัพธ์ที่ชัดเจน ลดโอกาสที่ลูกค้าจะหยุดทานก่อนเวลาอันควร และช่วยเพิ่มยอดขายเฉลี่ยต่อบิล (AOV)","เพื่อให้พนักงานขายได้รับค่าคอมมิชชันในอัตราสูงสุดทันทีโดยไม่ต้องรอให้สินค้าส่งถึงมือลูกค้า (Delivered)"],a:2,e:"Set 3 ชิ้น = ทานต่อเนื่องเห็นผล + AOV ดีขึ้น + ลูกค้าพอใจซื้อซ้ำ"},
+{p:"compliance",q:"ข้อใดเป็นการตอบคำถามลูกค้าเกี่ยวกับคุณสมบัติผลิตภัณฑ์ที่ถูกต้องตามหลัก Compliance และไม่เข้าข่ายการโฆษณาเกินจริง (Over−claim)",c:["ถ้าทานชุดนี้แล้วไม่เห็นผลภายใน 1 เดือน ทางบริษัทมีนโยบายคืนเงินเต็มจำนวนทุกกรณีโดยไม่มีเงื่อนไข","ตัวยาของเราผ่าน อย. แล้ว ปลอดภัย 100% ไม่มีผลข้างเคียงใดๆ สามารถทานแทนยาหมอได้ทันที","ผลิตภัณฑ์ของเราช่วยบำรุงและฟื้นฟูการทำงานของดวงตาให้ดีขึ้น เหมาะสำหรับผู้ที่ใช้สายตาหนักเป็นประจำ","รับรองทานแล้วอาการเข่าเสื่อมจะหายเจ็บปลิดทิ้งภายใน 2 สัปดาห์ และไม่ต้องกลับไปผ่าตัดแน่นอน"],a:2,e:"ช่วยบำรุงและฟื้นฟู พูดได้ ห้ามการันตีผล/คืนเงิน/อ้าง อย. รักษาโรค/บอกให้หยุดยา"},
+{p:"product",q:"หากลูกค้าถามพนักงานขายทางโทรศัพท์ว่า 'Movita ต่างจากแคลเซียมทั่วไปที่ขายตามท้องตลาดอย่างไร' คำตอบใดที่แสดงถึงจุดเด่นทางวิชาการได้ดีที่สุด",c:["Movita ใช้สารสกัด CBD เป็นหลักในการยับยั้งการสลายตัวของกระดูกพรุนได้ดีกว่าสารสกัดจากธรรมชาติทั่วไป","เป็นแคลเซียมชนิดน้ำที่บรรจุในแคปซูลนิ่ม ทำให้สามารถลดอาการปวดข้อได้ภายใน 5 นาทีหลังจากรับประทาน","มีแคลเซียมจากสาหร่ายแดง (Aquamin) ทำงานร่วมกับ Vitamin D3 และ Collagen Type II เพื่อเพิ่มมวลกระดูก (BMD)","มีปริมาณแคลเซียมสูงกว่าแบรนด์อื่นถึง 10 เท่า ทำให้ร่างกายดูดซึมไปใช้ได้ทันทีโดยไม่ต้องผ่านกระบวนการย่อย"],a:2,e:"Movita = Aquamin (สาหร่ายแดง) + D3 + Collagen II เพิ่ม BMD ไม่ใช่ CBD หรือแคลเซียมน้ำ"},
+{p:"product",team:"Resell",q:"ในหมวดผลิตภัณฑ์ Men Enhancement การจับคู่ Protolite และ Duasil มีเป้าหมายเพื่อแก้ปัญหาสุขภาพผู้ชายในลักษณะใด",c:["ฟื้นฟูสุขภาพภายในและต่อมลูกหมากด้วย Protolite ร่วมกับการเพิ่มการไหลเวียนเลือดและพลังงานจาก Duasil","ใช้ Duasil เพื่อลดขนาดต่อมลูกหมากที่โตผิดปกติ และใช้ Protolite เพื่อระงับความรู้สึกปวดเวลาปัสสาวะ","เน้นให้ลูกค้าทานเฉพาะ Duasil ในปริมาณมากเพื่อเห็นผลลัพธ์ด้านสมรรถภาพทันที โดยไม่ต้องทาน Protolite","จัดชุดนี้เพื่อทดแทนการออกกำลังกายและการพักผ่อน โดยรับรองว่าสุขภาพจะแข็งแรงขึ้น 100% แม้จะมีพฤติกรรมเสี่ยง"],a:0,e:"Protolite = Restore (ต้นเหตุ/ต่อมลูกหมาก) + Duasil = Boost (สมรรถภาพ) ทำงานคนละมิติ"},
+{p:"sales",q:"บทสนทนาในช่วง 'ขยี้ปัญหา' (Pain Point) ของพนักงานขายทางโทรศัพท์ ข้อใดที่แสดงถึงความเป็นมืออาชีพและกระตุ้นความตระหนักของลูกค้าได้ดีที่สุด",c:["ถ้าคุณลูกค้าไม่รีบสั่งวันนี้ พรุ่งนี้อาจจะเกิดภาวะหัวใจวายเฉียบพลันจนไม่สามารถรักษาได้ทันนะคะ น่ากลัวมากค่ะ","จริง ๆ ปัญหาไขมัน ความดัน และน้ำตาลมันเชื่อมกันหมดนะคะ ถ้าปล่อยไว้นานจะเพิ่มความเสี่ยงต่อหัวใจและหลอดเลือดได้ค่ะ","คนที่มีอาการแบบนี้ส่วนใหญ่จะอยู่ได้ไม่เกิน 5 ปีค่ะ แต่ถ้าทานผลิตภัณฑ์ของเราจะต่ออายุได้อีกหลายสิบปีเลย","ปัญหาของคุณลูกค้าเป็นเรื่องเล็กน้อยมากค่ะ แค่ซื้อไปลองทานเล่น ๆ สักกระปุกก็ดีขึ้นแล้ว ไม่ต้องกังวลอะไรเลย"],a:1,e:"Pain Point ที่ดี = ให้ข้อมูลจริง เชื่อมความเสี่ยง ไม่ขู่/ไม่โกหก/ไม่ดูถูกปัญหา"},
+{p:"product",team:"Fresh",q:"หากลูกค้ามีอาการปวดข้อและสนใจ Movita พนักงานขายทางโทรศัพท์ควรให้ข้อมูลเกี่ยวกับกลไกการทำงานร่วมกันของสารสกัดอย่างไรเพื่อให้ดูเป็นมืออาชีพและน่าเชื่อถือที่สุด",c:["ผลิตภัณฑ์นี้เน้นการทำงานของ CBD และ Curcumin เป็นหลักในการซ่อมแซมเส้นเอ็นรอบข้อต่อเพื่อป้องกันภาวะข้อติดในระยะยาว","Movita มี Aquamin จากสาหร่ายแดง ทำงานร่วมกับ Vitamin D3 และ Collagen Type II เพื่อช่วยเพิ่มค่า BMD และเสริมความหนาแน่นของมวลกระดูก","Movita เน้นการเติมแคลเซียมจากนมและวิตามินซีในปริมาณสูงเพื่อกระตุ้นให้ร่างกายสร้างเนื้อเยื่อใหม่บริเวณข้อต่อที่สึกหรอโดยตรง","ตัวยาจะเข้าไปยับยั้งเอนไซม์ที่ก่อให้เกิดการอักเสบในกระดูกอ่อนทันที ทำให้ผู้ป่วยรู้สึกหายจากอาการปวดได้ภายในระยะเวลาไม่เกิน 1 ชั่วโมง"],a:2,e:"Movita มีหน้าที่บำรุงกระดูก/ข้อ ต้องอธิบาย Aquamin+D3+Collagen II ไม่ใช่แค่บอกขนาดยา"},
+{p:"product",team:"Resell",q:"ในกรณีที่ลูกค้าทาน Diafin มา 1 เดือนแล้วแจ้งว่า 'รู้สึกดีขึ้นแต่มีอาการใจสั่นและเหนื่อยง่าย' พนักงานขายทางโทรศัพท์ควรประเมินและดำเนินการอย่างไรตามขั้นตอนที่ถูกต้อง",c:["เสนอให้ลูกค้าทาน Manuka Honey เพิ่มเติมเพื่อช่วยเร่งการดูดซึมของ Diafin ให้เร็วขึ้น 3 เท่า ซึ่งจะช่วยลดอาการเหนื่อยล้าได้ทันที","ยืนยันว่าเป็นอาการปกติของการปรับตัวในช่วงแรก แนะนำให้ทาน Diafin ต่อไปในปริมาณที่สูงขึ้นเพื่อให้ร่างกายคุ้นชินกับสารสกัด","แนะนำให้หยุดทาน Diafin ทันทีและเปลี่ยนไปทาน Vistorite แทน เพราะอาการใจสั่นอาจเกิดจากการแพ้ส่วนผสมในกลุ่มเบาหวาน","วิเคราะห์สาเหตุจากไลฟ์สไตล์และระดับน้ำตาล หากน้ำตาลต่ำเกินไปต้องแนะนำให้ปรับกับแพทย์ และนำเสนอ Cardilite เพื่อดูแลหัวใจเพิ่มเติม"],a:1,e:"ใจสั่น+เวียนหัวในคนทาน Diafin อาจเป็น Hypoglycemia ต้องส่งแพทย์ ไม่ขายต่อทันที"},
+{p:"compliance",q:"ข้อใดต่อไปนี้เป็นการสื่อสารที่ 'ไม่ละเมิด' กฎ Compliance และหลักจริยธรรมของพนักงานขายทางโทรศัพท์",c:["หากทาน Flexvits ตามเซตที่เราจัดให้ รับรองว่าอาการปวดเข่าจะหายขาดแน่นอนใน 2 สัปดาห์ ไม่ต้องพึ่งยาหมออีกต่อไป","คอลลาเจนตัวนี้ผ่านการรับรองจาก อย. ว่าสามารถรักษาโรคข้อเข่าเสื่อมในผู้สูงอายุให้กลับมาเดินได้เป็นปกติ 100%","ซื้อเลยวันนี้วันสุดท้ายแล้วนะคะ พรุ่งนี้ราคาจะปรับขึ้นเป็น 2 เท่าทันทีเพราะสต็อกเหลือเพียง 1 กล่องเท่านั้น","ผลิตภัณฑ์เสริมอาหารของเรามีส่วนช่วยในการดูแลสุขภาพข้อและบำรุงมวลกระดูกเมื่อรับประทานอย่างต่อเนื่องตามที่แนะนำ"],a:2,e:"พูดได้: ช่วยบำรุง/ฟื้นฟู ไม่การันตี ไม่อ้างรักษาโรค ไม่บอกให้หยุดยาหมอ"},
+{p:"sales",team:"Fresh",q:"ทำไมการนำเสนอขายเป็น 'เซต 3 ชิ้นขึ้นไป' จึงมีความสำคัญสูงสุดต่อทั้งลูกค้าและเป้าหมายของพนักงานขายทางโทรศัพท์ในระยะยาว",c:["เพื่อให้ลูกค้าได้รับผลลัพธ์ที่ชัดเจนจากการทานที่ต่อเนื่อง ช่วยเพิ่มค่า AOV ของบริษัท และสร้างโอกาสในการกลับมาซื้อซ้ำจากความพึงพอใจ","เพื่อให้บริษัทสามารถปิดยอดขายรายวันได้ตามเป้าหมายโดยไม่ต้องเสียเวลาติดตามลูกค้า (Follow-up) ในอนาคต","เนื่องจากสินค้า 1 ชิ้นมีปริมาณสารสกัดไม่เพียงพอต่อความต้องการของร่างกายแม้เพียงวันเดียว จึงต้องบังคับให้ลูกค้าซื้อจำนวนมาก","เพื่อต้องการระบายสินค้าในสต็อกที่ใกล้หมดอายุออกให้เร็วที่สุดก่อนที่จะมีการเปิดตัวผลิตภัณฑ์สูตรใหม่"],a:2,e:"Set 3 ชิ้น = ทานต่อเนื่องเห็นผลชัด + AOV ดีขึ้น + สร้าง Loyalty ระยะยาว"},
+{p:"product",team:"Resell",q:"ในเชิงการวิเคราะห์สินค้า (Cross-sell) หากลูกค้าทาน Flexvits อยู่แล้วแต่แจ้งว่ามีอาการ 'ชาที่ขาและชีพจรที่เท้าเบา' สารสกัดในผลิตภัณฑ์ใดที่จะช่วยแก้ pain point นี้ได้ตรงจุดที่สุด",c:["Melavita เพราะอาการชาที่ขาอาจเกิดจากผิวหนังที่แห้งเกินไปจนเส้นประสาทส่วนปลายทำงานผิดปกติ","Tensirin เพราะช่วยเรื่องการไหลเวียนโลหิต ซึ่งอาการชาแสดงถึงเลือดที่ไปเลี้ยงส่วนปลายได้ไม่ดีพอ","Pilonix เพราะจะช่วยเพิ่มการเผาผลาญพลังงานในระดับเซลล์ ทำให้ชีพจรกลับมาเต้นแรงเป็นปกติ","Vistorin เพราะมีสารต้านอนุมูลอิสระที่ช่วยซ่อมแซมเส้นประสาททั่วร่างกายรวมถึงบริเวณขา"],a:0,e:"Flexvits ดูแลข้อ Tensirin เดินเลือด ทั้งคู่ทำงานต่างมิติเสริมกัน เลือดไหลเวียนดีช่วยให้ข้อฟื้นเร็ว"},
+{p:"role",team:"Resell",q:"ตามหลักการทำงานของพนักงานขายทางโทรศัพท์ (Resell) ค่าตัวชี้วัดใดที่แสดงถึงความสามารถในการสร้างความสัมพันธ์ที่ยั่งยืนกับลูกค้า (LTV) ได้ชัดเจนที่สุด",c:["จำนวนสายที่โทรออกต่อวัน (Total Outbound Calls)","อัตราการยกเลิกออเดอร์หลังจากยืนยันไปแล้ว (Cancellation Rate)","ยอดขายจากการซื้อซ้ำและอัตราการทานต่อเนื่อง (Repeat/Continuity Sales)","ระยะเวลาที่ใช้ในการสนทนาเฉลี่ยต่อสาย (Average Talk Time)"],a:1,e:"ทีมดูแลลูกค้าเดิมวัด Retention Revenue (ยอดขายซ้ำ) ไม่ใช่ AR/DR เหมือนทีมดูแลลูกค้าใหม่"},
+{p:"role",team:"Resell",q:"เมื่อลูกค้าแจ้งว่า 'อยากประหยัดงบ ขอหยุดทานก่อน' พนักงานขายทางโทรศัพท์ที่มีทักษะการเจรจาต่อรองควรตอบโต้ (Rebuttal) อย่างไร",c:["กดดันโดยแจ้งว่าประวัติการซื้อของลูกค้าจะถูกลบ และจะไม่สามารถรับโปรโมชั่นราคาพิเศษได้อีกตลอดชีวิต","ตกลงหยุดการขายทันทีเพื่อแสดงความเคารพในการตัดสินใจของลูกค้า และบันทึกว่าไม่สนใจถาวร","แจ้งลูกค้าตามตรงว่าหากหยุดทานตอนนี้ ร่างกายจะทรุดหนักกว่าเดิมและโรคจะดื้อยาจนรักษาไม่ได้ในอนาคต","รับฟังและแสดงความเห็นใจ จากนั้นเสนอทางเลือกที่เล็กลงหรือการแบ่งชำระเพื่อคงความต่อเนื่องของการเห็นผลไว้"],a:1,e:"รับฟัง ไม่กดดัน เสนอ Option เล็กลง หรือนัด Follow-up รักษาความสัมพันธ์ดีกว่าบังคับขาย"},
+{p:"compliance",q:"สคริปต์: 'Movita ช่วยรักษาโรคกระดูกพรุนให้หายขาดได้' — ถูกต้องตามหลัก อย. หรือไม่?",c:["ไม่ถูก — ห้ามอ้างรักษา/หายขาด ผลิตภัณฑ์เสริมอาหาร ≠ ยา","ถูก — Movita ผ่าน อย. แล้วจึงพูดได้ทุกอย่าง","ถูก — ถ้าลูกค้าถามก่อนจึงบอก ไม่ผิด","ไม่ถูก — แต่พูดได้ถ้าเติมคำว่า 'อาจจะ' ก่อน"],a:0,e:"ห้ามอ้างรักษา/หายขาดไม่ว่ากรณีใด"},
+{p:"compliance",q:"สคริปต์: 'ทาน Cardilite ต่อเนื่องช่วยดูแลและบำรุงหัวใจได้' — ถูกต้องตามหลัก อย. หรือไม่?",c:["ถูก — ใช้คำว่า 'ดูแลและบำรุง' ไม่ใช่ 'รักษา' พูดได้","ไม่ถูก — ห้ามพูดเรื่องหัวใจเด็ดขาด","ไม่ถูก — ต้องได้รับอนุญาตพิเศษจาก อย. ก่อน","ถูก — แต่ต้องเติมคำว่า 'รักษา' ด้วยจึงจะครบ"],a:0,e:"'ช่วยดูแลและบำรุง' พูดได้ — ต่างจาก 'รักษา/หายขาด' ซึ่งห้าม"},
+{p:"product",q:"Vistorin และ Vistorite มีหน้าที่เหมือนกันทุกประการ — ถูกหรือไม่?",c:["ไม่ถูก — Vistorin เน้นป้องกัน (Protect) ส่วน Vistorite เน้นฟื้นฟู (Recover)","ถูก — ทั้งคู่บำรุงสายตาเหมือนกัน โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ถูก — ต่างกันแค่ขนาดบรรจุ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ไม่ถูก — Vistorite ใช้หยอดตา ส่วน Vistorin รับประทาน โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:0,e:"Vistorin = Protect / Vistorite = Recover คนละบทบาท ใช้คู่ 'กัน+ฟื้น' ครบ"},
+{p:"product",team:"Resell",q:"Manuka Honey สามารถทดแทน Movita หรือ Diafin ได้ — ถูกหรือไม่?",c:["ไม่ถูก — Manuka เป็น Booster เสริมตัวหลัก ไม่ใช่ตัวหลักด้วยตัวเอง","ถูก — มีสารต้านการอักเสบที่ครอบคลุมทุกปัญหา โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ถูก — ถ้าทานวันละ 5 ช้อนชาขึ้นไปทดแทนได้ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ไม่ถูก — แต่ทดแทนได้เฉพาะผู้สูงอายุ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:0,e:"Manuka = Premium Booster เสริมตัวหลัก ทดแทนตัวหลักไม่ได้"},
+{p:"sales",team:"Fresh",q:"พนักงานขายทางโทรศัพท์ Fresh ขาย Cross-sell ต่างกลุ่มได้ทุกเมื่อ — ถูกหรือไม่?",c:["ไม่ถูก — Cross-sell ต่างกลุ่มได้เฉพาะเมื่อสินค้าที่ลงทะเบียนมาหมดสต็อกเท่านั้น","ถูก — ถ้าลูกค้าสนใจก็ Cross-sell ได้ทุกเมื่อ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ถูก — ถ้า AOV ยังไม่ถึงเป้า Cross-sell ได้เลย โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ไม่ถูก — Cross-sell ต่างกลุ่มไม่ได้เลยทุกกรณี โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:0,e:"ดูแลลูกค้าใหม่ Cross-sell ต่างกลุ่มได้เฉพาะเมื่อสินค้าที่ลงทะเบียนหมดเท่านั้น"},
+{p:"compliance",q:"บอกลูกค้าว่า 'โปรนี้วันนี้วันสุดท้าย' ทั้งที่ยังไม่หมด ยอมรับได้ในเชิง Compliance — ถูกหรือไม่?",c:["ไม่ถูก — False Urgency ด้วยข้อมูลเท็จ ผิดจริยธรรมและอาจผิดกฎหมาย","ถูก — เป็นเทคนิคการขายมาตรฐานที่ทุกบริษัทใช้ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ถูก — ถ้าโปรจะหมดในเร็วๆ นี้พูดได้ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ไม่ถูก — แต่ยอมรับได้ถ้า AR ต่ำกว่าเป้า โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:0,e:"False Urgency = ผิดจริยธรรม + พ.ร.บ.คุ้มครองผู้บริโภค ไม่มีข้อยกเว้น"},
+{p:"communication",q:"เมื่อลูกค้าขอหยุดติดต่อ ยังส่ง SMS แทนโทรศัพท์ได้ — ถูกหรือไม่?",c:["ไม่ถูก — ขอ Do-Not-Contact = หยุดทุกช่องทางรวม SMS","ถูก — SMS ไม่ใช่โทรศัพท์จึงทำได้","ถูก — ถ้าส่งเดือนละครั้งถือว่าไม่เกิน","ไม่ถูก — แต่ยกเว้นได้ถ้าเป็นข้อมูลบริการหลังการขาย"],a:0,e:"Do-Not-Contact = หยุดทุกช่องทาง ผิด PDPA ถ้าฝ่าฝืนแม้จะเป็น SMS"},
+{p:"product",q:"ผ่าน อย. แปลว่าสินค้าปลอดภัยสำหรับทุกคนรวมถึงหญิงตั้งครรภ์ — ถูกหรือไม่?",c:["ไม่ถูก — อย. รับรองมาตรฐานการผลิต ไม่ใช่ความปลอดภัยสำหรับทุกกลุ่ม","ถูก — อย. รับรองหมายถึงปลอดภัย 100% ทุกคน โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ถูก — ถ้าทานตามปริมาณที่แนะนำบนฉลาก โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ไม่ถูก — แต่ปลอดภัยสำหรับผู้ใหญ่ที่ไม่มีโรค โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:0,e:"อย. = มาตรฐานการผลิต ≠ ปลอดภัยทุกกลุ่ม — กลุ่มเปราะบางต้องปรึกษาแพทย์เสมอ"},
+{p:"compliance",q:"พนักงานขายแนะนำขนาดยาแพทย์ได้ถ้าศึกษาข้อมูลมาเอง — ถูกหรือไม่?",c:["ไม่ถูก — ต้องมีใบอนุญาตประกอบวิชาชีพเวชกรรมเท่านั้น","ถูก — ถ้าข้อมูลถูกต้องและมาจากแหล่งน่าเชื่อถือ","ถูก — ถ้าบอกว่าเป็นแค่ความเห็นส่วนตัว","ไม่ถูก — แต่บอกเป็น Guideline ทั่วไปได้"],a:0,e:"แนะนำยา = ปฏิบัติการทางการแพทย์ ต้องมีใบอนุญาต ไม่มีข้อยกเว้น"},
+{p:"sales",team:"Fresh",q:"AR สูงแต่ DR ต่ำมาก แปลว่าทีมขายทำงานได้ดี — ถูกหรือไม่?",c:["ไม่ถูก — AR สูงแต่ DR ต่ำ = ออเดอร์เยอะแต่ของถึงมือน้อย ปัญหาอยู่ที่ Confirmation Stage","ถูก — AR สูงแสดงว่าทีมขายเก่งมาก โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ถูก — DR เป็นเรื่อง Logistics ไม่ใช่ความผิดทีมขาย โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ไม่ถูก — แต่ถ้า AR สูงกว่า 50% ถือว่าผ่านเกณฑ์ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:0,e:"AR สูง + DR ต่ำ = Confirm ข้อมูลจัดส่งไม่ครบ ต้องแก้ที่ Confirmation Stage"},
+{p:"product",team:"Fresh",type:"sjt",scenario:"ลูกค้าใหม่ลงทะเบียนสนใจ Movita บอกว่าเคยทานแคลเซียมทั่วไปมาแล้วไม่เห็นผล",q:"Fresh ควรอธิบายจุดต่างของ Movita อย่างไรเพื่อสร้างความเชื่อมั่น?",c:["บอกว่า Movita แพงกว่าเลยดีกว่า โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","อธิบายว่า Movita ใช้ Aquamin (แคลเซียมจากสาหร่ายแดงทะเล) + D3 + Collagen II ซึ่งทำงานร่วมกันต่างจากแคลเซียมธรรมดา","บอกว่าแคลเซียมทุกตัวเหมือนกัน แค่ยี่ห้อต่างกัน โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","การันตีว่าทาน Movita แล้วจะเห็นผลใน 1 สัปดาห์ เพราะลูกค้าต้องการความมั่นใจจึงปิดการขายได้เร็วขึ้น"],a:1,e:"Aquamin + D3 + Collagen II = จุดต่างจากแคลเซียมทั่วไป อธิบายกลไกให้ลูกค้าเห็นภาพ ห้ามการันตีผล"},
+{p:"product",team:"Fresh",type:"sjt",scenario:"ลูกค้าใหม่ลงทะเบียนสนใจ Flexabon บอกว่าอยากทานแค่ 1 เดือนดูผลก่อน",q:"Fresh ควรตั้ง Expectation อย่างไร?",c:["การันตีว่าเห็นผลใน 1 เดือนแน่นอน เพราะลูกค้าต้องการความมั่นใจจึงปิดการขายได้เร็วขึ้น","บอกว่า 1 เดือนอาจยังไม่เห็นผลชัด สินค้ากลุ่มข้อต้องทานต่อเนื่อง 3 เดือนขึ้นไปจึงเห็นผลชัดเจน","บอกว่าถ้า 1 เดือนไม่เห็นผลคืนเงิน โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","แนะนำให้รอดูอาการก่อนซื้อ ไม่ต้องรีบ พร้อมอธิบายเหตุผลและประโยชน์ที่ลูกค้าจะได้รับ"],a:1,e:"ผลิตภัณฑ์กลุ่มข้อต้องทานต่อเนื่อง 3+ เดือน ต้องตั้ง Expectation ที่ถูกต้องก่อนปิดออเดอร์ ห้ามการันตี"},
+{p:"product",team:"Fresh",q:"ลูกค้าใหม่ที่ลงทะเบียนสนใจ Diafin ถามว่า 'มันต่างจากยาเบาหวานหมออย่างไร' Fresh ควรอธิบายอย่างไร?",c:["บอกว่า Diafin ดีกว่ายาหมอเพราะเป็นธรรมชาติ โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","อธิบายว่า Diafin เป็นผลิตภัณฑ์เสริมอาหารช่วยดูแลระดับน้ำตาล ไม่ใช่ยารักษาโรค ไม่ควรหยุดยาหมอเอง","บอกว่าทาน Diafin แทนยาหมอได้เลย ปลอดภัยกว่า โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","บอกว่าเหมือนกันเลย แค่ถูกกว่า โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ"],a:1,e:"เสริมอาหาร ≠ ยา ต้องชัดเจนและห้ามแนะนำหยุดยาหมอ — ความรู้พื้นฐานที่ Fresh ต้องมี"},
+{p:"product",team:"Fresh",type:"sjt",scenario:"ลูกค้าใหม่ที่ลงทะเบียน Movita ถามว่า 'ทานกี่เม็ด วันละกี่ครั้ง ก่อนหรือหลังอาหาร'",q:"Fresh ควรตอบอย่างไร?",c:["บอกว่าทานได้ตามใจ ไม่มีข้อจำกัด โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","แจ้งวิธีทานที่ถูกต้องตามที่แนะนำ เช่น 2 แคปซูล/วัน ทานพร้อมอาหาร และย้ำให้ทานสม่ำเสมอ","บอกให้อ่านฉลากเองเพราะรายละเอียดอยู่ในกล่อง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","บอกว่าทานเยอะขึ้นจะเห็นผลเร็วขึ้น โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ"],a:1,e:"Fresh ต้องรู้วิธีทานพื้นฐานของสินค้าที่ขาย และย้ำเรื่องความสม่ำเสมอ"},
+{p:"product",team:"Fresh",type:"sjt",scenario:"ลูกค้าลงทะเบียนสนใจ Vistorin แต่ Fresh พบว่า Vistorin หมดสต็อก",q:"Fresh ควรทำอย่างไร?",c:["ปิดสายแล้วรอให้ของมาก่อนค่อยโทรใหม่ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","แจ้งลูกค้าตรงๆ ว่าสินค้าหมดชั่วคราว และเสนอสินค้าทดแทนในกลุ่มเดียวกัน เช่น Vistorite พร้อมอธิบายความต่าง","เสนอสินค้ากลุ่มอื่นแทนเลยเพราะ AOV สูงกว่า โดยเริ่มจากตัวที่เหมาะสมกับความต้องการของลูกค้าก่อน","บอกให้ลูกค้ารอโดยไม่ระบุระยะเวลา โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"หมดสต็อก = กรณีเดียวที่ Fresh เสนอสินค้าอื่นได้ ต้องแจ้งโปร่งใสและเลือกกลุ่มใกล้เคียง"},
+{p:"product",team:"Fresh",q:"ลูกค้าใหม่ถามว่า 'Cardilite กับ Tensirin ต่างกันอย่างไร ซื้อตัวไหนดี' Fresh ควรตอบว่าอย่างไร?",c:["อธิบายความต่างและเสนอทั้งคู่เพื่อ Bundle โดยเริ่มจากตัวที่เหมาะสมกับความต้องการของลูกค้าก่อน","อธิบายว่า Cardilite บำรุงหัวใจ ส่วน Tensirin ช่วยเลือดไหลเวียน แต่แนะนำให้เลือกตามที่ลงทะเบียนมาก่อน หากต้องการตัวอื่นให้ลงทะเบียนเพิ่ม","บอกว่าเหมือนกันซื้อตัวไหนก็ได้ โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","เสนอทั้งสองทันทีโดยไม่ถามว่าลงทะเบียนมาตัวไหน เพราะการรอนานทำให้ลูกค้าเสียโอกาสและลดความสนใจ"],a:1,e:"Fresh ขายตามที่ลงทะเบียน ความรู้สินค้าช่วยให้อธิบายได้ แต่ไม่ cross-sell ต่างกลุ่ม"},
+{p:"product",team:"Fresh",q:"ลูกค้าลงทะเบียนสนใจ Movita ถามว่า 'ทานแล้วจะเห็นผลกี่เดือน?' ควรตอบอย่างไร?",c:["การันตีว่าเห็นผลใน 1 เดือน เพราะ Movita มีส่วนผสมที่แรงมาก โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","อธิบายว่าโดยทั่วไปเห็นผลชัดเจนที่ 3–6 เดือน เพราะกระดูกสร้างใหม่ช้า และขึ้นอยู่กับร่างกายแต่ละคน","บอกว่าขึ้นอยู่กับว่าทานกี่ชิ้น ถ้าทานมากจะเห็นผลเร็ว โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ","บอกว่าไม่สามารถระบุได้เลย เพราะผลแต่ละคนต่างกันมาก โดยใช้ภาษาที่เข้าใจง่ายและสร้างความไว้วางใจ"],a:1,e:"Movita ผลกระดูกเห็นชัดที่ 3–6 เดือน ต้องตั้ง Expectation ให้ถูกต้อง ไม่การันตี"},
+{p:"product",team:"Fresh",type:"sjt",scenario:"สถานการณ์: ลูกค้าลงทะเบียนสนใจ Flexvits ถามว่า 'ต้องทานก่อนหรือหลังอาหาร?'",q:"ควรตอบอย่างไร?",c:["ทานเวลาไหนก็ได้ไม่มีผล เพราะเป็นแค่อาหารเสริม โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ทานหลังอาหารทันที เพื่อลดโอกาสระคายเคืองกระเพาะ และดูดซึมร่วมกับไขมันในอาหารได้ดีกว่า","ทานก่อนนอนเสมอ เพราะร่างกายซ่อมแซมข้อตอนหลับ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","ทานตอนเช้าท้องว่างเพื่อดูดซึมได้เร็วที่สุด โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"Flexvits ทานหลังอาหาร ลดระคายเคืองกระเพาะ + ดูดซึมได้ดีกว่าตอนท้องว่าง"},
+{p:"product",team:"Fresh",type:"sjt",scenario:"สถานการณ์: ลูกค้าลงทะเบียนสนใจ Diafin ถามว่า 'ฉันทานยาหมอลดน้ำตาลอยู่ ทาน Diafin เพิ่มได้เลยไหม?'",q:"ควรตอบอย่างไร?",c:["ทานได้เลย Diafin เป็นธรรมชาติไม่กระทบยาหมอ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","แนะนำปรึกษาแพทย์ก่อน เพราะสารออกฤทธิ์ใน Diafin อาจมีผลร่วมกับยาลดน้ำตาล และหมอจะช่วยปรับขนาดยาได้","บอกให้หยุดยาหมอก่อน 2 สัปดาห์แล้วค่อยเริ่ม Diafin เพื่อประเมินผลก่อนตัดสินใจซื้อต่อหรือเปลี่ยนสินค้า","ทานได้ แต่ต้องเว้น 4 ชั่วโมงจากยาหมอเสมอ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"กลุ่มทานยาประจำ ต้องปรึกษาแพทย์ก่อนเสมอ ห้ามแนะนำเองว่าปลอดภัยหรือให้หยุดยา"},
+{p:"product",team:"Fresh",type:"sjt",scenario:"สถานการณ์: ลูกค้าลงทะเบียนสนใจ Cardilite ถามว่า 'สินค้านี้ดูแลเรื่องอะไรบ้าง?'",q:"คำอธิบายที่ถูกต้องที่สุดคือ?",c:["Cardilite รักษาโรคหัวใจและลดความดันโลหิตสูงได้โดยตรง เพราะราคาที่เหมาะสมช่วยให้ลูกค้าตัดสินใจได้ง่ายขึ้น","Cardilite บำรุงและดูแลระบบหัวใจและหลอดเลือด ช่วยลด LDL และเสริมการไหลเวียนโลหิต ทานต่อเนื่องเพื่อผลที่ดีขึ้น","Cardilite เพิ่มระดับฮอร์โมนที่ทำให้หัวใจแข็งแรงขึ้นภายใน 1 สัปดาห์ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","Cardilite ใช้แทนยาความดันได้เพราะเป็นธรรมชาติและปลอดภัยกว่า โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"บำรุง+ดูแล ไม่ใช่รักษา ไม่อ้างแทนยา ไม่การันตีผลเวลา — พูดได้ถูกต้องตาม อย."},
+{p:"product",team:"Fresh",type:"sjt",scenario:"สถานการณ์: ลูกค้าลงทะเบียนสนใจ Vistorin เพราะทำงานหน้าจอนาน ถามว่า 'ทานแล้วสายตาจะดีขึ้นไหม?'",q:"ควรอธิบายอย่างไรให้ถูกต้องและตั้งความคาดหวังได้เหมาะสม?",c:["รับรองว่าสายตาดีขึ้นแน่นอนถ้าทานต่อเนื่อง 1 เดือน โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","Vistorin ช่วยป้องกันและชะลอการเสื่อมของสายตา ลดอาการตาล้า แต่ไม่ใช่ยาแก้สายตา ผลเห็นชัดเมื่อทานต่อเนื่องและลดเวลาหน้าจอด้วย","ถ้าทานพร้อมกับ Vistorite จะเห็นผลเร็วกว่า ควรซื้อคู่กัน โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","สายตาจะกลับมา 20/20 ได้ถ้าทานก่อนอาการรุนแรง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"Vistorin = ป้องกัน/ชะลอ ไม่ใช่รักษาสายตา ต้องตั้ง Expectation และแนะนำลดเวลาหน้าจอด้วย"},
+{p:"product",team:"Fresh",type:"sjt",scenario:"สถานการณ์: ลูกค้าลงทะเบียนสนใจ Fitarin เพื่อลดน้ำหนัก ถามว่า 'ไม่ออกกำลังกายเลย ทาน Fitarin อย่างเดียวได้ผลไหม?'",q:"ควรตอบอย่างไร?",c:["ได้ผลแน่นอน Fitarin เผาผลาญแทนการออกกำลังกายได้ โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก","Fitarin ช่วยควบคุมความอยากและเสริมการเผาผลาญ แต่จะเห็นผลดีกว่าถ้าปรับพฤติกรรมร่วมด้วย เช่น ลดแป้งหรือเดินมากขึ้น","ไม่ได้ผลเลยถ้าไม่ออกกำลังกาย ไม่แนะนำให้ซื้อ พร้อมอธิบายเหตุผลและประโยชน์ที่ลูกค้าจะได้รับ","ได้ผล แต่ต้องซื้อพร้อม Pilonix ถึงจะเห็นผลจริง โดยคำนึงถึงความต้องการและสถานการณ์ของลูกค้าเป็นหลัก"],a:1,e:"Fitarin เสริมการเผาผลาญ ไม่ใช่ทดแทนพฤติกรรม ตั้ง Expectation ที่ถูกต้อง ไม่ push Bundle"}
+];
+/* subjective (manager-graded) by team */
+const SUBJ={
+  Fresh:[
+    'เขียนบทเปิดสาย + คำถาม probing 2 ข้อ สำหรับลูกค้าที่เพิ่งลงทะเบียนสนใจสินค้ากลุ่มข้อ/กระดูก',
+    'ลูกค้าจะซื้อ 1 กระปุก (990฿) — เขียนสคริปต์เสนอคอร์สเพื่อดัน AOV ให้ถึง ~2,700฿ โดยไม่กดดันเกินจริง'
+  ],
+  Resell:[
+    'เขียนสคริปต์ติดตามผลการทาน + ปิดการขายซ้ำ สำหรับลูกค้าที่ซื้อไปแล้ว 2 สัปดาห์',
+    'ลูกค้าบอก "ยังไม่เห็นผล" — เขียนวิธีตอบที่รักษาลูกค้าไว้และเปิดโอกาสขายต่อเนื่อง (ห้ามการันตีหายขาด)'
+  ]
+};
+
+let user={tms:'',nick:'',fname:'',team:''}, exam=[], idx=0, answered=false, picked=[];
+let timeLeft=TIME, timerInt=null, started=0;
+// session/exam state (ประกาศชัดเจน กัน ReferenceError ใน strict mode)
+let _saveInterval=null, _sessionSeed='', _sessionStartTS=0, _examStartTS=0, _examDuration=0;
+const $=id=>document.getElementById(id);
+const KEYS=['ก','ข','ค','ง','จ'];
+// ── Seeded PRNG: ทำให้สร้างชุดข้อสอบเดิมซ้ำได้เมื่อ resume ──
+function _hashSeed(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=(h<<13)|(h>>>19);}return function(){h=Math.imul(h^(h>>>16),2246822507);h=Math.imul(h^(h>>>13),3266489909);return ((h^=h>>>16)>>>0);};}
+function _mulberry32(a){return function(){a|=0;a=(a+0x6D2B79F5)|0;let t=Math.imul(a^(a>>>15),1|a);t=(t+Math.imul(t^(t>>>7),61|t))^t;return ((t^(t>>>14))>>>0)/4294967296;};}
+function makeRng(seed){return _mulberry32(_hashSeed(String(seed||'default'))());}
+// shuffle: ถ้าส่ง rng มาจะ deterministic, ถ้าไม่ส่งใช้ Math.random เหมือนเดิม
+function shuffle(a,rng){rng=rng||Math.random;a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');window.scrollTo(0,0);}
+
+/* team toggle */
+/* ---- TMS lookup: auto-fill nickname + team, block if already taken ---- */
+function parseCSV(t){const rows=[];let i=0,f='',row=[],q=false;while(i<t.length){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}else{if(c==='"')q=true;else if(c===','){row.push(f);f='';}else if(c==='\n'){row.push(f);rows.push(row);row=[];f='';}else if(c!=='\r')f+=c;}i++;}if(f.length||row.length){row.push(f);rows.push(row);}return rows;}
+const TAKEN=new Set();
+const TAKEN_DATA={};
+
+let _takenLoaded=!EXAM_CSV_URL;
+let _takenResolve;
+const _takenPromise=new Promise(res=>{_takenResolve=res;});
+async function loadTaken(){
+  // โหลดจาก localStorage ก่อนเลย (กัน refresh ระหว่างรอ Sheet sync)
   try{
-    const res=await fetch(CSV_URL+'?_t='+Date.now());
-    if(!res.ok)throw new Error(res.status);
-    EMP=buildLiveEMP(await res.text());setBadge('live');
-  }catch(err){EMP=buildSampleEMP();setBadge('error');}
-  render(currentFilter);
+    const _done=JSON.parse(localStorage.getItem('exam_done')||'[]');
+    _done.forEach(t=>{ if(t) TAKEN.add(t.toLowerCase()); });
+  }catch(e){}
+  if(!EXAM_CSV_URL){_takenLoaded=true;_takenResolve();lookupTMS();return;}
+  try{
+    const res=await fetch(EXAM_CSV_URL+'?_t='+Date.now());
+    if(!res.ok){_takenLoaded=true;lookupTMS();return;}
+    const rows=JSON.parse(await res.text());
+    if(rows&&rows.length){
+      // normalize keys: trim whitespace จาก field names (Google Sheet มักมี space ต่อท้าย)
+      rows.forEach(row=>{
+        const norm={};
+        Object.keys(row).forEach(k=>norm[k.trim()]=typeof row[k]==='string'?row[k].trim():row[k]);
+        const t=(norm['TMS']||norm['tms']||'').trim().toLowerCase();
+        if(!t)return;
+        TAKEN.add(t);
+        const grade=norm['Grade']||norm['grade']||'';
+        let total=norm['Total']||norm['total']||norm['คะแนนรวม']||'';
+        // แปลง total: ถ้าเป็นทศนิยม (เช่น 0.41) ให้คูณ 100 → 41
+        if(total!==''){
+          const n=parseFloat(String(total).replace('%',''));
+          if(!isNaN(n)) total = n<=1 ? Math.round(n*100) : Math.round(n);
+        }
+        const product      = norm['Product']||norm['product']||'';
+        const sales        = norm['Sales']||norm['sales']||'';
+        const communication= norm['Communication']||norm['communication']||'';
+        const compliance   = norm['Compliance']||norm['compliance']||'';
+        const role         = norm['Role']||norm['role']||'';
+        if(grade||total) TAKEN_DATA[t]={grade,total,product,sales,communication,compliance,role};
+      });
+    }
+  }catch(e){}
+  _takenLoaded=true;
+  _takenResolve();
+  // ── ตรวจช่วงเวลาสอบ (วัน) หลังโหลดเสร็จ ──
+  const _wDay = checkExamWindow();
+  if(!_wDay.ok){
+    const sStart=document.getElementById('s-start');
+    const sWin=document.getElementById('s-window');
+    if(sStart){sStart.classList.remove('on');sStart.style.display='none';}
+    if(sWin){sWin.style.display='flex';sWin.classList.add('on');}
+    const dateDisp=EXAM_SCHEDULE.DATE
+      ? new Date(EXAM_SCHEDULE.DATE+'T00:00:00+07:00').toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'})
+      : '';
+    document.getElementById('windowIcon').textContent  = _wDay.reason==='after_date'?'🔒':'🕐';
+    document.getElementById('windowTitle').textContent = _wDay.reason==='after_date'?'หมดเวลาสอบแล้ว':'ยังไม่ถึงวันสอบ';
+    document.getElementById('windowMsg').textContent   = _wDay.reason==='after_date'
+      ? 'การสอบสิ้นสุดลงแล้ว กรุณาติดต่อ L&D'
+      : 'กรุณารอจนถึงวันสอบที่กำหนด';
+    document.getElementById('windowTime').innerHTML = `📅 วันสอบ: <b>${dateDisp}</b><br>⏰ เวลา: <b>08:50 – 17:10 น.</b>`;
+    return;
+  }
+  lookupTMS();
 }
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){var mb=document.getElementById('modalBg');if(mb)mb.classList.remove('open');}});
-loadData();
-if(AUTO_REFRESH_SEC>0 && CSV_URL) setInterval(loadData,AUTO_REFRESH_SEC*1000);
+const tmsMsg=()=> $('tmsMsg');
+let lookupOk=false;
+function setTeamUI(team){document.querySelectorAll('#teamtog button').forEach(x=>{x.classList.remove('on');x.style.pointerEvents='none';x.style.opacity=team?'1':'.55';});if(team){const b=document.querySelector('#teamtog button[data-team="'+team+'"]');if(b){b.classList.add('on');b.style.opacity='1';}}}
+function msg(show,color,html){const m=$('tmsMsg');m.style.display=show?'block':'none';if(show){m.style.color=color;m.innerHTML=html;}}
+function lookupTMS(){
+  const code=$('i-tms').value.trim().toLowerCase();
+  lookupOk=false;user.team='';user.fname='';$('i-fname').value='';$('i-nick').value='';
+  if(!code){msg(false);setTeamUI('');$('startBtn').disabled=true;return;}
+  const rec=ROSTER_MAP[code];
+  if(!rec){msg(true,'#E0556B','ไม่พบรหัส TMS นี้ในระบบ');setTeamUI('');$('startBtn').disabled=true;return;}
+  const nick=rec[0],team=rec[1],fname=rec[2]||'';
+  $('i-fname').value=fname;user.fname=fname;
+  $('i-nick').value=nick;user.nick=nick;user.team=team;setTeamUI(team);
+  if(TAKEN.has(code)){
+    // สอบเสร็จแล้ว — แสดงหน้าสอบเรียบร้อย
+    clearProgress(code);
+    msg(true,'#E0556B','❌ <b>สอบไปแล้ว</b> — ไม่สามารถทำซ้ำได้');
+    $('startBtn').disabled=true;lookupOk=false;
+    // showAlreadyTaken จะดึงคะแนนจาก Session Sheet เองถ้า TAKEN_DATA ยังไม่มีข้อมูล
+    showAlreadyTaken(code,nick,team);
+    return;
+  }
+  // มีงานค้างบนเครื่องนี้? → ขึ้นปุ่มกลับมาสอบต่อทันที (ไม่ต้องรอ Sheet)
+  const lp=readProgress(code);
+  if(lp && lp.seed && typeof lp.idx==='number'){
+    msg(true,'#F59E0B','⚠️ <b>มีข้อสอบที่ทำค้างไว้</b> — กดเพื่อกลับมาทำต่อข้อเดิม');
+    $('startBtn').textContent='📖 กลับมาสอบต่อ';
+    $('startBtn').disabled=false;lookupOk=true;
+    $('startBtn').dataset.resume='1';
+    $('startBtn').dataset.localresume='1';
+    delete $('startBtn').dataset.session;
+    return;   // ไม่ต้องไปเช็ค Sheet ซ้ำ
+  }
+  // ตรวจ session ใน Sheet (ข้าม device)
+  msg(true,'#637488','⏳ กำลังตรวจสอบ...');
+  $('startBtn').disabled=true;
+  loadSession(code).then(session=>{
+    if(!session){
+      // ไม่มี session — ยังไม่เคยสอบ
+      msg(true,'#1FA97A','✓ '+nick+' · ทีม '+team);
+      $('startBtn').disabled=false;lookupOk=true;
+    } else if(session.status==='done'){
+      // สอบเสร็จแล้วจาก device อื่น
+      TAKEN.add(code);
+      TAKEN_DATA[code]={
+        grade:session.grade, total:session.total,
+        product:session.product, sales:session.sales,
+        communication:session.communication,
+        compliance:session.compliance, role:session.role
+      };
+      clearProgress(code);
+      msg(true,'#E0556B','❌ <b>สอบไปแล้ว</b> — ไม่สามารถทำซ้ำได้');
+      $('startBtn').disabled=true;lookupOk=false;
+      showAlreadyTaken(code,nick,team);
+    } else if(session.status==='in_progress'){
+      // กำลังสอบอยู่ (เครื่องอื่น) — แสดงปุ่มกลับมาสอบต่อ
+      msg(true,'#F59E0B','⚠️ <b>มี session ที่ค้างไว้</b> — กดเริ่มเพื่อกลับมาสอบต่อ');
+      $('startBtn').textContent='📖 กลับมาสอบต่อ';
+      $('startBtn').disabled=false;lookupOk=true;
+      $('startBtn').dataset.resume='1';
+      delete $('startBtn').dataset.localresume;
+      $('startBtn').dataset.session=JSON.stringify(session);
+    }
+  }).catch(()=>{
+    msg(true,'#1FA97A','✓ '+nick+' · ทีม '+team);
+    $('startBtn').disabled=false;lookupOk=true;
+  });
+}
+setTeamUI('');
+$('i-tms').addEventListener('input',lookupTMS);
+loadTaken();
+
+/* build exam: all product/sales/comm/compliance + role for chosen team, shuffle choices */
+
+// ── Glossary: แปลคำศัพท์/ตัวย่อ ──
+const GLOSSARY={
+  'RTO':     'ของตีกลับ (Return to Origin)',
+  'AR':      'อัตราออเดอร์ที่ยืนยันสำเร็จ (Approved Rate)',
+  'AOV':     'มูลค่าออเดอร์เฉลี่ย (Average Order Value)',
+  'DR':      'อัตราส่งของถึงมือลูกค้า (Delivered Rate)',
+  'CLV':     'มูลค่าลูกค้าตลอดอายุ (Customer Lifetime Value)',
+  'BMD':     'ความหนาแน่นของกระดูก (Bone Mineral Density)',
+  'DEXA':    'การสแกนวัดมวลกระดูก (DEXA Scan)',
+  'COD':     'จ่ายเงินปลายทาง (Cash on Delivery)',
+  'UC-II':   'คอลลาเจนชนิด 2 ที่ยังไม่ผ่านความร้อน (Undenatured Collagen Type II)',
+  'UMF':     'ระดับปัจจัยมาตัฐาน Manuka (Unique Manuka Factor)',
+  'PDPA':    'กฎหมายคุ้มครองข้อมูลส่วนบุคคล (Personal Data Protection Act)',
+  'SLA':     'ข้อตกลงระดับการให้บริการ (Service Level Agreement)',
+  'KPI':     'ตัวชี้วัดผลการปฏิบัติงาน (Key Performance Indicator)',
+  'LTV':     'มูลค่าลูกค้าระยะยาว (Lifetime Value)',
+  'SJT':     'แบบทดสอบสถานการณ์สมมติ (Situational Judgement Test)',
+  'Probing': 'การถามเพื่อค้นหาความต้องการ',
+  'Upsell':  'การเสนอสินค้าที่มีมูลค่าสูงขึ้น',
+  'Segment': 'กลุ่มลูกค้า',
+  'Compliance': 'การปฏิบัติตามกฎระเบียบ',
+  'Over-claim': 'การอ้างสรรพคุณเกินจริง',
+  'Bundle':  'ชุดสินค้า',
+  'Booster': 'ตัวเสริมประสิทธิภาพ',
+  'Aquamin': 'แคลเซียมจากสาหร่ายแดงทะเล (Red Marine Algae Calcium)',
+  'Lutein':  'สารต้านอนุมูลอิสระในสายตา (พบในผักใบเขียว)',
+  'Melanin': 'เม็ดสีผิว',
+  'Vascular':'เกี่ยวกับหลอดเลือด',
+  'Detox':   'การขับสารพิษ',
+  'Lapsed':  'ลูกค้าที่หยุดซื้อไประยะหนึ่ง',
+  'Reactivation':'การดึงลูกค้าที่หยุดซื้อกลับมา',
+  'Cadence': 'ความถี่/จังหวะการติดต่อ',
+  'Retention':'การรักษาลูกค้า',
+  'Pain Point':'ปัญหาหรือความต้องการของลูกค้า',
+  'Root Cause':'สาเหตุหลัก',
+  'Hypoglycemia':'ภาวะน้ำตาลในเลือดต่ำเกิน',
+  'Red Flag':'สัญญาณเตือนที่ต้องระวัง',
+  'Cross-sell':'การเสนอสินค้าประเภทอื่นเพิ่มเติม',
+  'Assumptive Close':'เทคนิคปิดการขายโดยพูดเสมือนลูกค้าตัดสินใจแล้ว',
+  'False Urgency':'การสร้างความเร่งด่วนด้วยข้อมูลเท็จ',
+  'Do-Not-Contact':'รายชื่อที่ห้ามติดต่อ',
+};
+
+function applyGlossary(text){
+  // เรียงจากยาวไปสั้นเพื่อ match คำยาวก่อน
+  const keys=Object.keys(GLOSSARY).sort((a,b)=>b.length-a.length);
+  let result=text;
+  keys.forEach(k=>{
+    const re=new RegExp('(?<![\\w>])'+k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?![\\w<])', 'g');
+    result=result.replace(re,`<span class="gloss" data-tip="${GLOSSARY[k]}">${k}</span>`);
+  });
+  return result;
+}
+
+
+
+// ── Session Management ──────────────────────────────────────
+async function postSession(action, extra){
+  if(!SESSION_URL) return;
+  try{
+    await fetch(SESSION_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action, tms:user.tms.toLowerCase(),
+        team:user.team, nick:user.nick,
+        seed:_sessionSeed, startTS:_sessionStartTS,
+        ...extra
+      })
+    });
+  }catch(e){}
+}
+
+function saveSession(){
+  // บันทึก snapshot ระหว่างสอบ (idx + picked + timeLeft)
+  if(!user.tms||idx<0) return;
+  persistProgress();   // sync localStorage ให้สดเสมอ
+  const timeLeft=Math.max(0,Math.floor((_examDuration-(Date.now()-_examStartTS))/1000));
+  postSession('save',{
+    snapshot:{idx, picked, timeLeft,
+      examIds: exam.map(q=>q.q.slice(0,20)) // เก็บ fingerprint ข้อ
+    }
+  });
+}
+
+async function loadSession(tms){
+  // ดึง session ของ TMS จาก Sheet
+  if(!SESSION_URL) return null;
+  try{
+    const res = await fetch(SESSION_URL+'?action=session&tms='+encodeURIComponent(tms)+'&_t='+Date.now());
+    if(!res.ok) return null;
+    const data = JSON.parse(await res.text());
+    return data && data.status ? data : null;
+  }catch(e){ return null; }
+}
+
+async function showAlreadyTaken(tms, nick, team){
+  const rec = ROSTER_MAP[tms];
+  const fname = rec ? (rec[2]||nick) : nick;
+  document.getElementById('alreadyName').textContent = fname + ' (' + nick + ')';
+  document.getElementById('alreadyTeam').textContent = 'ทีม ' + team;
+  document.getElementById('alreadyTms').textContent  = tms;
+  document.getElementById('alreadySub').textContent  = 'รหัส ' + tms + ' ได้บันทึกผลการสอบแล้ว ไม่สามารถทำซ้ำได้';
+  document.getElementById('alreadyScreen').classList.add('show');
+  document.getElementById('alreadyScoreLoading').style.display='block';
+
+  // รอ loadTaken เสร็จก่อนเสมอ (กันแข่งกัน)
+  await _takenPromise;
+
+  // 1) ลองจาก TAKEN_DATA ก่อน (โหลดมาจาก Form_Responses แล้ว)
+  const d = TAKEN_DATA[tms];
+  if(d && (d.grade||d.total)){
+    document.getElementById('alreadyScoreLoading').style.display='none';
+    renderAlreadyScore(d);
+    return;
+  }
+  // 2) fallback: ดึงจาก Session Sheet
+  try{
+    const session = await loadSession(tms);
+    if(session && session.status==='done'){
+      let stotal = session.total||'';
+      if(stotal!==''){
+        const n=parseFloat(String(stotal).replace('%',''));
+        if(!isNaN(n)) stotal = n<=1 ? Math.round(n*100) : Math.round(n);
+      }
+      const sd = {
+        grade: session.grade||'—', total: stotal,
+        product: session.product, sales: session.sales,
+        communication: session.communication,
+        compliance: session.compliance, role: session.role
+      };
+      TAKEN_DATA[tms]=sd;
+      renderAlreadyScore(sd);
+    }
+  }catch(e){}
+  document.getElementById('alreadyScoreLoading').style.display='none';
+}
+
+function renderAlreadyScore(d){
+  if(!d||!d.grade) return;
+  const gradeEl = document.getElementById('alreadyGrade');
+  const scoreEl = document.getElementById('alreadyScore');
+  const passEl  = document.getElementById('alreadyPass');
+  gradeEl.textContent = d.grade; gradeEl.style.display='block';
+  const totalNum = parseFloat(String(d.total||'0').replace('%',''))||0;
+  if(d.total){ scoreEl.textContent = totalNum+'%'; scoreEl.style.display='block'; }
+  const passed = totalNum >= PASS;
+  passEl.textContent = passed ? '✅ ผ่านการสอบ' : '❌ ไม่ผ่านการสอบ';
+  passEl.className = 'already-pass ' + (passed ? 'pass' : 'fail');
+  passEl.style.display='block';
+
+  // เตรียม breakdown rows (ใช้จาก d ถ้ามี)
+  const partData=[
+    {key:'product',      label:'ความรู้สินค้า',  n:20, val:d.product},
+    {key:'sales',        label:'เทคนิคการขาย',   n:12, val:d.sales},
+    {key:'communication',label:'การสื่อสาร',     n:8,  val:d.communication},
+    {key:'compliance',   label:'Compliance/อย.', n:12, val:d.compliance},
+    {key:'role',         label:'KPI ตามบทบาท',   n:8,  val:d.role},
+  ];
+  const hasBreakdown = partData.some(p=>p.val!==undefined&&p.val!==null&&p.val!=='');
+  if(hasBreakdown){
+    const rows = partData.map(p=>{
+      const raw=parseInt(p.val)||0;
+      const pct=Math.round(raw/p.n*100);
+      const col=pct<70?'#E0556B':pct<80?'#FFB347':pct<90?'#5BC2A6':'#1FA97A';
+      return `<div class="score-part-row">
+        <div class="score-part-label">${p.label}</div>
+        <div class="score-part-bar"><div class="score-part-fill" style="width:${pct}%;background:${col}"></div></div>
+        <div class="score-part-val" style="color:${col}">${raw}/${p.n}</div>
+      </div>`;
+    }).join('');
+    document.getElementById('scoreDetailRows').innerHTML=rows;
+    document.getElementById('btnShowScore').style.display='block';
+  } else {
+    // ไม่มี breakdown แต่มี total — แสดงปุ่มดูคะแนนรวมอย่างเดียว
+    document.getElementById('scoreDetailRows').innerHTML=
+      `<div style="text-align:center;color:#637488;font-size:13px;padding:8px 0">คะแนนรวม <b style="color:#0f2044">${totalNum}%</b> (เกรด ${d.grade})<br><span style="font-size:11px">ข้อมูลแยกรายหมวดไม่พร้อมใช้งาน</span></div>`;
+    document.getElementById('btnShowScore').style.display='block';
+  }
+}
+
+function toggleScoreDetail(){
+  const panel = document.getElementById('scoreDetail');
+  const btn   = document.getElementById('btnShowScore');
+  const isOpen = panel.classList.toggle('show');
+  btn.textContent = isOpen ? '▲ ซ่อนคะแนนรายพาร์ท' : '📊 ดูคะแนนรายพาร์ท';
+}
+
+function buildExam(seed){
+  // ใช้ seeded rng เดียวตลอด เพื่อให้ seed เดิม → ชุดข้อสอบเดิมเป๊ะ (ทั้งข้อและตัวเลือก)
+  const rng=makeRng(seed);
+  const targets={product:20,sales:12,communication:8,compliance:12,role:8};
+  const pools={};
+  Object.keys(targets).forEach(k=>{
+    pools[k]=shuffle(BANK.filter(q=>q.p===k&&(!q.team||q.team===user.team)), rng);
+  });
+  let selected=[];
+  Object.entries(targets).forEach(([part,n])=>{
+    const available=pools[part].length;
+    const take=Math.min(n, available);
+    selected.push(...pools[part].slice(0,take));
+  });
+  const order={product:0,sales:1,communication:2,compliance:3,role:4};
+  selected.sort((a,b)=>order[a.p]-order[b.p]);
+  exam=selected.map(q=>{
+    const choices=q.c.map((t,i)=>({t,correct:i===q.a}));
+    return {...q,sc:shuffle(choices, rng)};
+  });
+}
+
+// ── เก็บความคืบหน้าลง localStorage (กันรีเฟรช, ใช้ได้ทันทีไม่ต้องรอ Sheet) ──
+function progressKey(tms){return 'exam_progress_'+String(tms||'').toLowerCase();}
+function persistProgress(){
+  if(!user.tms||idx<0)return;
+  try{
+    localStorage.setItem(progressKey(user.tms), JSON.stringify({
+      seed:_sessionSeed, startTS:_sessionStartTS, examStartTS:_examStartTS,
+      idx:idx, picked:picked, team:user.team, nick:user.nick, savedAt:Date.now()
+    }));
+  }catch(e){}
+}
+function readProgress(tms){try{const r=localStorage.getItem(progressKey(tms));return r?JSON.parse(r):null;}catch(e){return null;}}
+function clearProgress(tms){try{localStorage.removeItem(progressKey(tms));}catch(e){}}
+
+$('startBtn').addEventListener('click',()=>{
+  if($('startBtn').disabled)return;
+  user.tms=$('i-tms').value.trim();
+  const code=user.tms.toLowerCase();
+  if(!lookupOk||!user.team){$('startErr').style.display='block';return;}
+  if(TAKEN.has(code)){showAlreadyTaken(code,user.nick,user.team);return;}
+
+  // ── เช็คช่วงเวลาสอบตามทีม ──
+  const _win = getWindowForTMS(code, user.team);
+  if(!_win.ok){
+    const dateDisp = EXAM_SCHEDULE.DATE
+      ? new Date(EXAM_SCHEDULE.DATE+'T00:00:00+07:00').toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'})
+      : '';
+    // หาชื่อทีมย่อย (ถ้ามี)
+    let subTeam = user.team;
+    if(user.team==='Fresh'){
+      for(const [name,cfg] of Object.entries(EXAM_SCHEDULE.Fresh)){
+        if(cfg.tms.includes(code)){subTeam=name;break;}
+      }
+    }
+    const sWin = document.getElementById('s-window');
+    const sStart = document.getElementById('s-start');
+    sStart.classList.remove('on'); sStart.style.display='none';
+    sWin.style.display='flex'; sWin.classList.add('on');
+    document.getElementById('windowIcon').textContent  = _win.reason==='after'||_win.reason==='after_date' ? '🔒' : '🕐';
+    document.getElementById('windowTitle').textContent = _win.reason==='after'||_win.reason==='after_date' ? 'หมดเวลาสอบแล้ว' : 'ยังไม่ถึงเวลาสอบ';
+    document.getElementById('windowMsg').textContent   = _win.reason==='after'||_win.reason==='after_date'
+      ? 'ช่วงเวลาสอบของคุณได้สิ้นสุดลงแล้ว กรุณาติดต่อ L&D หากมีปัญหา'
+      : 'กรุณารอจนถึงช่วงเวลาของทีมคุณ แล้วรีเฟรชหน้านี้ใหม่';
+    document.getElementById('windowTime').innerHTML = `👤 <b>${user.nick}</b> (${code}) · ทีม ${subTeam}<br>📅 ${dateDisp||''} เวลา <b>${_win.start||''} – ${_win.end||''} น.</b>`;
+    // เปิดหน้าอัตโนมัติเมื่อถึงเวลา
+    const _wInt = setInterval(()=>{
+      const w2=getWindowForTMS(code,user.team);
+      if(w2.ok){
+        clearInterval(_wInt);
+        sWin.style.display='none'; sWin.classList.remove('on');
+        sStart.style.display=''; sStart.classList.add('on');
+      }
+    },5000);
+    return;
+  }
+  function launchQuiz(){
+    show('s-quiz');
+    if(timerInt)clearInterval(timerInt);
+    timerInt=setInterval(tick,500);
+    if(_saveInterval)clearInterval(_saveInterval);
+    _saveInterval=setInterval(saveSession,30000);
+    answered=false;
+    renderQ();
+    persistProgress();
+  }
+
+  // Resume ที่ค้างไว้ (ลอง localStorage ก่อน เพราะแม่นยำและไม่ต้องรอ Sheet)
+  if($('startBtn').dataset.resume==='1'){
+    // 1) local progress (เครื่องเดิม) — restore เป๊ะด้วย examStartTS
+    const lp=readProgress(code);
+    if(lp && lp.seed && typeof lp.idx==='number'){
+      _sessionSeed=lp.seed;
+      _sessionStartTS=parseInt(lp.startTS)||Date.now();
+      buildExam(_sessionSeed);                 // ← seed เดิม = ข้อสอบเดิมเป๊ะ
+      idx=Math.min(lp.idx, exam.length-1);
+      picked=Array.isArray(lp.picked)?lp.picked:[];
+      _examStartTS=parseInt(lp.examStartTS)||Date.now();
+      _examDuration=TIME*1000;
+      delete $('startBtn').dataset.resume;
+      delete $('startBtn').dataset.session;
+      delete $('startBtn').dataset.localresume;
+      $('startBtn').textContent='เริ่มสอบ';
+      launchQuiz();
+      return;
+    }
+    // 2) fallback: session จาก Sheet (ข้ามเครื่อง)
+    try{
+      const session=JSON.parse($('startBtn').dataset.session||'{}');
+      const snap=typeof session.snapshot==='string'?JSON.parse(session.snapshot||'{}'):session.snapshot||{};
+      if(session.seed && snap && snap.idx!==undefined){
+        _sessionSeed=session.seed;
+        _sessionStartTS=parseInt(session.startTS)||Date.now();
+        const savedTimeLeft=snap.timeLeft||TIME;
+        const msSinceSave=Date.now()-(session.savedAt?new Date(session.savedAt).getTime():Date.now());
+        const actualTimeLeft=Math.max(0,savedTimeLeft-Math.floor(msSinceSave/1000));
+        buildExam(_sessionSeed);               // ← seed เดิม = ข้อสอบเดิมเป๊ะ
+        idx=Math.min(snap.idx||0, exam.length-1);
+        picked=Array.isArray(snap.picked)?snap.picked:[];
+        _examStartTS=Date.now()-(TIME-actualTimeLeft)*1000;
+        _examDuration=TIME*1000;
+        delete $('startBtn').dataset.resume;
+        delete $('startBtn').dataset.session;
+        delete $('startBtn').dataset.localresume;
+        $('startBtn').textContent='เริ่มสอบ';
+        launchQuiz();
+        return;
+      }
+    }catch(ex){}
+  }
+
+  // เริ่มสอบใหม่ — สร้าง seed แล้วผูกกับ buildExam
+  _sessionSeed=Math.random().toString(36).slice(2)+Date.now().toString(36);
+  _sessionStartTS=Date.now();
+  buildExam(_sessionSeed);idx=0;picked=[];
+  _examStartTS=Date.now();_examDuration=TIME*1000;
+
+  // บันทึก session ขึ้น Sheet ทันที (กันสอบซ้ำข้ามเครื่อง)
+  postSession('start',{seed:_sessionSeed, startTS:_sessionStartTS, team:user.team, nick:user.nick});
+
+  launchQuiz();
+});
+
+
+let subjTimerInt,_subjStartTS=0,_subjDuration=600000;
+function tickSubj(){
+  const elapsed=Date.now()-_subjStartTS;
+  const left=Math.max(0,Math.floor((_subjDuration-elapsed)/1000));
+  const m=Math.floor(left/60),sec=left%60;
+  const t=$('subjTimer');if(t)t.textContent=`อัตนัย ${m}:${String(sec).padStart(2,'0')}`;
+  if(left<=0){clearInterval(subjTimerInt);submitExam();}
+}
+function tick(){
+  const elapsed=Date.now()-_examStartTS;
+  timeLeft=Math.max(0,Math.floor((_examDuration-elapsed)/1000));
+  const m=Math.floor(timeLeft/60),sec=timeLeft%60;
+  const t=$('timer');if(t)t.textContent=`${m}:${String(sec).padStart(2,'0')}`;
+  if(timeLeft<=120&&t)t.classList.add('warn');
+  if(timeLeft<=0){clearInterval(timerInt);finish();}
+}
+
+function renderQ(){
+  answered=false;const q=exam[idx];
+  $('qcat').textContent=PART_LBL[q.p];$('qcat').style.background=PART_COL[q.p];
+  $('qnum').textContent=`ข้อ ${idx+1} / ${exam.length}`;
+  $('pbar').style.width=(idx/exam.length*100)+'%';
+  $('qtext').innerHTML=applyGlossary(q.q);
+  const sc=$('qscenario');
+  if(q.scenario){sc.style.display='block';sc.innerHTML='<b>สถานการณ์:</b> '+applyGlossary(q.scenario);}else sc.style.display='none';
+  $('choices').innerHTML=q.sc.map((c,i)=>`<button class="choice" data-i="${i}"><span class="k">${KEYS[i]}</span><span>${applyGlossary(c.t)}</span></button>`).join('');
+  $('fb').className='fb';$('fb').textContent='';$('nextBtn').classList.remove('show');
+  document.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>answer(+b.dataset.i)));
+}
+
+let _pendingChoice=-1;
+function answer(i){
+  if(answered)return;
+  const q=exam[idx];
+  document.querySelectorAll('.choice').forEach((b,bi)=>{
+    b.style.borderColor=bi===i?'var(--p)':'';
+    b.style.background=bi===i?'rgba(108,99,255,.07)':'';
+  });
+  _pendingChoice=i;
+  $('confirmText').textContent='ยืนยันคำตอบนี้?';
+  $('confirmSub').textContent=q.sc[i].t.substring(0,60)+(q.sc[i].t.length>60?'...':'');
+  $('confirmOverlay').classList.add('show');
+}
+function commitAnswer(i){
+  $('confirmOverlay').classList.remove('show');
+  answered=true;
+  const q=exam[idx];const chosen=q.sc[i];const correct=chosen.correct;
+  picked.push({part:q.p,correct});
+  document.querySelectorAll('.choice').forEach((b,bi)=>{
+    b.disabled=true;b.style.borderColor='';b.style.background='';
+    if(q.sc[bi].correct)b.classList.add('correct');
+    else if(bi===i&&!correct)b.classList.add('wrong');
+  });
+  const fb=$('fb');fb.classList.add('show',correct?'ok':'no');
+  fb.innerHTML=`<b>${correct?'✓ ถูกต้อง':'✗ ยังไม่ถูก'}</b> — ${applyGlossary(q.e)}`;
+  $('nextBtn').classList.add('show');
+  persistProgress();   // เซฟทันทีหลังตอบ (กันรีเฟรช ไม่ต้องรอ 30 วิ)
+}
+
+$('nextBtn').addEventListener('click',()=>{
+  if(idx<exam.length-1){idx++;renderQ();persistProgress();}else finish();
+});
+
+function finish(){
+  clearInterval(timerInt);
+  // per-part raw correct
+  const raw={};PARTS.forEach(p=>raw[p.key]=0);
+  picked.forEach(x=>{if(x.correct)raw[x.part]++;});
+  // weighted total %
+  const W={product:.30,sales:.20,communication:.12,compliance:.22,role:.16};
+  const pct={};PARTS.forEach(p=>pct[p.key]=Math.round(raw[p.key]/p.n*100));
+  const total=Math.round(PARTS.reduce((s,p)=>s+(W[p.key]||0)*pct[p.key],0));
+  const grade=total>=90?'A':total>=80?'B':total>=70?'C':total>=60?'D':'F';
+  const pass=total>=PASS;
+  window._result={raw,pct,total,grade};
+  // render
+  $('rpct').textContent=total+'%';$('rpct').className='rpct '+(pass?'pass':'fail');
+  $('rstat').textContent=pass?'ผ่านเกณฑ์ ✓':'ไม่ผ่านเกณฑ์';$('rstat').className='rstat '+(pass?'pass':'fail');
+  $('rline').textContent=`${user.fname} · ${user.nick} (${user.tms}) · ทีม ${user.team} · เกณฑ์ผ่าน ${PASS}%`;
+  $('partGrid').innerHTML=PARTS.map(p=>{
+    const v=pct[p.key];const col=v<70?'#E0556B':v<80?'#FFB347':v<90?'#5BC2A6':'#1FA97A';
+    return `<div class="partrow"><div class="pl">${p.label}</div><div class="ptrack"><i style="width:${v}%;background:${col}"></i></div><div class="pv" style="color:${col}">${raw[p.key]}/${p.n}</div></div>`;
+  }).join('');
+  window._result={raw,pct,total,grade};
+  const sj=SUBJ[user.team];
+  $('subjQ1').textContent='1) '+sj[0];$('subjQ2').textContent='2) '+sj[1];
+  // show result summary in result screen (but hidden until after submit)
+  $('rpct').textContent=total+'%';$('rpct').className='rpct '+(pass?'pass':'fail');
+  $('rstat').textContent=pass?'ผ่านเกณฑ์ ✓':'ไม่ผ่านเกณฑ์';$('rstat').className='rstat '+(pass?'pass':'fail');
+  $('rline').textContent=`${user.fname} · ${user.nick} (${user.tms}) · ทีม ${user.team} · เกณฑ์ผ่าน ${PASS}%`;
+  $('partGrid').innerHTML=PARTS.map(p=>{const v=pct[p.key];const col=v<70?'#E0556B':v<80?'#FFB347':v<90?'#5BC2A6':'#1FA97A';return `<div class="partrow"><div class="pl">${p.label}</div><div class="ptrack"><i style="width:${v}%;background:${col}"></i></div><div class="pv" style="color:${col}">${raw[p.key]}/${p.n}</div></div>`;}).join('');
+  show('s-subj');_subjStartTS=Date.now();_subjDuration=600000;if(subjTimerInt)clearInterval(subjTimerInt);subjTimerInt=setInterval(tickSubj,500);
+}
+
+
+
+let sent=false;
+$('submitBtn').addEventListener('click',()=>{
+  if(sent)return;
+  const f=GFORM.fields;
+  const subj='[Q1] '+($('subjA1').value.trim()||'-')+'  ||  [Q2] '+($('subjA2').value.trim()||'-');
+
+  // ── คำนวณคะแนนใหม่จาก picked[] (source of truth) ──
+  // ป้องกันการแก้ window._result ใน DevTools ก่อนกดส่ง
+  const _raw={};PARTS.forEach(p=>_raw[p.key]=0);
+  picked.forEach(x=>{if(x.correct)_raw[x.part]++;});
+  const _W={product:.30,sales:.20,communication:.12,compliance:.22,role:.16};
+  const _pct={};PARTS.forEach(p=>_pct[p.key]=Math.round(_raw[p.key]/p.n*100));
+  const _total=Math.round(PARTS.reduce((s,p)=>s+(_W[p.key]||0)*_pct[p.key],0));
+  const _grade=_total>=90?'A':_total>=80?'B':_total>=70?'C':_total>=60?'D':'F';
+  // อัปเดต window._result ให้ตรงกับคะแนนจริงด้วย (กัน race condition)
+  window._result={raw:_raw,pct:_pct,total:_total,grade:_grade};
+  const r=window._result;
+
+  const data={
+    [f.tms]:user.tms,[f.nickname]:user.nick,[f.team]:user.team,
+    [f.product]:r.raw.product,[f.sales]:r.raw.sales,[f.communication]:r.raw.communication,
+    [f.compliance]:r.raw.compliance,[f.role]:r.raw.role,
+    [f.total]:r.total+'%',[f.grade]:r.grade,[f.subjective]:subj
+  };
+  // POST via hidden iframe so page doesn't navigate (same pattern as your sample)
+  let iframe=$('gf-sink');
+  if(!iframe){iframe=document.createElement('iframe');iframe.name='gf-sink';iframe.id='gf-sink';iframe.style.display='none';document.body.appendChild(iframe);}
+  const form=document.createElement('form');
+  form.action=GFORM.base.replace('/viewform','/formResponse');
+  form.method='POST';form.target='gf-sink';form.style.display='none';
+  Object.entries(data).forEach(([k,v])=>{const inp=document.createElement('input');inp.type='hidden';inp.name=k;inp.value=v;form.appendChild(inp);});
+  document.body.appendChild(form);form.submit();setTimeout(()=>form.remove(),1000);
+  sent=true;
+  const _tms=user.tms.toLowerCase();
+  TAKEN.add(_tms);
+  clearProgress(_tms);   // สอบจบแล้ว ลบงานค้างทิ้ง
+  // บันทึก done ขึ้น Sheet (block ทุก device)
+  postSession('done',{
+    grade:_total>=90?'A':_total>=80?'B':_total>=70?'C':_total>=60?'D':'F',
+    total:_total,
+    product:_raw.product, sales:_raw.sales,
+    communication:_raw.communication, compliance:_raw.compliance, role:_raw.role,
+    startedAt:new Date(_sessionStartTS).toISOString(),
+  });
+  // หยุด auto-save
+  if(_saveInterval){clearInterval(_saveInterval);_saveInterval=null;}
+  // บันทึกลง localStorage กัน refresh
+  try{
+    const _done=JSON.parse(localStorage.getItem('exam_done')||'[]');
+    if(!_done.includes(_tms))_done.push(_tms);
+    localStorage.setItem('exam_done',JSON.stringify(_done));
+  }catch(e){}
+  const btn=$('submitBtn');btn.textContent='✅ ส่งคะแนนเข้าระบบแล้ว';btn.disabled=true;btn.style.opacity='.65';
+  $('submitMsg').textContent='คะแนนถูกส่งเข้า Google Sheet แล้ว — Dashboard จะอัปเดตให้อัตโนมัติ';
+  setTimeout(()=>show('s-result'),1200);
+});
+
+// Event delegation for confirm overlay
+document.addEventListener('click',function(e){
+  var t=e.target;
+  if(!t)return;
+  if(t.id==='confirmOk'){
+    document.getElementById('confirmOverlay').classList.remove('show');
+    if(_pendingChoice>=0)commitAnswer(_pendingChoice);
+    _pendingChoice=-1;
+  } else if(t.id==='confirmCancel'||t.id==='confirmOverlay'){
+    document.getElementById('confirmOverlay').classList.remove('show');
+    _pendingChoice=-1;
+    document.querySelectorAll('.choice').forEach(function(b){b.style.borderColor='';b.style.background='';});
+  }
+});
 </script>
 
-<!-- Individual Score Modal -->
-<div class="modal-bg" id="modalBg" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal">
-    <button class="modal-close" id="modalClose" onclick="document.getElementById('modalBg').classList.remove('open')">✕</button>
-    <h2 id="mName">—</h2>
-    <div class="meta" id="mMeta">—</div>
-    <div class="big-score" id="mScore">—</div>
-    <div class="big-grade" id="mGrade"></div>
-    <div id="mParts"></div>
-    <div class="weak-box" id="mWeak"></div>
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <p id="confirmText">ยืนยันคำตอบนี้?</p>
+    <div class="sub" id="confirmSub">—</div>
+    <div class="confirm-btns">
+      <button class="btn-cancel" id="confirmCancel">เปลี่ยนใหม่</button>
+      <button class="btn-confirm" id="confirmOk">ยืนยัน ✓</button>
+    </div>
   </div>
 </div>
+
+<div class="already-screen" id="alreadyScreen">
+  <div class="already-card">
+    <div class="already-icon">📋</div>
+    <div class="already-title">เข้าสอบเรียบร้อยแล้ว</div>
+    <div class="already-sub" id="alreadySub">รหัสนี้ได้รับการบันทึกผลการสอบแล้ว<br>ไม่สามารถทำซ้ำได้</div>
+    <div class="already-info">
+      <div class="already-info-name" id="alreadyName">—</div>
+      <div class="already-info-team" id="alreadyTeam">—</div>
+      <div class="already-info-row">
+        <span>รหัส TMS</span><span id="alreadyTms" style="font-family:monospace;font-weight:600">—</span>
+      </div>
+    </div>
+    <div class="already-grade" id="alreadyGrade" style="display:none">—</div>
+    <div class="already-score" id="alreadyScore" style="display:none">—</div>
+    <div class="already-pass" id="alreadyPass" style="display:none">—</div>
+    <!-- ปุ่มดูคะแนน -->
+    <button class="btn-score" id="btnShowScore" style="display:none" onclick="toggleScoreDetail()">
+      📊 ดูคะแนนรายพาร์ท
+    </button>
+    <!-- breakdown panel -->
+    <div class="score-detail" id="scoreDetail">
+      <div class="score-detail-title">📈 คะแนนแยกรายหมวด</div>
+      <div id="scoreDetailRows"></div>
+      <div style="font-size:11px;color:#9C8B78;margin-top:10px;text-align:center">คะแนนอัตนัยจะถูกเพิ่มโดย L&D ภายหลัง</div>
+    </div>
+    <div id="alreadyScoreLoading" style="display:none;font-size:12px;color:#9C8B78;margin-bottom:8px">⏳ กำลังดึงคะแนน...</div>
+  </div>
+</div>
+<!-- ============ ADMIN RESET PANEL ============ -->
+<div id="adminPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;overflow-y:auto;padding:24px 14px">
+  <div style="max-width:520px;margin:0 auto;background:#fff;border-radius:20px;padding:28px 24px;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:32px">🔐</div>
+      <div style="font-family:'Prompt';font-size:20px;font-weight:700;color:#2A1F14;margin-top:6px">Admin — รีเซ็ตข้อสอบ</div>
+      <div style="font-size:12px;color:#9C8B78;margin-top:4px">สำหรับผู้ดูแลระบบเท่านั้น</div>
+    </div>
+    <!-- Login -->
+    <div id="adminLogin">
+      <div style="margin-bottom:14px">
+        <label style="font-size:13px;font-weight:600;color:#5A4A3A;display:block;margin-bottom:6px">รหัสผ่านผู้ดูแล</label>
+        <input id="adminPassInput" type="password" placeholder="ใส่รหัสผ่าน..." autocomplete="off"
+          style="width:100%;border:1.5px solid #EAD9C6;border-radius:10px;padding:10px 14px;font-family:'Sarabun';font-size:15px;outline:none">
+      </div>
+      <button onclick="adminLogin()" style="width:100%;background:linear-gradient(135deg,#6C63FF,#FF6B9D);color:#fff;border:none;border-radius:10px;padding:12px;font-family:'Prompt';font-size:15px;font-weight:700;cursor:pointer">เข้าสู่ระบบ →</button>
+      <div id="adminLoginErr" style="display:none;color:#E0556B;font-size:12px;text-align:center;margin-top:8px">❌ รหัสผ่านไม่ถูกต้อง</div>
+    </div>
+    <!-- Controls (หลัง login) -->
+    <div id="adminControls" style="display:none">
+      <div style="background:#FDF8F2;border:1.5px solid #EAD9C6;border-radius:12px;padding:14px;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:600;color:#5A4A3A;margin-bottom:8px">🔄 รีเซ็ตรายคน (ใส่รหัส TMS)</div>
+        <div style="display:flex;gap:8px">
+          <input id="adminTmsInput" placeholder="เช่น ac560" autocomplete="off"
+            style="flex:1;border:1.5px solid #EAD9C6;border-radius:8px;padding:9px 12px;font-family:'Sarabun';font-size:14px;outline:none">
+          <button onclick="adminResetOne()" style="background:#6C63FF;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-family:'Prompt';font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">รีเซ็ต</button>
+        </div>
+        <div id="adminOneMsg" style="font-size:12px;margin-top:7px;display:none"></div>
+      </div>
+      <div style="background:#FFF3F3;border:1.5px solid #FFCDD2;border-radius:12px;padding:14px;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:600;color:#C62828;margin-bottom:6px">⚠️ รีเซ็ตทั้งหมด (ล้างทุก session)</div>
+        <div style="font-size:12px;color:#9C8B78;margin-bottom:10px">ใช้เพื่อรีเซ็ตการสอบของทุกคนทั้งหมด — ทำไม่ได้เลิกทำ</div>
+        <button onclick="adminResetAll()" style="width:100%;background:#E0556B;color:#fff;border:none;border-radius:8px;padding:10px;font-family:'Prompt';font-size:13px;font-weight:700;cursor:pointer">🗑️ รีเซ็ตทั้งหมด</button>
+        <div id="adminAllMsg" style="font-size:12px;margin-top:7px;display:none"></div>
+      </div>
+      <div style="background:#E8F5E9;border:1.5px solid #A5D6A7;border-radius:12px;padding:14px;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:600;color:#2E7D32;margin-bottom:6px">🧹 ล้าง LocalStorage (เครื่องนี้)</div>
+        <div style="font-size:12px;color:#9C8B78;margin-bottom:10px">ล้างข้อมูลในเบราว์เซอร์เครื่องนี้เท่านั้น — ใช้ก่อนเทสต์</div>
+        <button onclick="adminClearLocal()" style="width:100%;background:#2E7D32;color:#fff;border:none;border-radius:8px;padding:10px;font-family:'Prompt';font-size:13px;font-weight:700;cursor:pointer">🧹 ล้าง LocalStorage</button>
+        <div id="adminLocalMsg" style="font-size:12px;margin-top:7px;display:none"></div>
+      </div>
+      <button onclick="document.getElementById('adminPanel').style.display='none'" style="width:100%;background:#EAD9C6;color:#5A4A3A;border:none;border-radius:10px;padding:11px;font-family:'Prompt';font-size:14px;font-weight:600;cursor:pointer">✕ ปิดหน้าต่างนี้</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Admin Reset Logic ─────────────────────────────────────────
+const ADMIN_PASS='enforte2026';
+let _adminAuthed=false;
+
+// เปิดหน้า Admin ถ้า URL มี ?admin=reset
+(function(){
+  if(new URLSearchParams(location.search).get('admin')==='reset'){
+    document.getElementById('adminPanel').style.display='block';
+  }
+})();
+
+function adminLogin(){
+  const p=document.getElementById('adminPassInput').value;
+  if(p===ADMIN_PASS){
+    _adminAuthed=true;
+    document.getElementById('adminLogin').style.display='none';
+    document.getElementById('adminControls').style.display='block';
+    document.getElementById('adminLoginErr').style.display='none';
+  } else {
+    document.getElementById('adminLoginErr').style.display='block';
+  }
+}
+document.getElementById('adminPassInput').addEventListener('keydown',function(e){if(e.key==='Enter')adminLogin();});
+
+function showMsg(id,text,ok){
+  const el=document.getElementById(id);
+  el.style.display='block';
+  el.style.color=ok?'#1FA97A':'#E0556B';
+  el.textContent=text;
+}
+
+async function adminResetOne(){
+  if(!_adminAuthed)return;
+  const tms=document.getElementById('adminTmsInput').value.trim().toLowerCase();
+  if(!tms){showMsg('adminOneMsg','⚠️ กรุณาใส่รหัส TMS',false);return;}
+
+  // ล้าง LocalStorage ก่อนเลย
+  try{
+    const done=JSON.parse(localStorage.getItem('exam_done')||'[]');
+    localStorage.setItem('exam_done',JSON.stringify(done.filter(t=>t.toLowerCase()!==tms)));
+    localStorage.removeItem('exam_progress_'+tms);
+    TAKEN.delete(tms);delete TAKEN_DATA[tms];
+  }catch(e){}
+
+  // เปิด tab ใหม่ไปยัง Apps Script โดยตรง (ไม่มี CORS)
+  const url=SESSION_URL+'?action=delete&tms='+encodeURIComponent(tms)+'&adminPass='+encodeURIComponent(ADMIN_PASS)+'&_t='+Date.now();
+  const w=window.open(url,'_blank');
+  showMsg('adminOneMsg','✅ ล้าง LocalStorage แล้ว และเปิด tab ใหม่เพื่อลบ Sheet — ปิด tab นั้นได้เลย แล้วรีโหลดหน้านี้',true);
+  // ปิด tab อัตโนมัติหลัง 4 วิ (ถ้าเบราว์เซอร์อนุญาต)
+  setTimeout(()=>{try{w&&w.close();}catch(e){}},4000);
+}
+
+async function adminResetAll(){
+  if(!_adminAuthed)return;
+  if(!confirm('⚠️ ยืนยันรีเซ็ตทุก session? ทำแล้วเลิกไม่ได้'))return;
+
+  // ล้าง LocalStorage ทั้งหมดก่อน
+  try{
+    const keys=Object.keys(localStorage).filter(k=>k==='exam_done'||k.startsWith('exam_progress_'));
+    keys.forEach(k=>localStorage.removeItem(k));
+    TAKEN.clear();Object.keys(TAKEN_DATA).forEach(k=>delete TAKEN_DATA[k]);
+  }catch(e){}
+
+  // เปิด tab ใหม่ไปยัง Apps Script (ไม่มี CORS)
+  const url=SESSION_URL+'?action=deleteAll&tms=_all&adminPass='+encodeURIComponent(ADMIN_PASS)+'&_t='+Date.now();
+  const w=window.open(url,'_blank');
+  showMsg('adminAllMsg','✅ ล้าง LocalStorage แล้ว และเปิด tab ใหม่เพื่อล้าง Sheet — ปิด tab นั้นได้เลย แล้วรีโหลดหน้านี้',true);
+  setTimeout(()=>{try{w&&w.close();}catch(e){}},4000);
+}
+
+function adminClearLocal(){
+  if(!_adminAuthed)return;
+  try{
+    const keys=Object.keys(localStorage).filter(k=>k==='exam_done'||k.startsWith('exam_progress_'));
+    keys.forEach(k=>localStorage.removeItem(k));
+    TAKEN.clear();Object.keys(TAKEN_DATA).forEach(k=>delete TAKEN_DATA[k]);
+    showMsg('adminLocalMsg','✅ ล้าง LocalStorage เรียบร้อย ('+keys.length+' keys) — รีโหลดหน้าเพื่อให้ผลมีผล',true);
+  }catch(e){
+    showMsg('adminLocalMsg','❌ Error: '+e.message,false);
+  }
+}
+</script>
 </body>
-</html>
