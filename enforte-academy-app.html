@@ -413,7 +413,7 @@ async function api(action,p={}){ if(!SERVER) return demoApi(action,p);
 function demoApi(a,p){ return Promise.resolve({ok:true}); }
 
 /* ===== SERVER integration — ทำงานเมื่อใส่ API_URL (โหมดเดโม่ข้ามทั้งหมด) ===== */
-async function hydrateProfile(){ if(!SERVER)return; const r=await api("getProfile"); if(r&&r.ok!==false){ if(r.coins!=null)ME.coins=r.coins; if(r.points!=null)ME.xp=r.points; if(r.streak!=null)ME.streak=r.streak; if(r.checkinDays!=null)ME.checkinDays=r.checkinDays; if(r.monthDays!=null)ME.monthDays=r.monthDays; if(r.name)ME.name=r.name; if(r.photo!=null)ME.photo=r.photo; refreshChips(); const sf=document.getElementById("sf-av"); if(sf)sf.innerHTML=avImg(ME.photo,ME.name); ["tb-nm","sf-nm"].forEach(i=>{const el=document.getElementById(i);if(el)el.textContent=ME.name;}); const ci=document.getElementById("checkin"); if(ci&&CUR==="home")ci.innerHTML=checkinHTML(); if(CUR==="me"){const v=document.getElementById("view"); if(v)v.innerHTML=SCREENS.me();} refreshRail(); } }
+async function hydrateProfile(){ if(!SERVER)return; const r=await api("getProfile"); if(r&&r.ok!==false){ if(r.coins!=null)ME.coins=r.coins; if(r.points!=null)ME.xp=r.points; if(r.streak!=null)ME.streak=r.streak; if(r.checkinDays!=null)ME.checkinDays=r.checkinDays; if(r.monthDays!=null)ME.monthDays=r.monthDays; if(r.name)ME.name=r.name; if(r.photo!=null)ME.photo=r.photo; if(r.user&&r.user.checkedToday!=null)ME.checkedToday=r.user.checkedToday; refreshChips(); const sf=document.getElementById("sf-av"); if(sf)sf.innerHTML=avImg(ME.photo,ME.name); ["tb-nm","sf-nm"].forEach(i=>{const el=document.getElementById(i);if(el)el.textContent=ME.name;}); const ci=document.getElementById("checkin"); if(ci&&CUR==="home")ci.innerHTML=checkinHTML(); if(CUR==="me"){const v=document.getElementById("view"); if(v)v.innerHTML=SCREENS.me();} refreshRail(); try{const s=JSON.parse(localStorage.getItem("enforte_sess")||"null"); if(s&&s.u){s.u.coins=ME.coins;s.u.points=ME.xp;s.u.streak=ME.streak;s.u.checkedToday=ME.checkedToday;localStorage.setItem("enforte_sess",JSON.stringify(s));}}catch(e){} } }
 async function hydrateFeed(){ if(!SERVER)return; const r=await api("getFeed"); if(r.ok){ FEED=r.feed.map(p=>({id:p.id,name:p.name,team:p.team,time:p.time,cap:p.caption,photo:p.photo,av:p.avatar||"",react:p.react||{},my:p.my,cmts:(p.comments||[]).map(c=>({n:c.name,t:c.text}))})); const el=document.getElementById("feed"); const html=FEED.map(feedHTML).join(""); if(el&&CUR==="life"&&el.innerHTML!==html)el.innerHTML=html; } }
 async function hydrateListings(){ if(!SERVER)return; const r=await api("getListings",{filter:SF}); if(r.ok){ LISTINGS=r.listings.map(l=>({id:l.id,kind:l.kind,title:l.title,desc:l.desc,price:l.price,bid:l.bid,emoji:l.emoji||"📦",photo:l.photo,by:l.by,color:AV[(l.id||0)%AV.length]})); const el=document.getElementById("mlist"); const html=(LISTINGS.filter(x=>SF==="all"||x.kind===SF).map(listingHTML).join("")||'<p style="color:var(--muted)">ยังไม่มีประกาศในหมวดนี้</p>'); if(el&&CUR==="share"&&el.innerHTML!==html)el.innerHTML=html; } }
 async function hydrateActivity(){ if(!SERVER)return; const [n,a]=await Promise.all([api("getNotifications"),api("getAnnouncements")]); if(n.ok)NOTIFS=n.notifs; if(a.ok)ANNOUNCE=a.announcements.map(x=>({ic:x.ic,t:x.title,s:x.body})); updateBell(); refreshRail(); }
@@ -604,12 +604,16 @@ POST.life=()=>hydrateFeed();
 POST.share=()=>hydrateListings();
 POST.me=()=>hydrateProfile();
 POST.rewards=()=>hydrateProfile();
-function doCheckin(){
+async function doCheckin(){
   if(ME.checkedToday) return;
-  ME.checkedToday=true; ME.coins+=5; ME.xp+=5; ME.streak++;
-  document.getElementById("checkin").innerHTML=checkinHTML(); POST.home();
-  refreshChips(); burst(); toast("🎉 เช็คอินสำเร็จ +5 🪙 +5 XP");
-  if(SERVER) api("checkin").then(()=>hydrateProfile());
+  if(!SERVER){ ME.checkedToday=true; ME.coins+=5; ME.xp+=5; ME.streak++; document.getElementById("checkin").innerHTML=checkinHTML(); refreshChips(); POST.home(); burst(); toast("🎉 เช็คอินสำเร็จ +5 🪙 +5 XP"); return; }
+  const btn=document.getElementById("ci-btn"); if(btn)btn.style.pointerEvents="none";
+  let r=null; try{r=await api("checkin");}catch(e){}
+  if(r&&r.ok){ burst(); toast(`🎉 เช็คอินสำเร็จ +${r.coins} 🪙 +${r.points} XP`+(r.bonus?` · โบนัส streak +${r.bonus}`:"")); }
+  else{ toast((r&&r.msg)||"เช็คอินไม่สำเร็จ"); }
+  await hydrateProfile();          // ดึงค่าจริง เหรียญ/XP/streak/สถานะ มาแสดง
+  if(CUR==="home")POST.home();
+  if(btn)btn.style.pointerEvents="";
 }
 
 /* ---------- LEARN ---------- */
