@@ -441,7 +441,7 @@ let MISSIONS=[
   {icon:"🎧",title:"ฟัง Call Example 2 เคส",sub:"ตัวอย่างปิดการขาย + handle objection",reward:"15 นาที",go:"kb"},
   {icon:"💬",title:"แชร์ 1 Sales Tip ใน Community",sub:"เก็บ XP จากการแบ่งปันความรู้",reward:"+20 XP",go:"life"},
 ];
-let CELEB={birthdays:[],anniversaries:[]};
+let CELEB={birthdays:[],anniversaries:[],probation:[]};
 let QUESTS=[
   {ic:"👋",title:"ทักทายเพื่อนร่วมทีม 1 คน",xp:5,done:false},
   {ic:"❤️",title:"react โพสต์ในไลฟ์สไตล์ 3 โพสต์",xp:5,done:false},
@@ -546,10 +546,11 @@ function celebRow(u,extra){ return `<div class="rowi"><div class="av" style="wid
 function celebList(arr,extraFn){ if(!arr||!arr.length) return `<div style="color:var(--muted-2);font-size:13px;padding:6px 0">— ไม่มีในช่วง 9 วันนี้ —</div>`;
   return arr.map(u=>celebRow(u,extraFn?extraFn(u):"")).join(""); }
 async function hydrateCelebrations(){ if(!SERVER)return; let r=null; try{r=await api("getCelebrations");}catch(e){}
-  CELEB={birthdays:(r&&r.birthdays)||[],anniversaries:(r&&r.anniversaries)||[]};
+  CELEB={birthdays:(r&&r.birthdays)||[],anniversaries:(r&&r.anniversaries)||[],probation:(r&&r.probation)||[]};
   paintCeleb(); paintCelebHome(); }
 function paintCeleb(){ const bd=document.getElementById("celeb-bd"); if(bd)bd.innerHTML=celebList(CELEB.birthdays);
-  const an=document.getElementById("celeb-anni"); if(an)an.innerHTML=celebList(CELEB.anniversaries,u=>"ครบ "+u.years+" ปี"); }
+  const an=document.getElementById("celeb-anni"); if(an)an.innerHTML=celebList(CELEB.anniversaries,u=>"ครบ "+u.years+" ปี");
+  const pb=document.getElementById("celeb-prob"); if(pb)pb.innerHTML=celebList(CELEB.probation); }
 function paintCelebHome(){ const box=document.getElementById("celeb-home"); if(!box)return;
   const today=[]; CELEB.birthdays.forEach(u=>{if(u.diff===0)today.push({u,t:"🎂 วันเกิด"})});
   CELEB.anniversaries.forEach(u=>{if(u.diff===0)today.push({u,t:"🎊 ครบ "+u.years+" ปี"})});
@@ -560,7 +561,7 @@ async function hydrateBoard(){ if(!SERVER)return;
   const r=await api("getLeaderboard",{mode:"ind"});
   if(r.ok){ TOP=(r.list||[]).map(u=>({n:u.name,t:u.team,p:Number(u.points)||0,me:u.me})); if(r.myRank)ME.rank=r.myRank; }
   const rt=await api("getLeaderboard",{mode:"team"}); if(rt.ok)TEAMS=rt.teams;
-  refreshRail(); const bc=document.getElementById("board-card"); if(bc&&CUR==="board")bc.innerHTML=(BM==="ind"?boardInd():boardTeam());
+  refreshRail(); if(CUR==="board")go("board");
 }
 
 /* =================== SCREENS =================== */
@@ -809,7 +810,7 @@ let BM="ind";
 SCREENS.board=()=>`
 ${heroHTML("amber","leaderboard","อันดับ & แรงกิ้ง","สะสมแต้มจากการเรียน แชร์ และทำกิจกรรม ไต่อันดับทั้งรายคนและทีม",` <button class="pill" onclick="go('chal')" style="background:rgba(255,255,255,.35)">🏆 ไปทำ Challenge</button>`)}
 <div class="seg an d2" style="max-width:320px">${["ind|รายบุคคล","team|ทีม"].map(x=>{const[k,l]=x.split("|");return `<button class="${BM===k?'on':''}" onclick="setBM('${k}')">${l}</button>`;}).join("")}</div>
-<div class="card an d2" id="board-card">${BM==="ind"?boardInd():boardTeam()}</div>`;
+<div class="card an d2">${BM==="ind"?boardInd():boardTeam()}</div>`;
 function boardInd(){
   if(!TOP.length) return `<div style="text-align:center;color:var(--muted);padding:24px 10px">ยังไม่มีอันดับ — เริ่มเก็บแต้มจากการเรียน/เช็คอิน/แชร์กันเลย! 🚀</div>`;
   return TOP.map((u,i)=>`<div class="lb" ${u.me?'style="background:var(--green-bg);margin:0 -8px;padding:9px 8px;border-radius:12px"':''}><div class="r ${i<3?'g'+(i+1):''}">${i+1}</div><div class="av" style="background:${avc(u.n)}">${initials(u.n)}</div><div class="n">${u.n}${u.me?' (คุณ)':''}<div class="tm">${u.t}</div></div><div class="p">${u.p.toLocaleString()}</div></div>`).join("");
@@ -832,9 +833,7 @@ function chalTeams(){
    <div class="skill"><div class="sh"><b style="color:var(--green)">🟢 Resell</b><span>${r.toLocaleString()}</span></div><div class="bar green"><span style="width:${Math.round(r/mx*100)}%"></span></div></div>`;
 }
 POST.chal=()=>{ if(SERVER) hydrateBoard().then(()=>{const el=document.getElementById("chal-teams");if(el)el.innerHTML=chalTeams();}); };
-function setBM(k){ BM=k;
-  document.querySelectorAll("#view .seg button").forEach(b=>{ const oc=b.getAttribute("onclick")||""; b.classList.toggle("on", oc.indexOf("setBM('"+k+"')")>=0); });
-  const bc=document.getElementById("board-card"); if(bc)bc.innerHTML=(BM==="ind"?boardInd():boardTeam()); }
+function setBM(k){BM=k;go("board");}
 
 /* ---------- ME ---------- */
 SCREENS.me=()=>`
