@@ -121,6 +121,10 @@ svg{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 /* generic building blocks */
 .grid2{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;align-items:start}
 .celeb-split{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.more-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:4px}
+.more-item{display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 6px;border:1px solid var(--line);border-radius:14px;background:var(--surface);font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit;text-align:center}
+.more-item svg{width:24px;height:24px;stroke:var(--green);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.more-item:active{background:var(--green-bg);border-color:var(--green)}
 .sect{font-family:var(--fd);font-weight:700;font-size:18px;margin:22px 2px 13px;display:flex;align-items:center;gap:9px}
 .sect .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line-2),transparent)}
 .sect .more{margin-left:auto;font-size:12.5px;color:var(--green);font-weight:600;font-family:var(--fb);cursor:pointer}
@@ -493,7 +497,8 @@ const NAV=[
    ["admin","แดชบอร์ด",'<path d="M4 13h6V4H4zM14 20h6v-9h-6zM14 8h6V4h-6zM4 20h6v-4H4z"/>'],
  ]},
 ];
-const BNAV=[["home","หน้าหลัก"],["learn","เรียน"],["life","คอมมิวนิตี้"],["board","อันดับ"],["me","ฉัน"]];
+const BNAV=[["home","หน้าหลัก"],["learn","เรียน"],["life","คอมมิวนิตี้"],["board","อันดับ"],["__more__","เพิ่มเติม"]];
+const MOREICON='<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>';
 function svg(p){return '<svg viewBox="0 0 24 24">'+p+'</svg>';}
 function buildNav(){
   let h="";
@@ -503,7 +508,21 @@ function buildNav(){
     gr.items.forEach(it=>{ h+=`<button class="snav" data-r="${it[0]}" onclick="go('${it[0]}')">${svg(it[2])} ${it[1]}${it[3]?`<span class="bdg">${it[3]}</span>`:''}</button>`; });
   });
   document.getElementById("snav").innerHTML=h;
-  document.getElementById("bnav").innerHTML=BNAV.map(b=>`<a class="nb" data-r="${b[0]}" onclick="go('${b[0]}')">${svg(NAV.flatMap(g=>g.items).find(i=>i[0]===b[0])[2])}${b[1]}</a>`).join("");
+  document.getElementById("bnav").innerHTML=BNAV.map(b=>{
+    if(b[0]==="__more__") return `<a class="nb" onclick="openMore()">${svg(MOREICON)}${b[1]}</a>`;
+    const it=NAV.flatMap(g=>g.items).find(i=>i[0]===b[0]);
+    return `<a class="nb" data-r="${b[0]}" onclick="go('${b[0]}')">${svg(it?it[2]:'')}${b[1]}</a>`;
+  }).join("");
+}
+function openMore(){
+  let h=`<div class="sh"><div class="ptitle">เมนูทั้งหมด</div><button class="x" onclick="closeModal()">✕</button></div>`;
+  NAV.forEach(gr=>{
+    if(gr.admin && ME.role!=="admin") return;
+    h+=`<div class="sect" style="margin:12px 0 8px">${gr.g} <span class="rule"></span></div><div class="more-grid">`;
+    gr.items.forEach(it=>{ h+=`<button class="more-item" onclick="closeModal();go('${it[0]}')">${svg(it[2])}<span>${it[1]}</span></button>`; });
+    h+=`</div>`;
+  });
+  modal(h);
 }
 
 /* =================== ROUTER =================== */
