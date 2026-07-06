@@ -886,7 +886,10 @@ SCREENS.me=()=>`
   <div style="font-family:var(--fd);font-weight:700;font-size:22px">${ME.name}</div>
   <div style="color:var(--muted);font-size:13px">ทีม ${ME.team} · อันดับ #${ME.rank} ${ME.role==="admin"?'· <span style="color:var(--green);font-weight:600">HR / Admin</span>':''}</div>
   ${badgeStrip()}
-  <button class="btn btn-o btn-sm" style="margin-top:14px" onclick="openProfileEdit()">✏️ แก้ไขโปรไฟล์</button>
+  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px">
+    <button class="btn btn-o btn-sm" onclick="openProfileEdit()">✏️ แก้ไขโปรไฟล์</button>
+    <button class="btn btn-o btn-sm" onclick="openChangePassword()">🔒 เปลี่ยนรหัสผ่าน</button>
+  </div>
   <div class="stat-row" style="grid-template-columns:repeat(4,1fr);margin-top:16px">
     <div class="mini"><div class="e"><img src="${SUMIC.coin}" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle"></div><div class="v num">${ME.coins}</div><div class="k">เหรียญ</div></div>
     <div class="mini"><div class="e"><img src="${SUMIC.xp}" alt="" style="width:30px;height:30px;object-fit:contain;vertical-align:middle"></div><div class="v num">${ME.xp.toLocaleString()}</div><div class="k">XP</div></div>
@@ -1262,6 +1265,34 @@ async function saveProfile(){
   ["tb-nm","sf-nm"].forEach(i=>document.getElementById(i).textContent=ME.name);
   const sf=document.getElementById("sf-av"); if(sf) sf.innerHTML=avImg(ME.photo,ME.name);
   closeModal(); toast("✅ บันทึกโปรไฟล์แล้ว"); if(CUR==="me")go("me");
+}
+function openChangePassword(){
+  modal(`<div class="sh"><div class="ptitle">🔒 เปลี่ยนรหัสผ่าน</div><button class="x" onclick="closeModal()">✕</button></div>
+   <div class="field"><label>รหัสผ่านเดิม</label><input class="inp" id="cp-old" type="password" placeholder="รหัสเดิม (เช่น 1234)"></div>
+   <div class="field"><label>รหัสผ่านใหม่</label><input class="inp" id="cp-new" type="password" placeholder="อย่างน้อย 8 ตัว + มีตัวเลข" oninput="cpCheck()"></div>
+   <div class="field"><label>ยืนยันรหัสผ่านใหม่</label><input class="inp" id="cp-new2" type="password" placeholder="พิมพ์รหัสใหม่อีกครั้ง" oninput="cpCheck()"></div>
+   <div id="cp-hint" style="font-size:12.5px;color:var(--muted);margin:-4px 0 12px">🔐 รหัสใหม่ต้องยาวอย่างน้อย 8 ตัวอักษร และมีตัวเลขอย่างน้อย 1 ตัว</div>
+   <button class="btn btn-g" style="width:100%" id="cp-save" onclick="doChangePassword()">เปลี่ยนรหัสผ่าน</button>`);
+}
+function cpCheck(){
+  const n=document.getElementById("cp-new").value, n2=document.getElementById("cp-new2").value;
+  const hint=document.getElementById("cp-hint");
+  const okLen=n.length>=8, okNum=/\d/.test(n), okMatch=(n2==="")||n===n2;
+  const parts=[`${okLen?'✅':'⬜'} อย่างน้อย 8 ตัว`,`${okNum?'✅':'⬜'} มีตัวเลข`,`${okMatch?'✅':'❌'} รหัสตรงกัน`];
+  hint.innerHTML=parts.join(" · ");
+  hint.style.color = (okLen&&okNum&&okMatch)?'var(--green)':'var(--muted)';
+}
+async function doChangePassword(){
+  const oldPin=document.getElementById("cp-old").value, newPin=document.getElementById("cp-new").value, newPin2=document.getElementById("cp-new2").value;
+  if(!oldPin){toast("กรอกรหัสผ่านเดิม");return;}
+  if(newPin.length<8){toast("รหัสใหม่ต้องยาวอย่างน้อย 8 ตัวอักษร");return;}
+  if(!/\d/.test(newPin)){toast("รหัสใหม่ต้องมีตัวเลขอย่างน้อย 1 ตัว");return;}
+  if(newPin!==newPin2){toast("รหัสใหม่ทั้งสองช่องไม่ตรงกัน");return;}
+  const btn=document.getElementById("cp-save"); btn.textContent="กำลังเปลี่ยน..."; btn.disabled=true;
+  if(!SERVER){ closeModal(); toast("✅ เปลี่ยนรหัสผ่านแล้ว (เดโม่)"); return; }
+  const r=await api("changePassword",{oldPin,newPin});
+  if(r&&r.ok){ closeModal(); toast("✅ "+(r.msg||"เปลี่ยนรหัสผ่านเรียบร้อย")); }
+  else { btn.textContent="เปลี่ยนรหัสผ่าน"; btn.disabled=false; toast("⚠️ "+((r&&r.msg)||"เปลี่ยนไม่สำเร็จ")); }
 }
 
 /* =================== ACTIVITY / BELL =================== */
