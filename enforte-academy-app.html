@@ -513,7 +513,7 @@ function go(r){
   const v=document.getElementById("view"); v.innerHTML=fn();
   document.querySelectorAll(".snav").forEach(b=>b.classList.toggle("on",b.dataset.r===r));
   document.querySelectorAll(".nb").forEach(b=>b.classList.toggle("on",b.dataset.r===r || (r==="share"&&b.dataset.r==="life")));
-  window.scrollTo({top:0,behavior:"smooth"});
+  window.scrollTo(0,0);
   if(POST[r]) POST[r]();
 }
 const POST={};   // post-render hooks (animations etc.)
@@ -572,7 +572,10 @@ async function hydrateBoard(){ if(!SERVER)return;
   const r=await api("getLeaderboard",{mode:"ind"});
   if(r.ok){ TOP=(r.list||[]).map(u=>({n:u.name,t:u.team,p:Number(u.points)||0,me:u.me})); if(r.myRank)ME.rank=r.myRank; }
   const rt=await api("getLeaderboard",{mode:"team"}); if(rt.ok)TEAMS=rt.teams;
-  refreshRail(); const bc=document.getElementById("board-card"); if(bc&&CUR==="board")bc.innerHTML=(BM==="ind"?boardInd():boardTeam());
+  refreshRail();
+  const bc=document.getElementById("board-card");
+  if(bc&&CUR==="board"){ const html=(BM==="ind"?boardInd():boardTeam());
+    if(bc.innerHTML!==html){ const y=window.scrollY; bc.innerHTML=html; window.scrollTo(0,y); } }
 }
 
 /* =================== SCREENS =================== */
