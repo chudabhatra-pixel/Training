@@ -1121,7 +1121,12 @@ function answerPathStep(i,oi){
 function skill(n,v,c){return `<div class="skill"><div class="sh"><b>${n}</b><span>${v}%</span></div><div class="bar ${c}"><span style="width:${v}%"></span></div></div>`;}
 
 /* ---------- KNOWLEDGE BASE ---------- */
-let KBCAT='script';
+let KBCAT='script', KBQ='';
+const FAQDATA=[
+  {q:"ลูกค้าขอส่วนลดเพิ่มทำยังไง?",a:"เน้นคุณค่าก่อนราคา เสนอ value-add แทนการลดราคาตรง ๆ"},
+  {q:"จัดการลูกค้าที่โมโหยังไง?",a:"ฟังให้จบ ขอโทษที่ทำให้รู้สึกไม่ดี แล้วเสนอทางแก้ทันที"},
+  {q:"โปรโมชันเดือนนี้มีอะไรบ้าง?",a:"แพ็กคู่ลด 15% + ฟรีค่าติดตั้ง ถึงสิ้นเดือน"},
+];
 const KBDATA={
  script:{icon:'📄',title:'สคริปต์ขาย',sub:'บทพูดปิดการขายตามสถานการณ์',items:[
    {t:'เปิดการขาย · ทักครั้งแรก',s:'ใช้ตอนโทรหาลูกค้าใหม่',body:'"สวัสดีค่ะ คุณ… ดิฉัน… จาก Enforte นะคะ ไม่ทราบว่าตอนนี้สะดวกคุยสัก 2 นาทีไหมคะ? พอดีมีสิทธิพิเศษสำหรับลูกค้าคุณ… โดยเฉพาะเลยค่ะ"'},
@@ -1150,17 +1155,42 @@ function kbContent(){const d=KBDATA[KBCAT];return `<div class="sect an d3">${d.i
 function kbCat(c){KBCAT=c;const el=document.getElementById("kb-content");if(el)el.innerHTML=kbContent();const cc=document.getElementById("kb-cards");if(cc)cc.innerHTML=['script','product','call','best'].map(kbCard).join("");}
 SCREENS.kb=()=>`
  ${heroHTML("teal","knowledge base","คลังความรู้ · ค้นหาได้ทุกอย่าง","สคริปต์ขาย โปรโมชัน FAQ, Call Library และ Best Practice รวมไว้ที่เดียว เลือกหมวดด้านล่างได้เลย",'')}
- <div class="search an d2" style="max-width:100%;margin-bottom:18px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input placeholder="ค้นหาสคริปต์ สินค้า โปรโมชัน หรือ FAQ..."/><button class="btn btn-g btn-sm" onclick="toast('ค้นหา (เดโม่)')">ค้นหา</button></div>
+ <div class="search an d2" style="max-width:100%;margin-bottom:18px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input id="kb-q" placeholder="ค้นหาสคริปต์ สินค้า โปรโมชัน หรือ FAQ..." value="${KBQ.replace(/"/g,'&quot;')}" oninput="kbSearch(this.value)" onkeydown="if(event.key==='Enter')kbSearch(this.value)"/><button class="btn btn-g btn-sm" onclick="kbSearch(document.getElementById('kb-q').value)">ค้นหา</button></div>
+ <div id="kb-results" style="${KBQ.trim()?'':'display:none'}">${KBQ.trim()?kbSearchResults(KBQ):''}</div>
+ <div id="kb-browse" style="${KBQ.trim()?'display:none':''}">
  <div class="pad an d2" id="kb-cards" style="margin-bottom:8px">${['script','product','call','best'].map(kbCard).join("")}</div>
  <div id="kb-content">${kbContent()}</div>
  <div class="sect an d4">❓ FAQ / คำถามพบบ่อย <span class="rule"></span></div>
  <div class="card an d4"><div class="klist">
-   ${faqitem("ลูกค้าขอส่วนลดเพิ่มทำยังไง?","เน้นคุณค่าก่อนราคา เสนอ value-add แทนการลดราคาตรง ๆ")}
-   ${faqitem("จัดการลูกค้าที่โมโหยังไง?","ฟังให้จบ ขอโทษที่ทำให้รู้สึกไม่ดี แล้วเสนอทางแก้ทันที")}
-   ${faqitem("โปรโมชันเดือนนี้มีอะไรบ้าง?","แพ็กคู่ลด 15% + ฟรีค่าติดตั้ง ถึงสิ้นเดือน")}
- </div></div>`;
+   ${FAQDATA.map(f=>faqitem(f.q,f.a)).join("")}
+ </div></div>
+ </div>`;
 function kitem(ic,bg,t,s){return `<div class="kitem" onclick="toast('เปิด (เดโม่)')"><div class="ic" style="background:${bg}">${ic}</div><div class="tx"><b>${t}</b><span>${s}</span></div><div class="ch" style="font-size:18px">›</div></div>`;}
 function faqitem(q,a){return `<div class="kitem" style="align-items:flex-start" onclick="const b=this.querySelector('.fa');b.style.display=b.style.display==='none'?'block':'none'"><div class="ic" style="background:var(--purple-bg)">❓</div><div class="tx"><b>${q}</b><span class="fa" style="display:none;color:var(--ink);margin-top:6px;line-height:1.5">${a}</span></div><div class="ch" style="font-size:14px">▾</div></div>`;}
+function kbSearchResults(q){
+  const s=(q||'').trim().toLowerCase();
+  if(!s) return '';
+  const hits=[];
+  ['script','product','call','best'].forEach(c=>{const d=KBDATA[c];d.items.forEach(it=>{
+    const hay=((it.t||'')+' '+(it.s||'')+' '+(it.body||'')).toLowerCase();
+    if(hay.includes(s)) hits.push({label:d.title,icon:d.icon,t:it.t,sub:it.s||'',body:it.body||'',play:!!it.play});
+  });});
+  FAQDATA.forEach(f=>{ if(((f.q||'')+' '+(f.a||'')).toLowerCase().includes(s)) hits.push({label:'FAQ',icon:'❓',t:f.q,sub:'',body:f.a,play:false}); });
+  const safe=(q||'').replace(/</g,'&lt;');
+  if(!hits.length) return `<div class="card an"><p style="text-align:center;color:var(--muted);padding:22px 10px">ไม่พบผลลัพธ์สำหรับ "<b>${safe}</b>" — ลองคำอื่นดูนะ</p></div>`;
+  return `<div class="sect">🔎 ผลการค้นหา (${hits.length})<span class="rule"></span></div><div class="card"><div class="klist">`+
+    hits.map(h=>h.play
+      ? `<div class="kitem" onclick="toast('▶️ กำลังเล่นตัวอย่าง (เดโม่)')"><div class="ic" style="background:#F0F5FF">🎧</div><div class="tx"><b>${h.t}</b><span>${h.label} · ${h.sub}</span></div><div class="ch" style="font-size:18px">▶</div></div>`
+      : `<div class="kitem" style="align-items:flex-start" onclick="const b=this.querySelector('.kb-body');b.style.display=b.style.display==='none'?'block':'none'"><div class="ic" style="background:var(--purple-bg)">${h.icon}</div><div class="tx"><b>${h.t}</b><span>${h.label}${h.sub?' · '+h.sub:''}</span><span class="kb-body" style="display:none;color:var(--ink);margin-top:8px;line-height:1.55">${h.body}</span></div><div class="ch" style="font-size:14px">▾</div></div>`
+    ).join("")+`</div></div>`;
+}
+function kbSearch(q){
+  KBQ=q||'';
+  const has=KBQ.trim().length>0;
+  const res=document.getElementById("kb-results"), br=document.getElementById("kb-browse");
+  if(res){ res.style.display=has?'':'none'; res.innerHTML=has?kbSearchResults(KBQ):''; }
+  if(br){ br.style.display=has?'none':''; }
+}
 
 /* ---------- CALENDAR ---------- */
 SCREENS.calendar=()=>`
