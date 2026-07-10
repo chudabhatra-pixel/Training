@@ -226,6 +226,15 @@ svg{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .post .ph{display:flex;align-items:center;gap:10px;margin-bottom:11px}
 .post .av{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-family:var(--fd);font-weight:700;color:#fff;font-size:14px}
 .post .nm{font-weight:600;font-size:14px}.post .mt{font-size:11.5px;color:var(--muted-2)}
+.post .ph .phx{flex:1;min-width:0}
+.pmenu-wrap{position:relative;flex-shrink:0}
+.pmenu-btn{width:32px;height:32px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted);font-size:18px;line-height:1;display:grid;place-items:center;cursor:pointer;transition:.12s}
+.pmenu-btn:hover{background:var(--green-bg);color:var(--green-ink)}
+.pmenu{position:absolute;top:38px;right:0;z-index:20;background:#fff;border:1px solid var(--line-2);border-radius:12px;box-shadow:var(--sh-3);padding:5px;min-width:130px}
+.pmenu[hidden]{display:none}
+.pmenu button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:none;padding:9px 11px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:inherit}
+.pmenu button:hover{background:var(--green-bg)}
+.pmenu button.del{color:#C64545}.pmenu button.del:hover{background:#FDECEC}
 .post .cap{font-size:14px;margin-bottom:11px;line-height:1.55}
 .post .img{border-radius:14px;overflow:hidden;margin-bottom:11px;background:var(--surface-2)}
 .post .img img{width:100%;display:block}
@@ -423,7 +432,7 @@ function demoApi(a,p){ return Promise.resolve({ok:true}); }
 
 /* ===== SERVER integration — ทำงานเมื่อใส่ API_URL (โหมดเดโม่ข้ามทั้งหมด) ===== */
 async function hydrateProfile(){ if(!SERVER)return; const r=await api("getProfile"); if(r&&r.ok!==false){ if(r.coins!=null)ME.coins=r.coins; if(r.points!=null)ME.xp=r.points; if(r.streak!=null)ME.streak=r.streak; if(r.checkinDays!=null)ME.checkinDays=r.checkinDays; if(r.monthDays!=null)ME.monthDays=r.monthDays; if(r.name)ME.name=r.name; if(r.photo!=null)ME.photo=r.photo; if(r.activeMonths!=null)ME.activeMonths=r.activeMonths; if(r.fullName!=null)ME.fullName=r.fullName; if(r.badges)ME.badges=r.badges; if(r.user&&r.user.checkedToday!=null)ME.checkedToday=r.user.checkedToday; if(r.pathSteps)PATHSTEPS=r.pathSteps; refreshChips(); paintTopBadges(); const sf=document.getElementById("sf-av"); if(sf)sf.innerHTML=avImg(ME.photo,ME.name); ["tb-nm","sf-nm"].forEach(i=>{const el=document.getElementById(i);if(el)el.textContent=ME.name;}); const ci=document.getElementById("checkin"); if(ci&&CUR==="home")ci.innerHTML=checkinHTML(); if(CUR==="me"){const v=document.getElementById("view"); if(v)v.innerHTML=SCREENS.me();} if(CUR==="path")repaintPath(); refreshRail(); } }
-async function hydrateFeed(){ if(!SERVER)return; const r=await api("getFeed"); if(r.ok){ FEED=r.feed.map(p=>({id:p.id,name:p.name,team:p.team,time:p.time,cap:p.caption,photo:p.photo,av:p.avatar||"",react:p.react||{},my:p.my,cmts:(p.comments||[]).map(c=>({n:c.name,t:c.text}))})); const el=document.getElementById("feed"); const html=FEED.map(feedHTML).join(""); if(el&&CUR==="life"&&el.innerHTML!==html)el.innerHTML=html; } }
+async function hydrateFeed(){ if(!SERVER)return; const r=await api("getFeed"); if(r.ok){ FEED=r.feed.map(p=>({id:p.id,name:p.name,team:p.team,time:p.time,cap:p.caption,photo:p.photo,av:p.avatar||"",react:p.react||{},my:p.my,cmts:(p.comments||[]).map(c=>({n:c.name,t:c.text})),mine:p.mine,canEdit:p.canEdit,canDelete:p.canDelete})); const el=document.getElementById("feed"); const html=FEED.map(feedHTML).join(""); if(el&&CUR==="life"&&el.innerHTML!==html)el.innerHTML=html; } }
 async function hydrateListings(){ if(!SERVER)return; const r=await api("getListings",{filter:SF}); if(r.ok){ LISTINGS=r.listings.map(l=>({id:l.id,kind:l.kind,title:l.title,desc:l.desc,price:l.price,bid:l.bid,emoji:l.emoji||"📦",photo:l.photo,by:l.by,color:AV[(l.id||0)%AV.length]})); const el=document.getElementById("mlist"); const html=(LISTINGS.filter(x=>SF==="all"||x.kind===SF).map(listingHTML).join("")||'<p style="color:var(--muted)">ยังไม่มีประกาศในหมวดนี้</p>'); if(el&&CUR==="share"&&el.innerHTML!==html)el.innerHTML=html; } }
 async function hydrateActivity(){ if(!SERVER)return; const [n,a]=await Promise.all([api("getNotifications"),api("getAnnouncements")]); if(n.ok)NOTIFS=n.notifs; if(a.ok)ANNOUNCE=a.announcements.map(x=>({ic:x.ic,t:x.title,s:x.body})); updateBell(); refreshRail(); }
 
@@ -742,7 +751,7 @@ ${heroHTML("pink","company lifestyle","ไลฟ์สไตล์ · แชร�
 <div class="sect an d3">📸 ฟีดทีม <span class="rule"></span></div>
 <div class="grid2"><div class="feed" id="feed">${FEED.map(feedHTML).join("")}</div>${railHTML()}</div>`;
 function feedHTML(p){const rk=Object.keys(p.react);return `<div class="post an" data-id="${p.id}">
- <div class="ph"><div class="av" style="background:${avc(p.name)};overflow:hidden">${avImg(p.av,p.name)}</div><div><div class="nm">${p.name}</div><div class="mt">${p.team} · ${p.time}</div></div></div>
+ <div class="ph"><div class="av" style="background:${avc(p.name)};overflow:hidden">${avImg(p.av,p.name)}</div><div class="phx"><div class="nm">${p.name}</div><div class="mt">${p.team} · ${p.time}</div></div>${(p.canEdit||p.canDelete)?`<div class="pmenu-wrap"><button class="pmenu-btn" onclick="togglePostMenu(event,'${p.id}')">⋯</button><div class="pmenu" id="pm-${p.id}" hidden>${p.canEdit?`<button onclick="editPost('${p.id}')">✏️ แก้ไข</button>`:''}${p.canDelete?`<button class="del" onclick="deletePost('${p.id}')">🗑️ ลบโพสต์</button>`:''}</div></div>`:''}</div>
  <div class="cap">${p.cap}</div>
  ${p.photo?`<div class="img"><img src="${p.photo}"/></div>`:''}
  <div class="reacts">${["❤️","🔥","👏","💪","😍","🎉"].map(e=>`<button class="rx ${p.my===e?'on':''}" onclick="reactPost(${p.id},'${e}')">${e}<span>${p.react[e]||0}</span></button>`).join("")}</div>
@@ -752,6 +761,28 @@ function feedHTML(p){const rk=Object.keys(p.react);return `<div class="post an" 
 function reactPost(id,e){const p=FEED.find(x=>x.id===id);if(p.my===e){p.react[e]=Math.max(0,(p.react[e]||0)-1);p.my=null;}else{if(p.my)p.react[p.my]=Math.max(0,(p.react[p.my]||0)-1);p.react[e]=(p.react[e]||0)+1;p.my=e;}
  document.querySelector(`.post[data-id="${id}"]`).outerHTML=feedHTML(p); if(SERVER)api("reactPost",{postId:id,emoji:e});}
 function addComment(id){const inp=document.getElementById("ci-"+id);const t=inp.value.trim();if(!t)return;const p=FEED.find(x=>x.id===id);p.cmts.push({n:"คุณ",t});document.querySelector(`.post[data-id="${id}"]`).outerHTML=feedHTML(p); if(SERVER)api("addComment",{postId:id,text:t});}
+/* ---------- จัดการโพสต์ (#12): แก้ไข / ลบ ---------- */
+function closePostMenus(){document.querySelectorAll(".pmenu:not([hidden])").forEach(m=>m.hidden=true);}
+function togglePostMenu(ev,id){ev.stopPropagation();const m=document.getElementById("pm-"+id);const open=m&&!m.hidden;closePostMenus();if(m)m.hidden=open;}
+document.addEventListener("click",closePostMenus);
+function editPost(id){closePostMenus();const p=FEED.find(x=>String(x.id)===String(id));if(!p)return;
+ modal(`<div class="sh"><div class="ptitle">✏️ แก้ไขโพสต์</div><button class="x" onclick="closeModal()">✕</button></div>
+ <textarea class="inp" id="ep-cap" rows="3" placeholder="แก้ไขข้อความ...">${(p.cap||"").replace(/</g,"&lt;")}</textarea>
+ ${p.photo?`<img src="${p.photo}" style="width:100%;border-radius:14px;margin-top:10px"/><div style="font-size:12px;color:var(--muted);margin-top:6px">* แก้ไขได้เฉพาะข้อความ รูปยังคงเดิม</div>`:''}
+ <button class="btn btn-g" style="width:100%;margin-top:14px" onclick="saveEditPost('${id}')">บันทึก</button>`);}
+function saveEditPost(id){const p=FEED.find(x=>String(x.id)===String(id));if(!p)return;const cap=document.getElementById("ep-cap").value.trim();
+ if(!cap&&!p.photo){toast("โพสต์ต้องมีข้อความหรือรูป");return;}
+ p.cap=cap; const el=document.querySelector(`.post[data-id="${id}"]`); if(el)el.outerHTML=feedHTML(p);
+ closeModal(); toast("✏️ แก้ไขโพสต์แล้ว");
+ if(SERVER)api("editPost",{postId:id,caption:cap}).then(r=>{if(r&&r.ok===false){toast(r.msg||"แก้ไขไม่สำเร็จ");hydrateFeed();}});}
+function deletePost(id){closePostMenus();const p=FEED.find(x=>String(x.id)===String(id));if(!p)return;
+ modal(`<div class="sh"><div class="ptitle">🗑️ ลบโพสต์</div><button class="x" onclick="closeModal()">✕</button></div>
+ <p style="font-size:14px;color:var(--muted);line-height:1.6">ต้องการลบโพสต์นี้ใช่ไหม? การลบไม่สามารถกู้คืนได้</p>
+ <div style="display:flex;gap:10px;margin-top:16px"><button class="btn btn-o" style="flex:1" onclick="closeModal()">ยกเลิก</button><button class="btn" style="flex:1;background:#C64545;color:#fff" onclick="confirmDeletePost('${id}')">ลบเลย</button></div>`);}
+function confirmDeletePost(id){const i=FEED.findIndex(x=>String(x.id)===String(id));if(i<0){closeModal();return;}
+ FEED.splice(i,1); const el=document.querySelector(`.post[data-id="${id}"]`); if(el)el.remove();
+ closeModal(); toast("🗑️ ลบโพสต์แล้ว");
+ if(SERVER)api("deletePost",{postId:id}).then(r=>{if(r&&r.ok===false){toast(r.msg||"ลบไม่สำเร็จ");hydrateFeed();}});}
 
 /* ---------- เควส (client-side) ---------- */
 function questHTML(){ return QUESTS.map((q,i)=>`<label class="rowi" style="cursor:pointer"><div class="ic">${q.ic}</div><div class="tx"><b style="${q.done?'text-decoration:line-through;opacity:.55':''}">${q.title}</b><span>+${q.xp} XP</span></div><input type="checkbox" ${q.done?'checked':''} onchange="toggleQuest(${i})" style="width:20px;height:20px;accent-color:var(--green);cursor:pointer"></label>`).join("")
@@ -796,9 +827,15 @@ function openLifePost(){LPHOTO=null;modal(`<div class="sh"><div class="ptitle">�
 function pickLP(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{LPHOTO=e.target.result;document.getElementById("lp-prev").innerHTML=`<img src="${LPHOTO}" style="width:100%;border-radius:14px;margin-top:10px"/>`;};r.readAsDataURL(f);}
 async function submitLP(){const cap=document.getElementById("lp-cap").value.trim();if(!cap&&!LPHOTO){toast("ใส่ข้อความหรือรูปก่อนนะ");return;}
  let photo=LPHOTO; if(photo&&SERVER){toast("กำลังอัปโหลดรูป...");photo=await uploadImage(photo,"post");}
- FEED.unshift({id:++FSEQ,name:ME.name,team:ME.team,time:"เมื่อกี้",cap:cap||"แชร์รูปกิจกรรม",photo:photo,av:ME.photo,react:{},my:null,cmts:[]});
- if(SERVER)api("createPost",{caption:cap,photo:photo||""}).then(hydrateFeed);
- ME.xp+=10;refreshChips();closeModal();burst();toast("🎉 โพสต์แล้ว! ยิ่งมีคน react ยิ่งได้ XP");if(CUR==="life")go("life");}
+ const tempId=++FSEQ;
+ FEED.unshift({id:tempId,name:ME.name,team:ME.team,time:"เมื่อกี้",cap:cap||"แชร์รูปกิจกรรม",photo:photo,av:ME.photo,react:{},my:null,cmts:[],mine:true,canEdit:true,canDelete:true});
+ closeModal();burst();if(CUR==="life")go("life");
+ if(SERVER){api("createPost",{caption:cap,photo:photo||""}).then(r=>{
+   if(r&&r.ok===false){const i=FEED.findIndex(x=>x.id===tempId);if(i>=0)FEED.splice(i,1);if(CUR==="life")go("life");toast(r.msg||"โพสต์ไม่สำเร็จ");}
+   else{ME.xp+=10;refreshChips();toast("🎉 โพสต์แล้ว! ยิ่งมีคน react ยิ่งได้ XP");}
+   hydrateFeed();
+ }).catch(()=>toast("เชื่อมต่อไม่สำเร็จ ลองใหม่อีกครั้ง"));}
+ else{ME.xp+=10;refreshChips();toast("🎉 โพสต์แล้ว! ยิ่งมีคน react ยิ่งได้ XP");}}
 
 /* ---------- SHARE (marketplace) ---------- */
 let SF="all";
