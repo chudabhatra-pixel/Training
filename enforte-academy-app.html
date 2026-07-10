@@ -754,13 +754,13 @@ function feedHTML(p){const rk=Object.keys(p.react);return `<div class="post an" 
  <div class="ph"><div class="av" style="background:${avc(p.name)};overflow:hidden">${avImg(p.av,p.name)}</div><div class="phx"><div class="nm">${p.name}</div><div class="mt">${p.team} · ${p.time}</div></div>${(p.canEdit||p.canDelete)?`<div class="pmenu-wrap"><button class="pmenu-btn" onclick="togglePostMenu(event,'${p.id}')">⋯</button><div class="pmenu" id="pm-${p.id}" hidden>${p.canEdit?`<button onclick="editPost('${p.id}')">✏️ แก้ไข</button>`:''}${p.canDelete?`<button class="del" onclick="deletePost('${p.id}')">🗑️ ลบโพสต์</button>`:''}</div></div>`:''}</div>
  <div class="cap">${p.cap}</div>
  ${p.photo?`<div class="img"><img src="${p.photo}"/></div>`:''}
- <div class="reacts">${["❤️","🔥","👏","💪","😍","🎉"].map(e=>`<button class="rx ${p.my===e?'on':''}" onclick="reactPost(${p.id},'${e}')">${e}<span>${p.react[e]||0}</span></button>`).join("")}</div>
+ <div class="reacts">${["❤️","🔥","👏","💪","😍","🎉"].map(e=>`<button class="rx ${p.my===e?'on':''}" onclick="reactPost('${p.id}','${e}')">${e}<span>${p.react[e]||0}</span></button>`).join("")}</div>
  <div class="cmts">${p.cmts.map(c=>`<div class="cmt"><b>${c.n}</b> ${c.t}</div>`).join("")}
-   <div class="cmt-add"><input class="cmt-in" id="ci-${p.id}" placeholder="แสดงความคิดเห็น..." onkeydown="if(event.key==='Enter')addComment(${p.id})"/><button class="cmt-send" onclick="addComment(${p.id})">ส่ง</button></div>
+   <div class="cmt-add"><input class="cmt-in" id="ci-${p.id}" placeholder="แสดงความคิดเห็น..." onkeydown="if(event.key==='Enter')addComment('${p.id}')"/><button class="cmt-send" onclick="addComment('${p.id}')">ส่ง</button></div>
  </div></div>`;}
-function reactPost(id,e){const p=FEED.find(x=>x.id===id);if(p.my===e){p.react[e]=Math.max(0,(p.react[e]||0)-1);p.my=null;}else{if(p.my)p.react[p.my]=Math.max(0,(p.react[p.my]||0)-1);p.react[e]=(p.react[e]||0)+1;p.my=e;}
+function reactPost(id,e){const p=FEED.find(x=>String(x.id)===String(id));if(!p)return;if(p.my===e){p.react[e]=Math.max(0,(p.react[e]||0)-1);p.my=null;}else{if(p.my)p.react[p.my]=Math.max(0,(p.react[p.my]||0)-1);p.react[e]=(p.react[e]||0)+1;p.my=e;}
  document.querySelector(`.post[data-id="${id}"]`).outerHTML=feedHTML(p); if(SERVER)api("reactPost",{postId:id,emoji:e});}
-function addComment(id){const inp=document.getElementById("ci-"+id);const t=inp.value.trim();if(!t)return;const p=FEED.find(x=>x.id===id);p.cmts.push({n:"คุณ",t});document.querySelector(`.post[data-id="${id}"]`).outerHTML=feedHTML(p); if(SERVER)api("addComment",{postId:id,text:t});}
+function addComment(id){const inp=document.getElementById("ci-"+id);const t=inp.value.trim();if(!t)return;const p=FEED.find(x=>String(x.id)===String(id));if(!p)return;p.cmts.push({n:"คุณ",t});document.querySelector(`.post[data-id="${id}"]`).outerHTML=feedHTML(p); if(SERVER)api("addComment",{postId:id,text:t});}
 /* ---------- จัดการโพสต์ (#12): แก้ไข / ลบ ---------- */
 function closePostMenus(){document.querySelectorAll(".pmenu:not([hidden])").forEach(m=>m.hidden=true);}
 function togglePostMenu(ev,id){ev.stopPropagation();const m=document.getElementById("pm-"+id);const open=m&&!m.hidden;closePostMenus();if(m)m.hidden=open;}
