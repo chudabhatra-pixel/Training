@@ -725,7 +725,7 @@ function startQuiz(quizId){
 }
 /* ---- หน้าเลือกชุดควิซ ---- */
 SCREENS.quizsets=()=>`<div class="an" style="max-width:680px;margin:0 auto">
- ${heroHTML("blue","quiz challenge","⚡ Quiz Challenge","เลือกชุดควิซที่อยากทำ ทำคะแนนให้ดีที่สุด แล้วขึ้นกระดานอันดับของทีม",`<button class="pill" style="background:rgba(255,255,255,.35)" onclick="go('learn')">📚 กลับไปเรียน</button>`)}
+ ${heroHTML("blue","quiz challenge","⚡ Quiz Challenge","เลือกชุดควิซที่อยากทำ ทำคะแนนให้ดีที่สุด แล้วขึ้นกระดานอันดับของทีม",`<button class="pill" style="background:rgba(255,255,255,.35)" onclick="openQuizHall()">🏆 Hall of Fame</button><button class="pill" style="background:rgba(255,255,255,.35)" onclick="go('learn')">📚 กลับไปเรียน</button>`)}
  <div class="sect an d2">📚 ชุดควิซทั้งหมด<span class="rule"></span></div>
  <div id="qs-list">${quizsetsList()}</div></div>`;
 POST.quizsets=()=>{ if(SERVER)hydrateQuizsets(); };
@@ -811,6 +811,22 @@ async function openQuizBoard(quizId){
       <div class="ic" style="font-size:16px">${medal[i]||('#'+(i+1))}</div>
       <div class="tx"><b>${u.name}${u.me?' (คุณ)':''}</b><span>${u.team||''}</span></div>
       <div class="rt" style="font-weight:800;color:${u.score>=pass?'#2CB67D':'var(--muted)'}">${u.score}%</div>
+    </div>`).join("");
+}
+async function openQuizHall(){
+  modal(`<div class="sh"><div class="ptitle">🏆 Hall of Fame</div><button class="x" onclick="closeModal()">✕</button></div>
+    <div style="color:var(--muted);font-size:12.5px;margin-bottom:2px">อันดับรวมทุกชุด · เรียงจากจำนวนชุดที่ผ่าน แล้วตามด้วย XP จากควิซ</div>
+    <div id="qh-list" style="color:var(--muted);font-size:13px;padding:10px 0">กำลังโหลด…</div>`);
+  if(!SERVER){ document.getElementById("qh-list").innerHTML='<p style="color:var(--muted)">โหมดเดโม่ — ต่อเซิร์ฟเวอร์เพื่อดูอันดับจริง</p>'; return; }
+  const r=await api("getQuizHallOfFame");
+  const el=document.getElementById("qh-list"); if(!el)return;
+  if(!r||!r.ok||!r.list||!r.list.length){ el.innerHTML='<p style="color:var(--muted)">ยังไม่มีใครทำควิซเลย — เริ่มเป็นคนแรก! 🚀</p>'; return; }
+  const medal=["🥇","🥈","🥉"];
+  el.innerHTML=`<div style="font-size:12px;color:var(--muted-2);margin-bottom:8px">${r.myRank?`อันดับของคุณ: #${r.myRank} จาก ${r.total} คน`:`มีผู้เข้าร่วม ${r.total} คน`} · ทั้งหมด ${r.totalSets} ชุด</div>`+
+    r.list.map((u,i)=>`<div class="rowi" style="${u.me?'background:rgba(79,124,255,.08);border-radius:12px':''}">
+      <div class="ic" style="font-size:16px">${medal[i]||('#'+(i+1))}</div>
+      <div class="tx"><b>${u.name}${u.me?' (คุณ)':''} ${u.fullClear?'<span style="font-size:11px;color:#F5B93C">👑 ครบทุกชุด</span>':''}</b><span>${u.team||''} · ผ่าน ${u.passed}/${r.totalSets} ชุด · เฉลี่ย ${u.avg}%</span></div>
+      <div class="rt" style="font-weight:800;color:var(--blue)">${u.xp} XP</div>
     </div>`).join("");
 }
 
