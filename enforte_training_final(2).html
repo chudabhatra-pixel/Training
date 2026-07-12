@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Enforte Product Learning Hub</title>
+<title>Product Training</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -325,6 +325,7 @@ nav{position:fixed;inset:0 auto 0 0;width:264px;background:linear-gradient(180de
 .nav-link:hover{color:#fff;background:rgba(255,255,255,.08);transform:translateX(2px)}
 .nav-link.on{color:#fff;background:linear-gradient(135deg,rgba(108,139,255,.26),rgba(133,213,195,.15));border:1px solid rgba(255,255,255,.12);box-shadow:inset 3px 0 #85D5C3}
 .nav-icon{width:27px;height:27px;border-radius:9px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-size:14px;flex-shrink:0;color:#DDE6FF}
+.nav-text{display:inline-block}
 .nav-link.on .nav-icon{background:#fff;color:#2459D3}
 .nav-badge{margin-left:auto;border-radius:999px;padding:2px 7px;background:#F04D5D;font-size:9px}
 .nav-learning-card{margin-top:auto;padding:16px;border-radius:16px;background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.1)}
@@ -472,7 +473,11 @@ body.modal-open{overflow:hidden}
   nav{inset:0 0 auto 0;width:auto;height:72px;overflow:visible}
   .nav-inner{height:72px;padding:10px 14px;flex-direction:row;align-items:center;gap:12px;overflow-x:auto}
   .nav-brand{border:0;padding:0;min-width:200px}.brand-logo-img{width:180px;height:auto}.nav-section-label,.nav-learning-card,.nav-footer-note{display:none}
-  .nav-links{flex-direction:row;gap:4px}.nav-link{width:auto;height:42px;padding:0 10px}.nav-link span:not(.nav-icon):not(.nav-badge){display:none}.nav-link.on{box-shadow:none}.nav-badge{display:none}
+  .nav-links{flex-direction:row;gap:6px}
+  .nav-link{width:68px;min-width:68px;height:56px;padding:6px 4px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;border-radius:14px;text-align:center}
+  .nav-link .nav-text{display:block;font-size:8px;line-height:1.1;color:rgba(255,255,255,.82);letter-spacing:0;text-transform:none;white-space:normal}
+  .nav-link.on{box-shadow:none}
+  .nav-badge{display:none}
   .page{margin-left:0;padding-top:72px}footer{margin-left:0!important}.hero{padding:20px}.hero-banner{padding:32px 25px;border-radius:22px}.category-grid{grid-template-columns:1fr}.category-grid .hero-cat:last-child{grid-column:auto}.category-heading{align-items:flex-start;flex-direction:column}.category-heading p{text-align:left}
   .filter-strip{top:80px;margin:0 20px 18px}.filter-inner{overflow-x:auto}.fsearch{min-width:230px}.fcount{display:none}
   .prod-section{padding:0 20px}.pg-wrap,.cmp-wrap,.quiz-wrap,.sc-wrap{padding:28px 20px 60px}.dp{padding:10px}.dp-inner{width:100%;min-height:calc(100vh - 20px);grid-template-columns:1fr;padding:22px}.dp-img-col{position:static}.dp-img-wrap{max-width:250px;margin:auto}.dp-content{padding:20px}
@@ -495,11 +500,11 @@ body.modal-open{overflow:hidden}
     </div>
     <div class="nav-section-label">LEARNING MENU</div>
     <div class="nav-links">
-      <button class="nav-link on" data-page="products" onclick="goPage('products',this)"><span class="nav-icon">⌂</span><span>หน้าหลักและผลิตภัณฑ์</span></button>
-      <button class="nav-link" data-page="faq" onclick="goPage('faq',this)"><span class="nav-icon">?</span><span>FAQ และข้อควรระวัง</span><span class="nav-badge">14</span></button>
-      <button class="nav-link" data-page="compare" onclick="goPage('compare',this)"><span class="nav-icon">⇄</span><span>เปรียบเทียบสินค้า</span></button>
-      <button class="nav-link" data-page="quiz" onclick="goPage('quiz',this)"><span class="nav-icon">✓</span><span>แบบทดสอบความรู้</span></button>
-      <button class="nav-link" data-page="script" onclick="goPage('script',this)"><span class="nav-icon">◫</span><span>บทพูดขาย</span></button>
+      <button class="nav-link on" data-page="products" onclick="goPage('products',this)"><span class="nav-icon">⌂</span><span class="nav-text">หน้าหลัก</span></button>
+      <button class="nav-link" data-page="faq" onclick="goPage('faq',this)"><span class="nav-icon">?</span><span class="nav-text">FAQ</span></button>
+      <button class="nav-link" data-page="compare" onclick="goPage('compare',this)"><span class="nav-icon">⇄</span><span class="nav-text">เปรียบเทียบ</span></button>
+      <button class="nav-link" data-page="quiz" onclick="goPage('quiz',this)"><span class="nav-icon">✓</span><span class="nav-text">แบบทดสอบ</span></button>
+      <button class="nav-link" data-page="script" onclick="goPage('script',this)"><span class="nav-icon">◫</span><span class="nav-text">บทพูดขาย</span></button>
     </div>
     <div class="nav-learning-card">
       <div class="nlc-label">KNOWLEDGE CHECK</div>
@@ -517,8 +522,8 @@ body.modal-open{overflow:hidden}
   <section class="hero" aria-labelledby="learning-title">
     <div class="hero-banner">
       <div class="hero-left">
-        <div class="hero-eyebrow eyebrow"><span class="live-dot"></span> Enforte Product Academy</div>
-        <h1 class="hero-title display" id="learning-title">เรียนรู้สินค้า<br><em>ขายได้อย่างมั่นใจ</em></h1>
+        <div class="hero-eyebrow eyebrow"><span class="live-dot"></span> Product Training</div>
+        <h1 class="hero-title display" id="learning-title">คู่มือความรู้<br><em>ผลิตภัณฑ์</em></h1>
         <p class="hero-desc body-lg">ศูนย์รวมข้อมูลผลิตภัณฑ์ ส่วนประกอบ ประโยชน์ ข้อควรระวัง เทคนิคแนะนำสินค้า และแบบทดสอบในหน้าเดียว</p>
         <div class="hero-actions">
           <button class="primary-action" onclick="document.querySelector('.filter-strip').scrollIntoView({behavior:'smooth'})">เริ่มเรียนรู้สินค้า <span>↓</span></button>
@@ -1387,8 +1392,6 @@ function syncLearningCounts(){
   if(hc)hc.textContent=totals.hc;
   if(me)me.textContent=totals.me;
   if(beauty)beauty.textContent=totals.beauty;
-  const faqBadge=document.querySelector('[data-page="faq"] .nav-badge');
-  if(faqBadge)faqBadge.textContent=FAQS.length;
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDP();});
 document.getElementById('dp').addEventListener('click',e=>{if(e.target.id==='dp')closeDP();});
