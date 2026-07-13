@@ -489,6 +489,60 @@ body.modal-open{overflow:hidden}
   .filter-strip{padding:9px}.filter-inner{display:block}.fsearch{min-width:0;margin-bottom:8px}.fbtns{overflow-x:auto}.fbtn{flex:0 0 auto}.pgrid{grid-template-columns:1fr}.sec-rule{gap:9px}.sec-name{font-size:18px}.sec-cnt{margin-left:auto}
   .pg-header{padding:23px 20px}.qbox{padding:21px}.qmodes{grid-template-columns:1fr}.dp-ings,.dp-bens{grid-template-columns:1fr}
 }
+
+/* ═══════════ PRINT ═══════════ */
+#mobile-print-host{display:none}
+@media print{
+  @page{size:A4;margin:12mm}
+  html,body{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;background:#fff!important;background-image:none!important;background-attachment:initial!important}
+  body{color:#16233F}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;box-shadow:none!important;animation:none!important;transition:none!important}
+
+  /* โหมด A — กดปุ่ม "พิมพ์ผลิตภัณฑ์นี้" : พิมพ์เฉพาะใบผลิตภัณฑ์ 1 แผ่น */
+  body.printing-product>*:not(#mobile-print-host){display:none!important}
+  body.printing-product #mobile-print-host{display:block!important}
+
+  /* โหมด B — Ctrl+P / สั่งพิมพ์จากเบราว์เซอร์ : พิมพ์เฉพาะหน้าที่เปิดอยู่ แบบสะอาด */
+  body:not(.printing-product) nav,
+  body:not(.printing-product) footer,
+  body:not(.printing-product) #dp,
+  body:not(.printing-product) .filter-strip,
+  body:not(.printing-product) .hero-banner,
+  body:not(.printing-product) .hero-right,
+  body:not(.printing-product) .category-heading,
+  body:not(.printing-product) .page:not(.on){display:none!important}
+  body:not(.printing-product) .page{margin-left:0!important;min-height:0!important;padding:0!important}
+  body:not(.printing-product) .hero{padding:0!important}
+  body:not(.printing-product) .pc,
+  body:not(.printing-product) .fa,
+  body:not(.printing-product) .sym-section,
+  body:not(.printing-product) .qmc{break-inside:avoid;page-break-inside:avoid}
+
+  /* ใบผลิตภัณฑ์ */
+  #mobile-print-host{color:#16233F;background:#fff;font-family:"Sarabun",Arial,sans-serif}
+  #mobile-print-host *{box-sizing:border-box}
+  .print-sheet{width:100%;background:#fff}
+  .print-top{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:2px solid var(--print-col,#16233F)}
+  .print-brand{width:170px;height:auto;object-fit:contain}
+  .print-hero{display:grid;grid-template-columns:180px 1fr;gap:22px;padding:22px 0 16px;break-inside:avoid;page-break-inside:avoid}
+  .print-product-img{width:180px;height:180px;object-fit:contain;border:1px solid #DDE5EF;border-radius:14px;padding:12px}
+  .print-kicker{font-size:10px;font-weight:700;color:var(--print-col,#16233F);letter-spacing:.05em;margin-bottom:6px}
+  .print-title{font-size:30px;line-height:1.08;margin:0 0 12px}
+  .print-badges{display:flex;flex-wrap:wrap;gap:7px}
+  .print-badge{font-size:10px;border:1px solid #DDE5EF;border-radius:999px;padding:5px 9px;background:#F7F9FC}
+  .print-section{margin-top:18px}
+  .print-section h2{font-size:13px;margin:0 0 9px;padding-bottom:6px;border-bottom:1px solid #DDE5EF;color:var(--print-col,#16233F)}
+  .print-ingredients{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .print-ingredient{padding:9px;border-radius:9px;background:#F7F9FC;border:1px solid #E5EAF1;break-inside:avoid;page-break-inside:avoid}
+  .print-ingredient b{display:block;font-size:11px;margin-bottom:3px}
+  .print-ingredient span{font-size:10px;color:#5E6B80;line-height:1.4}
+  .print-list{margin:0;padding-left:18px;columns:2;column-gap:26px}
+  .print-list li{font-size:11px;line-height:1.5;margin-bottom:4px;break-inside:avoid;page-break-inside:avoid}
+  .print-warning{margin-top:14px;padding:10px 12px;border-left:4px solid #F0B94B;background:#FFF9EA;break-inside:avoid;page-break-inside:avoid}
+  .print-warning h2{font-size:12px;margin:0 0 5px;color:#7B5A00}
+  .print-warning .print-list{columns:1}
+  .print-note{margin-top:16px;padding-top:10px;border-top:1px solid #E5EAF1;font-size:8px;color:#7A879D;text-align:center}
+}
 </style>
 </head>
 <body>
@@ -1175,16 +1229,9 @@ function closeDP(){
   document.body.classList.remove('modal-open');
 }
 
-function printCurrentProduct(){
-  const p=PRODUCTS.find(x=>x.id===activeProductId);
-  if(!p)return;
-
-  const ua=navigator.userAgent||'';
-  const isLine=/Line\//i.test(ua);
-  if(isLine){
-    alert('หากเมนูพิมพ์ไม่แสดง กรุณากดเมนู ⋯ แล้วเลือก “เปิดใน Safari” หรือ “เปิดใน Chrome” จากนั้นกดพิมพ์อีกครั้ง');
-  }
-
+let printCleanupTimer=null;
+function buildPrintHost(p){
+  clearTimeout(printCleanupTimer);
   const col=CAT_HEX[p.category];
   const unitText=p.unit||'กระปุก';
   const packageText=p.packageLabel||`${p.capsCount} แคปซูล/${unitText}`;
@@ -1194,44 +1241,10 @@ function printCurrentProduct(){
   const logo=document.querySelector('.brand-logo-img')?.src||'';
 
   document.getElementById('mobile-print-host')?.remove();
-  document.getElementById('mobile-print-style')?.remove();
-
-  const style=document.createElement('style');
-  style.id='mobile-print-style';
-  style.textContent=`
-    #mobile-print-host{display:none}
-    @media print{
-      @page{size:A4;margin:12mm}
-      body>*:not(#mobile-print-host){display:none!important}
-      #mobile-print-host{display:block!important;color:#16233F;background:#fff;font-family:Arial,"Sarabun",sans-serif}
-      #mobile-print-host *{box-sizing:border-box}
-      .print-sheet{width:100%;background:#fff}
-      .print-top{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:2px solid ${col}}
-      .print-brand{width:170px;height:auto;object-fit:contain}
-      .print-hero{display:grid;grid-template-columns:180px 1fr;gap:22px;padding:22px 0 16px}
-      .print-product-img{width:180px;height:180px;object-fit:contain;border:1px solid #DDE5EF;border-radius:14px;padding:12px}
-      .print-kicker{font-size:10px;font-weight:700;color:${col};letter-spacing:.05em;margin-bottom:6px}
-      .print-title{font-size:30px;line-height:1.08;margin:0 0 12px}
-      .print-badges{display:flex;flex-wrap:wrap;gap:7px}
-      .print-badge{font-size:10px;border:1px solid #DDE5EF;border-radius:999px;padding:5px 9px;background:#F7F9FC}
-      .print-section{margin-top:18px}
-      .print-section h2{font-size:13px;margin:0 0 9px;padding-bottom:6px;border-bottom:1px solid #DDE5EF;color:${col}}
-      .print-ingredients{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-      .print-ingredient{padding:9px;border-radius:9px;background:#F7F9FC;border:1px solid #E5EAF1}
-      .print-ingredient b{display:block;font-size:11px;margin-bottom:3px}
-      .print-ingredient span{font-size:10px;color:#5E6B80;line-height:1.4}
-      .print-list{margin:0;padding-left:18px;columns:2;column-gap:26px}
-      .print-list li{font-size:11px;line-height:1.5;margin-bottom:4px;break-inside:avoid}
-      .print-warning{margin-top:14px;padding:10px 12px;border-left:4px solid #F0B94B;background:#FFF9EA}
-      .print-warning h2{font-size:12px;margin:0 0 5px;color:#7B5A00}
-      .print-warning .print-list{columns:1}
-      .print-note{margin-top:16px;padding-top:10px;border-top:1px solid #E5EAF1;font-size:8px;color:#7A879D;text-align:center}
-    }
-  `;
-  document.head.appendChild(style);
 
   const host=document.createElement('div');
   host.id='mobile-print-host';
+  host.style.setProperty('--print-col',col);
   host.innerHTML=`
     <main class="print-sheet">
       <header class="print-top"><img class="print-brand" src="${logo}" alt="Enforte Academy"></header>
@@ -1253,24 +1266,46 @@ function printCurrentProduct(){
       <div class="print-note">เอกสารฝึกอบรมภายใน · ข้อมูลผลิตภัณฑ์ควรใช้ตามแนวทางของบริษัท</div>
     </main>`;
   document.body.appendChild(host);
+  document.body.classList.add('printing-product');
+  return host;
+}
 
-  const cleanup=()=>{
-    host.remove();
-    style.remove();
-    window.removeEventListener('afterprint',cleanup);
-  };
-  window.addEventListener('afterprint',cleanup);
+function clearPrintHost(){
+  document.body.classList.remove('printing-product');
+  document.getElementById('mobile-print-host')?.remove();
+}
 
+function printCurrentProduct(){
+  const p=PRODUCTS.find(x=>x.id===activeProductId);
+  if(!p)return;
+
+  const ua=navigator.userAgent||'';
+  if(/Line\//i.test(ua)){
+    alert('หากเมนูพิมพ์ไม่แสดง กรุณากดเมนู ⋯ แล้วเลือก “เปิดใน Safari” หรือ “เปิดใน Chrome” จากนั้นกดพิมพ์อีกครั้ง');
+  }
+
+  const host=buildPrintHost(p);
   const img=host.querySelector('.print-product-img');
-  const doPrint=()=>setTimeout(()=>window.print(),120);
+  const doPrint=()=>setTimeout(()=>window.print(),150);
   if(img && !img.complete){
     img.addEventListener('load',doPrint,{once:true});
     img.addEventListener('error',doPrint,{once:true});
   }else{
     doPrint();
   }
-  setTimeout(cleanup,120000);
 }
+
+// สั่งพิมพ์เองด้วย Ctrl+P / เมนูเบราว์เซอร์: ถ้ากำลังเปิดรายละเอียดสินค้าอยู่ ให้พิมพ์ใบผลิตภัณฑ์นั้น
+window.addEventListener('beforeprint',()=>{
+  if(document.getElementById('mobile-print-host'))return;
+  const dp=document.getElementById('dp');
+  if(dp && dp.classList.contains('on') && activeProductId){
+    const p=PRODUCTS.find(x=>x.id===activeProductId);
+    if(p)buildPrintHost(p);
+  }
+});
+// ล้างสถานะพิมพ์หลังปิดหน้าต่างพิมพ์ (หน่วงไว้ เผื่อเบราว์เซอร์ยัง render ตัวอย่างอยู่)
+window.addEventListener('afterprint',()=>{printCleanupTimer=setTimeout(clearPrintHost,600);});
 
 // ── FAQ ──
 function showFaq(cat,btn){
