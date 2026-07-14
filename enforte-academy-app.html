@@ -790,6 +790,45 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai','Not
   .hero.split{min-height:0; padding:24px 22px; gap:20px}
   .hero.split .hh-l h1{font-size:25px}
 }
+
+/* ============================================================
+   FIX 2 · กล่องเช็คอินในแบนเนอร์ล้นออกนอกกรอบ (สำคัญ)
+   ============================================================ */
+.hero.split .hh-r{width:330px}
+.ci-glass{overflow:hidden}
+/* บังคับเป็นตาราง: [วงแหวน | ข้อความ] แล้วปุ่มเต็มแถวล่าง — ไม่มีทางล้นอีก */
+.ci-glass .checkin{
+  display:grid !important; grid-template-columns:auto minmax(0,1fr);
+  gap:12px; align-items:center; text-align:left; flex-wrap:nowrap;
+}
+.ci-glass .ring,.ci-glass .ring svg{width:82px !important; height:82px !important; flex-shrink:0}
+.ci-glass .ring .c b{font-size:21px}
+.ci-glass .ring .c span{font-size:10.5px; white-space:nowrap}
+.ci-glass .ci-mid{min-width:0 !important; flex:none !important}
+.ci-glass .ci-mid h3{font-size:13.5px; margin:7px 0 0; line-height:1.45; overflow-wrap:anywhere}
+.ci-glass .streak{font-size:12.5px; padding:4px 9px; white-space:nowrap}
+.ci-glass .big-btn{
+  grid-column:1 / -1; width:100%; margin:11px 0 0; padding:11px 14px;
+  font-size:14px; white-space:nowrap; min-width:0;
+}
+.ci-glass .week{grid-column:1 / -1}
+
+/* ============================================================
+   FIX 3 · Sidebar โลโก้/ฟุตเตอร์ไม่ทับกัน
+   ============================================================ */
+.side .brand{
+  display:flex; align-items:center; justify-content:center;
+  margin:12px; padding:10px 12px; overflow:hidden;
+}
+.side .brand img{max-width:100%; height:auto; display:block}
+.side-foot{overflow:hidden}
+.side-foot .r{display:flex; align-items:center; gap:10px; min-width:0}
+.side-foot .av{flex-shrink:0}
+.side-foot b,.side-foot small{overflow-wrap:anywhere}
+
+/* การ์ดคู่สูงเท่ากัน ดูสมส่วน */
+.two{align-items:stretch}
+.two > .card{display:flex; flex-direction:column}
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -2763,8 +2802,8 @@ function nearBadgeHTML(){
   const cand=BADGE_CAT.filter(b=>!badgeEarned(b.k)).map(b=>{
     const p=badgeProg(b.k);
     return {b:b, p:p, pct:p.tot?Math.min(100,Math.round(p.cur*100/p.tot)):0};
-  }).filter(x=>x.pct>0).sort((a,b)=>b.pct-a.pct);
-  if(!cand.length) return `<p style="color:var(--muted);font-size:13px">🎉 ปลดล็อก badge ครบทุกใบที่ทำได้แล้ว!</p>`;
+  }).sort((a,b)=>b.pct-a.pct);
+  if(!cand.length) return `<p style="color:var(--muted);font-size:13px">🎉 ปลดล็อก badge ครบทุกใบแล้ว!</p>`;
   const x=cand[0], b=x.b;
   const rest=Math.max(0,x.p.tot-x.p.cur);
   return `<div class="near">
