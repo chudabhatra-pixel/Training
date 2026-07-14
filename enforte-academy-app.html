@@ -671,6 +671,60 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai','Not
   *,*::before,*::after{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important}
   .hero::before{display:none}
 }
+
+/* ============================================================
+   HOME v2 · แบนเนอร์รวมเช็คอิน + เลย์เอาต์สะอาด สมส่วน
+   ============================================================ */
+.hero.split{display:flex; gap:26px; align-items:center; justify-content:space-between; padding:26px 28px}
+.hero.split .hh-l{flex:1; min-width:0; position:relative; z-index:3}
+.hero.split .hh-l h1{margin:4px 0 6px; font-size:29px; line-height:1.28}
+.hero.split .hh-l p{margin-bottom:14px; max-width:460px}
+.hero.split .hh-r{width:302px; flex-shrink:0; position:relative; z-index:3}
+@media(max-width:1080px){
+  .hero.split{flex-direction:column; align-items:stretch; padding:22px}
+  .hero.split .hh-r{width:100%}
+  .hero.split .hh-l h1{font-size:24px}
+}
+
+/* กล่องเช็คอินแบบกระจกในแบนเนอร์ */
+.ci-glass{
+  background:rgba(255,255,255,.13); border:1px solid rgba(255,255,255,.24);
+  backdrop-filter:blur(14px) saturate(1.1); border-radius:18px; padding:16px 16px 14px;
+  box-shadow:0 12px 34px rgba(6,14,28,.28);
+}
+.ci-glass .checkin{
+  background:transparent !important; border:0 !important; box-shadow:none !important;
+  padding:0; gap:14px; flex-wrap:wrap; justify-content:center; text-align:center;
+}
+.ci-glass .ring .tk{stroke:rgba(255,255,255,.22)}
+.ci-glass .ring .c b{color:#fff; font-size:26px}
+.ci-glass .ring .c span{color:rgba(255,255,255,.72)}
+.ci-glass .ci-mid{flex:1; min-width:120px; text-align:left}
+.ci-glass .ci-mid h3{color:#fff; font-size:15px; margin:6px 0 0}
+.ci-glass .ci-mid p{display:none}
+.ci-glass .streak{background:rgba(255,255,255,.2); color:#fff; border:0}
+.ci-glass .big-btn{width:100%; justify-content:center; margin-top:2px}
+.ci-glass .big-btn.done{background:rgba(255,255,255,.18); color:#fff; border:1px solid rgba(255,255,255,.3)}
+.ci-glass .week{margin:12px 0 4px; gap:5px}
+.ci-glass .week .d{background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.16); padding:6px 0 5px}
+.ci-glass .week .d b{color:rgba(255,255,255,.6)}
+.ci-glass .week .d .m{background:rgba(255,255,255,.16); color:rgba(255,255,255,.75); width:18px; height:18px; font-size:11px}
+.ci-glass .week .d.on{background:rgba(140,198,63,.28); border-color:rgba(140,198,63,.55)}
+.ci-glass .week .d.on .m{background:var(--green-l); color:#0F1F38; box-shadow:none}
+.ci-glass .week .d.today{border-color:rgba(255,255,255,.55); box-shadow:none}
+.ci-glass .week .d.today b{color:#fff}
+.ci-glass .wk-sum{display:flex; justify-content:space-between; font-size:11.5px; color:rgba(255,255,255,.7)}
+.ci-glass .wk-sum b{color:#C9F07A}
+
+/* แถว 2 คอลัมน์ให้สมส่วน */
+.two{display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start}
+@media(max-width:1180px){.two{grid-template-columns:1fr}}
+.two > .card{margin:0}
+.card.tall{display:flex; flex-direction:column}
+
+/* หัวข้อ section ให้เบาลง อ่านง่าย */
+.sect{font-size:15px; margin:22px 0 11px}
+.pad{gap:12px}
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -2783,10 +2837,16 @@ ${heroHTML("","bright learning community","เรียนให้สนุก 
 
   <div class="sect an d6">🌈 เมนูสำรวจอื่น ๆ <span class="rule"></span></div>
   <div class="pad">
+   ${tile("learn","learn","📚","เรียนรู้","บทเรียน Flashcard Quiz","core","d6")}
+   ${tile("path","path","🛤️","Learning Path","เส้นทางเรียนตามตำแหน่ง","core","d6")}
+   ${tile("chal","chal","🏆","กิจกรรม","Challenge & Team Battle","fun","d6")}
+   ${tile("life","life","📸","ไลฟ์สไตล์","แชร์รูปและโมเมนต์","","d6")}
    ${tile("kb","kb","🔎","คลังความรู้","สคริปต์ FAQ Call Library","","d6")}
    ${tile("share","share","🤝","แบ่งปัน","ซื้อ ขาย ให้ฟรี ประมูล","","d6")}
    ${tile("rewards","rewards","🎁","รางวัล","แลกเหรียญ & ใบประกาศ","","d6")}
    ${tile("board","board","⭐","อันดับ","Top Learner & ทีม","","d6")}
+   ${tile("celebrate","celebrate","🎂","วันสำคัญ","วันเกิด & ครบรอบทีม","","d6")}
+   ${tile("calendar","calendar","📅","ปฏิทิน","ตารางอบรม & โพล","","d6")}
   </div>
  </div>
  ${railHTML()}
@@ -2849,6 +2909,117 @@ hydrateFeed = async function(){
   const h=document.querySelector("#login .login-hint");
   if(h && SERVER) h.innerHTML="เข้าสู่ระบบด้วยรหัสพนักงาน (เช่น <b>AC007</b>) และรหัสผ่านของคุณ<br>ลืมรหัสผ่าน? ติดต่อ HR เพื่อตั้งรหัสใหม่";
 })();
+
+
+/* ================================================================
+ *  HOME v2 — แบนเนอร์รวมเช็คอิน + เลย์เอาต์สะอาด (override ตัวล่าสุด)
+ * ================================================================ */
+
+/* ภาพแบนเนอร์ให้ครบทุกหน้า (รวมหน้าที่เพิ่งขาดไป) */
+Object.assign(HERO_IMG, {
+  me:        PX("4427955/pexels-photo-4427955.jpeg"),
+  flash:     PX("9301152/pexels-photo-9301152.jpeg"),
+  quiz:      PX("9301152/pexels-photo-9301152.jpeg"),
+  board:     PX("7709287/pexels-photo-7709287.jpeg"),
+  celebrate: PX("7709287/pexels-photo-7709287.jpeg")
+});
+
+/* แถบวันในสัปดาห์ (เวอร์ชันย่อสำหรับใส่ในแบนเนอร์) */
+function weekMiniHTML(){
+  const N=["จ","อ","พ","พฤ","ศ","ส","อา"];
+  const todayIdx=(new Date().getDay()+6)%7;
+  const streak=Number(ME.streak||0), today=!!ME.checkedToday;
+  let done=0;
+  const cells=N.map((d,i)=>{
+    let on=false;
+    if(i<todayIdx){ const back=todayIdx-i; on = streak >= (today?back+1:back); }
+    else if(i===todayIdx){ on = today; }
+    if(on)done++;
+    return `<div class="d ${on?'on':''} ${i===todayIdx?'today':''}"><b>${d}</b><div class="m">${on?'✓':''}</div></div>`;
+  }).join("");
+  const left=Math.max(0,5-done);
+  return `<div class="week">${cells}</div>
+    <div class="wk-sum"><span>สัปดาห์นี้ <b>${done}/5 วัน</b></span><span>${left?`ขาดอีก ${left} วัน 🎯`:'ครบเป้าแล้ว 🎉'}</span></div>`;
+}
+
+/* หน้าแรก: Hero(+เช็คอิน) → เรียนต่อ → Featured → [คำถาม | Badge] → [ภารกิจ | เพื่อนร่วมทีม] → เมนู */
+SCREENS.home=()=>`
+<div class="hero split an" data-hero style="--hero-img:url('${HERO_IMG.home}')">
+  <span class="blob b1"></span>
+  <div class="hh-l">
+    <small>bright learning community</small>
+    <h1>เรียนให้สนุก แชร์ให้ทีมโตไปด้วยกัน</h1>
+    <p>เก็บแต้ม เรียนรู้ แข่งกับทีม และแบ่งปันเรื่องราว — ทุกอย่างในที่เดียว</p>
+    <div class="hero-actions">
+      <button class="pill solid" onclick="go('learn')">📖 เริ่มเรียนวันนี้</button>
+      <button class="pill" onclick="go('path')">🛤️ Learning Path</button>
+    </div>
+  </div>
+  <div class="hh-r">
+    <div class="ci-glass">
+      <div class="checkin" id="checkin">${checkinHTML()}</div>
+      <div id="home-week">${weekMiniHTML()}</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid2">
+ <div>
+  <div id="home-continue" class="an d2">${continueHTML()}</div>
+  <div id="celeb-home"></div>
+
+  <div class="sect an d3">✨ น่าสนใจตอนนี้ <span class="rule"></span></div>
+  ${featHTML()}
+
+  <div class="two an d4" style="margin-top:16px">
+    <div class="card tall">
+      <h3 style="margin:0 0 2px">💡 คำถามประจำวัน</h3>
+      <div id="home-dq">${dqHTML()}</div>
+    </div>
+    <div class="card tall">
+      <h3 style="margin:0 0 12px">🏅 ใกล้ปลดล็อกแล้ว</h3>
+      <div id="home-near">${nearBadgeHTML()}</div>
+    </div>
+  </div>
+
+  <div class="two an d5" style="margin-top:14px">
+    <div class="card tall">
+      <h3 style="margin:0 0 10px">✅ ภารกิจวันนี้</h3>
+      <div id="missions-box">${missionsHTML()}</div>
+    </div>
+    <div class="card tall">
+      <h3 style="margin:0 0 6px">👥 เพื่อนร่วมทีมกำลังเรียนอะไร</h3>
+      <div id="home-soc">${socialHTML()}</div>
+    </div>
+  </div>
+
+  <div class="sect an d6">🌈 เมนูสำรวจอื่น ๆ <span class="rule"></span></div>
+  <div class="pad">
+   ${tile("learn","learn","📚","เรียนรู้","บทเรียน Flashcard Quiz","core","d6")}
+   ${tile("path","path","🛤️","Learning Path","เส้นทางเรียนตามตำแหน่ง","core","d6")}
+   ${tile("chal","chal","🏆","กิจกรรม","Challenge & Team Battle","fun","d6")}
+   ${tile("life","life","📸","ไลฟ์สไตล์","แชร์รูปและโมเมนต์","","d6")}
+   ${tile("kb","kb","🔎","คลังความรู้","สคริปต์ FAQ Call Library","","d6")}
+   ${tile("share","share","🤝","แบ่งปัน","ซื้อ ขาย ให้ฟรี ประมูล","","d6")}
+   ${tile("rewards","rewards","🎁","รางวัล","แลกเหรียญ & ใบประกาศ","","d6")}
+   ${tile("board","board","⭐","อันดับ","Top Learner & ทีม","","d6")}
+   ${tile("celebrate","celebrate","🎂","วันสำคัญ","วันเกิด & ครบรอบทีม","","d6")}
+   ${tile("calendar","calendar","📅","ปฏิทิน","ตารางอบรม & โพล","","d6")}
+  </div>
+ </div>
+ ${railHTML()}
+</div>`;
+
+/* วาดส่วนสดใหม่ (แถบสัปดาห์ย้ายมาอยู่ในแบนเนอร์แล้ว) */
+function paintHomeExtras(){
+  if(CUR!=="home")return;
+  const set=(id,html)=>{const el=document.getElementById(id); if(el)el.innerHTML=html;};
+  set("home-continue",continueHTML());
+  set("home-week",weekMiniHTML());
+  set("home-near",nearBadgeHTML());
+  set("home-soc",socialHTML());
+  setTimeout(()=>{ document.querySelectorAll("#view .cl .prog span[data-w]").forEach(s=>{s.style.width=s.dataset.w+"%";}); },80);
+}
 
 </script>
 </body>
