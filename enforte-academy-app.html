@@ -725,6 +725,71 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai','Not
 /* หัวข้อ section ให้เบาลง อ่านง่าย */
 .sect{font-size:15px; margin:22px 0 11px}
 .pad{gap:12px}
+
+/* ============================================================
+   FIX · layout ไม่พังเมื่อย่อ/ขยายหน้าจอ (ยืดตามพื้นที่จริง)
+   ============================================================ */
+/* การ์ดคู่: ยืดหยุ่นตามพื้นที่ ไม่ใช่ breakpoint ตายตัว */
+.two{grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)) !important}
+.feats{grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)) !important}
+.pad{grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)) !important}
+.grid2{align-items:start}
+.card,.two > .card{min-width:0}
+
+/* กันข้อความตกทีละคำในทุกการ์ด */
+.card, .card *, .soc .tx, .near .tx, .rowi .tx{min-width:0}
+.card b, .card span, .card p{overflow-wrap:anywhere; word-break:normal}
+
+/* การ์ด "ใกล้ปลดล็อก": ปุ่มลงบรรทัดล่าง ข้อความได้ความกว้างเต็ม */
+.near{flex-wrap:wrap; align-items:flex-start; gap:12px}
+.near .ic{width:56px; height:56px}
+.near .ic img{width:40px; height:40px}
+.near .tx{flex:1 1 160px; min-width:0}
+.near .tx b{display:block; line-height:1.35; overflow-wrap:anywhere}
+.near .tx span{line-height:1.6}
+.near > .btn{flex:1 1 100%; width:100%; margin-top:2px}
+
+/* แถวรายการทั่วไป (ภารกิจ / เพื่อนร่วมทีม) ไม่ให้บีบ */
+.rowi{gap:11px; align-items:center}
+.rowi .tx b{line-height:1.4}
+.rowi .rt{white-space:nowrap; flex-shrink:0}
+.soc{gap:10px; align-items:flex-start}
+.soc .tx b{line-height:1.4}
+.soc .tg{flex-shrink:0; align-self:center}
+
+/* คำถามประจำวัน: ตัวเลือกอ่านง่าย ไม่บีบ */
+.dq .opt{display:flex; align-items:flex-start; gap:9px; line-height:1.6}
+.dq .opt .k{flex-shrink:0; margin:1px 0 0}
+.card h3{font-size:15.5px; line-height:1.5}
+
+@media(max-width:1240px){ .rail{width:100%} }
+
+/* ============================================================
+   FIX · แบนเนอร์สมส่วน (ข้อความไม่ถูกบีบ / เช็คอินกระชับขึ้น)
+   ============================================================ */
+.hero.split{min-height:238px; align-items:center; padding:30px 32px; gap:30px}
+/* ยกเลิก max-width เดิม (66%/62%) ที่บีบข้อความในโหมด 2 คอลัมน์ */
+.hero.split .hh-l small{opacity:1}
+.hero.split .hh-l h1{max-width:100% !important; font-size:31px; line-height:1.24; margin:7px 0 9px}
+.hero.split .hh-l p{max-width:100% !important; font-size:14px; line-height:1.65; margin:0 0 16px; opacity:.88}
+.hero.split .hero-actions{margin-top:0}
+
+/* กล่องเช็คอินกระชับ ให้ 2 ฝั่งสูงพอๆ กัน */
+.ci-glass{padding:15px 15px 13px}
+.ci-glass .checkin{gap:13px; flex-wrap:nowrap; text-align:left; align-items:center}
+.ci-glass .ring,.ci-glass .ring svg{width:88px; height:88px}
+.ci-glass .ring .c b{font-size:23px}
+.ci-glass .ring .c span{font-size:11px}
+.ci-glass .ci-mid{flex:1 1 auto; min-width:0}
+.ci-glass .ci-mid h3{font-size:14px; margin:9px 0 0; line-height:1.4}
+.ci-glass .streak{font-size:13px; padding:4px 10px}
+.ci-glass .big-btn{padding:12px 18px; font-size:14.5px; border-radius:13px; margin-top:11px}
+.ci-glass .week{margin:11px 0 5px}
+
+@media(max-width:1080px){
+  .hero.split{min-height:0; padding:24px 22px; gap:20px}
+  .hero.split .hh-l h1{font-size:25px}
+}
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -2756,15 +2821,21 @@ const SOC_DEMO=[
 function socialHTML(){
   let rows=[];
   if(typeof NOTIFS!=="undefined" && NOTIFS && NOTIFS.length){
-    rows = NOTIFS.filter(n=>["feed","celeb","quiz","cert","rank"].indexOf(n.ref)>=0).slice(0,3).map(n=>{
-      const nm=(String(n.text).split(" ")[0]||"ทีม");
-      return {n:nm, t:String(n.text).replace(nm,"").trim().slice(0,52), w:n.time||"", g:(n.ic||"•"), c:"var(--surface-2)", k:"var(--muted)"};
-    });
+    const TG={celeb:"วันสำคัญ",quiz:"ควิซ",cert:"ใบประกาศ",rank:"อันดับ",feed:"คอมมิวนิตี้"};
+    rows = NOTIFS.filter(n=>["feed","celeb","quiz","cert","rank"].indexOf(n.ref)>=0).slice(0,3).map(n=>({
+      ic:n.ic||"🔔", t:String(n.text), w:n.time||"", g:TG[n.ref]||"อัปเดต",
+      c:"var(--surface-2)", k:"var(--muted)"
+    }));
   }
   if(!rows.length) rows=SOC_DEMO;
   return rows.map(r=>`<div class="soc">
-    <div class="av" style="background:${avc(r.n)}">${initials(r.n)}</div>
-    <div class="tx"><b>${esc(r.n)}</b><span>${esc(r.t)} · ${esc(r.w)}</span></div>
+    ${r.ic
+      ? `<div class="av" style="background:var(--surface-2);color:var(--ink);font-size:17px">${r.ic}</div>`
+      : `<div class="av" style="background:${avc(r.n)}">${initials(r.n)}</div>`}
+    <div class="tx">
+      <b>${esc(r.ic ? r.t : r.n)}</b>
+      <span>${esc(r.ic ? r.w : (r.t+" · "+r.w))}</span>
+    </div>
     <span class="tg" style="background:${r.c};color:${r.k}">${esc(r.g)}</span>
   </div>`).join("")
   + `<button class="btn btn-o btn-sm" style="width:100%;margin-top:12px" onclick="go('life')">ไปที่ Community →</button>`;
