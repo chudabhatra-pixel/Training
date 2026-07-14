@@ -363,6 +363,316 @@ svg{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .nb svg{width:23px;height:23px;stroke:currentColor}.nb.on{color:var(--green)}.nb.on svg{stroke:var(--green)}
 }
 </style>
+<style id="desktop-prototype-theme">
+/* ============================================================
+   ENFORTE ACADEMY · PREMIUM DESKTOP THEME (layer เสริม)
+   ทับ CSS เดิมเท่านั้น — ไม่ลบ ไม่แก้ selector เดิม
+   ============================================================ */
+:root{
+  --navy:#101F38; --navy-2:#16294A; --navy-3:#22375C; --navy-ink:#0B1526;
+  --green:#5F9E38; --green-d:#4B8129; --green-l:#8CC63F;
+  --bg:#F3F6F9; --surface:#FFFFFF; --surface-2:#F7F9FC;
+  --ink:#15233B; --muted:#5B6C86; --muted-2:#8FA0B6;
+  --line:#E5EAF1;
+  --sh-1:0 1px 2px rgba(16,35,64,.04), 0 2px 10px rgba(16,35,64,.05);
+  --sh-2:0 8px 28px rgba(16,35,64,.10);
+  --sh-3:0 18px 48px rgba(16,35,64,.16);
+  --rr:16px;
+  --hero-img:none;
+  --mx:50%; --my:50%;
+}
+body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai','Noto Sans Thai',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+
+/* ---------- การ์ด / พื้นผิว ---------- */
+.card,.checkin,.post,.reward,.tile,.stat-grid .statc,#modal .sheet{
+  border-radius:var(--rr); border:1px solid var(--line); background:var(--surface);
+  box-shadow:var(--sh-1);
+}
+.card{transition:transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s}
+.card:hover{transform:translateY(-2px); box-shadow:var(--sh-2)}
+.sect{color:var(--ink); letter-spacing:.1px}
+.sect .rule{background:linear-gradient(90deg,var(--line),transparent)}
+
+/* ---------- SIDEBAR: กรมท่าเข้ม ---------- */
+.side{
+  background:linear-gradient(180deg,var(--navy) 0%, var(--navy-ink) 100%);
+  border-right:1px solid rgba(255,255,255,.06);
+  box-shadow:2px 0 24px rgba(11,21,38,.18);
+}
+.side .brand{
+  background:#fff; border-radius:14px; padding:12px 14px; margin:14px 12px 16px;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.side .brand img{filter:none}
+.side .grp,.side .g,.side h4,.side .side-grp{
+  color:#7F93AE !important; letter-spacing:1.4px; text-transform:uppercase; font-size:10.5px; font-weight:700;
+}
+.side .snav{
+  color:#CBD6E4 !important; border-radius:11px; margin:2px 10px; padding:10px 12px;
+  position:relative; transition:background .18s, color .18s, transform .18s;
+}
+.side .snav svg{stroke:#9FB0C6; transition:stroke .18s}
+.side .snav:hover{background:rgba(255,255,255,.07); color:#fff !important; transform:translateX(2px)}
+.side .snav:hover svg{stroke:#fff}
+.side .snav.on{background:rgba(255,255,255,.13); color:#fff !important; font-weight:700}
+.side .snav.on svg{stroke:var(--green-l)}
+.side .snav.on::before{
+  content:""; position:absolute; left:-10px; top:8px; bottom:8px; width:4px;
+  background:var(--green-l); border-radius:0 4px 4px 0; box-shadow:0 0 10px rgba(140,198,63,.6);
+}
+.side-foot{
+  background:rgba(255,255,255,.05); border-top:1px solid rgba(255,255,255,.08);
+  border-radius:14px; margin:10px; padding:12px; color:#E6EDF6;
+}
+.side-foot b,.side-foot span,.side-foot small{color:#E6EDF6}
+.side-foot small{color:#95A7BE}
+.side-foot .bars{color:#DCE6F2}
+
+/* ---------- TOPBAR ---------- */
+.top{background:rgba(255,255,255,.82); backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+.search input{background:var(--surface-2); border:1px solid var(--line); border-radius:12px}
+.chip{border:1px solid var(--line); background:#fff; border-radius:12px; box-shadow:var(--sh-1)}
+.bell{border-radius:12px}
+
+/* ---------- LOGIN: ภาพจริง + gradient กรมท่า ---------- */
+#login{
+  position:relative; min-height:100vh;
+  background:
+    linear-gradient(135deg, rgba(16,31,56,.90) 0%, rgba(22,41,74,.78) 45%, rgba(75,129,41,.55) 100%),
+    url("https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1600") center/cover no-repeat,
+    linear-gradient(135deg,#101F38,#22375C);
+  display:flex; align-items:center; justify-content:center; padding:24px;
+}
+#login::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(900px 500px at 20% 20%, rgba(140,198,63,.16), transparent 60%);
+}
+#login .login-card{
+  position:relative; z-index:2;
+  background:rgba(255,255,255,.94); backdrop-filter:blur(18px) saturate(1.1);
+  border:1px solid rgba(255,255,255,.7); border-radius:22px;
+  box-shadow:0 24px 70px rgba(6,14,28,.45);
+  padding:30px 28px; max-width:400px; width:100%;
+  animation:lift-in .5s cubic-bezier(.2,.9,.25,1) both;
+}
+#login .login-card img{max-width:230px; height:auto; margin:0 auto 6px; display:block}
+#login .login-card p{color:var(--muted); font-size:13px; text-align:center; margin-bottom:16px}
+#login .btn-primary{
+  background:linear-gradient(135deg,var(--green-l),var(--green-d)); border:0; color:#fff;
+  border-radius:12px; padding:13px; width:100%; font-weight:700; font-size:15px; cursor:pointer;
+  box-shadow:0 8px 22px rgba(75,129,41,.32); transition:transform .15s, box-shadow .2s;
+}
+#login .btn-primary:hover{transform:translateY(-1px); box-shadow:0 12px 28px rgba(75,129,41,.42)}
+#login .btn-primary:active{transform:translateY(1px) scale(.99)}
+#login .login-hint{color:var(--muted-2); font-size:11.5px; text-align:center; margin-top:12px; line-height:1.6}
+@keyframes lift-in{from{opacity:0; transform:translateY(18px) scale(.98)} to{opacity:1; transform:none}}
+
+/* ---------- HERO: ภาพจริง + gradient + spotlight ---------- */
+.hero{
+  position:relative; overflow:hidden; border-radius:20px;
+  background-image:
+    linear-gradient(105deg, rgba(16,31,56,.92) 0%, rgba(22,41,74,.78) 42%, rgba(34,55,92,.45) 100%),
+    var(--hero-img),
+    linear-gradient(120deg,#16294A,#22375C);
+  background-size:cover, cover, cover;
+  background-position:center, var(--hero-pos,center), center;
+  color:#fff; box-shadow:var(--sh-2);
+  transition:box-shadow .3s;
+}
+.hero h1,.hero p,.hero small{color:#fff; position:relative; z-index:3}
+.hero small{color:#B9E08A !important; letter-spacing:2px; text-transform:uppercase; font-weight:700; font-size:11px}
+.hero p{color:rgba(255,255,255,.86) !important}
+.hero .blob{display:none}
+.hero::before{ /* spotlight ตามเมาส์ */
+  content:""; position:absolute; inset:0; z-index:2; pointer-events:none; opacity:0;
+  background:radial-gradient(520px circle at var(--mx) var(--my), rgba(140,198,63,.20), transparent 62%);
+  transition:opacity .35s;
+}
+.hero.spot::before{opacity:1}
+.hero .hero-media{ /* ชั้นภาพที่ขยับตามเมาส์ */
+  position:absolute; inset:-4%; z-index:1; background-size:cover; background-position:center;
+  transform:translate3d(0,0,0); transition:transform .5s cubic-bezier(.2,.8,.2,1); opacity:.001;
+}
+.hero-actions{position:relative; z-index:3}
+.hero .pill{background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.28); color:#fff; backdrop-filter:blur(6px)}
+.hero .pill:hover{background:rgba(255,255,255,.26)}
+.hero .pill.solid{background:#fff; border-color:#fff; color:var(--navy) !important; font-weight:700}
+.hero .pill.solid:hover{transform:translateY(-1px)}
+
+/* ---------- CONTINUE LEARNING ---------- */
+.cl{
+  position:relative; overflow:hidden; border-radius:20px; margin-bottom:16px;
+  min-height:184px; display:flex; align-items:flex-end;
+  background-image:
+    linear-gradient(90deg, rgba(16,31,56,.94) 0%, rgba(16,31,56,.80) 46%, rgba(16,31,56,.30) 100%),
+    url("https://images.pexels.com/photos/7845344/pexels-photo-7845344.jpeg?auto=compress&cs=tinysrgb&w=1200"),
+    linear-gradient(120deg,#16294A,#22375C);
+  background-size:cover; background-position:center; color:#fff;
+  box-shadow:var(--sh-2); border:1px solid rgba(255,255,255,.06);
+}
+.cl-in{padding:20px 22px; width:100%}
+.cl .tagline{
+  display:inline-block; font-size:10.5px; font-weight:800; letter-spacing:2px; text-transform:uppercase;
+  color:#0F1F38; background:var(--green-l); padding:4px 10px; border-radius:20px; margin-bottom:10px;
+}
+.cl h3{font-family:var(--fd,'Baloo 2',sans-serif); font-size:22px; font-weight:800; margin:0 0 4px; color:#fff}
+.cl p{color:rgba(255,255,255,.8); font-size:13px; margin:0 0 12px}
+.cl .prog{height:7px; background:rgba(255,255,255,.2); border-radius:20px; overflow:hidden; margin-bottom:6px; max-width:420px}
+.cl .prog span{display:block; height:100%; width:0; border-radius:20px; background:linear-gradient(90deg,var(--green-l),#C9F07A); transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.cl .meta{display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:12px; color:rgba(255,255,255,.75)}
+.cl .go{
+  background:#fff; color:var(--navy); border:0; border-radius:12px; padding:11px 20px; font-weight:700; font-size:14px;
+  cursor:pointer; margin-top:12px; box-shadow:0 8px 20px rgba(0,0,0,.22); transition:transform .15s, box-shadow .2s;
+}
+.cl .go:hover{transform:translateY(-2px); box-shadow:0 12px 26px rgba(0,0,0,.3)}
+.cl .save{font-size:11px; color:rgba(255,255,255,.6); margin-top:8px}
+
+/* ---------- WEEKLY PROGRESS ---------- */
+.week{display:flex; gap:8px; margin:10px 0 6px}
+.week .d{
+  flex:1; text-align:center; padding:9px 0 8px; border-radius:12px; border:1px solid var(--line);
+  background:var(--surface-2); transition:transform .2s, background .2s;
+}
+.week .d:hover{transform:translateY(-2px)}
+.week .d b{display:block; font-size:11px; color:var(--muted-2); font-weight:700; margin-bottom:5px}
+.week .d .m{width:22px; height:22px; margin:0 auto; border-radius:50%; display:grid; place-items:center; font-size:12px;
+  background:#E9EDF3; color:var(--muted-2);}
+.week .d.on{background:var(--green-bg,#EDF6E3); border-color:rgba(95,158,56,.35)}
+.week .d.on .m{background:var(--green); color:#fff; box-shadow:0 3px 8px rgba(95,158,56,.35)}
+.week .d.today{border-color:var(--green); box-shadow:0 0 0 2px rgba(95,158,56,.14)}
+.week .d.today b{color:var(--green)}
+
+/* ---------- BADGE ที่ใกล้ปลดล็อก ---------- */
+.near{display:flex; gap:14px; align-items:center}
+.near .ic{
+  width:62px; height:62px; border-radius:16px; display:grid; place-items:center; flex-shrink:0;
+  background:linear-gradient(135deg,#FFF6DC,#FFE6A8); border:1px solid #F0D68A;
+}
+.near .ic img{width:44px; height:44px; object-fit:contain; filter:grayscale(.55) opacity(.85)}
+.near .tx{flex:1; min-width:0}
+.near .tx b{font-family:var(--fd,'Baloo 2',sans-serif); font-size:16px}
+.near .tx span{display:block; font-size:12px; color:var(--muted); margin-top:2px}
+
+/* ---------- DAILY QUESTION ---------- */
+.dq .q{font-weight:700; font-size:15px; margin:4px 0 12px; line-height:1.6}
+.dq .opt{
+  display:block; width:100%; text-align:left; padding:12px 14px; margin-bottom:8px; cursor:pointer;
+  border-radius:12px; border:1px solid var(--line); background:var(--surface-2); font-size:14px; color:var(--ink);
+  transition:transform .15s, border-color .2s, background .2s; font-family:inherit;
+}
+.dq .opt:hover{transform:translateX(3px); border-color:var(--green); background:#fff}
+.dq .opt .k{display:inline-grid; place-items:center; width:22px; height:22px; border-radius:7px; margin-right:9px;
+  background:#E9EDF3; color:var(--muted); font-weight:700; font-size:12px}
+.dq .opt.right{background:var(--green-bg,#EDF6E3); border-color:var(--green); color:var(--green-ink,#3C6B24); font-weight:600}
+.dq .opt.right .k{background:var(--green); color:#fff}
+.dq .opt.wrong{background:#FDEBE7; border-color:#E5533C; color:#B23A26}
+.dq .opt.wrong .k{background:#E5533C; color:#fff}
+.dq .opt:disabled{cursor:default; transform:none}
+.dq .exp{font-size:13px; color:var(--muted); background:var(--surface-2); border-radius:12px; padding:11px 13px; margin-top:4px; line-height:1.7}
+
+/* ---------- SOCIAL LEARNING ---------- */
+.soc{display:flex; align-items:center; gap:11px; padding:10px 2px; border-bottom:1px solid var(--line)}
+.soc:last-child{border:0}
+.soc .av{width:38px; height:38px; border-radius:11px; display:grid; place-items:center; color:#fff; font-weight:700; font-size:13px; flex-shrink:0; font-family:var(--fd,'Baloo 2',sans-serif)}
+.soc .tx{flex:1; min-width:0}
+.soc .tx b{font-size:13.5px}
+.soc .tx span{display:block; font-size:12px; color:var(--muted); margin-top:1px}
+.soc .tg{font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:20px; white-space:nowrap}
+
+/* ---------- FEATURED EXPERIENCE ---------- */
+.feats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+@media(max-width:900px){.feats{grid-template-columns:1fr}}
+.feat{
+  position:relative; height:190px; border-radius:18px; overflow:hidden; cursor:pointer; border:0; padding:0;
+  color:#fff; text-align:left; box-shadow:var(--sh-1);
+  transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s;
+  background:#16294A;
+}
+.feat:hover{transform:translateY(-4px); box-shadow:var(--sh-3)}
+.feat .im{position:absolute; inset:0; background-size:cover; background-position:center; transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.feat:hover .im{transform:scale(1.07)}
+.feat .ov{position:absolute; inset:0; background:linear-gradient(180deg, rgba(16,31,56,.05) 0%, rgba(16,31,56,.55) 48%, rgba(16,31,56,.92) 100%)}
+.feat .ct{position:absolute; left:0; right:0; bottom:0; padding:16px 16px 15px}
+.feat .tg{font-size:10px; font-weight:800; letter-spacing:1.6px; color:var(--green-l); text-transform:uppercase}
+.feat b{display:block; font-family:var(--fd,'Baloo 2',sans-serif); font-size:18px; margin:4px 0 3px; color:#fff}
+.feat span{font-size:12px; color:rgba(255,255,255,.78)}
+.feat .shine{position:absolute; top:0; bottom:0; width:36%; left:-40%; z-index:2;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.22), transparent); transform:skewX(-18deg);}
+.feat:hover .shine{animation:shine .85s ease}
+@keyframes shine{to{left:120%}}
+
+/* ---------- FEED (ภาพจริง) ---------- */
+.post .ph,.post .photo,.post img.pimg{border-radius:14px; overflow:hidden}
+.demo-feed .im{width:100%; height:210px; object-fit:cover; display:block; transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.demo-feed .wrap{overflow:hidden; border-radius:14px; margin:10px 0}
+.demo-feed:hover .im{transform:scale(1.05)}
+.demo-tag{font-size:10.5px; color:var(--muted-2); background:var(--surface-2); border:1px solid var(--line);
+  padding:2px 8px; border-radius:20px; margin-left:6px}
+
+/* ---------- BADGE GRID: กดได้ ---------- */
+.bg-item{
+  border:1px solid var(--line); background:var(--surface); border-radius:16px; cursor:pointer;
+  transition:transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s, border-color .22s;
+  font-family:inherit; text-align:center; padding:14px 10px;
+}
+.bg-item:hover{transform:translateY(-3px); box-shadow:var(--sh-2)}
+.bg-item:not(.locked){border-color:#EBD79B; background:linear-gradient(180deg,#FFFDF6,#FFF8E7); box-shadow:0 0 0 1px rgba(235,215,155,.5), var(--sh-1)}
+.bg-item:not(.locked) .e img{filter:none}
+.bg-item.locked .e img{filter:grayscale(1) opacity(.42)}
+.bg-item.locked{background:var(--surface-2)}
+.bg-item .bn{display:block; margin-top:6px; font-size:13.5px}
+.bg-item span{font-size:11.5px; color:var(--muted)}
+.bg-item .st{display:block; margin-top:7px; font-size:10.5px; font-weight:700; letter-spacing:.2px}
+.bg-item:not(.locked) .st{color:#B08A20}
+.bg-item.locked .st{color:var(--muted-2)}
+
+/* ---------- Micro-interactions ---------- */
+.bar span,.prog span{transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.tile{transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s}
+.tile:hover{transform:translateY(-3px); box-shadow:var(--sh-2)}
+.tile:active,.btn:active,.chip2:active,.pill:active{transform:scale(.97)}
+.reward{transition:transform .25s, box-shadow .25s}
+.reward:hover{transform:translateY(-3px); box-shadow:var(--sh-2)}
+.btn-g{background:linear-gradient(135deg,var(--green-l),var(--green-d)); box-shadow:0 6px 16px rgba(75,129,41,.26)}
+.btn-g:hover{box-shadow:0 10px 22px rgba(75,129,41,.34)}
+#modal .sheet{animation:sheet-in .32s cubic-bezier(.2,.9,.25,1) both; box-shadow:var(--sh-3)}
+@keyframes sheet-in{from{opacity:0; transform:translateY(22px) scale(.97)} to{opacity:1; transform:none}}
+.rowi{transition:background .18s}
+.rowi:hover{background:var(--surface-2)}
+
+/* ---------- ADMIN / CONTENT: ลด animation ---------- */
+#view[data-screen="admin"] .card:hover,
+#view[data-screen="content"] .card:hover{transform:none; box-shadow:var(--sh-1)}
+#view[data-screen="admin"] .rowi:hover,
+#view[data-screen="content"] .rowi:hover{background:transparent}
+#view[data-screen="admin"] .hero::before,
+#view[data-screen="content"] .hero::before{opacity:0 !important}
+
+/* ---------- Responsive ---------- */
+@media(max-width:900px){
+  .hero{background-image:
+      linear-gradient(105deg, rgba(16,31,56,.96) 0%, rgba(22,41,74,.90) 60%, rgba(34,55,92,.78) 100%),
+      var(--hero-img), linear-gradient(120deg,#16294A,#22375C);}
+  .cl{min-height:0; background-image:
+      linear-gradient(90deg, rgba(16,31,56,.96) 0%, rgba(16,31,56,.88) 100%),
+      url("https://images.pexels.com/photos/7845344/pexels-photo-7845344.jpeg?auto=compress&cs=tinysrgb&w=800");}
+  .cl h3{font-size:19px}
+  .week .d{padding:7px 0 6px}
+  #login{padding:16px}
+  #login .login-card{padding:24px 20px}
+}
+@media(max-width:520px){
+  .week{gap:5px}
+  .week .d .m{width:19px;height:19px;font-size:11px}
+}
+
+/* ---------- accessibility ---------- */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important}
+  .hero::before{display:none}
+}
+</style>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -2125,6 +2435,421 @@ async function downloadCert(course,certNo,issued){
   document.body.removeChild(el);
 }
 function logout(){ try{localStorage.removeItem("enforte_sess");}catch(e){} location.reload(); }
+
+/* ================================================================
+ *  PREMIUM UX LAYER  (เลเยอร์เสริม — ไม่แตะฟังก์ชัน/route/API เดิม)
+ *  1) ภาพจริงใน Hero + Hero interaction   2) Home แบบ Learning-first
+ *  3) Continue Learning / Weekly / Badge ใกล้ปลดล็อก / Daily Question
+ *  4) Social Learning / Featured / Feed fallback รูปจริง
+ *  5) Badge กดได้ + แก้ badge ซ้ำ (quizall = Quiz Grand Slam)
+ * ================================================================ */
+
+/* ---------- 1) ภาพจริงประจำ Hero แต่ละหมวด ---------- */
+const PX = q => "https://images.pexels.com/photos/" + q + "?auto=compress&cs=tinysrgb&w=1400";
+const HERO_IMG = {
+  home:      PX("3184465/pexels-photo-3184465.jpeg"),   // ทีมประชุม/เรียนรู้ร่วมกัน
+  learn:     PX("7845344/pexels-photo-7845344.jpeg"),   // อบรม/นำเสนอ
+  path:      PX("7845344/pexels-photo-7845344.jpeg"),
+  flash:     PX("9301152/pexels-photo-9301152.jpeg"),
+  quiz:      PX("9301152/pexels-photo-9301152.jpeg"),
+  quizsets:  PX("9301152/pexels-photo-9301152.jpeg"),
+  kb:        PX("4427955/pexels-photo-4427955.jpeg"),   // พนักงานใช้ headset
+  life:      PX("3184465/pexels-photo-3184465.jpeg"),   // เพื่อนร่วมงาน/กิจกรรม
+  share:     PX("7709287/pexels-photo-7709287.jpeg"),
+  celebrate: PX("3184465/pexels-photo-3184465.jpeg"),
+  calendar:  PX("8518620/pexels-photo-8518620.jpeg"),
+  coach:     PX("8518620/pexels-photo-8518620.jpeg"),   // หัวหน้าคุยกับทีม
+  chal:      PX("7709287/pexels-photo-7709287.jpeg"),   // ทีมทำงานร่วมกัน
+  board:     PX("7709287/pexels-photo-7709287.jpeg"),
+  rewards:   PX("4427955/pexels-photo-4427955.jpeg"),
+  me:        PX("4427955/pexels-photo-4427955.jpeg"),
+  admin:     PX("3184465/pexels-photo-3184465.jpeg"),
+  content:   PX("3184465/pexels-photo-3184465.jpeg")
+};
+/* override heroHTML — โครงสร้าง/พารามิเตอร์เดิมทั้งหมด เพิ่มแค่ภาพพื้นหลัง */
+function heroHTML(cls, kick, title, body, actions){
+  const img = HERO_IMG[CUR] || HERO_IMG.home;
+  return `<div class="hero ${cls||''} an" data-hero style="--hero-img:url('${img}')">
+    <span class="blob b1"></span>
+    <small>${kick}</small><h1>${title}</h1><p>${body}</p>
+    <div class="hero-actions">${actions||''}</div>
+  </div>`;
+}
+
+/* ---------- 1b) Hero interaction (เมาส์เท่านั้น · เคารพ reduced-motion) ---------- */
+const FINE_POINTER = window.matchMedia && window.matchMedia("(hover:hover) and (pointer:fine)").matches;
+const REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function enhancePage(scr){
+  const view = document.getElementById("view");
+  if(view) view.setAttribute("data-screen", scr || CUR);
+  // แถบความคืบหน้าให้ animate เข้าที่
+  setTimeout(()=>{ document.querySelectorAll("#view .cl .prog span[data-w]").forEach(s=>{ s.style.width=s.dataset.w+"%"; }); }, 120);
+  if(!FINE_POINTER || REDUCED) return;
+  const quiet = (scr==="admin" || scr==="content");   // หน้าจัดการข้อมูล: ไม่รบกวน
+  document.querySelectorAll("#view .hero[data-hero]").forEach(h=>{
+    if(quiet) return;
+    if(h.dataset.bound) return; h.dataset.bound="1";
+    h.addEventListener("mousemove", e=>{
+      const r=h.getBoundingClientRect();
+      const px=(e.clientX-r.left)/r.width, py=(e.clientY-r.top)/r.height;
+      h.style.setProperty("--mx", (px*100).toFixed(1)+"%");
+      h.style.setProperty("--my", (py*100).toFixed(1)+"%");
+      h.style.setProperty("--hero-pos", (48+px*4).toFixed(1)+"% "+(48+py*4).toFixed(1)+"%");
+      h.classList.add("spot");
+    });
+    h.addEventListener("mouseleave", ()=>{
+      h.classList.remove("spot");
+      h.style.setProperty("--hero-pos","center");
+    });
+  });
+}
+/* ครอบ router เดิม — ไม่แก้ go() ต้นฉบับ, POST hooks/hydration ทำงานครบเหมือนเดิม */
+const __goOriginal = go;
+go = function(r){ __goOriginal(r); try{ enhancePage(r); }catch(e){} };
+
+/* ---------- 5) แก้ badge ซ้ำ: quizall = Quiz Grand Slam (โลโก้ใหม่) ---------- */
+BADGES.quizall = "data:image/svg+xml;charset=utf8," + encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="sh" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E4C7E"/><stop offset="1" stop-color="#12233F"/>
+    </linearGradient>
+    <linearGradient id="gd" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE9A8"/><stop offset=".5" stop-color="#F6C445"/><stop offset="1" stop-color="#C9901A"/>
+    </linearGradient>
+  </defs>
+  <path d="M60 6 L104 20 v34c0 30-19 51-44 60C35 105 16 84 16 54V20z" fill="url(#sh)" stroke="#0B1526" stroke-width="3"/>
+  <path d="M60 12 L98 24 v30c0 26-16 44-38 52-22-8-38-26-38-52V24z" fill="none" stroke="#5D7BAA" stroke-width="1.6" opacity=".55"/>
+  <path d="M38 34h44v10c0 12-9 21-22 21S38 56 38 44z" fill="url(#gd)" stroke="#8A6212" stroke-width="2"/>
+  <path d="M38 36h-8c0 10 4 15 11 16" fill="none" stroke="#F6C445" stroke-width="4" stroke-linecap="round"/>
+  <path d="M82 36h8c0 10-4 15-11 16" fill="none" stroke="#F6C445" stroke-width="4" stroke-linecap="round"/>
+  <rect x="55" y="64" width="10" height="10" fill="url(#gd)"/>
+  <rect x="44" y="74" width="32" height="7" rx="3" fill="url(#gd)" stroke="#8A6212" stroke-width="1.6"/>
+  <path d="M63 26 L52 46h9l-4 16 15-22h-9z" fill="#FFFFFF" stroke="#12233F" stroke-width="1.4" stroke-linejoin="round"/>
+  <circle cx="88" cy="88" r="17" fill="#5F9E38" stroke="#fff" stroke-width="3"/>
+  <path d="M80 88l6 6 11-12" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`);
+(function(){
+  const b = BADGE_CAT.filter(x=>x.k==="quizall")[0];
+  if(b){ b.n="Quiz Grand Slam"; b.d="พิชิตครบทุกชุด Quiz"; }
+})();
+/* วิธีปลดล็อก (ไม่แก้กฎ badgeEarned เดิม) */
+const BADGE_HINT = {
+  sprout:"อยู่กับทีมครบ 1 เดือน (ระบบนับให้อัตโนมัติ)",
+  flame:"เช็คอินต่อเนื่องให้ครบ 30 วัน — อย่าให้ streak ขาด!",
+  course:"เรียนผ่าน Learning Path อย่างน้อย 1 ขั้น",
+  quiz:"ทำ Quiz ชุดใดก็ได้ให้ได้ 100%",
+  quizall:"ทำ Quiz ให้ผ่านครบทุกชุดที่เปิดอยู่",
+  path:"เรียนจบ Learning Path ครบทุกขั้น",
+  voice:"โพสต์/คอมเมนต์ในคอมมิวนิตี้",
+  halfyear:"อยู่กับทีมครบ 6 เดือน",
+  yearone:"อยู่กับทีมครบ 1 ปี",
+  elite:"ไต่อันดับให้ติด Top 10 ของกระดานคะแนน",
+  crown:"ไต่อันดับให้ติด Top 3 ของกระดานคะแนน"
+};
+/* ความคืบหน้าของแต่ละ badge (ใช้ข้อมูลจริงจากโปรไฟล์) */
+function badgeProg(k){
+  const m=ME.activeMonths||0, s=ME.streak||0, r=ME.rank||999;
+  const pSteps=(typeof PATHSTEPS!=="undefined"&&PATHSTEPS)?PATHSTEPS.length:0;
+  const pTotal=(typeof PATH!=="undefined"&&PATH)?PATH.length:5;
+  if(k==='flame')    return {cur:s, tot:30, txt:`เช็คอินต่อเนื่อง ${s}/30 วัน`};
+  if(k==='sprout')   return {cur:Math.min(m,1), tot:1, txt:`อยู่กับทีม ${m} เดือน`};
+  if(k==='halfyear') return {cur:m, tot:6, txt:`อยู่กับทีม ${m}/6 เดือน`};
+  if(k==='yearone')  return {cur:m, tot:12, txt:`อยู่กับทีม ${m}/12 เดือน`};
+  if(k==='path')     return {cur:pSteps, tot:pTotal, txt:`Learning Path ${pSteps}/${pTotal} ขั้น`};
+  if(k==='course')   return {cur:Math.min(pSteps,1), tot:1, txt:`ผ่านแล้ว ${pSteps} ขั้น`};
+  if(k==='elite')    return {cur:r<=10?10:0, tot:10, txt:`อันดับปัจจุบัน #${r}`};
+  if(k==='crown')    return {cur:r<=3?3:0, tot:3, txt:`อันดับปัจจุบัน #${r}`};
+  return {cur:badgeEarned(k)?1:0, tot:1, txt:badgeEarned(k)?"ปลดล็อกแล้ว":"ยังไม่ปลดล็อก"};
+}
+/* ---------- 10) badgeGrid: ทุกใบกดได้ ---------- */
+function badgeGrid(){
+  return BADGE_CAT.map(b=>{
+    const on=badgeEarned(b.k);
+    return `<button class="bg-item ${on?'':'locked'}" onclick="openBadge('${b.k}')">
+      <div class="e"><img src="${BADGES[b.k]}" alt="" style="width:56px;height:56px;object-fit:contain"></div>
+      <b class="bn">${b.n}</b><span>${b.d}</span>
+      <span class="st">${on?'🏅 ปลดล็อกแล้ว · ดูรายละเอียด':'🔒 ล็อกอยู่ · ดูวิธีปลดล็อก'}</span>
+    </button>`;
+  }).join("");
+}
+function openBadge(k){
+  const b=BADGE_CAT.filter(x=>x.k===k)[0]; if(!b)return;
+  const on=badgeEarned(k), p=badgeProg(k);
+  const pct=p.tot?Math.min(100,Math.round(p.cur*100/p.tot)):0;
+  modal(`<div class="sh"><div class="ptitle">${on?'🏅':'🔒'} ${b.n}</div><button class="x" onclick="closeModal()">✕</button></div>
+   <div style="text-align:center;padding:6px 0 12px">
+     <img src="${BADGES[k]}" alt="" style="width:110px;height:110px;object-fit:contain;${on?'':'filter:grayscale(1) opacity(.45)'}">
+     <div style="font-family:var(--fd);font-weight:800;font-size:21px;margin-top:8px">${b.n}</div>
+     <p style="color:var(--muted);font-size:13.5px;margin-top:4px">${b.d}</p>
+     <div style="display:inline-block;margin-top:10px;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;
+       background:${on?'var(--green-bg)':'var(--surface-2)'};color:${on?'var(--green-ink)':'var(--muted)'}">
+       ${on?'✓ ปลดล็อกแล้ว':'ยังล็อกอยู่'}</div>
+   </div>
+   ${on?'':`<div class="card" style="background:var(--surface-2);box-shadow:none;padding:14px;margin-bottom:12px">
+     <div style="font-size:12px;color:var(--muted-2);margin-bottom:4px">ความคืบหน้า · ${esc(p.txt)}</div>
+     <div class="bar green"><span style="width:${pct}%"></span></div>
+   </div>`}
+   <div class="card" style="background:var(--blue-bg);border-color:transparent;box-shadow:none;padding:14px;margin-bottom:14px">
+     <b style="font-size:13px">💡 วิธีปลดล็อก</b>
+     <p style="font-size:13px;color:var(--muted);margin-top:5px;line-height:1.7">${esc(BADGE_HINT[k]||b.d)}</p>
+   </div>
+   <button class="btn btn-o" style="width:100%" onclick="closeModal()">ปิด</button>`);
+}
+
+/* ---------- 7) CONTINUE LEARNING (ใช้ข้อมูลจริงจาก LESSON + PATHSTEPS) ---------- */
+function continueHTML(){
+  const done=(typeof PATHSTEPS!=="undefined"&&PATHSTEPS)?PATHSTEPS.length:0;
+  const tot=(typeof PATH!=="undefined"&&PATH)?PATH.length:5;
+  const pct=tot?Math.round(done*100/tot):0;
+  const left=Math.max(1,(tot-done))*4;   // ประมาณ 4 นาที/ขั้น
+  const title=(typeof LESSON!=="undefined"&&LESSON.title)?LESSON.title:"บทเรียนประจำเดือน";
+  const intro=(typeof LESSON!=="undefined"&&LESSON.intro)?LESSON.intro:"เรียนต่อจากจุดที่ค้างไว้";
+  return `<div class="cl an">
+    <div class="cl-in">
+      <span class="tagline">Continue Learning</span>
+      <h3>${esc(title)}</h3>
+      <p>${esc(intro)}</p>
+      <div class="prog"><span data-w="${pct}"></span></div>
+      <div class="meta"><span>ความคืบหน้า <b style="color:#C9F07A">${pct}%</b></span><span>·</span><span>เหลืออีกประมาณ ${left} นาที</span><span>·</span><span>${done}/${tot} ขั้น</span></div>
+      <button class="go" onclick="go('learn')">▶ เรียนต่อ</button>
+      <div class="save">💾 บันทึกอัตโนมัติจากครั้งล่าสุด</div>
+    </div></div>`;
+}
+
+/* ---------- 8) WEEKLY PROGRESS (คำนวณจาก streak + เช็คอินวันนี้จริง) ---------- */
+function weekHTML(){
+  const N=["จ","อ","พ","พฤ","ศ","ส","อา"];
+  const js=new Date().getDay();              // 0=อา
+  const todayIdx=(js+6)%7;                   // จันทร์=0
+  const streak=Number(ME.streak||0), today=!!ME.checkedToday;
+  let done=0;
+  const cells=N.map((d,i)=>{
+    let on=false;
+    if(i<todayIdx){ const back=todayIdx-i; on = streak >= (today?back+1:back); }
+    else if(i===todayIdx){ on = today; }
+    if(on)done++;
+    return `<div class="d ${on?'on':''} ${i===todayIdx?'today':''}"><b>${d}</b><div class="m">${on?'✓':(i===todayIdx?'•':'')}</div></div>`;
+  }).join("");
+  const goal=5, left=Math.max(0,goal-done);
+  return `<div class="week">${cells}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px">
+      <span style="color:var(--muted)">สัปดาห์นี้ทำได้ <b style="color:var(--green)">${done}/${goal} วัน</b></span>
+      <span style="color:var(--muted-2)">${left?`ขาดอีก ${left} วันครบเป้าหมาย 🎯`:'ครบเป้าหมายแล้ว! 🎉'}</span>
+    </div>`;
+}
+
+/* ---------- 9) BADGE ที่ใกล้ปลดล็อกที่สุด ---------- */
+function nearBadgeHTML(){
+  const cand=BADGE_CAT.filter(b=>!badgeEarned(b.k)).map(b=>{
+    const p=badgeProg(b.k);
+    return {b:b, p:p, pct:p.tot?Math.min(100,Math.round(p.cur*100/p.tot)):0};
+  }).filter(x=>x.pct>0).sort((a,b)=>b.pct-a.pct);
+  if(!cand.length) return `<p style="color:var(--muted);font-size:13px">🎉 ปลดล็อก badge ครบทุกใบที่ทำได้แล้ว!</p>`;
+  const x=cand[0], b=x.b;
+  const rest=Math.max(0,x.p.tot-x.p.cur);
+  return `<div class="near">
+    <div class="ic"><img src="${BADGES[b.k]}" alt=""></div>
+    <div class="tx">
+      <b>${b.n}</b><span>${esc(x.p.txt)} · เหลืออีก ${rest} เพื่อปลดล็อก</span>
+      <div class="bar green" style="margin-top:7px"><span style="width:${x.pct}%"></span></div>
+    </div>
+    <button class="btn btn-o btn-sm" onclick="openBadge('${b.k}')">ดูรายละเอียด</button>
+  </div>`;
+}
+
+/* ---------- 12) DAILY QUESTION (Local prototype — ไม่ยิง action ผิดไปเซิร์ฟเวอร์) ---------- */
+const DQ = {
+  q:"เมื่อลูกค้าบอกว่า “ขอคิดดูก่อน” คำถามต่อไปควรเป็นอะไร?",
+  o:["ลดราคาให้ทันที","ถามว่าส่วนไหนที่ลูกค้ายังไม่มั่นใจ","วางสายและโทรใหม่วันหลัง"],
+  a:1,
+  exp:"“ขอคิดดูก่อน” มักแปลว่ายังมีข้อกังวลที่ยังไม่ถูกพูดออกมา — การถามกลับอย่างสุภาพจะเปิดประเด็นที่แท้จริง แทนที่จะรีบลดราคา (ทำให้เสียมาร์จิ้น) หรือวางสาย (เสียโอกาส)"
+};
+function dqKey(){ return "enforte_dq_"+new Date().toISOString().slice(0,10); }
+function dqDone(){ try{ return !!localStorage.getItem(dqKey()); }catch(e){ return false; } }
+function dqHTML(){
+  const done=dqDone();
+  return `<div class="dq">
+    <div class="q">${esc(DQ.q)}</div>
+    <div id="dq-opts">${DQ.o.map((o,i)=>`<button class="opt" ${done?'disabled':''} onclick="answerDQ(${i})" id="dq-o${i}">
+      <span class="k">${"ABC"[i]}</span>${esc(o)}</button>`).join("")}</div>
+    <div id="dq-exp">${done?`<div class="exp">✅ วันนี้ตอบไปแล้ว — เฉลย: <b>${esc(DQ.o[DQ.a])}</b><br>${esc(DQ.exp)}</div>`:''}</div>
+  </div>`;
+}
+function answerDQ(i){
+  if(dqDone()){ toast("วันนี้ตอบไปแล้ว — พรุ่งนี้มีคำถามใหม่"); return; }
+  document.querySelectorAll("#dq-opts .opt").forEach(b=>b.disabled=true);
+  const right=document.getElementById("dq-o"+DQ.a);
+  if(right)right.classList.add("right");
+  const ok=(i===DQ.a);
+  if(!ok){ const w=document.getElementById("dq-o"+i); if(w)w.classList.add("wrong"); }
+  const exp=document.getElementById("dq-exp");
+  if(exp) exp.innerHTML=`<div class="exp">${ok?'🎉 <b style="color:var(--green)">ตอบถูก! +5 XP</b>':'💡 <b>ยังไม่ถูก</b> — เฉลยคือ <b>'+esc(DQ.o[DQ.a])+'</b>'}<br>${esc(DQ.exp)}</div>`;
+  try{ localStorage.setItem(dqKey(), ok?"1":"0"); }catch(e){}
+  if(ok){
+    burst();
+    ME.xp=(ME.xp||0)+5; refreshChips();
+    toast("🎉 ตอบถูก! +5 XP");
+  } else toast("ลองใหม่พรุ่งนี้นะ 💪");
+}
+
+/* ---------- 13) SOCIAL LEARNING (ใช้ notification จริงก่อน · demo เป็น fallback) ---------- */
+const SOC_DEMO=[
+  {n:"Bow",  t:"จบบทเรียน Sales Closing Lab", w:"2 ชม.ที่แล้ว", g:"จบแล้ว",  c:"var(--green-bg)", k:"var(--green-ink)"},
+  {n:"Peemai",t:"ปลดล็อก Badge: Quiz Master", w:"เมื่อวาน",     g:"Badge",   c:"#FFF3D6",         k:"#B08A20"},
+  {n:"Maree", t:"แชร์เทคนิคใหม่ใน Community", w:"เมื่อวาน",     g:"ใหม่",    c:"var(--blue-bg)",  k:"var(--blue)"}
+];
+function socialHTML(){
+  let rows=[];
+  if(typeof NOTIFS!=="undefined" && NOTIFS && NOTIFS.length){
+    rows = NOTIFS.filter(n=>["feed","celeb","quiz","cert","rank"].indexOf(n.ref)>=0).slice(0,3).map(n=>{
+      const nm=(String(n.text).split(" ")[0]||"ทีม");
+      return {n:nm, t:String(n.text).replace(nm,"").trim().slice(0,52), w:n.time||"", g:(n.ic||"•"), c:"var(--surface-2)", k:"var(--muted)"};
+    });
+  }
+  if(!rows.length) rows=SOC_DEMO;
+  return rows.map(r=>`<div class="soc">
+    <div class="av" style="background:${avc(r.n)}">${initials(r.n)}</div>
+    <div class="tx"><b>${esc(r.n)}</b><span>${esc(r.t)} · ${esc(r.w)}</span></div>
+    <span class="tg" style="background:${r.c};color:${r.k}">${esc(r.g)}</span>
+  </div>`).join("")
+  + `<button class="btn btn-o btn-sm" style="width:100%;margin-top:12px" onclick="go('life')">ไปที่ Community →</button>`;
+}
+
+/* ---------- 14) FEATURED EXPERIENCE CARDS ---------- */
+const FEATS={
+  lab:{tag:"FEATURED LESSON", t:"Sales Closing Lab", d:"เรียน 12 นาที · Quiz +120 XP",
+       img:PX("7845344/pexels-photo-7845344.jpeg"), go:"learn", btn:"ไปหน้าเรียนรู้",
+       long:"ห้องแล็บฝึกปิดการขาย — เรียนเทคนิคตั้งคำถามที่พาลูกค้าไปสู่การตัดสินใจ แล้วทดสอบความเข้าใจด้วย Quiz ทันที"},
+  coffee:{tag:"COMMUNITY STORY", t:"Ideas Over Coffee", d:"เรื่องราวจากเพื่อนร่วมทีม",
+       img:PX("3184465/pexels-photo-3184465.jpeg"), go:"life", btn:"ไปที่คอมมิวนิตี้",
+       long:"เทคนิคดีๆ มักเกิดตอนพักกาแฟ — อ่านสิ่งที่เพื่อนร่วมทีมเจอมาจริง แลกเปลี่ยนวิธีรับมือลูกค้า และแชร์โมเมนต์ของคุณบ้าง"},
+  coach:{tag:"FOR LEADERS", t:"Coach Your Team", d:"IDP · Feedback · Progress",
+       img:PX("8518620/pexels-photo-8518620.jpeg"), go:"coach", btn:"ไปหน้าโค้ชชิ่ง",
+       long:"เครื่องมือสำหรับหัวหน้าทีม — ดูแผนพัฒนารายบุคคล ติดตามความคืบหน้า และให้ feedback ที่ตรงจุด"}
+};
+function featHTML(){
+  return `<div class="feats an d5">${Object.keys(FEATS).map(k=>{
+    const f=FEATS[k];
+    return `<button class="feat" onclick="openFeat('${k}')">
+      <span class="im" style="background-image:url('${f.img}')"></span>
+      <span class="ov"></span><span class="shine"></span>
+      <span class="ct"><span class="tg">${f.tag}</span><b>${f.t}</b><span>${f.d}</span></span>
+    </button>`;}).join("")}</div>`;
+}
+function openFeat(k){
+  const f=FEATS[k]; if(!f)return;
+  modal(`<div class="sh"><div class="ptitle">${f.t}</div><button class="x" onclick="closeModal()">✕</button></div>
+   <div style="height:170px;border-radius:14px;overflow:hidden;margin-bottom:14px;background:url('${f.img}') center/cover"></div>
+   <div style="font-size:10.5px;font-weight:800;letter-spacing:1.6px;color:var(--green);margin-bottom:4px">${f.tag}</div>
+   <div style="font-family:var(--fd);font-weight:800;font-size:20px;margin-bottom:6px">${esc(f.t)}</div>
+   <p style="color:var(--muted);font-size:13.5px;line-height:1.75;margin-bottom:8px">${esc(f.long)}</p>
+   <p style="color:var(--muted-2);font-size:12.5px;margin-bottom:16px">${esc(f.d)}</p>
+   <div style="display:flex;gap:10px">
+     <button class="btn btn-o" style="flex:1" onclick="closeModal()">ปิด</button>
+     <button class="btn btn-g" style="flex:1" onclick="closeModal();go('${f.go}')">${f.btn} →</button>
+   </div>`);
+}
+
+/* ---------- 6) HOME แบบ Learning-first (ฟังก์ชัน/ID เดิมครบทุกตัว) ---------- */
+SCREENS.home=()=>`
+${heroHTML("","bright learning community","เรียนให้สนุก แชร์ให้ทีมโตไปด้วยกัน","เก็บแต้ม เรียนรู้ แข่งกับทีม และแบ่งปันเรื่องราว — ทุกอย่างในที่เดียว",
+  `<button class="pill solid" onclick="go('learn')">📖 เริ่มเรียนวันนี้</button><button class="pill" onclick="go('life')">📸 แชร์โมเมนต์</button><button class="pill" onclick="go('chal')">🏆 Challenge</button>`)}
+<div class="grid2">
+ <div>
+  <div id="home-continue" class="an d2">${continueHTML()}</div>
+
+  <div class="sect an d2">📅 ความคืบหน้าสัปดาห์นี้ <span class="rule"></span></div>
+  <div class="card an d2" id="home-week">${weekHTML()}</div>
+
+  <div class="sect an d3">🏅 ใกล้ปลดล็อกแล้ว <span class="rule"></span><span class="more" onclick="go('rewards')">badge ทั้งหมด</span></div>
+  <div class="card an d3" id="home-near">${nearBadgeHTML()}</div>
+
+  <div class="sect an d3">💡 คำถามประจำวัน <span class="rule"></span></div>
+  <div class="card an d3" id="home-dq">${dqHTML()}</div>
+
+  <div class="sect an d4">👥 เพื่อนร่วมทีมกำลังเรียนอะไร <span class="rule"></span></div>
+  <div class="card an d4" id="home-soc">${socialHTML()}</div>
+
+  <div class="sect an d5">✨ Featured Experiences <span class="rule"></span></div>
+  ${featHTML()}
+
+  <div class="sect an d5">🔥 เช็คอินรายวัน <span class="rule"></span></div>
+  <div class="checkin an d5" id="checkin">${checkinHTML()}</div>
+  <div id="celeb-home"></div>
+
+  <div class="sect an d6">✅ ภารกิจวันนี้ <span class="rule"></span></div>
+  <div class="card an d6" id="missions-box">${missionsHTML()}</div>
+
+  <div class="sect an d6">🌈 เมนูสำรวจอื่น ๆ <span class="rule"></span></div>
+  <div class="pad">
+   ${tile("kb","kb","🔎","คลังความรู้","สคริปต์ FAQ Call Library","","d6")}
+   ${tile("share","share","🤝","แบ่งปัน","ซื้อ ขาย ให้ฟรี ประมูล","","d6")}
+   ${tile("rewards","rewards","🎁","รางวัล","แลกเหรียญ & ใบประกาศ","","d6")}
+   ${tile("board","board","⭐","อันดับ","Top Learner & ทีม","","d6")}
+  </div>
+ </div>
+ ${railHTML()}
+</div>`;
+
+/* วาดส่วนที่ต้องใช้ข้อมูลสด (เรียกหลัง hydrate) */
+function paintHomeExtras(){
+  if(CUR!=="home")return;
+  const set=(id,html)=>{const el=document.getElementById(id); if(el)el.innerHTML=html;};
+  set("home-continue",continueHTML());
+  set("home-week",weekHTML());
+  set("home-near",nearBadgeHTML());
+  set("home-soc",socialHTML());
+  setTimeout(()=>{ document.querySelectorAll("#view .cl .prog span[data-w]").forEach(s=>{s.style.width=s.dataset.w+"%";}); },80);
+}
+/* POST.home เดิม (ring + hydrate) ยังทำงานครบ — แค่ต่อท้ายด้วยการวาดส่วนใหม่ */
+const __postHomeOriginal = POST.home;
+POST.home = ()=>{
+  if(__postHomeOriginal) __postHomeOriginal();
+  if(SERVER){ try{ hydrateLesson(); }catch(e){} }
+  setTimeout(paintHomeExtras, 60);
+};
+/* เมื่อโปรไฟล์อัปเดต (streak/badge/path) → วาดการ์ดบ้านใหม่ */
+const __hydrateProfileOriginal = hydrateProfile;
+hydrateProfile = async function(){
+  await __hydrateProfileOriginal.apply(this, arguments);
+  if(CUR==="home") paintHomeExtras();
+};
+
+/* ---------- 15) COMMUNITY FEED: รูปจริงเฉพาะตอนไม่มีข้อมูลจากเซิร์ฟเวอร์ ---------- */
+const FEED_DEMO=[
+  {n:"Bow",  t:"ทีม Resell", w:"2 ชม.ที่แล้ว", c:"เทคนิคที่ใช้ได้ผลจริง: ถามหา pain point ก่อนเสนอราคา — ลูกค้าเปิดใจขึ้นเยอะเลย 🎯",
+   im:PX("7845344/pexels-photo-7845344.jpeg")},
+  {n:"Peemai",t:"ทีม Fresh", w:"เมื่อวาน", c:"ลองใช้ Summary Close ตามที่เรียนมา ปิดได้ 2 ดีลรวดวันนี้ ขอบคุณพี่ๆ ที่แชร์นะคะ 🙏",
+   im:PX("9301152/pexels-photo-9301152.jpeg")},
+  {n:"Maree", t:"ทีม Resell", w:"2 วันที่แล้ว", c:"Coffee time กับทีม ☕ คุยกันเรื่องรับมือลูกค้าที่ขอคิดดูก่อน ได้ไอเดียเพียบ",
+   im:PX("3184465/pexels-photo-3184465.jpeg")}
+];
+function demoFeedHTML(){
+  return `<div style="font-size:12px;color:var(--muted-2);margin-bottom:10px;padding:2px">
+      ยังไม่มีโพสต์จากทีม — นี่คือตัวอย่างเพื่อให้เห็นหน้าตาฟีด <span class="demo-tag">ตัวอย่าง</span>
+    </div>` + FEED_DEMO.map(p=>`<div class="post an demo-feed">
+    <div class="ph" style="display:flex;align-items:center;gap:10px">
+      <div class="av" style="width:40px;height:40px;border-radius:12px;background:${avc(p.n)};display:grid;place-items:center;color:#fff;font-family:var(--fd);font-weight:700">${initials(p.n)}</div>
+      <div><b style="font-size:14px">${esc(p.n)}</b><div style="font-size:12px;color:var(--muted)">${esc(p.t)} · ${esc(p.w)}</div></div>
+    </div>
+    <p style="font-size:14px;margin:10px 0 0;line-height:1.7">${esc(p.c)}</p>
+    <div class="wrap"><img class="im" loading="lazy" src="${p.im}" alt=""></div>
+  </div>`).join("");
+}
+const __hydrateFeedOriginal = hydrateFeed;
+hydrateFeed = async function(){
+  await __hydrateFeedOriginal.apply(this, arguments);
+  const el=document.getElementById("feed");
+  if(el && CUR==="life" && (!FEED || !FEED.length)) el.innerHTML=demoFeedHTML();   // ไม่เขียนทับข้อมูลจริง
+};
+
+/* ---------- ปรับข้อความ login ให้ตรงระบบจริง ---------- */
+(function(){
+  const h=document.querySelector("#login .login-hint");
+  if(h && SERVER) h.innerHTML="เข้าสู่ระบบด้วยรหัสพนักงาน (เช่น <b>AC007</b>) และรหัสผ่านของคุณ<br>ลืมรหัสผ่าน? ติดต่อ HR เพื่อตั้งรหัสใหม่";
+})();
+
 </script>
 </body>
 </html>
