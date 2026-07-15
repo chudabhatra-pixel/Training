@@ -1319,7 +1319,12 @@ function answerPathStep(i,oi){
 function skill(n,v,c){return `<div class="skill"><div class="sh"><b>${n}</b><span>${v}%</span></div><div class="bar ${c}"><span style="width:${v}%"></span></div></div>`;}
 
 /* ---------- KNOWLEDGE BASE ---------- */
-let KBCAT='script', KBQ='';
+let KBCAT='', KBQ='';
+let KBITEMS=null, KBCATS=null;              // โหลดจากเซิร์ฟเวอร์ (ชีต KB) — demo ใช้ KBDATA/FAQDATA
+function kbCatsFrom(items){ const seen={},cats=[]; (items||[]).forEach(it=>{ if(!seen[it.cat]){seen[it.cat]={name:it.cat,icon:it.icon,count:0};cats.push(seen[it.cat]);} seen[it.cat].count++; }); return cats; }
+function kbBuildDemo(){ const items=[]; ['script','product','call','best'].forEach(c=>{const d=KBDATA[c];d.items.forEach(it=>items.push({id:it.t,cat:d.title,icon:d.icon,title:it.t,sum:it.s||'',body:it.body||'',link:'',linkLabel:''}));}); FAQDATA.forEach(f=>items.push({id:f.q,cat:'FAQ / คำถามพบบ่อย',icon:'❓',title:f.q,sum:'',body:f.a,link:'',linkLabel:''})); return items; }
+function kbEnsure(){ if(KBITEMS)return; if(!SERVER){ KBITEMS=kbBuildDemo(); KBCATS=kbCatsFrom(KBITEMS); if(!KBCATS.find(c=>c.name===KBCAT))KBCAT=(KBCATS[0]||{}).name||''; } }
+function kbItemHTML(it,showCat){ const sub=showCat?(it.cat+(it.sum?' · '+it.sum:'')):(it.sum||''); const link=it.link?`<a href="${it.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="display:inline-block;margin-top:8px;font-size:12.5px;color:var(--green-ink);font-weight:600">🔗 ${it.linkLabel||'เปิดลิงก์'}</a>`:''; const inner=it.body?it.body:(it.link?'':'<i style="color:var(--muted)">— ไม่มีรายละเอียดเพิ่มเติม —</i>'); return `<div class="kitem" style="align-items:flex-start" onclick="const b=this.querySelector('.kb-body');b.style.display=b.style.display==='none'?'block':'none'"><div class="ic" style="background:var(--purple-bg)">${it.icon||'📄'}</div><div class="tx"><b>${it.title}</b>${sub?`<span>${sub}</span>`:''}<span class="kb-body" style="display:none;color:var(--ink);margin-top:8px;line-height:1.55">${inner}${link}</span></div><div class="ch" style="font-size:14px">▾</div></div>`; }
 const FAQDATA=[
   {q:"ลูกค้าขอส่วนลดเพิ่มทำยังไง?",a:"เน้นคุณค่าก่อนราคา เสนอ value-add แทนการลดราคาตรง ๆ"},
   {q:"จัดการลูกค้าที่โมโหยังไง?",a:"ฟังให้จบ ขอโทษที่ทำให้รู้สึกไม่ดี แล้วเสนอทางแก้ทันที"},
@@ -1348,39 +1353,31 @@ const KBDATA={
    {t:'จดบันทึกทุกสาย',s:'นนท์ · Top Sales',body:'บันทึกสิ่งที่ลูกค้าพูด/กังวลไว้ตามต่อครั้งหน้า ทำให้ลูกค้ารู้สึกว่าเราใส่ใจและจำเขาได้'},
  ]},
 };
-function kbCard(c){const d=KBDATA[c];const on=KBCAT===c;return `<button class="tile ${on?'kb-on':''}" onclick="kbCat('${c}')"><span class="orb"></span><span class="e">${d.icon}</span><b>${d.title}</b><span>${d.sub}</span></button>`;}
-function kbContent(){const d=KBDATA[KBCAT];return `<div class="sect an d3">${d.icon} ${d.title} <span class="rule"></span></div><div class="card an d3"><div class="klist">${d.items.map(it=>it.play?`<div class="kitem" onclick="toast('▶️ กำลังเล่นตัวอย่าง (เดโม่)')"><div class="ic" style="background:#F0F5FF">🎧</div><div class="tx"><b>${it.t}</b><span>${it.s}</span></div><div class="ch" style="font-size:18px">▶</div></div>`:`<div class="kitem" style="align-items:flex-start" onclick="const b=this.querySelector('.kb-body');b.style.display=b.style.display==='none'?'block':'none'"><div class="ic" style="background:var(--purple-bg)">${d.icon}</div><div class="tx"><b>${it.t}</b><span>${it.s}</span><span class="kb-body" style="display:none;color:var(--ink);margin-top:8px;line-height:1.55">${it.body}</span></div><div class="ch" style="font-size:14px">▾</div></div>`).join("")}</div></div>`;}
-function kbCat(c){KBCAT=c;const el=document.getElementById("kb-content");if(el)el.innerHTML=kbContent();const cc=document.getElementById("kb-cards");if(cc)cc.innerHTML=['script','product','call','best'].map(kbCard).join("");}
-SCREENS.kb=()=>`
- ${heroHTML("teal","knowledge base","คลังความรู้ · ค้นหาได้ทุกอย่าง","สคริปต์ขาย โปรโมชัน FAQ, Call Library และ Best Practice รวมไว้ที่เดียว เลือกหมวดด้านล่างได้เลย",'')}
+function kbCard(i){const c=(KBCATS||[])[i];if(!c)return'';const on=KBCAT===c.name;return `<button class="tile ${on?'kb-on':''}" onclick="kbCat(${i})"><span class="orb"></span><span class="e">${c.icon}</span><b>${c.name}</b><span>${c.count} รายการ</span></button>`;}
+function kbContent(){const cat=(KBCATS||[]).find(c=>c.name===KBCAT)||(KBCATS||[])[0];if(!cat)return '<div class="card an d3"><p style="color:var(--muted);font-size:13px;padding:14px 4px">ยังไม่มีเนื้อหาในคลัง</p></div>';const items=(KBITEMS||[]).filter(it=>it.cat===cat.name);return `<div class="sect an d3">${cat.icon} ${cat.name} <span class="rule"></span></div><div class="card an d3"><div class="klist">${items.map(it=>kbItemHTML(it)).join("")}</div></div>`;}
+function kbCat(i){const c=(KBCATS||[])[i];if(!c)return;KBCAT=c.name;const el=document.getElementById("kb-content");if(el)el.innerHTML=kbContent();const cc=document.getElementById("kb-cards");if(cc)cc.innerHTML=(KBCATS||[]).map((_,ix)=>kbCard(ix)).join("");}
+SCREENS.kb=()=>{ kbEnsure(); const loading=SERVER&&!KBITEMS; const adminBtn=ME.role==="admin"?`<button class="pill solid" onclick="openKBManager()" style="color:#2f8f6b">🗂️ จัดการคลังความรู้</button>`:'';
+ return `
+ ${heroHTML("teal","knowledge base","คลังความรู้ · ค้นหาได้ทุกอย่าง","สคริปต์ขาย โปรโมชัน FAQ, Call Library และ Best Practice รวมไว้ที่เดียว เลือกหมวดด้านล่างได้เลย",adminBtn)}
  <div class="search an d2" style="max-width:100%;margin-bottom:18px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input id="kb-q" placeholder="ค้นหาสคริปต์ สินค้า โปรโมชัน หรือ FAQ..." value="${KBQ.replace(/"/g,'&quot;')}" oninput="kbSearch(this.value)" onkeydown="if(event.key==='Enter')kbSearch(this.value)"/><button class="btn btn-g btn-sm" onclick="kbSearch(document.getElementById('kb-q').value)">ค้นหา</button></div>
  <div id="kb-results" style="${KBQ.trim()?'':'display:none'}">${KBQ.trim()?kbSearchResults(KBQ):''}</div>
  <div id="kb-browse" style="${KBQ.trim()?'display:none':''}">
- <div class="pad an d2" id="kb-cards" style="margin-bottom:8px">${['script','product','call','best'].map(kbCard).join("")}</div>
- <div id="kb-content">${kbContent()}</div>
- <div class="sect an d4">❓ FAQ / คำถามพบบ่อย <span class="rule"></span></div>
- <div class="card an d4"><div class="klist">
-   ${FAQDATA.map(f=>faqitem(f.q,f.a)).join("")}
- </div></div>
+ ${loading?'<div class="card an d2"><p style="text-align:center;color:var(--muted);padding:26px 10px">กำลังโหลดคลังความรู้…</p></div>':`
+ <div class="pad an d2" id="kb-cards" style="margin-bottom:8px">${(KBCATS||[]).map((_,ix)=>kbCard(ix)).join("")}</div>
+ <div id="kb-content">${kbContent()}</div>`}
  </div>`;
+};
 function kitem(ic,bg,t,s){return `<div class="kitem" onclick="toast('เปิด (เดโม่)')"><div class="ic" style="background:${bg}">${ic}</div><div class="tx"><b>${t}</b><span>${s}</span></div><div class="ch" style="font-size:18px">›</div></div>`;}
 function faqitem(q,a){return `<div class="kitem" style="align-items:flex-start" onclick="const b=this.querySelector('.fa');b.style.display=b.style.display==='none'?'block':'none'"><div class="ic" style="background:var(--purple-bg)">❓</div><div class="tx"><b>${q}</b><span class="fa" style="display:none;color:var(--ink);margin-top:6px;line-height:1.5">${a}</span></div><div class="ch" style="font-size:14px">▾</div></div>`;}
 function kbSearchResults(q){
   const s=(q||'').trim().toLowerCase();
   if(!s) return '';
-  const hits=[];
-  ['script','product','call','best'].forEach(c=>{const d=KBDATA[c];d.items.forEach(it=>{
-    const hay=((it.t||'')+' '+(it.s||'')+' '+(it.body||'')).toLowerCase();
-    if(hay.includes(s)) hits.push({label:d.title,icon:d.icon,t:it.t,sub:it.s||'',body:it.body||'',play:!!it.play});
-  });});
-  FAQDATA.forEach(f=>{ if(((f.q||'')+' '+(f.a||'')).toLowerCase().includes(s)) hits.push({label:'FAQ',icon:'❓',t:f.q,sub:'',body:f.a,play:false}); });
+  kbEnsure();
+  const hits=(KBITEMS||[]).filter(it=>((it.title||'')+' '+(it.sum||'')+' '+(it.body||'')+' '+(it.cat||'')).toLowerCase().includes(s));
   const safe=(q||'').replace(/</g,'&lt;');
   if(!hits.length) return `<div class="card an"><p style="text-align:center;color:var(--muted);padding:22px 10px">ไม่พบผลลัพธ์สำหรับ "<b>${safe}</b>" — ลองคำอื่นดูนะ</p></div>`;
   return `<div class="sect">🔎 ผลการค้นหา (${hits.length})<span class="rule"></span></div><div class="card"><div class="klist">`+
-    hits.map(h=>h.play
-      ? `<div class="kitem" onclick="toast('▶️ กำลังเล่นตัวอย่าง (เดโม่)')"><div class="ic" style="background:#F0F5FF">🎧</div><div class="tx"><b>${h.t}</b><span>${h.label} · ${h.sub}</span></div><div class="ch" style="font-size:18px">▶</div></div>`
-      : `<div class="kitem" style="align-items:flex-start" onclick="const b=this.querySelector('.kb-body');b.style.display=b.style.display==='none'?'block':'none'"><div class="ic" style="background:var(--purple-bg)">${h.icon}</div><div class="tx"><b>${h.t}</b><span>${h.label}${h.sub?' · '+h.sub:''}</span><span class="kb-body" style="display:none;color:var(--ink);margin-top:8px;line-height:1.55">${h.body}</span></div><div class="ch" style="font-size:14px">▾</div></div>`
-    ).join("")+`</div></div>`;
+    hits.map(h=>kbItemHTML(h,true)).join("")+`</div></div>`;
 }
 function kbSearch(q){
   KBQ=q||'';
@@ -1390,6 +1387,51 @@ function kbSearch(q){
   if(br){ br.style.display=has?'none':''; }
 }
 function kbGo(v){ KBQ=v||''; go('kb'); }
+async function hydrateKB(){ if(!SERVER)return; const r=await api("getKB"); if(r&&r.ok){ KBITEMS=r.items||[]; KBCATS=(r.cats&&r.cats.length)?r.cats:kbCatsFrom(KBITEMS); if(!KBCATS.find(c=>c.name===KBCAT))KBCAT=(KBCATS[0]||{}).name||''; if(CUR==="kb"){const v=document.getElementById("view");if(v){v.innerHTML=SCREENS.kb();requestAnimationFrame(enhancePage);}} } }
+POST.kb=()=>{ if(SERVER)hydrateKB(); };
+/* ---- ADMIN: จัดการคลังความรู้ (เพิ่ม/แก้/ลบ/สร้างหมวด · วันหมดอายุ · ลิงก์ Drive) ---- */
+let KB_ADMIN=null;
+async function openKBManager(){
+  if(SERVER){ const r=await api("adminListKB"); if(r&&r.ok)KB_ADMIN=r; }
+  else { kbEnsure(); KB_ADMIN={items:(KBITEMS||[]).map(it=>({...it,order:0,active:true,validFrom:'',validTo:''})),cats:(KBCATS||[]).map(c=>c.name)}; }
+  const items=(KB_ADMIN&&KB_ADMIN.items)||[];
+  const rows=items.map(it=>`<div class="kitem" style="align-items:center"><div class="ic" style="background:var(--purple-bg)">${it.icon||'📄'}</div><div class="tx"><b>${it.title}${it.active?'':' <span style="color:var(--muted);font-size:11px">(ปิด)</span>'}</b><span>${it.cat}${it.validTo?' · หมดอายุ '+it.validTo:''}</span></div><button class="btn btn-o btn-sm" onclick="kbEdit('${String(it.id).replace(/'/g,"\\\\'")}')">แก้</button></div>`).join("")||'<p style="color:var(--muted);font-size:13px;padding:10px 2px">ยังไม่มีเนื้อหา</p>';
+  modal(`<div class="sh"><div class="ptitle">🗂️ จัดการคลังความรู้</div><button class="x" onclick="closeModal()">✕</button></div>
+    <div style="padding:2px"><button class="btn btn-g" style="width:100%;margin-bottom:12px" onclick="kbEdit('')">+ เพิ่มเนื้อหาใหม่</button>
+    <div class="klist" style="max-height:52vh;overflow:auto">${rows}</div></div>`);
+}
+function kbEdit(id){
+  const it=((KB_ADMIN&&KB_ADMIN.items)||[]).find(x=>String(x.id)===String(id))||{};
+  const cats=(KB_ADMIN&&KB_ADMIN.cats)||[];
+  const q=s=>String(s==null?'':s).replace(/"/g,'&quot;');
+  const ip="width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);font:inherit;box-sizing:border-box";
+  const lb="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:5px";
+  const catOpts=cats.map(c=>`<option value="${q(c)}"></option>`).join("");
+  modal(`<div class="sh"><div class="ptitle">${id?'แก้ไขเนื้อหา':'เพิ่มเนื้อหาใหม่'}</div><button class="x" onclick="openKBManager()">✕</button></div>
+    <div style="padding:2px">
+      <input type="hidden" id="kb-id" value="${q(id)}">
+      <label style="${lb};margin-top:0">หมวด (พิมพ์เพื่อสร้างหมวดใหม่ได้)</label><input id="kb-cat" list="kb-catlist" style="${ip}" value="${q(it.cat)}"><datalist id="kb-catlist">${catOpts}</datalist>
+      <div style="display:flex;gap:8px"><div style="flex:0 0 88px"><label style="${lb}">ไอคอน</label><input id="kb-icon" style="${ip}" value="${q(it.icon||'📄')}"></div><div style="flex:1"><label style="${lb}">ลำดับ</label><input id="kb-order" type="number" style="${ip}" value="${it.order||0}"></div></div>
+      <label style="${lb}">หัวข้อ</label><input id="kb-title" style="${ip}" value="${q(it.title)}">
+      <label style="${lb}">คำโปรย</label><input id="kb-sum" style="${ip}" value="${q(it.sum)}">
+      <label style="${lb}">เนื้อหา</label><textarea id="kb-body" rows="4" style="${ip}">${String(it.body||'').replace(/</g,'&lt;')}</textarea>
+      <label style="${lb}">ลิงก์ไฟล์ Google Drive (ถ้ามี)</label><input id="kb-link" style="${ip}" value="${q(it.link)}" placeholder="https://drive.google.com/...">
+      <label style="${lb}">ข้อความปุ่มลิงก์</label><input id="kb-linklabel" style="${ip}" value="${q(it.linkLabel)}" placeholder="เช่น ฟังตัวอย่าง / ดาวน์โหลด">
+      <div style="display:flex;gap:8px"><div style="flex:1"><label style="${lb}">แสดงตั้งแต่</label><input id="kb-vf" type="date" style="${ip}" value="${q(it.validFrom)}"></div><div style="flex:1"><label style="${lb}">หมดอายุ (เว้นว่าง = ไม่หมด)</label><input id="kb-vt" type="date" style="${ip}" value="${q(it.validTo)}"></div></div>
+      <label class="rowi" style="cursor:pointer;margin-top:12px;gap:8px"><input type="checkbox" id="kb-active" ${it.active===false?'':'checked'} style="width:18px;height:18px;accent-color:var(--green)"> <span style="font-size:13px">เปิดใช้งาน (แสดงในคลัง)</span></label>
+      <div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-g" style="flex:1" onclick="saveKB()">บันทึก</button>${id?`<button class="btn btn-o" style="flex:0 0 auto;color:#c0392b" onclick="deleteKBItem('${String(id).replace(/'/g,"\\\\'")}')">ลบ</button>`:''}</div>
+    </div>`);
+}
+async function saveKB(){
+  const g=id=>document.getElementById(id);
+  const body={ id:g('kb-id').value, cat:g('kb-cat').value.trim(), icon:g('kb-icon').value.trim(), order:Number(g('kb-order').value)||0,
+    title:g('kb-title').value.trim(), sum:g('kb-sum').value.trim(), body:g('kb-body').value, link:g('kb-link').value.trim(),
+    linkLabel:g('kb-linklabel').value.trim(), validFrom:g('kb-vf').value, validTo:g('kb-vt').value, active:g('kb-active').checked };
+  if(!body.title){ toast('กรุณาใส่หัวข้อ'); return; }
+  const r=await api('adminSaveKB',body);
+  if(r&&r.ok){ toast('✓ '+(r.msg||'บันทึกแล้ว')); await hydrateKB(); openKBManager(); } else toast((r&&r.msg)||'บันทึกไม่สำเร็จ');
+}
+async function deleteKBItem(id){ if(!confirm('ลบเนื้อหานี้ออกจากคลังความรู้?'))return; const r=await api('adminDeleteKB',{id:id}); if(r&&r.ok){ toast('ลบแล้ว'); await hydrateKB(); openKBManager(); } else toast((r&&r.msg)||'ลบไม่สำเร็จ'); }
 
 /* ---------- CALENDAR ---------- */
 SCREENS.calendar=()=>`
