@@ -546,7 +546,7 @@ function demoApi(a,p){ return Promise.resolve({ok:true}); }
 async function hydrateProfile(){ if(!SERVER)return; const r=await api("getProfile"); if(r&&r.ok!==false){ if(r.coins!=null)ME.coins=r.coins; if(r.points!=null)ME.xp=r.points; if(r.streak!=null)ME.streak=r.streak; if(r.checkinDays!=null)ME.checkinDays=r.checkinDays; if(r.monthDays!=null)ME.monthDays=r.monthDays; if(r.name)ME.name=r.name; if(r.photo!=null)ME.photo=r.photo; if(r.activeMonths!=null)ME.activeMonths=r.activeMonths; if(r.fullName!=null)ME.fullName=r.fullName; if(r.badges)ME.badges=r.badges; if(r.user&&r.user.checkedToday!=null)ME.checkedToday=r.user.checkedToday; if(r.pathSteps)PATHSTEPS=r.pathSteps; refreshChips(); paintTopBadges(); const sf=document.getElementById("sf-av"); if(sf)sf.innerHTML=avImg(ME.photo,ME.name); ["tb-nm","sf-nm"].forEach(i=>{const el=document.getElementById(i);if(el)el.textContent=ME.name;}); const ci=document.getElementById("checkin"); if(ci&&CUR==="home")ci.innerHTML=checkinHTML(); if(CUR==="me" && !window.__meHydrated){window.__meHydrated=true;const v=document.getElementById("view"); if(v){v.innerHTML=SCREENS.me();try{hydrateCerts();}catch(e){}}} if(CUR==="path")repaintPath(); refreshRail(); } }
 async function hydrateFeed(){ if(!SERVER)return; const r=await api("getFeed"); if(r.ok){ FEED=r.feed.map(p=>({id:p.id,name:p.name,team:p.team,time:p.time,cap:p.caption,photo:p.photo,av:p.avatar||"",react:p.react||{},my:p.my,cmts:(p.comments||[]).map(c=>({n:c.name,t:c.text})),mine:p.mine,canEdit:p.canEdit,canDelete:p.canDelete})); const el=document.getElementById("feed"); const html=FEED.map(feedHTML).join(""); if(el&&CUR==="life"&&el.innerHTML!==html)el.innerHTML=html; } }
 async function hydrateListings(){ if(!SERVER)return; const r=await api("getListings",{filter:SF}); if(r.ok){ LISTINGS=r.listings.map(l=>({id:l.id,kind:l.kind,title:l.title,desc:l.desc,price:l.price,bid:l.bid,emoji:l.emoji||"📦",photo:l.photo,by:l.by,color:AV[(l.id||0)%AV.length]})); const el=document.getElementById("mlist"); const html=(LISTINGS.filter(x=>SF==="all"||x.kind===SF).map(listingHTML).join("")||'<p style="color:var(--muted)">ยังไม่มีประกาศในหมวดนี้</p>'); if(el&&CUR==="share"&&el.innerHTML!==html)el.innerHTML=html; } }
-async function hydrateActivity(){ if(!SERVER)return; const [n,a]=await Promise.all([api("getNotifications"),api("getAnnouncements")]); if(n.ok)NOTIFS=n.notifs; if(a.ok)ANNOUNCE=a.announcements.map(x=>({ic:x.ic,t:x.title,s:x.body})); updateBell(); refreshRail(); }
+async function hydrateActivity(){ if(!SERVER)return; const [n,a]=await Promise.all([api("getNotifications"),api("getAnnouncements")]); if(n.ok){NOTIFS=n.notifs;if(n.active!=null)updateHeroLive(n.activeLabel);} if(a.ok)ANNOUNCE=a.announcements.map(x=>({ic:x.ic,t:x.title,s:x.body})); updateBell(); refreshRail(); }
 
 /* =================== DEMO DATA =================== */
 const AV=["#4F7CFF","#00C2A8","#FF9F3E","#FF6B9D","#9A6BFF","#5F9E38"];
@@ -684,7 +684,9 @@ const EXPERIENCES={
   community:{tag:"COMMUNITY STORY",title:"Ideas over coffee",sub:"เรื่องเล่าจากเพื่อนร่วมทีม",route:"life",photo:HERO_PHOTOS.pink,desc:"พื้นที่แบ่งปันโมเมนต์ เทคนิค และแรงบันดาลใจจากคนใน Enforte"},
   coach:{tag:"FOR LEADERS",title:"Coach your team",sub:"IDP · Feedback · Progress",route:"coach",photo:HERO_PHOTOS.purple,desc:"ติดตามเป้าหมายรายบุคคล เตรียมหัวข้อคุย และพัฒนาทีมได้อย่างต่อเนื่อง"}
 };
-function heroHTML(cls,kick,title,body,actions){const photo=HERO_PHOTOS[cls||"default"]||HERO_PHOTOS.default;return `<div class="hero ${cls} an"><span class="hero-photo" style="--hero-photo:url('${photo}')"></span><span class="blob b1"></span><small>${kick}</small><h1>${title}</h1><p>${body}</p><div class="hero-actions">${actions}</div><div class="hero-float"><span class="pulse"></span><div><b>LEARNING TOGETHER</b><small>18 คนกำลังเรียนอยู่ตอนนี้</small></div></div></div>`; }
+function heroHTML(cls,kick,title,body,actions){const photo=HERO_PHOTOS[cls||"default"]||HERO_PHOTOS.default;return `<div class="hero ${cls} an"><span class="hero-photo" style="--hero-photo:url('${photo}')"></span><span class="blob b1"></span><small>${kick}</small><h1>${title}</h1><p>${body}</p><div class="hero-actions">${actions}</div><div class="hero-float"><span class="pulse"></span><div><b>LEARNING TOGETHER</b><small class="hero-live">${LIVE_LABEL}</small></div></div></div>`; }
+let LIVE_LABEL="กำลังเรียนไปด้วยกัน";
+function updateHeroLive(label){ if(label)LIVE_LABEL=label; document.querySelectorAll(".hero-live").forEach(el=>el.textContent=LIVE_LABEL); }
 function experienceCards(){return `<div class="experience-head an d2"><div><h2>เลือกประสบการณ์ที่อยากเริ่มวันนี้</h2><p>เนื้อหาใหม่ เรื่องราวจากทีม และเครื่องมือสำหรับหัวหน้า</p></div><button class="btn btn-o btn-sm" onclick="go('kb')">ดูทั้งหมด →</button></div><div class="experience-grid an d2">${Object.entries(EXPERIENCES).map(([k,x])=>`<button class="experience-card" onclick="openExperience('${k}')"><img src="${x.photo}" alt="${x.title}" loading="lazy"><span class="experience-arrow">↗</span><span class="experience-copy"><span class="experience-tag">${x.tag}</span><b>${x.title}</b><span>${x.sub}</span></span></button>`).join("")}</div>`;}
 function openExperience(k){const x=EXPERIENCES[k];if(!x)return;modal(`<div class="sh"><div class="ptitle">Quick preview</div><button class="x" onclick="closeModal()">✕</button></div><div class="modal-photo-story"><img src="${x.photo}" alt="${x.title}"><span>${x.tag}</span></div><div style="font-family:var(--fd);font-size:23px;font-weight:700;line-height:1.2">${x.title}</div><p style="color:var(--muted);font-size:13.5px;line-height:1.65;margin:8px 0 16px">${x.desc}</p><button class="btn btn-g" style="width:100%" onclick="closeModal();go('${x.route}')">เปิดประสบการณ์นี้ →</button>`);}
 function learningCockpit(){const days=[['จ','done'],['อ','done'],['พ','done'],['พฤ','done'],['ศ','today'],['ส',''],['อา','']];return `<div class="learning-cockpit an d2">
@@ -988,10 +990,6 @@ async function openQuizHall(){
 SCREENS.life=()=>`
 ${heroHTML("pink","company lifestyle","ไลฟ์สไตล์ · แชร์ชีวิตนอกงาน","โพสต์รูป ทริป ร้านอาหาร กิจกรรมทีม ให้คนในบริษัทได้รู้จักกันมากขึ้น",
   `<button class="pill solid" onclick="openLifePost()" style="color:#c93b73">+ โพสต์เรื่องราว</button><button class="pill" onclick="go('share')">🤝 ไปหน้าแบ่งปัน</button>`)}
-<div class="chips an d2">
-  <button class="chip2"><span class="e">🍱</span> Food & Café</button><button class="chip2"><span class="e">✈️</span> Travel</button>
-  <button class="chip2"><span class="e">🎉</span> Team Activity</button><button class="chip2"><span class="e">💡</span> Inspiration</button>
-</div>
 <div class="sect an d2">🎯 เควสวันนี้ · ทำเพื่อทีม & สุขภาพ <span class="rule"></span></div>
 <div class="an d2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:18px">
   <div class="card"><h3 style="margin-bottom:10px">🎯 เควสของฉัน</h3><div id="quest-box">${questHTML()}</div></div>
@@ -1522,29 +1520,68 @@ async function doRedeem(id){
   } else toast((r&&r.msg)||"แลกไม่สำเร็จ");
 }
 
-/* ---------- COACH / IDP ---------- */
-SCREENS.coach=()=>`
+/* ---------- COACH / IDP (ข้อมูลจริงจากชีต IDP + adminOverview) ---------- */
+let IDP=null, IDPTEAM=null, IDPWATCH=null, WEAK_AREA="", IDP_USERS=null;
+SCREENS.coach=()=>{
+  const my=IDP;
+  const myCard = my ? `
+   <div class="card an d2"><h3>🎯 IDP ของฉัน · แผนพัฒนารายบุคคล</h3>
+     ${my.strength?idprow("จุดแข็ง",my.strength,"var(--green)"):""}
+     ${my.growth?idprow("จุดที่ต้องพัฒนา",my.growth,"var(--amber)"):""}
+     ${my.goal?idprow("เป้าหมาย",my.goal,"var(--blue)"):""}
+     <div class="bar green" style="margin-top:6px"><span style="width:${my.progress||0}%"></span></div>
+     <p style="font-size:12px;color:var(--muted);margin-top:6px">ความคืบหน้าแผนพัฒนา · ${my.progress||0}%${my.by?" · โดย "+my.by:""}</p>
+   </div>`
+  : `
+   <div class="card an d2"><h3>🎯 IDP ของฉัน · แผนพัฒนารายบุคคล</h3>
+     <div style="text-align:center;color:var(--muted);font-size:13px;padding:22px 10px;line-height:1.7">หัวหน้ายังไม่ได้กำหนดแผนพัฒนาให้คุณ<br><span style="font-size:12px">พูดคุยกับหัวหน้าเพื่อวางเป้าหมายการพัฒนาร่วมกัน</span></div>
+   </div>`;
+  let adminBlock="";
+  if(ME.role==="admin"){
+    const editBtn=`<button class="pill solid" onclick="openIDPEditor()" style="color:#6a3fb5">✏️ กำหนดแผนรายคน</button>`;
+    const teamCard = IDPTEAM ? `
+     <div class="sect an d3">👥 มุมมองหัวหน้า <span class="rule"></span></div>
+     <div class="card an d3"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Team Skill Gap</h3>${editBtn}</div>
+       ${IDPTEAM.length?IDPTEAM.map(t=>skill("ทีม "+t.team+" · เฉลี่ย",t.skill,t.skill>=75?"green":t.skill>=60?"blue":"amber")).join(""):'<p style="color:var(--muted);font-size:13px;margin-top:8px">ยังไม่มีข้อมูลควิซ/บทเรียนพอสำหรับคำนวณ</p>'}
+       ${WEAK_AREA?`<p style="font-size:12.5px;color:var(--muted);margin-top:4px">💡 หัวข้อที่ทีมทำผ่านยากที่สุด: <b>${WEAK_AREA}</b></p>`:""}
+     </div>`
+    : `
+     <div class="sect an d3">👥 มุมมองหัวหน้า <span class="rule"></span></div>
+     <div class="card an d3"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Team Skill Gap</h3>${editBtn}</div><p style="color:var(--muted);font-size:13px;margin-top:8px">กำลังโหลดข้อมูลจริง…</p></div>`;
+    const watchCard = IDPWATCH ? `
+     <div class="sect an d4">🚩 ต้องติดตาม (Low Performer) <span class="rule"></span></div>
+     <div class="card an d4">
+       ${IDPWATCH.length?IDPWATCH.map(w=>idpwatch(w.name,w.team,w.reason,w.tag)).join(""):'<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px 8px">ทุกคนอยู่ในเกณฑ์ดี 👍</div>'}
+     </div>`:"";
+    adminBlock = teamCard + watchCard;
+  }
+  return `
 ${heroHTML("purple","coaching & development","โค้ชชิ่ง & IDP","แผนพัฒนารายบุคคล ติดตามผล และเครื่องมือโค้ชสำหรับหัวหน้าทีม",'')}
-<div class="grid2"><div>
- <div class="card an d2"><h3>🎯 IDP ของฉัน · แผนพัฒนารายบุคคล</h3>
-   ${idprow("จุดแข็ง","เปิดการขายและสร้าง rapport ได้ดีมาก","var(--green)")}
-   ${idprow("จุดที่ต้องพัฒนา","การจัดการ objection ที่ซับซ้อน","var(--amber)")}
-   ${idprow("เป้าหมายไตรมาสนี้","ปิดการขายเพิ่ม 15% · ผ่าน Advanced Course","var(--blue)")}
-   <div class="bar green" style="margin-top:6px"><span style="width:62%"></span></div>
-   <p style="font-size:12px;color:var(--muted);margin-top:6px">ความคืบหน้าแผนพัฒนา · 62%</p>
- </div>
- ${ME.role==="admin"?`
- <div class="sect an d3">👥 มุมมองหัวหน้า <span class="rule"></span></div>
- <div class="card an d3"><h3>Team Skill Gap</h3>
-   ${skill("ทีม Fresh · เฉลี่ย",78,"blue")}${skill("ทีม Resell · เฉลี่ย",71,"green")}
-   <p style="font-size:12.5px;color:var(--muted);margin-top:4px">💡 ทั้งสองทีมควรเสริมทักษะ <b>จัดการ Objection</b></p>
- </div>
- <div class="sect an d4">🚩 ต้องติดตาม (Low Performer) <span class="rule"></span></div>
- <div class="card an d4">
-   ${idpwatch("ต้น ส.","Resell","ยอดต่ำกว่าเป้า 2 เดือน","PIP")}
-   ${idpwatch("นัท ว.","Fresh","completion บทเรียน 40%","โค้ช 1:1")}
- </div>`:''}
-</div>${railHTML()}</div>`;
+<div class="grid2"><div>${myCard}${adminBlock}</div>${railHTML()}</div>`;
+};
+async function hydrateCoach(){ if(!SERVER)return; const r=await api("getIDP"); if(r&&r.ok){ IDP=r.idp||null; IDPTEAM=r.team||null; IDPWATCH=r.watch||null; WEAK_AREA=r.weakArea||""; if(CUR==="coach"){const v=document.getElementById("view"); if(v){v.innerHTML=SCREENS.coach();requestAnimationFrame(enhancePage);}} } }
+POST.coach=()=>{ if(SERVER)hydrateCoach(); };
+async function openIDPEditor(pref){
+  if(SERVER){ const r=await api("adminListIDP"); if(r&&r.ok)IDP_USERS=r.users; }
+  const users=IDP_USERS||[];
+  if(!users.length){ modal(`<div class="sh"><div class="ptitle">กำหนดแผนพัฒนา (IDP)</div><button class="x" onclick="closeModal()">✕</button></div><p style="color:var(--muted);font-size:13px;padding:14px 4px">ยังไม่มีพนักงานในระบบ</p>`); return; }
+  const opts=users.map(u=>`<option value="${u.id}">${u.name} · ${u.team}${u.has?" ✓":""}</option>`).join("");
+  const ip="width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);font:inherit;box-sizing:border-box";
+  const lb="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:5px";
+  modal(`<div class="sh"><div class="ptitle">กำหนดแผนพัฒนา (IDP) รายคน</div><button class="x" onclick="closeModal()">✕</button></div>
+    <div style="padding:4px 2px">
+      <label style="${lb};margin-top:0">เลือกพนักงาน</label>
+      <select id="idp-u" onchange="idpPick(this.value)" style="${ip}">${opts}</select>
+      <label style="${lb}">จุดแข็ง</label><textarea id="idp-s" rows="2" style="${ip}"></textarea>
+      <label style="${lb}">จุดที่ต้องพัฒนา</label><textarea id="idp-g" rows="2" style="${ip}"></textarea>
+      <label style="${lb}">เป้าหมาย</label><textarea id="idp-goal" rows="2" style="${ip}"></textarea>
+      <label style="${lb}">ความคืบหน้า (%)</label><input id="idp-p" type="number" min="0" max="100" style="${ip}">
+      <button class="btn btn-g" style="width:100%;margin-top:14px" onclick="saveIDP()">บันทึกแผน</button>
+    </div>`);
+  idpPick(pref||users[0].id);
+}
+function idpPick(id){ const u=(IDP_USERS||[]).find(x=>String(x.id)===String(id)); if(!u)return; const sel=document.getElementById("idp-u"); if(sel)sel.value=id; const s=document.getElementById("idp-s"),g=document.getElementById("idp-g"),go2=document.getElementById("idp-goal"),p=document.getElementById("idp-p"); if(s)s.value=u.strength||""; if(g)g.value=u.growth||""; if(go2)go2.value=u.goal||""; if(p)p.value=u.progress||0; }
+async function saveIDP(){ const id=document.getElementById("idp-u").value; const body={userId:id,strength:document.getElementById("idp-s").value.trim(),growth:document.getElementById("idp-g").value.trim(),goal:document.getElementById("idp-goal").value.trim(),progress:Number(document.getElementById("idp-p").value)||0}; const r=await api("adminSaveIDP",body); if(r&&r.ok){ toast("✓ บันทึกแผนพัฒนาแล้ว"); if(IDP_USERS){const u=IDP_USERS.find(x=>String(x.id)===String(id)); if(u){u.strength=body.strength;u.growth=body.growth;u.goal=body.goal;u.progress=body.progress;u.has=!!(body.strength||body.growth||body.goal);}} closeModal(); if(CUR==="coach")hydrateCoach(); } else toast((r&&r.msg)||"บันทึกไม่สำเร็จ"); }
 function idprow(l,v,c){return `<div class="rowi"><div class="ic" style="background:${c}18;color:${c}">●</div><div class="tx"><b>${l}</b><span>${v}</span></div></div>`;}
 function idpwatch(n,t,s,tag){return `<div class="rowi"><div class="av" style="width:38px;height:38px;border-radius:11px;background:${avc(n)};display:grid;place-items:center;font-family:var(--fd);font-weight:700;color:#fff;font-size:13px">${initials(n)}</div><div class="tx"><b>${n} · ${t}</b><span>${s}</span></div><span class="badge2" style="background:var(--amber-bg);color:#C77E15">${tag}</span></div>`;}
 
@@ -2191,14 +2228,14 @@ async function doChangePassword(){
 /* =================== ACTIVITY / BELL =================== */
 let ATAB="noti";
 /* กดแจ้งเตือน → พาไปหน้าที่เกี่ยวข้อง */
-const NOTIF_GO={quiz:"quizsets",rank:"board",cert:"path",celeb:"calendar",feed:"life",ann:"home",broadcast:"home",reward:"rewards",pin:"me",msg:"life"};
+const NOTIF_GO={quiz:"quizsets",rank:"board",cert:"path",celeb:"calendar",feed:"life",ann:"home",broadcast:"home",reward:"rewards",pin:"me",msg:"life",coach:"coach"};
 function notifGo(ref){const s=NOTIF_GO[ref];if(!s)return;closeModal();go(s);}
 /* ดึงแจ้งเตือนใหม่อัตโนมัติทุก 60 วิ (ถูกแซงอันดับ/ควิซใหม่เด้งเองไม่ต้องรีเฟรช) */
 let NOTIF_TIMER=null;
 async function refreshNotifs(){
   if(!SERVER||!ME.id)return;
   const before=bellCount();
-  try{ const r=await api("getNotifications"); if(r&&r.ok){NOTIFS=r.notifs;updateBell();
+  try{ const r=await api("getNotifications"); if(r&&r.ok){NOTIFS=r.notifs;updateBell();if(r.active!=null)updateHeroLive(r.activeLabel);
     const now=bellCount();
     if(now>before){const n=NOTIFS.find(x=>x.unread); if(n)toast(n.ic+" "+String(n.text).slice(0,60));}
   } }catch(e){}
@@ -2209,7 +2246,7 @@ function startNotifPoll(){
     if(document.hidden||!ME.id)return;
     const before=bellCount();
     const r=await api("getNotifications");
-    if(r&&r.ok){NOTIFS=r.notifs;updateBell();
+    if(r&&r.ok){NOTIFS=r.notifs;updateBell();if(r.active!=null)updateHeroLive(r.activeLabel);
       const now=bellCount();
       if(now>before){const n=NOTIFS.find(x=>x.unread);if(n)toast(n.ic+" "+n.text.slice(0,60));}
     }
