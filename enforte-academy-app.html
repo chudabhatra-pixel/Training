@@ -543,7 +543,7 @@ async function api(action,p={}){ if(!SERVER) return demoApi(action,p);
 function demoApi(a,p){ return Promise.resolve({ok:true}); }
 
 /* ===== SERVER integration — ทำงานเมื่อใส่ API_URL (โหมดเดโม่ข้ามทั้งหมด) ===== */
-async function hydrateProfile(){ if(!SERVER)return; const r=await api("getProfile"); if(r&&r.ok!==false){ if(r.coins!=null)ME.coins=r.coins; if(r.points!=null)ME.xp=r.points; if(r.streak!=null)ME.streak=r.streak; if(r.checkinDays!=null)ME.checkinDays=r.checkinDays; if(r.monthDays!=null)ME.monthDays=r.monthDays; if(r.name)ME.name=r.name; if(r.photo!=null)ME.photo=r.photo; if(r.activeMonths!=null)ME.activeMonths=r.activeMonths; if(r.fullName!=null)ME.fullName=r.fullName; if(r.badges)ME.badges=r.badges; if(r.user&&r.user.checkedToday!=null)ME.checkedToday=r.user.checkedToday; if(r.pathSteps)PATHSTEPS=r.pathSteps; refreshChips(); paintTopBadges(); const sf=document.getElementById("sf-av"); if(sf)sf.innerHTML=avImg(ME.photo,ME.name); ["tb-nm","sf-nm"].forEach(i=>{const el=document.getElementById(i);if(el)el.textContent=ME.name;}); const ci=document.getElementById("checkin"); if(ci&&CUR==="home")ci.innerHTML=checkinHTML(); if(CUR==="me"){const v=document.getElementById("view"); if(v)v.innerHTML=SCREENS.me();} if(CUR==="path")repaintPath(); refreshRail(); } }
+async function hydrateProfile(){ if(!SERVER)return; const r=await api("getProfile"); if(r&&r.ok!==false){ if(r.coins!=null)ME.coins=r.coins; if(r.points!=null)ME.xp=r.points; if(r.streak!=null)ME.streak=r.streak; if(r.checkinDays!=null)ME.checkinDays=r.checkinDays; if(r.monthDays!=null)ME.monthDays=r.monthDays; if(r.name)ME.name=r.name; if(r.photo!=null)ME.photo=r.photo; if(r.activeMonths!=null)ME.activeMonths=r.activeMonths; if(r.fullName!=null)ME.fullName=r.fullName; if(r.badges)ME.badges=r.badges; if(r.user&&r.user.checkedToday!=null)ME.checkedToday=r.user.checkedToday; if(r.pathSteps)PATHSTEPS=r.pathSteps; refreshChips(); paintTopBadges(); const sf=document.getElementById("sf-av"); if(sf)sf.innerHTML=avImg(ME.photo,ME.name); ["tb-nm","sf-nm"].forEach(i=>{const el=document.getElementById(i);if(el)el.textContent=ME.name;}); const ci=document.getElementById("checkin"); if(ci&&CUR==="home")ci.innerHTML=checkinHTML(); if(CUR==="me"){const v=document.getElementById("view"); const _h=SCREENS.me(); if(v&&v.innerHTML!==_h)v.innerHTML=_h;} if(CUR==="path")repaintPath(); refreshRail(); } }
 async function hydrateFeed(){ if(!SERVER)return; const r=await api("getFeed"); if(r.ok){ FEED=r.feed.map(p=>({id:p.id,name:p.name,team:p.team,time:p.time,cap:p.caption,photo:p.photo,av:p.avatar||"",react:p.react||{},my:p.my,cmts:(p.comments||[]).map(c=>({n:c.name,t:c.text})),mine:p.mine,canEdit:p.canEdit,canDelete:p.canDelete})); const el=document.getElementById("feed"); const html=FEED.map(feedHTML).join(""); if(el&&CUR==="life"&&el.innerHTML!==html)el.innerHTML=html; } }
 async function hydrateListings(){ if(!SERVER)return; const r=await api("getListings",{filter:SF}); if(r.ok){ LISTINGS=r.listings.map(l=>({id:l.id,kind:l.kind,title:l.title,desc:l.desc,price:l.price,bid:l.bid,emoji:l.emoji||"📦",photo:l.photo,by:l.by,color:AV[(l.id||0)%AV.length]})); const el=document.getElementById("mlist"); const html=(LISTINGS.filter(x=>SF==="all"||x.kind===SF).map(listingHTML).join("")||'<p style="color:var(--muted)">ยังไม่มีประกาศในหมวดนี้</p>'); if(el&&CUR==="share"&&el.innerHTML!==html)el.innerHTML=html; } }
 async function hydrateActivity(){ if(!SERVER)return; const [n,a]=await Promise.all([api("getNotifications"),api("getAnnouncements")]); if(n.ok)NOTIFS=n.notifs; if(a.ok)ANNOUNCE=a.announcements.map(x=>({ic:x.ic,t:x.title,s:x.body})); updateBell(); refreshRail(); }
@@ -813,6 +813,7 @@ async function doCheckin(){
   let r=null; try{r=await api("checkin");}catch(e){}
   if(r&&r.ok===false&&r.msg) toast(r.msg);
   await hydrateProfile();                 // ปรับค่าให้ตรงเซิร์ฟเวอร์เป๊ะ (เงียบ ๆ)
+  refreshNotifs();
   if(CUR==="home")POST.home();
 }
 
@@ -930,6 +931,7 @@ async function finishQuiz(){
     const r=await api("submitQuiz",{quizId:AQUIZ.id,score:pct,timeBonus});
     if(r&&r.ok){ awarded=r.awarded; reward=r.reward; coins=r.coins; }
     await hydrateProfile();
+    refreshNotifs();
     const set=QUIZSETS.find(s=>s.id===AQUIZ.id);
     if(set){ set.myBest=Math.max(set.myBest||0,pct); if(pass)set.myPassed=true; set.attempts=(set.attempts||0)+1; }
   } else if(pass){ ME.xp+=reward; ME.coins+=coins; refreshChips(); }
@@ -1281,7 +1283,7 @@ function answerPathStep(i,oi){
       if(r&&r.ok){
         if(r.pathSteps)PATHSTEPS=r.pathSteps;
         if(r.badges)ME.badges=r.badges;
-        repaintPath(); refreshRail();
+        repaintPath(); refreshRail(); refreshNotifs();
         if(r.newBadges&&r.newBadges.length){
           setTimeout(()=>toast(r.newBadges.indexOf("path")>=0?"🏆 ได้รับ badge Path Finisher — เรียนจบครบทุกขั้น!":"🏅 ได้รับ badge Course Conqueror!"),700);
         }
@@ -2166,21 +2168,22 @@ async function doChangePassword(){
 /* =================== ACTIVITY / BELL =================== */
 let ATAB="noti";
 /* กดแจ้งเตือน → พาไปหน้าที่เกี่ยวข้อง */
-const NOTIF_GO={quiz:"quizsets",rank:"board",cert:"path",celeb:"calendar",feed:"life",ann:"home",broadcast:"home",reward:"rewards",pin:"me",msg:"life"};
+const NOTIF_GO={quiz:"quizsets",rank:"board",cert:"path",celeb:"calendar",feed:"life",ann:"home",broadcast:"home",reward:"rewards",pin:"me",msg:"life",badge:"me",streak:"home",path:"path"};
 function notifGo(ref){const s=NOTIF_GO[ref];if(!s)return;closeModal();go(s);}
 /* ดึงแจ้งเตือนใหม่อัตโนมัติทุก 60 วิ (ถูกแซงอันดับ/ควิซใหม่เด้งเองไม่ต้องรีเฟรช) */
 let NOTIF_TIMER=null;
+async function refreshNotifs(){
+  if(!SERVER||!ME.id)return;
+  const before=bellCount();
+  const r=await api("getNotifications");
+  if(r&&r.ok){NOTIFS=r.notifs;updateBell();
+    const now=bellCount();
+    if(now>before){const n=NOTIFS.find(x=>x.unread);if(n)toast(n.ic+" "+n.text.slice(0,60));}
+  }
+}
 function startNotifPoll(){
   if(!SERVER||NOTIF_TIMER)return;
-  NOTIF_TIMER=setInterval(async()=>{
-    if(document.hidden||!ME.id)return;
-    const before=bellCount();
-    const r=await api("getNotifications");
-    if(r&&r.ok){NOTIFS=r.notifs;updateBell();
-      const now=bellCount();
-      if(now>before){const n=NOTIFS.find(x=>x.unread);if(n)toast(n.ic+" "+n.text.slice(0,60));}
-    }
-  },60000);
+  NOTIF_TIMER=setInterval(()=>{ if(!document.hidden&&ME.id)refreshNotifs(); },60000);
 }
 function bellCount(){return NOTIFS.filter(n=>n.unread).length;}
 function updateBell(){const b=document.getElementById("bell-b");const n=bellCount();b.textContent=n;b.style.display=n?"grid":"none";}
