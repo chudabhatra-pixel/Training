@@ -555,6 +555,28 @@ function initials(n){return n.replace(/\(.*\)/,'').trim().slice(0,2);}
 function avImg(photo,name){return photo?`<img src="${photo}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit"/>`:initials(name);}
 /* อัปโหลดรูปเข้า Drive (server) แล้วคืน URL; เดโม่คืน dataURL เดิม */
 async function uploadImage(dataUrl,kind){ if(!SERVER) return dataUrl; try{const r=await api("uploadImage",{dataUrl,kind});return r.ok?r.url:dataUrl;}catch(e){return dataUrl;} }
+/* ย่อรูปฝั่ง client ก่อนอัป: ลดขนาดยาวสุด = maxDim, บีบเป็น JPEG (กันไฟล์ใหญ่/ช้า + กัน base64 ล้นเซลล์ชีตกรณี Drive พลาด) */
+function resizeImage(file, maxDim, quality){
+  return new Promise(resolve=>{
+    const rd=new FileReader();
+    rd.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        let w=img.width, h=img.height;
+        if(w>maxDim||h>maxDim){const s=Math.min(maxDim/w, maxDim/h); w=Math.round(w*s); h=Math.round(h*s);}
+        try{
+          const c=document.createElement("canvas"); c.width=w; c.height=h;
+          c.getContext("2d").drawImage(img,0,0,w,h);
+          resolve(c.toDataURL("image/jpeg", quality||0.82));
+        }catch(_){ resolve(e.target.result); }
+      };
+      img.onerror=()=>resolve(e.target.result);
+      img.src=e.target.result;
+    };
+    rd.onerror=()=>resolve("");
+    rd.readAsDataURL(file);
+  });
+}
 let ME={ id:"FR001", name:"คุณเดโม่", team:"Fresh", role:"admin", coins:0, xp:0, streak:0, rank:"—", checkedToday:false, photo:"", checkinDays:0, monthDays:30 };
 let TOP=[];
 let TEAMS=null;
@@ -1075,7 +1097,7 @@ function openLifePost(){LPHOTO=null;modal(`<div class="sh"><div class="ptitle">�
  <label class="btn btn-o" style="width:100%;margin-top:10px;cursor:pointer">📷 แนบรูป<input type="file" accept="image/*" hidden onchange="pickLP(this)"></label>
  <div id="lp-prev"></div>
  <button class="btn btn-g" style="width:100%;margin-top:14px" onclick="submitLP()">โพสต์เลย</button>`);}
-function pickLP(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{LPHOTO=e.target.result;document.getElementById("lp-prev").innerHTML=`<img src="${LPHOTO}" style="width:100%;border-radius:14px;margin-top:10px"/>`;};r.readAsDataURL(f);}
+async function pickLP(inp){const f=inp.files[0];if(!f)return;LPHOTO=await resizeImage(f,1280,0.82);document.getElementById("lp-prev").innerHTML=`<img src="${LPHOTO}" style="width:100%;border-radius:14px;margin-top:10px"/>`;}
 async function submitLP(){const cap=document.getElementById("lp-cap").value.trim();if(!cap&&!LPHOTO){toast("ใส่ข้อความหรือรูปก่อนนะ");return;}
  let photo=LPHOTO; if(photo&&SERVER){toast("กำลังอัปโหลดรูป...");photo=await uploadImage(photo,"post");}
  const tempId=++FSEQ;
@@ -1115,7 +1137,7 @@ function openPost(){POST_IT={kind:"sell",emoji:"📦",photo:null};modal(`<div cl
  <label class="btn btn-o" style="width:100%;margin-bottom:10px;cursor:pointer">📷 แนบรูปสินค้า (ถ้ามี)<input type="file" accept="image/*" hidden onchange="pickPI(this)"></label>
  <div id="pi-prev"></div>
  <button class="btn btn-g" style="width:100%" onclick="submitPost()">ลงประกาศ</button>`);}
-function pickPI(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{POST_IT.photo=e.target.result;document.getElementById("pi-prev").innerHTML=`<img src="${POST_IT.photo}" style="width:100%;border-radius:14px;margin-bottom:10px"/>`;};r.readAsDataURL(f);}
+async function pickPI(inp){const f=inp.files[0];if(!f)return;POST_IT.photo=await resizeImage(f,1280,0.82);document.getElementById("pi-prev").innerHTML=`<img src="${POST_IT.photo}" style="width:100%;border-radius:14px;margin-bottom:10px"/>`;}
 function pk(k,el){POST_IT.kind=k;document.querySelectorAll("#modal .seg button").forEach(b=>b.classList.toggle("on",b.dataset.k===k));document.getElementById("p-pricew").style.display=k==="free"?"none":"block";}
 async function submitPost(){const t=document.getElementById("p-title").value.trim();if(!t){toast("ใส่ชื่อสินค้าก่อน");return;}
  let photo=POST_IT.photo; if(photo&&SERVER){toast("กำลังอัปโหลดรูป...");photo=await uploadImage(photo,"listing");}
@@ -2123,7 +2145,7 @@ function openProfileEdit(){PE_PHOTO=null;modal(`<div class="sh"><div class="ptit
    <label class="btn btn-o btn-sm" style="margin-top:12px;cursor:pointer">📷 เปลี่ยนรูปโปรไฟล์<input type="file" accept="image/*" hidden onchange="pickPE(this)"></label></div>
  <div class="field"><label>ชื่อที่แสดง</label><input class="inp" id="pe-name" value="${ME.name.replace(/"/g,'&quot;')}" maxlength="40" placeholder="ชื่อเล่นของคุณ"></div>
  <button class="btn btn-g" style="width:100%" id="pe-save" onclick="saveProfile()">บันทึก</button>`);}
-function pickPE(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{PE_PHOTO=e.target.result;document.getElementById("pe-av").innerHTML=`<img src="${PE_PHOTO}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit"/>`;};r.readAsDataURL(f);}
+async function pickPE(inp){const f=inp.files[0];if(!f)return;PE_PHOTO=await resizeImage(f,256,0.85);document.getElementById("pe-av").innerHTML=`<img src="${PE_PHOTO}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit"/>`;}
 async function saveProfile(){
   const name=document.getElementById("pe-name").value.trim()||ME.name;
   const btn=document.getElementById("pe-save"); btn.textContent="กำลังบันทึก...";
