@@ -799,7 +799,7 @@ ${experienceCards()}
    ${tile("rewards","rewards","🎁","รางวัล","แลกเหรียญ & ใบประกาศ","","d6")}
    ${tile("board","board","⭐","อันดับ","Top Learner & ทีม","","d6")}
   </div>
-  <div class="sect an d5">✅ ภารกิจวันนี้ <span class="rule"></span></div>
+  <div class="sect an d5">✅ ภารกิจวันนี้ <span class="rule"></span>${ME.role==="admin"?`<button class="pill solid" onclick="openMissionMgr()" style="color:#2f8f6b">✏️ จัดการ</button>`:''}</div>
   <div class="card an d5" id="missions-box">${missionsHTML()}</div>
  </div>
  ${railHTML()}
@@ -1445,6 +1445,47 @@ async function saveKB(){
   if(r&&r.ok){ toast('✓ '+(r.msg||'บันทึกแล้ว')); await hydrateKB(); openKBManager(); } else toast((r&&r.msg)||'บันทึกไม่สำเร็จ');
 }
 async function deleteKBItem(id){ if(!confirm('ลบเนื้อหานี้ออกจากคลังความรู้?'))return; const r=await api('adminDeleteKB',{id:id}); if(r&&r.ok){ toast('ลบแล้ว'); await hydrateKB(); openKBManager(); } else toast((r&&r.msg)||'ลบไม่สำเร็จ'); }
+
+/* ---------- ADMIN: จัดการภารกิจวันนี้ ---------- */
+let MISS_ADMIN=null;
+const MGO_OPTS=[["learn","เรียนรู้"],["kb","คลังความรู้"],["quizsets","ควิซ"],["path","เส้นทางเรียนรู้"],["board","อันดับ"],["rewards","ร้านรางวัล"],["share","แบ่งปัน"],["calendar","ปฏิทิน"],["flash","แฟลชการ์ด"],["chal","แชลเลนจ์"],["life","ชุมชน"],["coach","โค้ช"]];
+async function openMissionMgr(){
+  if(SERVER){ const r=await api("adminListMissions"); if(r&&r.ok)MISS_ADMIN=r.missions||[]; }
+  else { MISS_ADMIN=(MISSIONS||[]).map((m,i)=>({...m,id:'local'+i,active:true,order:i+1})); }
+  const items=MISS_ADMIN||[];
+  const rows=items.map(m=>`<div class="kitem" style="align-items:center"><div class="ic" style="background:var(--green-bg)">${m.icon||'✅'}</div><div class="tx"><b>${m.title||'(ไม่มีชื่อ)'}${m.active?'':' <span style="color:var(--muted);font-size:11px">(ปิด)</span>'}</b><span>${m.sub||''}${m.reward?' · '+m.reward:''}</span></div><button class="btn btn-o btn-sm" onclick="missionEdit('${String(m.id).replace(/'/g,"\\\\'")}')">แก้</button></div>`).join("")||'<p style="color:var(--muted);font-size:13px;padding:10px 2px">ยังไม่มีภารกิจ</p>';
+  modal(`<div class="sh"><div class="ptitle">✅ จัดการภารกิจวันนี้</div><button class="x" onclick="closeModal()">✕</button></div>
+    <div style="padding:2px"><button class="btn btn-g" style="width:100%;margin-bottom:12px" onclick="missionEdit('')">+ เพิ่มภารกิจใหม่</button>
+    <div class="klist" style="max-height:52vh;overflow:auto">${rows}</div></div>`);
+}
+function missionEdit(id){
+  const m=(MISS_ADMIN||[]).find(x=>String(x.id)===String(id))||{};
+  const q=s=>String(s==null?'':s).replace(/"/g,'&quot;');
+  const ip="width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);font:inherit;box-sizing:border-box";
+  const lb="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:5px";
+  const goOpts=MGO_OPTS.map(o=>`<option value="${o[0]}" ${String(m.go||'learn')===o[0]?'selected':''}>${o[1]}</option>`).join("");
+  modal(`<div class="sh"><div class="ptitle">${id?'แก้ไขภารกิจ':'เพิ่มภารกิจใหม่'}</div><button class="x" onclick="openMissionMgr()">✕</button></div>
+    <div style="padding:2px">
+      <input type="hidden" id="ms-id" value="${q(id)}">
+      <div style="display:flex;gap:8px"><div style="flex:0 0 88px"><label style="${lb};margin-top:0">ไอคอน</label><input id="ms-icon" style="${ip}" value="${q(m.icon||'✅')}"></div><div style="flex:1"><label style="${lb};margin-top:0">ลำดับ</label><input id="ms-order" type="number" style="${ip}" value="${m.order||0}"></div></div>
+      <label style="${lb}">ชื่อภารกิจ</label><input id="ms-title" style="${ip}" value="${q(m.title)}">
+      <label style="${lb}">คำอธิบาย</label><input id="ms-sub" style="${ip}" value="${q(m.sub)}">
+      <label style="${lb}">รางวัล (ข้อความ เช่น +15 XP)</label><input id="ms-reward" style="${ip}" value="${q(m.reward)}">
+      <label style="${lb}">กดแล้วไปหน้า</label><select id="ms-go" style="${ip}">${goOpts}</select>
+      <label class="rowi" style="cursor:pointer;margin-top:12px;gap:8px"><input type="checkbox" id="ms-active" ${m.active===false?'':'checked'} style="width:18px;height:18px;accent-color:var(--green)"> <span style="font-size:13px">เปิดใช้งาน (แสดงหน้าแรก)</span></label>
+      <div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-g" style="flex:1" onclick="saveMission()">บันทึก</button>${id?`<button class="btn btn-o" style="flex:0 0 auto;color:#c0392b" onclick="deleteMission('${String(id).replace(/'/g,"\\\\'")}')">ลบ</button>`:''}</div>
+    </div>`);
+}
+async function saveMission(){
+  const g=id=>document.getElementById(id);
+  const mission={ id:g('ms-id').value, icon:g('ms-icon').value.trim()||'✅', order:Number(g('ms-order').value)||0,
+    title:g('ms-title').value.trim(), sub:g('ms-sub').value.trim(), reward:g('ms-reward').value.trim(),
+    go:g('ms-go').value, active:g('ms-active').checked };
+  if(!mission.title){ toast('กรุณาใส่ชื่อภารกิจ'); return; }
+  const r=await api('adminSaveMission',{mission});
+  if(r&&r.ok){ toast('✓ '+(r.msg||'บันทึกแล้ว')); await hydrateMissions(); openMissionMgr(); } else toast((r&&r.msg)||'บันทึกไม่สำเร็จ');
+}
+async function deleteMission(id){ if(!confirm('ลบภารกิจนี้?'))return; const r=await api('adminDeleteMission',{missionId:id}); if(r&&r.ok){ toast('ลบแล้ว'); await hydrateMissions(); openMissionMgr(); } else toast((r&&r.msg)||'ลบไม่สำเร็จ'); }
 
 /* ---------- CALENDAR ---------- */
 SCREENS.calendar=()=>`
