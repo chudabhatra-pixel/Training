@@ -1488,12 +1488,14 @@ const FBEMO=[{e:"😍",r:4},{e:"🙂",r:3},{e:"😐",r:2},{e:"🙁",r:1}];
 function fbHTML(){
   if(FBDONE)return `<div style="text-align:center;padding:14px"><div style="font-size:34px">🙏</div><div style="font-weight:700;color:var(--green);margin-top:4px">ขอบคุณสำหรับ feedback!</div></div>`;
   return `<p style="font-size:13.5px;margin-bottom:10px">อบรมครั้งล่าสุดเป็นยังไงบ้าง?</p>
+   <textarea id="fb-comment" class="inp" rows="2" placeholder="คอมเมนต์เพิ่มเติม (ไม่บังคับ)" style="width:100%;resize:vertical;margin-bottom:10px"></textarea>
    <div style="display:flex;gap:10px">${FBEMO.map(f=>`<button class="btn btn-o" style="flex:1;font-size:22px;padding:12px" onclick="sendFeedback('${f.e}',${f.r})">${f.e}</button>`).join("")}</div>`;
 }
 function sendFeedback(emoji,rating){
+  const comment=(document.getElementById("fb-comment")||{}).value||"";
   FBDONE=true; const el=document.getElementById("fb-card"); if(el)el.innerHTML=fbHTML();
   burst(); ME.xp=(ME.xp||0)+5; refreshChips(); toast("ขอบคุณสำหรับ feedback! "+emoji+" +5 XP");
-  if(SERVER)api("submitFeedback",{rating,emoji}).catch(()=>{});
+  if(SERVER)api("submitFeedback",{rating,emoji,comment}).catch(()=>{});
 }
 
 /* ---------- REWARDS ---------- */
@@ -1534,7 +1536,7 @@ function shopGridHTML(){
     const out=r.stock===0, can=ME.coins>=r.cost&&!out;
     const stock=r.stock<0?"":(r.stock<=5?`<div style="font-size:11px;color:#C0392B;margin-top:2px">เหลือ ${r.stock} ชิ้น</div>`:`<div style="font-size:11px;color:var(--muted-2);margin-top:2px">เหลือ ${r.stock}</div>`);
     return `<div class="reward" style="${out?'opacity:.55':''}">
-      <div class="e">${r.emoji}</div><b>${esc(r.title)}</b>
+      <div class="e">${r.photo?`<img src="${r.photo}" alt="${esc(r.title)}" style="width:64px;height:64px;object-fit:cover;border-radius:14px;display:inline-block">`:r.emoji}</div><b>${esc(r.title)}</b>
       <div class="cost">${coinIco()} ${r.cost}</div>${stock}
       <button class="btn ${can?'btn-g':'btn-o'} btn-sm" style="width:100%;margin-top:6px" ${can?'':'disabled style="opacity:.5;width:100%;margin-top:6px"'} onclick="askRedeem('${r.id}')">${out?'หมด':(can?'แลก':'ไม่พอ')}</button>
     </div>`;}).join("");
@@ -1751,7 +1753,7 @@ function askReject(id){
   </div>`);
 }
 function editReward(i){
-  RED=(i==null)?{id:"",emoji:"🎁",title:"",cost:100,stock:-1,active:true,desc:"",_new:true}
+  RED=(i==null)?{id:"",emoji:"🎁",title:"",cost:100,stock:-1,active:true,desc:"",photo:"",_new:true}
                :Object.assign({},CREW[i],{_new:false});
   modal(`<div class="sh"><div class="ptitle">${RED._new?'➕ เพิ่มรางวัล':'✏️ แก้ไขรางวัล'}</div><button class="x" onclick="closeModal()">✕</button></div>
   <div style="display:flex;gap:10px">
@@ -1764,15 +1766,22 @@ function editReward(i){
     <div class="field" style="flex:1"><label>สต็อก (-1 = ไม่จำกัด)</label><input class="inp" id="r-stock" type="number" value="${RED.stock}"></div>
   </div>
   <div class="field"><label>รายละเอียด</label><input class="inp" id="r-desc" value="${esc(RED.desc||'')}" placeholder="เงื่อนไขการรับของ..."></div>
+  <div class="field"><label>รูปรางวัล (ไม่บังคับ · ถ้ามีจะแสดงแทนไอคอน)</label>
+    <div id="r-photo-prev">${RED.photo?`<img src="${RED.photo}" style="width:64px;height:64px;object-fit:cover;border-radius:12px;vertical-align:middle"> <button class="btn btn-o btn-sm" type="button" onclick="clearRewardPhoto()">ลบรูป</button>`:''}</div>
+    <input type="file" accept="image/*" onchange="pickReward(this)" style="font-size:12px;margin-top:6px">
+  </div>
   <label style="display:flex;align-items:center;gap:9px;font-size:13.5px;margin:0 0 16px 2px;cursor:pointer"><input type="checkbox" id="r-active" ${RED.active?'checked':''} style="width:17px;height:17px"> เปิดให้แลก</label>
   <button class="btn btn-g" style="width:100%" onclick="saveReward()">💾 บันทึกรางวัล</button>`);
 }
+function pickReward(inp){const f=inp.files[0];if(!f)return;compressImage(f,d=>{if(!d)return;RED.photo=d;paintRewardPrev();},400,0.82);}
+function clearRewardPhoto(){RED.photo="";paintRewardPrev();}
+function paintRewardPrev(){const el=document.getElementById("r-photo-prev");if(el)el.innerHTML=RED.photo?`<img src="${RED.photo}" style="width:64px;height:64px;object-fit:cover;border-radius:12px;vertical-align:middle"> <button class="btn btn-o btn-sm" type="button" onclick="clearRewardPhoto()">ลบรูป</button>`:'';}
 async function saveReward(){
   const g=id=>document.getElementById(id);
   const rw={ id:RED._new?g("r-id").value.trim().toUpperCase():RED.id,
     emoji:g("r-emo").value.trim()||"🎁", title:g("r-title").value.trim(),
     cost:Math.max(0,Number(g("r-cost").value)||0), stock:Number(g("r-stock").value),
-    desc:g("r-desc").value.trim(), active:g("r-active").checked };
+    desc:g("r-desc").value.trim(), active:g("r-active").checked, photo:RED.photo||"" };
   if(!rw.title){toast("ใส่ชื่อรางวัลก่อน");return;}
   if(!rw.id){toast("ใส่รหัสรางวัล (RewardID) ก่อน เช่น R-COFFEE");return;}
   if(RED._new&&CREW.some(x=>x.id===rw.id)){toast("รหัสนี้มีอยู่แล้ว");return;}
@@ -2041,8 +2050,9 @@ function adminFbHTML(f){
   const emo={4:"😍",3:"🙂",2:"😐",1:"🙁"};
   const bars=[4,3,2,1].map(r=>{const n=(f.breakdown&&f.breakdown[r])||0;const pct=f.count?Math.round(n*100/f.count):0;
     return `<div class="skill"><div class="sh"><b>${emo[r]}</b><span>${n}</span></div><div class="bar ${r>=3?'green':r==2?'amber':'pink'}"><span style="width:${pct}%"></span></div></div>`;}).join("");
-  const recent=(f.recent||[]).filter(x=>x.comment).slice(0,3).map(x=>`<div class="rowi"><div class="ic">${x.emoji||'💬'}</div><div class="tx"><b>${x.comment}</b><span>${x.name||''}</span></div></div>`).join("");
-  return `<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px"><div class="v num" style="font-size:28px">${f.avg}</div><div style="color:var(--muted);font-size:13px">คะแนนเฉลี่ย (เต็ม 4) · ${f.count} รายการ</div></div>${bars}${recent?`<div style="margin-top:8px">${recent}</div>`:''}`;
+  const withC=(f.recent||[]).filter(x=>x.comment);
+  const recent=withC.map(x=>`<div class="rowi"><div class="ic">${emo[x.rating]||x.emoji||'💬'}</div><div class="tx"><b>${esc(x.comment)}</b><span>${esc(x.name||'')}${x.topic?' · '+esc(x.topic):''}${x.when?' · '+x.when:''}</span></div></div>`).join("");
+  return `<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px"><div class="v num" style="font-size:28px">${f.avg}</div><div style="color:var(--muted);font-size:13px">คะแนนเฉลี่ย (เต็ม 4) · ${f.count} รายการ</div></div>${bars}${withC.length?`<div class="sect" style="margin-top:14px">💬 ความคิดเห็น (${withC.length}) <span class="rule"></span></div><div style="max-height:300px;overflow:auto;margin-top:4px">${recent}</div>`:'<p style="color:var(--muted);font-size:12.5px;margin-top:10px">ยังไม่มีคอมเมนต์แบบข้อความ</p>'}`;
 }
 
 /* ---------- HR: จัดการ PIN พนักงาน ---------- */
