@@ -2587,7 +2587,7 @@ async function doChangePassword(){
 /* =================== ACTIVITY / BELL =================== */
 let ATAB="noti";
 /* กดแจ้งเตือน → พาไปหน้าที่เกี่ยวข้อง */
-const NOTIF_GO={quiz:"quizsets",rank:"board",cert:"path",celeb:"calendar",feed:"life",ann:"home",broadcast:"home",reward:"rewards",pin:"me",msg:"life",coach:"coach"};
+const NOTIF_GO={quiz:"quizsets",rank:"board",cert:"path",celeb:"calendar",feed:"life",ann:"home",broadcast:"home",reward:"rewards",pin:"me",msg:"life",coach:"coach",badge:"me",streak:"home",path:"path",approve:"content"};
 function notifGo(ref){const s=NOTIF_GO[ref];if(!s)return;closeModal();go(s);}
 /* ดึงแจ้งเตือนใหม่อัตโนมัติทุก 60 วิ (ถูกแซงอันดับ/ควิซใหม่เด้งเองไม่ต้องรีเฟรช) */
 let NOTIF_TIMER=null;
