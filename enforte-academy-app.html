@@ -1219,6 +1219,7 @@ SCREENS.me=()=>`
 <div class="an"><div class="card" style="text-align:center;padding:26px">
   <div class="av" style="width:80px;height:80px;border-radius:24px;background:${avc(ME.name)};display:grid;place-items:center;margin:0 auto 12px;font-family:var(--fd);font-weight:700;color:#fff;font-size:28px;overflow:hidden">${avImg(ME.photo,ME.name)}</div>
   <div style="font-family:var(--fd);font-weight:700;font-size:22px">${ME.name}</div>
+  ${(ME.fullName&&ME.fullName!==ME.name)?`<div style="color:var(--ink);font-size:14.5px;font-weight:600;margin-top:1px">${esc(ME.fullName)}</div>`:''}
   <div style="color:var(--muted);font-size:13px">ทีม ${ME.team} · อันดับ #${ME.rank} ${ME.role==="admin"?'· <span style="color:var(--green);font-weight:600">HR / Admin</span>':''}</div>
   ${badgeStrip()}
   <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px">
@@ -1895,7 +1896,7 @@ async function claimCert(type){
   if(!r||!r.ok){ toast((r&&r.msg)||"ยังรับใบประกาศไม่ได้"); return; }
   if(!r.already){ burst(); toast("🎓 "+(r.msg||"ออกใบประกาศเรียบร้อย")); }
   await hydrateCerts();
-  downloadCert(r.course, r.certId, r.date);
+  downloadCert(r.course, r.certId, r.date, r.name, r.nick);
 }
 /* modal ฉลองตอนเรียนจบ Path ครบทุกขั้น */
 function openCertCelebrate(){
@@ -2661,11 +2662,13 @@ function enterApp(){
 }
 document.getElementById("li-pin").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
 function getLogoSrc(){const i=document.querySelector('.login-card img')||document.querySelector('.mobile-brand img')||document.querySelector('img[src^="data:image/png"]');return i?i.src:'';}
-async function downloadCert(course,certNo,issued){
+async function downloadCert(course,certNo,issued,fullName,nickArg){
   if(!(window.jspdf&&window.html2canvas)){toast('กำลังโหลดตัวสร้าง PDF… ลองอีกครั้งใน 2-3 วิ');return;}
   const FD="'Baloo 2','IBM Plex Sans Thai',cursive", FT="'IBM Plex Sans Thai',sans-serif";
-  const name=(ME.fullName&&ME.fullName!=="")?ME.fullName:ME.name;
-  const nick=(ME.name&&ME.fullName&&ME.name!==ME.fullName)?" ("+ME.name+")":"";
+  const name=(fullName&&fullName!=="")?fullName:((ME.fullName&&ME.fullName!=="")?ME.fullName:ME.name);
+  const nick=(nickArg!=null)
+    ? ((nickArg&&nickArg!==name)?" ("+nickArg+")":"")
+    : ((ME.name&&ME.fullName&&ME.name!==ME.fullName)?" ("+ME.name+")":"");
   const dsrc=issued?new Date(issued+"T00:00:00"):new Date();
   const dt=(isNaN(dsrc.getTime())?new Date():dsrc).toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
   const logo=getLogoSrc();
