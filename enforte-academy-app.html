@@ -771,7 +771,7 @@ function paintCelebHome(){ const box=document.getElementById("celeb-home"); if(!
    <div class="card an d3">${today.map(x=>celebRow(x.u,x.t)).join("")}</div>`; }
 async function hydrateBoard(){ if(!SERVER)return;
   const r=await api("getLeaderboard",{mode:"ind"});
-  if(r.ok){ TOP=(r.list||[]).map(u=>({n:u.name,t:u.team,p:Number(u.points)||0,me:u.me})); if(r.myRank)ME.rank=r.myRank; }
+  if(r.ok){ TOP=(r.list||[]).map(u=>({n:u.name,fn:u.fullName||"",t:u.team,p:Number(u.points)||0,me:u.me})); if(r.myRank)ME.rank=r.myRank; }
   const rt=await api("getLeaderboard",{mode:"team"}); if(rt.ok)TEAMS=rt.teams;
   refreshRail();
   const bc=document.getElementById("board-card");
@@ -1182,7 +1182,7 @@ ${heroHTML("amber","leaderboard","อันดับ & แรงกิ้ง","�
 <div class="card an d2" id="board-card">${BM==="ind"?boardInd():boardTeam()}</div>`;
 function boardInd(){
   if(!TOP.length) return `<div style="text-align:center;color:var(--muted);padding:24px 10px">ยังไม่มีอันดับ — เริ่มเก็บแต้มจากการเรียน/เช็คอิน/แชร์กันเลย! 🚀</div>`;
-  return TOP.map((u,i)=>`<div class="lb" ${u.me?'style="background:var(--green-bg);margin:0 -8px;padding:9px 8px;border-radius:12px"':''}><div class="r ${i<3?'g'+(i+1):''}">${i+1}</div><div class="av" style="background:${avc(u.n)}">${initials(u.n)}</div><div class="n">${u.n}${u.me?' (คุณ)':''}<div class="tm">${u.t}</div></div><div class="p">${u.p.toLocaleString()}</div></div>`).join("");
+  return TOP.map((u,i)=>`<div class="lb" ${u.me?'style="background:var(--green-bg);margin:0 -8px;padding:9px 8px;border-radius:12px"':''}><div class="r ${i<3?'g'+(i+1):''}">${i+1}</div><div class="av" style="background:${avc(u.n)}">${initials(u.n)}</div><div class="n">${u.n}${u.me?' (คุณ)':''}<div class="tm">${(u.fn&&u.fn!==u.n)?esc(u.fn)+' · ':''}${u.t}</div></div><div class="p">${u.p.toLocaleString()}</div></div>`).join("");
 }
 function boardTeam(){
   const f=(TEAMS&&TEAMS.Fresh)?Number(TEAMS.Fresh.points||TEAMS.Fresh):0;
@@ -2125,7 +2125,7 @@ function admAlertHTML(){
   const list=ADM.people.filter(p=>p.noQuiz||p.idle7).slice(0,6);
   if(!list.length) return `<p style="color:var(--muted);font-size:13px">🎉 ไม่มีใครตกหล่น — ทีมแอคทีฟทุกคน</p>`;
   return list.map(p=>`<div class="rowi"><div class="av" style="width:36px;height:36px;border-radius:11px;background:${avc(p.name)};display:grid;place-items:center;font-family:var(--fd);font-weight:700;color:#fff;font-size:12px">${initials(p.name)}</div>
-    <div class="tx"><b>${esc(p.name)} · ${esc(p.id)}</b><span>${p.noQuiz?"ยังไม่ทำควิซเลย":""}${p.noQuiz&&p.idle7?" · ":""}${p.idle7?(p.idleDays>900?"ไม่เคยเช็คอิน":"เงียบ "+p.idleDays+" วัน"):""}</span></div></div>`).join("")
+    <div class="tx"><b>${esc(p.name)}${(p.fullName&&p.fullName!==p.name)?' — '+esc(p.fullName):''} · ${esc(p.id)}</b><span>${p.noQuiz?"ยังไม่ทำควิซเลย":""}${p.noQuiz&&p.idle7?" · ":""}${p.idle7?(p.idleDays>900?"ไม่เคยเช็คอิน":"เงียบ "+p.idleDays+" วัน"):""}</span></div></div>`).join("")
     +`<p style="font-size:12px;color:var(--muted-2);margin-top:8px">💡 ใช้ “📣 โพสต์ประกาศ” กระตุ้นทีม หรือคุยรายคนได้เลย</p>`;
 }
 function admFilter(k){ AFILT=k; const f=document.getElementById("adm-filters"); if(f)f.innerHTML=admChips(); admPaintPeople(); }
@@ -2151,7 +2151,7 @@ function admPaintPeople(){
     const flag=p.noQuiz?'<span style="color:#E5533C">😴 ยังไม่ทำควิซ</span>':(p.idle7?'<span style="color:#C77E15">🚩 เงียบ '+(p.idleDays>900?"ไม่เคยเช็คอิน":p.idleDays+" วัน")+'</span>':'');
     return `<div class="rowi">
       <div class="av" style="width:38px;height:38px;border-radius:11px;background:${avc(p.name)};display:grid;place-items:center;font-family:var(--fd);font-weight:700;color:#fff;font-size:13px">${initials(p.name)}</div>
-      <div class="tx"><b>${esc(p.name)} · ${esc(p.id)}</b>
+      <div class="tx"><b>${esc(p.name)}${(p.fullName&&p.fullName!==p.name)?' — '+esc(p.fullName):''} · ${esc(p.id)}</b>
         <span>ทีม ${esc(p.team)} · ${p.xp.toLocaleString()} XP · เช็คอิน ${p.checkinDays} วัน${flag?" · "+flag:""}</span>
         <div style="display:flex;gap:10px;margin-top:5px">
           <div style="flex:1"><div style="font-size:10.5px;color:var(--muted-2);margin-bottom:2px">Path ${p.pathSteps}/${ADM.totalSteps}</div><div class="bar green" style="height:5px"><span style="width:${pc}%"></span></div></div>
@@ -2202,7 +2202,7 @@ function annTargetHTML(){
 }
 function annPeopleHTML(list){
   if(!list.length) return '<div style="color:var(--muted);font-size:13px;padding:8px 2px">ไม่พบพนักงาน</div>';
-  return list.map(p=>`<label class="rowi" style="cursor:pointer;gap:8px"><input type="checkbox" ${AN_PEOPLE[p.id]?'checked':''} onchange="annTogglePerson('${String(p.id).replace(/'/g,"\\'")}')" style="width:18px;height:18px;accent-color:var(--green)"><div class="tx"><b>${p.name}</b><span>${p.team||''}</span></div></label>`).join('');
+  return list.map(p=>`<label class="rowi" style="cursor:pointer;gap:8px"><input type="checkbox" ${AN_PEOPLE[p.id]?'checked':''} onchange="annTogglePerson('${String(p.id).replace(/'/g,"\\'")}')" style="width:18px;height:18px;accent-color:var(--green)"><div class="tx"><b>${p.name}${(p.fullName&&p.fullName!==p.name)?' — '+esc(p.fullName):''}</b><span>${esc(p.team||'')}${p.id?' · '+esc(p.id):''}</span></div></label>`).join('');
 }
 function annPersonSearch(q){ const s=(q||'').toLowerCase(); const ppl=((AUD&&AUD.people)||[]).filter(p=>((p.name||'')+' '+(p.team||'')+' '+(p.id||'')).toLowerCase().includes(s)); const el=document.getElementById('an-plist'); if(el) el.innerHTML=annPeopleHTML(ppl); }
 function annToggleTeam(t){ AN_TEAMS[t]=!AN_TEAMS[t]; const c=document.getElementById('an-target'); if(c) c.innerHTML=annTargetHTML(); annRefreshCount(); }
