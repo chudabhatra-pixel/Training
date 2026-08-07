@@ -2312,19 +2312,20 @@ async function submitResetPin(i){const u=PINRES[i];if(!u)return;
 /* ---------- ADMIN: จัดการเนื้อหา (ชุดควิซ + บทเรียน) ---------- */
 let CTAB="quiz", CQUIZ=[], CLESSON=[], CMONTH="", QED=null, LED=null;
 SCREENS.content=()=>`
-${heroHTML("","content manager","จัดการเนื้อหา","เพิ่ม แก้ไข ปิดใช้งาน ชุดควิซและบทเรียนได้เองจากหน้านี้ ไม่ต้องแก้ในชีต",
-  `<button class="pill solid" style="color:#3C6B24" onclick="editQuiz()">➕ ชุดควิซใหม่</button><button class="pill" style="background:rgba(255,255,255,.35)" onclick="editLesson()">📘 บทเรียนใหม่</button>`)}
+${heroHTML("","content manager","จัดการเนื้อหา","เพิ่ม แก้ไข ปิดใช้งาน ชุดควิซ บทเรียน รางวัล และประกาศได้เองจากหน้านี้",
+  `<button class="pill solid" style="color:#3C6B24" onclick="editQuiz()">➕ ชุดควิซใหม่</button><button class="pill" style="background:rgba(255,255,255,.35)" onclick="editLesson()">📘 บทเรียนใหม่</button>${ME.role==='admin'?`<button class="pill" style="background:rgba(255,255,255,.35)" onclick="openAnnounce()">📣 ประกาศใหม่</button>`:''}`)}
 <div style="max-width:780px">
  <div class="seg an d2">
    <button class="${CTAB==='quiz'?'on':''}" onclick="setCTab('quiz')">⚡ ชุดควิซ</button>
    <button class="${CTAB==='lesson'?'on':''}" onclick="setCTab('lesson')">📘 บทเรียน</button>
    <button class="${CTAB==='reward'?'on':''}" onclick="setCTab('reward')">🎁 รางวัล${CPEND?' ('+CPEND+')':''}</button>
+   <button class="${CTAB==='announce'?'on':''}" onclick="setCTab('announce')">📣 ประกาศ</button>
  </div>
  <div id="cm-body" class="an d3">${SERVER?'<p style="color:var(--muted);font-size:13px;padding:8px 2px">กำลังโหลด...</p>':'<p style="color:var(--muted);font-size:13px;padding:8px 2px">โหมดเดโม่ — ต่อเซิร์ฟเวอร์เพื่อจัดการเนื้อหาจริง</p>'}</div>
 </div>`;
-POST.content=()=>{ if(SERVER)hydrateContent(); };
+POST.content=()=>{ if(SERVER){hydrateContent();hydrateActivity();} };
 function setCTab(t){ CTAB=t;
-  const order=["quiz","lesson","reward"];
+  const order=["quiz","lesson","reward","announce"];
   document.querySelectorAll("#view .seg button").forEach((b,i)=>b.classList.toggle("on",order[i]===t));
   if(t==="reward"&&SERVER&&!CREW.length){hydrateRewardsAdmin();return;}
   paintContent(); }
@@ -2336,7 +2337,8 @@ async function hydrateContent(){
   paintContent();
 }
 function paintContent(){ const el=document.getElementById("cm-body"); if(!el||CUR!=="content")return;
-  el.innerHTML = CTAB==="quiz" ? cQuizList() : CTAB==="lesson" ? cLessonList() : cRewardList(); }
+  el.innerHTML = CTAB==="quiz" ? cQuizList() : CTAB==="lesson" ? cLessonList() : CTAB==="announce" ? cAnnContent() : cRewardList(); }
+function cAnnContent(){return `<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="btn btn-g btn-sm" onclick="openAnnounce()">📣 เพิ่มประกาศ</button></div>`+(ANNOUNCE.length?ANNOUNCE.map(a=>`<div class="card" style="margin-bottom:10px"><div class="annr" style="align-items:center"><div class="i">${a.ic}</div><div style="flex:1"><div class="t">${esc(a.t)}</div><div class="s">${esc(a.s||'')}${a.target&&a.target!=='all'?' · ส่งถึง '+annTargetLabel(a.target):''}</div></div><button class="btn btn-o btn-sm" onclick="editAnnounce('${String(a.id).replace(/'/g,"\\'")}')">✏️ แก้ไข</button></div></div>`).join(''):`<div class="card"><p style="color:var(--muted);font-size:13px;text-align:center;padding:16px">ยังไม่มีประกาศ</p></div>`);}
 
 /* ---- รายการชุดควิซ ---- */
 function cQuizList(){
