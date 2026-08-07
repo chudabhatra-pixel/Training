@@ -561,6 +561,11 @@ async function uploadImage(dataUrl,kind){ if(!SERVER) return dataUrl; try{const 
 let ME={ id:"FR001", name:"คุณเดโม่", team:"Fresh", role:"admin", coins:0, xp:0, streak:0, rank:"—", checkedToday:false, photo:"", checkinDays:0, monthDays:30 };
 let TOP=[];
 let TEAMS=null;
+let CHALLENGES=[
+  {id:'d1',icon:'📞',title:'โทรครบ 50 สายต่อวัน',desc:'สะสมยอดโทรทั้งทีม',reward:'300 เหรียญ',percent:72},
+  {id:'d2',icon:'🎯',title:'ปิดดีล 20 รายการ',desc:'ทีมไหนถึงเป้าก่อนชนะ',reward:'500 เหรียญ',percent:50},
+  {id:'d3',icon:'🔥',title:'เช็คอินต่อเนื่องทั้งทีม',desc:'streak เฉลี่ย ≥ 15 วัน',reward:'200 เหรียญ',percent:88}
+];
 let ANNOUNCE=[];
 let AUD=null, AN_MODE='all', AN_TEAMS={}, AN_PEOPLE={};   // ตัวเลือกผู้รับประกาศ
 let NOTIFS=[];
@@ -1196,7 +1201,15 @@ function chalTeams(){
   return `<div class="skill"><div class="sh"><b style="color:var(--blue)">🔵 Fresh</b><span>${f.toLocaleString()}</span></div><div class="bar blue"><span style="width:${Math.round(f/mx*100)}%"></span></div></div>
    <div class="skill"><div class="sh"><b style="color:var(--green)">🟢 Resell</b><span>${r.toLocaleString()}</span></div><div class="bar green"><span style="width:${Math.round(r/mx*100)}%"></span></div></div>`;
 }
-POST.chal=()=>{ if(SERVER) hydrateBoard().then(()=>{const el=document.getElementById("chal-teams");if(el)el.innerHTML=chalTeams();}); };
+POST.chal=()=>{ if(SERVER){ hydrateBoard().then(()=>{const el=document.getElementById("chal-teams");if(el)el.innerHTML=chalTeams();}); hydrateChal(); } };
+function chalListHTML(){
+  const cs=CHALLENGES||[];
+  if(!cs.length) return '<p style="color:var(--muted-2);font-size:13px;padding:6px 0">ยังไม่มีเป้าหมายทีมเดือนนี้</p>';
+  return cs.map(c=>`<div class="rowi" style="align-items:flex-start"><div class="ic">${c.icon||'🎯'}</div><div class="tx" style="flex:1"><b>${esc(c.title)}</b><span>${esc(c.desc||'')}</span><div class="bar amber" style="margin-top:7px"><span style="width:${c.percent||0}%"></span></div></div><div class="rt" style="text-align:right;white-space:nowrap"><div style="font-weight:700;font-size:13px">${c.percent||0}%</div><div style="font-size:11px;color:var(--muted-2)">🎁 ${esc(String(c.reward||''))}</div></div></div>`).join("");
+}
+async function hydrateChal(){ if(!SERVER)return; const r=await api("getChallenges");
+  if(r&&r.ok){ if(r.teams)TEAMS=r.teams; if(Array.isArray(r.challenges))CHALLENGES=r.challenges;
+    if(CUR==="chal"){ const el=document.getElementById("chal-list"); if(el)el.innerHTML=chalListHTML(); const et=document.getElementById("chal-teams"); if(et)et.innerHTML=chalTeams(); } } }
 function setBM(k){ BM=k;
   document.querySelectorAll("#view .seg button").forEach(b=>{ const oc=b.getAttribute("onclick")||""; b.classList.toggle("on", oc.indexOf("setBM('"+k+"')")>=0); });
   const bc=document.getElementById("board-card"); if(bc)bc.innerHTML=(BM==="ind"?boardInd():boardTeam()); }
@@ -1523,15 +1536,52 @@ async function saveFlash(){
 }
 async function deleteFlash(id){ if(!confirm('ลบการ์ดนี้?'))return; const r=await api('adminDeleteFlashcard',{cardId:id}); if(r&&r.ok){ toast('ลบแล้ว'); await hydrateFlash(); openFlashMgr(); } else toast((r&&r.msg)||'ลบไม่สำเร็จ'); }
 
+/* ---------- ADMIN: จัดการแชลเลนจ์ทีม ---------- */
+let CHAL_ADMIN=null, CCMONTH="";
+async function openChalMgr(){
+  if(SERVER){ const r=await api("adminListChallenges"); if(r&&r.ok){CHAL_ADMIN=r.challenges||[];CCMONTH=r.currentMonth||CCMONTH;} }
+  else { CHAL_ADMIN=(CHALLENGES||[]).map((c,i)=>({id:'local'+i,month:CCMONTH,icon:c.icon,title:c.title,desc:c.desc,target:100,reward:c.reward,progFresh:0,progResell:0,percent:c.percent})); }
+  const items=CHAL_ADMIN||[];
+  const rows=items.map(c=>`<div class="kitem" style="align-items:center"><div class="ic" style="background:var(--amber-bg)">${c.icon||'🎯'}</div><div class="tx"><b>${esc(c.title)||'(ไม่มีชื่อ)'}</b><span>${esc(c.month||'')} · ${c.percent||0}% · 🎁 ${esc(String(c.reward||''))}</span></div><button class="btn btn-o btn-sm" onclick="chalEdit('${String(c.id).replace(/'/g,"\\\\'")}')">แก้</button></div>`).join("")||'<p style="color:var(--muted);font-size:13px;padding:10px 2px">ยังไม่มีแชลเลนจ์</p>';
+  modal(`<div class="sh"><div class="ptitle">🎯 จัดการเป้าหมายทีม</div><button class="x" onclick="closeModal()">✕</button></div>
+    <div style="padding:2px"><button class="btn btn-g" style="width:100%;margin-bottom:12px" onclick="chalEdit('')">+ เพิ่มแชลเลนจ์ใหม่</button>
+    <div class="klist" style="max-height:52vh;overflow:auto">${rows}</div></div>`);
+}
+function chalEdit(id){
+  const c=(CHAL_ADMIN||[]).find(x=>String(x.id)===String(id))||{};
+  const ip="width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);font:inherit;box-sizing:border-box";
+  const lb="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:5px";
+  const half="flex:1";
+  modal(`<div class="sh"><div class="ptitle">${id?'แก้ไขแชลเลนจ์':'เพิ่มแชลเลนจ์ใหม่'}</div><button class="x" onclick="openChalMgr()">✕</button></div>
+    <div style="padding:2px">
+      <input type="hidden" id="ch-id" value="${esc(id)}">
+      <div style="display:flex;gap:8px"><div style="flex:0 0 88px"><label style="${lb};margin-top:0">ไอคอน</label><input id="ch-icon" style="${ip}" value="${esc(c.icon||'🎯')}"></div><div style="${half}"><label style="${lb};margin-top:0">เดือน</label><input id="ch-month" style="${ip}" value="${esc(c.month||CCMONTH)}" placeholder="2026-06"></div></div>
+      <label style="${lb}">ชื่อเป้าหมาย</label><input id="ch-title" style="${ip}" value="${esc(c.title)}" placeholder="เช่น ปิดดีล 20 รายการ">
+      <label style="${lb}">คำอธิบาย</label><input id="ch-desc" style="${ip}" value="${esc(c.desc)}">
+      <div style="display:flex;gap:8px"><div style="${half}"><label style="${lb}">เป้าหมาย (Target)</label><input id="ch-target" type="number" style="${ip}" value="${c.target||100}"></div><div style="${half}"><label style="${lb}">รางวัล</label><input id="ch-reward" style="${ip}" value="${esc(String(c.reward||''))}" placeholder="เช่น 500 เหรียญ"></div></div>
+      <div class="sect" style="margin-top:14px;font-size:12px">ความคืบหน้าปัจจุบัน (รายทีม)</div>
+      <div style="display:flex;gap:8px"><div style="${half}"><label style="${lb};margin-top:2px">🔵 Fresh</label><input id="ch-fresh" type="number" style="${ip}" value="${c.progFresh||0}"></div><div style="${half}"><label style="${lb};margin-top:2px">🟢 Resell</label><input id="ch-resell" type="number" style="${ip}" value="${c.progResell||0}"></div></div>
+      <p style="font-size:11px;color:var(--muted-2);margin-top:6px">% ที่แสดง = (Fresh + Resell) ÷ เป้าหมาย</p>
+      <div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-g" style="flex:1" onclick="saveChal()">บันทึก</button>${id?`<button class="btn btn-o" style="flex:0 0 auto;color:#c0392b" onclick="deleteChal('${String(id).replace(/'/g,"\\\\'")}')">ลบ</button>`:''}</div>
+    </div>`);
+}
+async function saveChal(){
+  const g=id=>document.getElementById(id);
+  const challenge={ id:g('ch-id').value, icon:g('ch-icon').value.trim()||'🎯', month:g('ch-month').value.trim(),
+    title:g('ch-title').value.trim(), desc:g('ch-desc').value.trim(), target:Number(g('ch-target').value)||1,
+    reward:g('ch-reward').value.trim(), progFresh:Number(g('ch-fresh').value)||0, progResell:Number(g('ch-resell').value)||0 };
+  if(!challenge.title){ toast('กรุณาใส่ชื่อแชลเลนจ์'); return; }
+  const r=await api('adminSaveChallenge',{challenge});
+  if(r&&r.ok){ toast('✓ '+(r.msg||'บันทึกแล้ว')); await hydrateChal(); openChalMgr(); } else toast((r&&r.msg)||'บันทึกไม่สำเร็จ');
+}
+async function deleteChal(id){ if(!confirm('ลบแชลเลนจ์นี้?'))return; const r=await api('adminDeleteChallenge',{challengeId:id}); if(r&&r.ok){ toast('ลบแล้ว'); await hydrateChal(); openChalMgr(); } else toast((r&&r.msg)||'ลบไม่สำเร็จ'); }
+
 /* ---------- CALENDAR ---------- */
 SCREENS.calendar=()=>`
 ${heroHTML("amber","training & events","ปฏิทินอบรม & กิจกรรม","ตารางอบรม ประกาศ กิจกรรม พร้อมโหวตและให้ feedback ในที่เดียว",'')}
 <div class="grid2"><div>
- <div class="card an d2"><h3>🗓️ ตารางอบรม & กิจกรรม</h3>
-   ${calrow("10","มิ.ย.","อบรม: ปิดการขายขั้นสูง","10:00–12:00 · ห้องประชุม A","var(--blue)")}
-   ${calrow("15","มิ.ย.","Team Battle: Fresh vs Resell","ตลอดวัน · ออนไลน์","var(--amber)")}
-   ${calrow("22","มิ.ย.","Workshop: จัดการ Objection","14:00–16:00 · ห้อง B","var(--green)")}
-   ${calrow("27","มิ.ย.","เลี้ยงฉลองยอด Q2 🎉","17:00 · ออฟฟิศ","var(--pink)")}
+ <div class="card an d2"><h3>🗓️ ตารางอบรม & กิจกรรม ${ME.role==="admin"?`<span class="more" onclick="openEventMgr()" style="cursor:pointer">✏️ จัดการ</span>`:''}</h3>
+   <div id="events-box">${eventsHTML()}</div>
  </div>
  <div class="sect an d3">📊 Poll / โหวต <span class="rule"></span>${ME.role==="admin"?`<button class="pill solid" onclick="openPollMgr()" style="color:#2f8f6b">✏️ จัดการ</button>`:''}</div>
  <div class="card an d3" id="poll-card">${pollHTML()}</div>
@@ -1539,7 +1589,54 @@ ${heroHTML("amber","training & events","ปฏิทินอบรม & กิ�
  <div class="card an d4" id="fb-card">${fbHTML()}</div>
 </div>${railHTML()}</div>`;
 function calrow(d,m,t,s,c){return `<div class="rowi"><div class="ic" style="background:${c}18;color:${c};flex-direction:column;font-family:var(--fd);font-weight:700"><div style="font-size:16px;line-height:1">${d}</div><div style="font-size:9px">${m}</div></div><div class="tx"><b>${t}</b><span>${s}</span></div></div>`;}
-POST.calendar=()=>{ if(SERVER)hydratePoll(); };
+POST.calendar=()=>{ if(SERVER){ hydratePoll(); hydrateEvents(); } };
+let EVENTS=[
+  {id:'d1',day:'10',month:'มิ.ย.',title:'อบรม: ปิดการขายขั้นสูง',detail:'10:00–12:00 · ห้องประชุม A',colorVar:'var(--blue)'},
+  {id:'d2',day:'15',month:'มิ.ย.',title:'Team Battle: Fresh vs Resell',detail:'ตลอดวัน · ออนไลน์',colorVar:'var(--amber)'},
+  {id:'d3',day:'22',month:'มิ.ย.',title:'Workshop: จัดการ Objection',detail:'14:00–16:00 · ห้อง B',colorVar:'var(--green)'},
+  {id:'d4',day:'27',month:'มิ.ย.',title:'เลี้ยงฉลองยอด Q2 🎉',detail:'17:00 · ออฟฟิศ',colorVar:'var(--pink)'}
+];
+function eventsHTML(){ const es=EVENTS||[]; if(!es.length) return '<p style="color:var(--muted-2);font-size:13px;padding:6px 0">ยังไม่มีกิจกรรมในปฏิทิน</p>';
+  return es.map(e=>calrow(e.day,e.month,esc(e.title),esc(e.detail),e.colorVar||'var(--blue)')).join(""); }
+async function hydrateEvents(){ if(!SERVER)return; const r=await api("getEvents");
+  if(r&&r.ok&&Array.isArray(r.events)){ EVENTS=r.events; const el=document.getElementById("events-box"); if(el&&CUR==="calendar")el.innerHTML=eventsHTML(); } }
+/* ---------- ADMIN: จัดการกิจกรรมปฏิทิน ---------- */
+let EVENT_ADMIN=null;
+const EVCOLORS=[["blue","🔵 น้ำเงิน"],["amber","🟡 เหลือง"],["green","🟢 เขียว"],["pink","🩷 ชมพู"]];
+async function openEventMgr(){
+  if(SERVER){ const r=await api("getEvents"); if(r&&r.ok)EVENT_ADMIN=r.events||[]; }
+  else { EVENT_ADMIN=(EVENTS||[]).map((e,i)=>({...e,id:e.id||'local'+i,date:'2026-06-'+String(e.day||'01').padStart(2,'0'),color:'blue'})); }
+  const items=EVENT_ADMIN||[];
+  const rows=items.map(e=>`<div class="kitem" style="align-items:center"><div class="ic" style="background:var(--amber-bg)">📅</div><div class="tx"><b>${esc(e.title)||'(ไม่มีชื่อ)'}</b><span>${e.date||''} · ${esc(e.detail||'')}</span></div><button class="btn btn-o btn-sm" onclick="eventEdit('${String(e.id).replace(/'/g,"\\\\'")}')">แก้</button></div>`).join("")||'<p style="color:var(--muted);font-size:13px;padding:10px 2px">ยังไม่มีกิจกรรม</p>';
+  modal(`<div class="sh"><div class="ptitle">📅 จัดการกิจกรรมปฏิทิน</div><button class="x" onclick="closeModal()">✕</button></div>
+    <div style="padding:2px"><button class="btn btn-g" style="width:100%;margin-bottom:12px" onclick="eventEdit('')">+ เพิ่มกิจกรรมใหม่</button>
+    <div class="klist" style="max-height:52vh;overflow:auto">${rows}</div></div>`);
+}
+function eventEdit(id){
+  const e=(EVENT_ADMIN||[]).find(x=>String(x.id)===String(id))||{};
+  const ip="width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);font:inherit;box-sizing:border-box";
+  const lb="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:5px";
+  const colOpts=EVCOLORS.map(o=>`<option value="${o[0]}" ${String(e.color||'blue')===o[0]?'selected':''}>${o[1]}</option>`).join("");
+  modal(`<div class="sh"><div class="ptitle">${id?'แก้ไขกิจกรรม':'เพิ่มกิจกรรมใหม่'}</div><button class="x" onclick="openEventMgr()">✕</button></div>
+    <div style="padding:2px">
+      <input type="hidden" id="ev-id" value="${esc(id)}">
+      <label style="${lb};margin-top:0">วันที่ (YYYY-MM-DD)</label><input id="ev-date" type="date" style="${ip}" value="${esc(e.date||'')}">
+      <label style="${lb}">ชื่อกิจกรรม</label><input id="ev-title" style="${ip}" value="${esc(e.title)}" placeholder="เช่น อบรม: ปิดการขายขั้นสูง">
+      <label style="${lb}">รายละเอียด (เวลา · สถานที่)</label><input id="ev-detail" style="${ip}" value="${esc(e.detail)}" placeholder="10:00–12:00 · ห้องประชุม A">
+      <label style="${lb}">สี</label><select id="ev-color" style="${ip}">${colOpts}</select>
+      <div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-g" style="flex:1" onclick="saveEvent()">บันทึก</button>${id?`<button class="btn btn-o" style="flex:0 0 auto;color:#c0392b" onclick="deleteEvent('${String(id).replace(/'/g,"\\\\'")}')">ลบ</button>`:''}</div>
+    </div>`);
+}
+async function saveEvent(){
+  const g=id=>document.getElementById(id);
+  const event={ id:g('ev-id').value, date:g('ev-date').value.trim(), title:g('ev-title').value.trim(),
+    detail:g('ev-detail').value.trim(), color:g('ev-color').value };
+  if(!event.title){ toast('กรุณาใส่ชื่อกิจกรรม'); return; }
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(event.date)){ toast('กรุณาเลือกวันที่'); return; }
+  const r=await api('adminSaveEvent',{event});
+  if(r&&r.ok){ toast('✓ '+(r.msg||'บันทึกแล้ว')); await hydrateEvents(); openEventMgr(); } else toast((r&&r.msg)||'บันทึกไม่สำเร็จ');
+}
+async function deleteEvent(id){ if(!confirm('ลบกิจกรรมนี้?'))return; const r=await api('adminDeleteEvent',{eventId:id}); if(r&&r.ok){ toast('ลบแล้ว'); await hydrateEvents(); openEventMgr(); } else toast((r&&r.msg)||'ลบไม่สำเร็จ'); }
 const DEMO_POLL={pollId:"training-next",question:"อยากให้จัดอบรมหัวข้อไหนต่อ?",total:124,myVote:null,
   options:[{label:"เทคนิคปิดการขาย",votes:52,pct:42},{label:"การใช้ CRM",votes:35,pct:28},{label:"จิตวิทยาลูกค้า",votes:37,pct:30}]};
 function pollHTML(){
@@ -2426,6 +2523,8 @@ ${heroHTML("amber","activity & engagement","กิจกรรม · ทำใ�
    <div id="chal-teams">${chalTeams()}</div>
    <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:6px">เก็บแต้มให้ทีม · ทีมชนะปลายเดือนรับรางวัลใหญ่ 🎉</p>
  </div>
+ <div class="sect an d2b">🎯 เป้าหมายทีมเดือนนี้ <span class="rule"></span>${ME.role==="admin"?`<button class="pill solid" onclick="openChalMgr()" style="color:#b8791f">✏️ จัดการ</button>`:''}</div>
+ <div class="card an d2b" id="chal-list">${chalListHTML()}</div>
  <div class="sect an d3">🎯 Daily Mission <span class="rule"></span></div>
  <div class="card an d3">
    ${mission("✅","เช็คอินวันนี้","รักษา streak ต่อเนื่อง","+5 "+coinIco(),"doCheckin()")}
