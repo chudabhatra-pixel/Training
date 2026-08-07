@@ -597,7 +597,7 @@ function badgeHint(k){const hints={sprout:"เรียนให้จบอย�
 function openBadge(k){const b=BADGE_CAT.find(x=>x.k===k);if(!b)return;const on=badgeEarned(k);modal(`<div class="sh"><div class="ptitle">${on?'Badge ที่คุณได้รับ':'เส้นทางปลดล็อก Badge'}</div><button class="x" onclick="closeModal()">✕</button></div><div style="text-align:center;padding:10px 12px 4px"><img src="${BADGES[k]}" alt="${b.n}" style="width:112px;height:112px;object-fit:contain;filter:${on?'none':'grayscale(.9)'}"><div style="font-family:var(--fd);font-size:22px;font-weight:700;margin-top:8px">${b.n}</div><p style="color:var(--muted);font-size:13px;margin:5px 0 15px">${b.d}</p><div style="padding:12px;border-radius:12px;background:${on?'var(--green-bg)':'var(--surface-2)'};color:${on?'var(--green-ink)':'var(--muted)'};font-size:13px">${on?'✓ ปลดล็อกแล้ว — Badge นี้ถูกเพิ่มในโปรไฟล์ของคุณ':badgeHint(k)}</div></div>`);}
 const LESSON={month:"มิถุนายน 2026",title:"ปิดการขายด้วย 3 คำถามทรงพลัง",intro:"เรียนรู้เทคนิคตั้งคำถามที่พาลูกค้าไปสู่การตัดสินใจ",reward:120,
  points:["ถามเพื่อค้นหา pain point ที่แท้จริง","สร้าง urgency อย่างเป็นธรรมชาติ","ปิดการขายด้วยคำถามทางเลือก"]};
-const FLASH=[{q:"3 คำถามปิดการขายคือ?",a:"Discovery · Urgency · Choice-close"},{q:"objection ที่พบบ่อยสุด?",a:'"ขอคิดดูก่อน" — ตอบด้วยการถามหา pain'},{q:"Choice-close ตัวอย่าง?",a:'"รับแบบ A หรือ B ดีคะ?" ให้เลือกไม่ใช่ใช่/ไม่"'}];
+let FLASH=[{q:"3 คำถามปิดการขายคือ?",a:"Discovery · Urgency · Choice-close"},{q:"objection ที่พบบ่อยสุด?",a:'"ขอคิดดูก่อน" — ตอบด้วยการถามหา pain'},{q:"Choice-close ตัวอย่าง?",a:'"รับแบบ A หรือ B ดีคะ?" ให้เลือกไม่ใช่ใช่/ไม่"'}];
 const QUIZ=[
  {q:"คำถามแรกใน 3 คำถามทรงพลังคือ?",o:["ถามราคา","ถามหา pain point","ถามชื่อ","ถามคู่แข่ง"],c:1},
  {q:'ลูกค้าบอก "ขอคิดดูก่อน" ควรทำอะไร?',o:["วางสาย","ลดราคาให้ทันที","ถามหาสาเหตุที่ลังเล","เงียบ"],c:2},
@@ -873,7 +873,7 @@ function openLesson(){ modal(`<div class="sh"><div class="ptitle">▶ ${LESSON.t
 /* ---------- FLASHCARD ---------- */
 let FI=0,FF=false;
 SCREENS.flash=()=>{FI=0;FF=false;return `
-${heroHTML("teal","flashcards","ทบทวนด้วย Flashcard","แตะการ์ดเพื่อพลิกดูเฉลย ปัดไปข้อถัดไป",` <button class="pill solid" onclick="go('learn')" style="color:#0a8a75">← กลับบทเรียน</button>`)}
+${heroHTML("teal","flashcards","ทบทวนด้วย Flashcard","แตะการ์ดเพื่อพลิกดูเฉลย ปัดไปข้อถัดไป",` <button class="pill solid" onclick="go('learn')" style="color:#0a8a75">← กลับบทเรียน</button>${ME.role==="admin"?`<button class="pill solid" onclick="openFlashMgr()" style="color:#0a8a75">✏️ จัดการ</button>`:''}`)}
 <div class="flash an d2"><div class="flash-inner" id="fcard" onclick="flipCard()">
   <div class="flash-face flash-front"><div><div style="font-size:11px;color:var(--muted-2);margin-bottom:10px;font-weight:600">คำถาม</div><div class="q" id="fq">${FLASH[0].q}</div></div><div class="hint">แตะเพื่อดูเฉลย</div></div>
   <div class="flash-face flash-back"><div><div style="font-size:11px;opacity:.7;margin-bottom:10px;font-weight:600">เฉลย</div><div class="q" id="fa">${FLASH[0].a}</div></div><div class="hint">แตะเพื่อพลิกกลับ</div></div>
@@ -1487,6 +1487,42 @@ async function saveMission(){
 }
 async function deleteMission(id){ if(!confirm('ลบภารกิจนี้?'))return; const r=await api('adminDeleteMission',{missionId:id}); if(r&&r.ok){ toast('ลบแล้ว'); await hydrateMissions(); openMissionMgr(); } else toast((r&&r.msg)||'ลบไม่สำเร็จ'); }
 
+/* ---------- Flashcards: ดึงจริง + ADMIN จัดการ ---------- */
+async function hydrateFlash(){ if(!SERVER)return; const r=await api("getFlashcards");
+  if(r&&r.ok&&Array.isArray(r.cards)&&r.cards.length){ FLASH=r.cards.map(c=>({q:c.front,a:c.back})); if(CUR==="flash")go("flash"); } }
+let FLASH_ADMIN=null, FCMONTH="";
+async function openFlashMgr(){
+  if(SERVER){ const r=await api("adminListFlashcards"); if(r&&r.ok){FLASH_ADMIN=r.cards||[];FCMONTH=r.currentMonth||FCMONTH;} }
+  else { FLASH_ADMIN=(FLASH||[]).map((c,i)=>({id:'local'+i,month:FCMONTH,front:c.q,back:c.a})); }
+  const items=FLASH_ADMIN||[];
+  const rows=items.map(c=>`<div class="kitem" style="align-items:center"><div class="ic" style="background:var(--teal-bg)">🃏</div><div class="tx"><b>${esc(c.front)||'(ว่าง)'}</b><span>${esc(c.month||'')} · ${esc((c.back||'').slice(0,40))}</span></div><button class="btn btn-o btn-sm" onclick="flashEdit('${String(c.id).replace(/'/g,"\\\\'")}')">แก้</button></div>`).join("")||'<p style="color:var(--muted);font-size:13px;padding:10px 2px">ยังไม่มีการ์ด</p>';
+  modal(`<div class="sh"><div class="ptitle">🃏 จัดการ Flashcards</div><button class="x" onclick="closeModal()">✕</button></div>
+    <div style="padding:2px"><button class="btn btn-g" style="width:100%;margin-bottom:12px" onclick="flashEdit('')">+ เพิ่มการ์ดใหม่</button>
+    <div class="klist" style="max-height:52vh;overflow:auto">${rows}</div></div>`);
+}
+function flashEdit(id){
+  const c=(FLASH_ADMIN||[]).find(x=>String(x.id)===String(id))||{};
+  const ip="width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);font:inherit;box-sizing:border-box";
+  const ta=ip+";resize:vertical;min-height:64px";
+  const lb="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:5px";
+  modal(`<div class="sh"><div class="ptitle">${id?'แก้ไขการ์ด':'เพิ่มการ์ดใหม่'}</div><button class="x" onclick="openFlashMgr()">✕</button></div>
+    <div style="padding:2px">
+      <input type="hidden" id="fc-id" value="${esc(id)}">
+      <label style="${lb};margin-top:0">เดือน (YYYY-MM)</label><input id="fc-month" style="${ip}" value="${esc(c.month||FCMONTH)}" placeholder="2026-06">
+      <label style="${lb}">คำถาม (หน้า)</label><textarea id="fc-front" style="${ta}">${esc(c.front)}</textarea>
+      <label style="${lb}">เฉลย (หลัง)</label><textarea id="fc-back" style="${ta}">${esc(c.back)}</textarea>
+      <div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-g" style="flex:1" onclick="saveFlash()">บันทึก</button>${id?`<button class="btn btn-o" style="flex:0 0 auto;color:#c0392b" onclick="deleteFlash('${String(id).replace(/'/g,"\\\\'")}')">ลบ</button>`:''}</div>
+    </div>`);
+}
+async function saveFlash(){
+  const g=id=>document.getElementById(id);
+  const card={ id:g('fc-id').value, month:g('fc-month').value.trim(), front:g('fc-front').value.trim(), back:g('fc-back').value.trim() };
+  if(!card.front||!card.back){ toast('กรุณาใส่ทั้งคำถามและเฉลย'); return; }
+  const r=await api('adminSaveFlashcard',{card});
+  if(r&&r.ok){ toast('✓ '+(r.msg||'บันทึกแล้ว')); await hydrateFlash(); openFlashMgr(); } else toast((r&&r.msg)||'บันทึกไม่สำเร็จ');
+}
+async function deleteFlash(id){ if(!confirm('ลบการ์ดนี้?'))return; const r=await api('adminDeleteFlashcard',{cardId:id}); if(r&&r.ok){ toast('ลบแล้ว'); await hydrateFlash(); openFlashMgr(); } else toast((r&&r.msg)||'ลบไม่สำเร็จ'); }
+
 /* ---------- CALENDAR ---------- */
 SCREENS.calendar=()=>`
 ${heroHTML("amber","training & events","ปฏิทินอบรม & กิจกรรม","ตารางอบรม ประกาศ กิจกรรม พร้อมโหวตและให้ feedback ในที่เดียว",'')}
@@ -1497,7 +1533,7 @@ ${heroHTML("amber","training & events","ปฏิทินอบรม & กิ�
    ${calrow("22","มิ.ย.","Workshop: จัดการ Objection","14:00–16:00 · ห้อง B","var(--green)")}
    ${calrow("27","มิ.ย.","เลี้ยงฉลองยอด Q2 🎉","17:00 · ออฟฟิศ","var(--pink)")}
  </div>
- <div class="sect an d3">📊 Poll / โหวต <span class="rule"></span></div>
+ <div class="sect an d3">📊 Poll / โหวต <span class="rule"></span>${ME.role==="admin"?`<button class="pill solid" onclick="openPollMgr()" style="color:#2f8f6b">✏️ จัดการ</button>`:''}</div>
  <div class="card an d3" id="poll-card">${pollHTML()}</div>
  <div class="sect an d4">💬 Quick Feedback <span class="rule"></span></div>
  <div class="card an d4" id="fb-card">${fbHTML()}</div>
@@ -1525,6 +1561,49 @@ function castVote(i){
   renderPoll(); burst(); toast("✅ โหวตแล้ว ขอบคุณครับ");
   if(SERVER)api("votePoll",{pollId:pid,optionIndex:i}).then(r=>{ if(r&&r.ok&&r.poll){POLL=r.poll;renderPoll();} }).catch(()=>{});
 }
+/* ---------- ADMIN: จัดการโพล ---------- */
+let POLL_ADMIN=null;
+async function openPollMgr(){
+  if(SERVER){ const r=await api("adminListPolls"); if(r&&r.ok)POLL_ADMIN=r.polls||[]; }
+  else { const d=POLL||DEMO_POLL; POLL_ADMIN=[{id:'local',question:d.question,options:(d.options||[]).map(o=>o.label),active:true,votes:d.total||0}]; }
+  const items=POLL_ADMIN||[];
+  const rows=items.map(p=>`<div class="kitem" style="align-items:center"><div class="ic" style="background:var(--amber-bg)">📊</div><div class="tx"><b>${esc(p.question)||'(ไม่มีคำถาม)'}${p.active?' <span style="color:var(--green-ink);font-size:11px">● แสดงอยู่</span>':''}</b><span>${p.options.length} ตัวเลือก · ${p.votes||0} โหวต</span></div><button class="btn btn-o btn-sm" onclick="pollEdit('${String(p.id).replace(/'/g,"\\\\'")}')">แก้</button></div>`).join("")||'<p style="color:var(--muted);font-size:13px;padding:10px 2px">ยังไม่มีโพล</p>';
+  modal(`<div class="sh"><div class="ptitle">📊 จัดการโพล</div><button class="x" onclick="closeModal()">✕</button></div>
+    <div style="padding:2px"><button class="btn btn-g" style="width:100%;margin-bottom:12px" onclick="pollEdit('')">+ สร้างโพลใหม่</button>
+    <div class="klist" style="max-height:52vh;overflow:auto">${rows}</div></div>`);
+}
+function pollOptRow(val){
+  const q=String(val==null?'':val).replace(/"/g,'&quot;');
+  const ip="flex:1;padding:9px 10px;border-radius:10px;border:1px solid var(--line);font:inherit;box-sizing:border-box";
+  return `<div style="display:flex;gap:6px;margin-bottom:6px"><input class="pl-opt" style="${ip}" value="${q}" placeholder="ตัวเลือก"><button type="button" class="btn btn-o btn-sm" onclick="this.parentNode.remove()" style="flex:0 0 auto;color:#c0392b">✕</button></div>`;
+}
+function pollAddOpt(){ const box=document.getElementById('pl-opts'); if(box) box.insertAdjacentHTML('beforeend', pollOptRow('')); }
+function pollEdit(id){
+  const p=(POLL_ADMIN||[]).find(x=>String(x.id)===String(id))||{};
+  const q=s=>String(s==null?'':s).replace(/"/g,'&quot;');
+  const ip="width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);font:inherit;box-sizing:border-box";
+  const lb="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:5px";
+  const opts=(p.options&&p.options.length)?p.options:['',''];
+  modal(`<div class="sh"><div class="ptitle">${id?'แก้ไขโพล':'สร้างโพลใหม่'}</div><button class="x" onclick="openPollMgr()">✕</button></div>
+    <div style="padding:2px">
+      <input type="hidden" id="pl-id" value="${q(id)}">
+      <label style="${lb};margin-top:0">คำถาม</label><input id="pl-q" style="${ip}" value="${q(p.question)}" placeholder="เช่น อยากให้จัดอบรมหัวข้อไหนต่อ?">
+      <label style="${lb}">ตัวเลือก</label><div id="pl-opts">${opts.map(o=>pollOptRow(o)).join("")}</div>
+      <button type="button" class="btn btn-o btn-sm" onclick="pollAddOpt()" style="margin-top:2px">+ เพิ่มตัวเลือก</button>
+      <label class="rowi" style="cursor:pointer;margin-top:12px;gap:8px"><input type="checkbox" id="pl-active" ${p.active===false?'':'checked'} style="width:18px;height:18px;accent-color:var(--green)"> <span style="font-size:13px">แสดงโพลนี้ (จะปิดโพลอื่นอัตโนมัติ)</span></label>
+      <div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-g" style="flex:1" onclick="savePoll()">บันทึก</button>${id?`<button class="btn btn-o" style="flex:0 0 auto;color:#c0392b" onclick="deletePoll('${String(id).replace(/'/g,"\\\\'")}')">ลบ</button>`:''}</div>
+    </div>`);
+}
+async function savePoll(){
+  const q=document.getElementById('pl-q').value.trim();
+  const options=[...document.querySelectorAll('#pl-opts .pl-opt')].map(i=>i.value.trim()).filter(Boolean);
+  if(!q){ toast('กรุณาใส่คำถาม'); return; }
+  if(options.length<2){ toast('ต้องมีตัวเลือกอย่างน้อย 2 ข้อ'); return; }
+  const poll={ id:document.getElementById('pl-id').value, question:q, options, active:document.getElementById('pl-active').checked };
+  const r=await api('adminSavePoll',{poll});
+  if(r&&r.ok){ toast('✓ '+(r.msg||'บันทึกแล้ว')); await hydratePoll(); openPollMgr(); } else toast((r&&r.msg)||'บันทึกไม่สำเร็จ');
+}
+async function deletePoll(id){ if(!confirm('ลบโพลนี้?'))return; const r=await api('adminDeletePoll',{pollId:id}); if(r&&r.ok){ toast('ลบแล้ว'); await hydratePoll(); openPollMgr(); } else toast((r&&r.msg)||'ลบไม่สำเร็จ'); }
 const FBEMO=[{e:"😍",r:4},{e:"🙂",r:3},{e:"😐",r:2},{e:"🙁",r:1}];
 function fbHTML(){
   if(FBDONE)return `<div style="text-align:center;padding:14px"><div style="font-size:34px">🙏</div><div style="font-weight:700;color:var(--green);margin-top:4px">ขอบคุณสำหรับ feedback!</div></div>`;
@@ -2479,7 +2558,7 @@ function enterApp(){
   document.getElementById("sf-av").innerHTML=avImg(ME.photo,ME.name);
   document.getElementById("sf-sub").textContent="ทีม "+ME.team+" · อันดับ #"+ME.rank;
   buildNav();refreshChips();updateBell();go("home");
-  if(SERVER){hydrateActivity();hydrateBoard();startNotifPoll();}  // profile/missions/celebrations โหลดโดย POST.home ที่ go("home") เรียกแล้ว (กันยิงซ้ำ)
+  if(SERVER){hydrateActivity();hydrateBoard();startNotifPoll();hydrateFlash();}  // profile/missions/celebrations โหลดโดย POST.home ที่ go("home") เรียกแล้ว (กันยิงซ้ำ)
 }
 document.getElementById("li-pin").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
 function getLogoSrc(){const i=document.querySelector('.login-card img')||document.querySelector('.mobile-brand img')||document.querySelector('img[src^="data:image/png"]');return i?i.src:'';}
