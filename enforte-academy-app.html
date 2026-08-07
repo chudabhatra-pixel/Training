@@ -250,8 +250,8 @@ svg{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .listings{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 .listing{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:15px;box-shadow:var(--sh-2);transition:transform .18s,box-shadow .18s}
 .listing:hover{transform:translateY(-3px);box-shadow:var(--sh-3)}
-.listing .th{width:100%;height:120px;border-radius:14px;display:grid;place-items:center;font-size:44px;margin-bottom:11px;overflow:hidden}
-.listing .th img{width:100%;height:100%;object-fit:cover}
+.listing .th{width:100%;height:180px;border-radius:14px;display:grid;place-items:center;font-size:44px;margin-bottom:11px;overflow:hidden;cursor:zoom-in}
+.listing .th img{width:100%;height:100%;object-fit:contain;background:#f6f8f7}
 .kind{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;padding:3px 9px;border-radius:20px;margin-bottom:6px}
 .k-sell{background:var(--blue-bg);color:var(--blue)}.k-free{background:var(--green-bg);color:var(--green)}.k-auction{background:var(--amber-bg);color:#C77E15}
 .listing .lt{font-weight:600;font-size:14.5px}.listing .ld{font-size:12px;color:var(--muted);margin:2px 0 9px;line-height:1.4}
@@ -547,13 +547,15 @@ function demoApi(a,p){ return Promise.resolve({ok:true}); }
 
 /* ===== SERVER integration — ทำงานเมื่อใส่ API_URL (โหมดเดโม่ข้ามทั้งหมด) ===== */
 async function hydrateProfile(){ if(!SERVER)return; const r=await api("getProfile"); if(r&&r.ok!==false){ if(r.coins!=null)ME.coins=r.coins; if(r.points!=null)ME.xp=r.points; if(r.streak!=null)ME.streak=r.streak; if(r.checkinDays!=null)ME.checkinDays=r.checkinDays; if(r.monthDays!=null)ME.monthDays=r.monthDays; if(r.name)ME.name=r.name; if(r.photo!=null)ME.photo=r.photo; if(r.activeMonths!=null)ME.activeMonths=r.activeMonths; if(r.fullName!=null)ME.fullName=r.fullName; if(r.badges)ME.badges=r.badges; if(r.user&&r.user.checkedToday!=null)ME.checkedToday=r.user.checkedToday; if(r.pathSteps)PATHSTEPS=r.pathSteps; refreshChips(); paintTopBadges(); const sf=document.getElementById("sf-av"); if(sf)sf.innerHTML=avImg(ME.photo,ME.name); ["tb-nm","sf-nm"].forEach(i=>{const el=document.getElementById(i);if(el)el.textContent=ME.name;}); const ci=document.getElementById("checkin"); if(ci&&CUR==="home")ci.innerHTML=checkinHTML(); if(CUR==="me" && !window.__meHydrated){window.__meHydrated=true;const v=document.getElementById("view"); if(v){v.innerHTML=SCREENS.me();try{hydrateCerts();}catch(e){}}} if(CUR==="path")repaintPath(); refreshRail(); } }
-async function hydrateFeed(){ if(!SERVER)return; const r=await api("getFeed"); if(r.ok){ FEED=r.feed.map(p=>({id:p.id,name:p.name,team:p.team,time:p.time,cap:p.caption,photo:p.photo,av:p.avatar||"",react:p.react||{},my:p.my,cmts:(p.comments||[]).map(c=>({n:c.name,t:c.text})),mine:p.mine,canEdit:p.canEdit,canDelete:p.canDelete})); const el=document.getElementById("feed"); const html=FEED.map(feedHTML).join(""); if(el&&CUR==="life"&&el.innerHTML!==html)el.innerHTML=html; } }
-async function hydrateListings(){ if(!SERVER)return; const r=await api("getListings",{filter:SF}); if(r.ok){ LISTINGS=r.listings.map(l=>({id:l.id,kind:l.kind,title:l.title,desc:l.desc,price:l.price,bid:l.bid,emoji:l.emoji||"📦",photo:l.photo,by:l.by,color:AV[(l.id||0)%AV.length]})); const el=document.getElementById("mlist"); const html=(LISTINGS.filter(x=>SF==="all"||x.kind===SF).map(listingHTML).join("")||'<p style="color:var(--muted)">ยังไม่มีประกาศในหมวดนี้</p>'); if(el&&CUR==="share"&&el.innerHTML!==html)el.innerHTML=html; } }
+async function hydrateFeed(){ if(!SERVER)return; const r=await api("getFeed"); if(r.ok){ FEED=r.feed.map(p=>({id:p.id,name:p.name,fullName:p.fullName||"",team:p.team,time:p.time,cap:p.caption,photo:p.photo,av:p.avatar||"",react:p.react||{},my:p.my,cmts:(p.comments||[]).map(c=>({n:c.name,t:c.text})),mine:p.mine,canEdit:p.canEdit,canDelete:p.canDelete})); const el=document.getElementById("feed"); const html=FEED.map(feedHTML).join(""); if(el&&CUR==="life"&&el.innerHTML!==html)el.innerHTML=html; } }
+async function hydrateListings(){ if(!SERVER)return; const r=await api("getListings",{filter:SF}); if(r.ok){ LISTINGS=r.listings.map(l=>({id:l.id,kind:l.kind,title:l.title,desc:l.desc,price:l.price,bid:l.bid,emoji:l.emoji||"📦",photo:l.photo,by:l.by,fullName:l.fullName||"",mine:!!l.mine,color:AV[(l.id||0)%AV.length]})); const el=document.getElementById("mlist"); const html=(LISTINGS.filter(x=>SF==="all"||x.kind===SF).map(listingHTML).join("")||'<p style="color:var(--muted)">ยังไม่มีประกาศในหมวดนี้</p>'); if(el&&CUR==="share"&&el.innerHTML!==html)el.innerHTML=html; } }
 async function hydrateActivity(){ if(!SERVER)return; const [n,a]=await Promise.all([api("getNotifications"),api("getAnnouncements")]); if(n.ok){NOTIFS=n.notifs;if(n.active!=null)updateHeroLive(n.activeLabel);} if(a.ok)ANNOUNCE=a.announcements.map(x=>({id:x.id,ic:x.ic,t:x.title,s:x.body,tag:x.tag,target:x.target})); updateBell(); refreshRail(); }
 
 /* =================== DEMO DATA =================== */
 const AV=["#4F7CFF","#00C2A8","#FF9F3E","#FF6B9D","#9A6BFF","#5F9E38"];
 function avc(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%AV.length;return AV[h];}
+function displayName(name,fullName){return [name,fullName].filter(Boolean).join(" · ");}
+function paintIdentity(){const label=displayName(ME.name,ME.fullName);["tb-nm","sf-nm"].forEach(i=>{const el=document.getElementById(i);if(el)el.textContent=label;});const sub=document.getElementById("sf-sub");if(sub)sub.textContent=(ME.fullName&&ME.fullName!==ME.name?ME.fullName+" · ":"")+"ทีม "+ME.team+" · อันดับ #"+ME.rank;}
 function initials(n){return n.replace(/\(.*\)/,'').trim().slice(0,2);}
 function avImg(photo,name){return photo?`<img src="${photo}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit"/>`:initials(name);}
 /* อัปโหลดรูปเข้า Drive (server) แล้วคืน URL; เดโม่คืน dataURL เดิม */
@@ -729,7 +731,7 @@ function railTop(){ if(!TOP.length) return `<div style="color:var(--muted-2);fon
   return TOP.slice(0,3).map((u,i)=>`<div class="lb"><div class="r g${i+1}">${i+1}</div><div class="av" style="background:${avc(u.n)}">${initials(u.n)}</div><div class="n">${u.n}<div class="tm">${u.t}</div></div><div class="p">${u.p.toLocaleString()}</div></div>`).join("");}
 function railAnn(){ if(!ANNOUNCE.length) return `<div style="color:var(--muted-2);font-size:13px;padding:6px 0">ยังไม่มีประกาศ</div>`;
   return ANNOUNCE.map(a=>`<div class="annr"><div class="i">${a.ic}</div><div><div class="t">${a.t}</div><div class="s">${a.s}</div></div></div>`).join("");}
-function refreshRail(){ const s=document.getElementById("rail-sum");if(s)s.innerHTML=railSum(); const t=document.getElementById("rail-top");if(t)t.innerHTML=railTop(); const a=document.getElementById("rail-ann");if(a)a.innerHTML=railAnn(); }
+function refreshRail(){ paintIdentity(); const s=document.getElementById("rail-sum");if(s)s.innerHTML=railSum(); const t=document.getElementById("rail-top");if(t)t.innerHTML=railTop(); const a=document.getElementById("rail-ann");if(a)a.innerHTML=railAnn(); }
 
 /* ---------- ภารกิจวันนี้ (ดึงจากชีต Missions) ---------- */
 function missionsHTML(){ if(!MISSIONS.length) return `<div style="color:var(--muted-2);font-size:13px;padding:6px 0">ยังไม่มีภารกิจวันนี้ — HR เพิ่มได้ในชีต Missions</div>`;
@@ -1015,8 +1017,8 @@ ${heroHTML("pink","company lifestyle","ไลฟ์สไตล์ · แชร�
 </div>
 <div class="sect an d3">📸 ฟีดทีม <span class="rule"></span></div>
 <div class="grid2"><div class="feed" id="feed">${FEED.map(feedHTML).join("")}</div>${railHTML()}</div>`;
-function feedHTML(p){const rk=Object.keys(p.react);return `<div class="post an" data-id="${p.id}">
- <div class="ph"><div class="av" style="background:${avc(p.name)};overflow:hidden">${avImg(p.av,p.name)}</div><div class="phx"><div class="nm">${p.name}</div><div class="mt">${p.team} · ${p.time}</div></div>${(p.canEdit||p.canDelete)?`<div class="pmenu-wrap"><button class="pmenu-btn" onclick="togglePostMenu(event,'${p.id}')">⋯</button><div class="pmenu" id="pm-${p.id}" hidden>${p.canEdit?`<button onclick="editPost('${p.id}')">✏️ แก้ไข</button>`:''}${p.canDelete?`<button class="del" onclick="deletePost('${p.id}')">🗑️ ลบโพสต์</button>`:''}</div></div>`:''}</div>
+function feedHTML(p){const rk=Object.keys(p.react);const person=[p.name,p.fullName].filter(Boolean).join(" · ");return `<div class="post an" data-id="${p.id}">
+ <div class="ph"><div class="av" style="background:${avc(p.name)};overflow:hidden">${avImg(p.av,p.name)}</div><div class="phx"><div class="nm">${person}</div><div class="mt">${p.team} · ${p.time}</div></div>${(p.canEdit||p.canDelete)?`<div class="pmenu-wrap"><button class="pmenu-btn" onclick="togglePostMenu(event,'${p.id}')">⋯</button><div class="pmenu" id="pm-${p.id}" hidden>${p.canEdit?`<button onclick="editPost('${p.id}')">✏️ แก้ไข</button>`:''}${p.canDelete?`<button class="del" onclick="deletePost('${p.id}')">🗑️ ลบโพสต์</button>`:''}</div></div>`:''}</div>
  <div class="cap">${p.cap}</div>
  ${p.photo?`<div class="img"><img src="${p.photo}" alt="ภาพจากโพสต์ของ ${p.name}" loading="lazy"/></div>`:''}
  <div class="reacts">${["❤️","🔥","👏","💪","😍","🎉"].map(e=>`<button class="rx ${p.my===e?'on':''}" onclick="reactPost('${p.id}','${e}')">${e}<span>${p.react[e]||0}</span></button>`).join("")}</div>
@@ -1137,12 +1139,18 @@ ${heroHTML("teal","sharing marketplace","แบ่งปัน · ซื้อ �
 </div>
 <div class="listings an d2" id="mlist">${LISTINGS.filter(l=>SF==="all"||l.kind===SF).map(listingHTML).join("")||'<p style="color:var(--muted)">ยังไม่มีประกาศในหมวดนี้</p>'}</div>`;
 function setSF(k){SF=k;go("share");}
-function listingHTML(l){const price=l.kind==="free"?`<div class="pr free">ฟรี 💚</div>`:l.kind==="auction"?`<div class="pr">฿${(l.bid||l.price).toLocaleString()} <span style="font-size:11px;color:var(--muted);font-weight:400">ประมูล</span></div>`:`<div class="pr">฿${l.price.toLocaleString()}</div>`;
- return `<div class="listing"><div class="th" style="background:${l.color}18;color:${l.color}">${l.photo?`<img src="${l.photo}"/>`:l.emoji}</div>
+function listingHTML(l){const price=l.kind==="free"?`<div class="pr free">ฟรี 💚</div>`:l.kind==="auction"?`<div class="pr">฿${(l.bid||l.price).toLocaleString()} <span style="font-size:11px;color:var(--muted);font-weight:400">ประมูล</span></div>`:`<div class="pr">฿${l.price.toLocaleString()}</div>`;const person=[l.by,l.fullName].filter(Boolean).join(" · ");
+ return `<div class="listing"><div class="th" style="background:${l.color}18;color:${l.color}" ${l.photo?`onclick="openListingImage('${l.id}')"`:''}>${l.photo?`<img src="${l.photo}" alt="${l.title}"/>`:l.emoji}</div>
   <span class="kind k-${l.kind}">${l.kind==="free"?"ให้ฟรี":l.kind==="auction"?"ประมูล":"ขาย"}</span>
-  <div class="lt">${l.title}</div><div class="ld">${l.desc}</div>${price}
-  <div style="display:flex;gap:8px">${l.kind==="auction"?`<button class="btn btn-g btn-sm" style="flex:1" onclick="bid('${l.id}')">เสนอราคา +50</button>`:`<button class="btn btn-g btn-sm" style="flex:1" onclick="openChat('${l.id}')">${l.kind==="free"?"ขอรับ":"สนใจซื้อ"}</button>`}<button class="btn btn-o btn-sm" onclick="openChat('${l.id}')">💬</button></div>
+  <div class="lt">${l.title}</div><div class="ld">${l.desc}</div><div style="font-size:12px;color:var(--muted);margin:6px 0 10px">ลงประกาศโดย ${person}</div>${price}
+  <div style="display:flex;gap:8px">${l.kind==="auction"?`<button class="btn btn-g btn-sm" style="flex:1" onclick="bid('${l.id}')">เสนอราคา +50</button>`:`<button class="btn btn-g btn-sm" style="flex:1" onclick="openChat('${l.id}')">${l.kind==="free"?"ขอรับ":"สนใจซื้อ"}</button>`}<button class="btn btn-o btn-sm" onclick="openChat('${l.id}')">💬</button></div>${(l.mine||ME.role==="admin")?`<div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-o btn-sm" style="flex:1" onclick="editListing('${l.id}')">✏️ แก้ไข</button><button class="btn btn-o btn-sm" onclick="delListing('${l.id}')">🗑️ ลบ</button></div>`:''}
  </div>`;}
+function openListingImage(id){const l=LISTINGS.find(x=>String(x.id)===String(id));if(l&&l.photo)modal(`<div class="sh"><div class="ptitle">${l.title}</div><button class="x" onclick="closeModal()">✕</button></div><img src="${l.photo}" alt="${l.title}" style="display:block;width:100%;max-height:72vh;object-fit:contain;border-radius:14px;background:#f6f8f7">`);}
+function delListing(id){if(!confirm("ต้องการลบประกาศนี้ใช่ไหม?"))return;if(!SERVER){LISTINGS=LISTINGS.filter(x=>String(x.id)!==String(id));go("share");toast("ลบประกาศแล้ว");return;}api("deleteListing",{id}).then(r=>{if(r&&r.ok){toast("ลบประกาศแล้ว");hydrateListings();}else toast("⚠️ "+((r&&r.msg)||"ลบไม่สำเร็จ"));});}
+let EDIT_LISTING_PHOTO=null;
+function editListing(id){const l=LISTINGS.find(x=>String(x.id)===String(id));if(!l)return;EDIT_LISTING_PHOTO=null;modal(`<div class="sh"><div class="ptitle">✏️ แก้ไขประกาศ</div><button class="x" onclick="closeModal()">✕</button></div><div class="field"><label>ชื่อสินค้า</label><input class="inp" id="el-title" value="${esc(l.title)}"></div><div class="field"><label>รายละเอียด</label><input class="inp" id="el-desc" value="${esc(l.desc)}"></div>${l.kind!=="free"?`<div class="field"><label>ราคา (บาท)</label><input class="inp" id="el-price" type="number" value="${l.price}"></div>`:''}<div class="field"><label>อีโมจิ/ไอคอน</label><input class="inp" id="el-emoji" value="${esc(l.emoji)}" maxlength="2"></div><label class="btn btn-o" style="width:100%;margin-bottom:10px;cursor:pointer">📷 เปลี่ยนรูปสินค้า<input type="file" accept="image/*" hidden onchange="pickEditListingImage(this)"></label><div id="el-prev">${l.photo?`<img src="${l.photo}" style="width:100%;max-height:180px;object-fit:contain;border-radius:14px;background:#f6f8f7;margin-bottom:10px">`:''}</div><button class="btn btn-g" style="width:100%" onclick="saveListing('${l.id}')">บันทึกการแก้ไข</button>`);}
+function pickEditListingImage(inp){const f=inp.files[0];if(!f)return;compressImage(f,d=>{EDIT_LISTING_PHOTO=d;const p=document.getElementById("el-prev");if(p)p.innerHTML=`<img src="${d}" style="width:100%;max-height:180px;object-fit:contain;border-radius:14px;background:#f6f8f7;margin-bottom:10px">`;});}
+async function saveListing(id){const l=LISTINGS.find(x=>String(x.id)===String(id));if(!l)return;let photo=EDIT_LISTING_PHOTO;if(photo&&SERVER){toast("กำลังอัปโหลดรูป...");photo=await uploadImage(photo,"listing");}const data={id,title:document.getElementById("el-title").value.trim(),desc:document.getElementById("el-desc").value.trim(),emoji:document.getElementById("el-emoji").value||"📦"};if(l.kind!=="free")data.price=parseInt(document.getElementById("el-price").value)||0;if(photo)data.photo=photo;if(!data.title){toast("ใส่ชื่อสินค้าก่อน");return;}if(!SERVER){Object.assign(l,data);closeModal();go("share");toast("บันทึกการแก้ไขแล้ว");return;}const r=await api("editListing",data);if(r&&r.ok){closeModal();toast("บันทึกการแก้ไขแล้ว");hydrateListings();}else toast("⚠️ "+((r&&r.msg)||"บันทึกไม่สำเร็จ"));}
 function bid(id){const l=LISTINGS.find(x=>String(x.id)===String(id));if(!l)return;l.bid=(l.bid||l.price)+50;toast("🔨 เสนอราคาแล้ว ฿"+l.bid.toLocaleString());if(SERVER)api("bidListing",{id,step:50}).then(hydrateListings);go("share");}
 let POST_IT={kind:"sell",emoji:"📦",photo:null};
 function openPost(){POST_IT={kind:"sell",emoji:"📦",photo:null};modal(`<div class="sh"><div class="ptitle">🤝 ลงประกาศ</div><button class="x" onclick="closeModal()">✕</button></div>
@@ -2552,7 +2560,7 @@ async function saveProfile(){
   ME.name=name; ME.photo=photoUrl;
   if(SERVER) await api("updateProfile",{name,photo:photoUrl});
   // อัปเดตหน้าจอ
-  ["tb-nm","sf-nm"].forEach(i=>document.getElementById(i).textContent=ME.name);
+  paintIdentity();
   const sf=document.getElementById("sf-av"); if(sf) sf.innerHTML=avImg(ME.photo,ME.name);
   closeModal(); toast("✅ บันทึกโปรไฟล์แล้ว"); if(CUR==="me")go("me");
 }
@@ -2654,9 +2662,9 @@ function enterApp(){
   document.getElementById("login").style.display="none";
   document.getElementById("app").style.display="block";
   const hr=new Date().getHours();document.getElementById("tb-hi").textContent=(hr<12?"สวัสดีตอนเช้า ☀️":hr<17?"สวัสดีตอนบ่าย 🌤️":"สวัสดีตอนเย็น 🌙");
-  ["tb-nm","sf-nm"].forEach(i=>document.getElementById(i).textContent=ME.name);
+  paintIdentity();
   document.getElementById("sf-av").innerHTML=avImg(ME.photo,ME.name);
-  document.getElementById("sf-sub").textContent="ทีม "+ME.team+" · อันดับ #"+ME.rank;
+  paintIdentity();
   buildNav();refreshChips();updateBell();go("home");
   if(SERVER){hydrateActivity();hydrateBoard();startNotifPoll();hydrateFlash();}  // profile/missions/celebrations โหลดโดย POST.home ที่ go("home") เรียกแล้ว (กันยิงซ้ำ)
 }
