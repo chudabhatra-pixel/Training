@@ -790,6 +790,8 @@ ${heroHTML("","your learning journey","วันนี้เก่งขึ้�
   `<button class="pill solid" onclick="openLesson()">▶ เรียนต่อจากครั้งล่าสุด</button><button class="pill" onclick="go('path')">ดู Learning Path →</button>`)}
 ${learningCockpit()}
 ${learningPulse()}
+<div class="sect an d3">🗓️ ตารางอบรม & กิจกรรม <span class="rule"></span><span class="more" onclick="go('calendar')">ดูทั้งหมด</span></div>
+<div class="grid2 an d3" id="home-calendar"><div class="card"><h3 style="margin-bottom:10px">📅 ตารางอบรม</h3><div id="home-events">${eventsHTML()}</div></div><div class="card"><h3 style="margin-bottom:10px">📣 ประกาศล่าสุด</h3><div id="home-ann">${homeAnnHTML()}</div></div></div>
 ${experienceCards()}
 <div class="grid2">
  <div>
@@ -813,6 +815,7 @@ ${experienceCards()}
  ${railHTML()}
 </div>`;
 function tile(r,c,e,t,d,tag,dl){const ic=ICONS[r]?`<img src="${ICONS[r]}" alt="" style="width:56px;height:56px;object-fit:contain;margin-top:-2px">`:e;return `<button class="tile ${c} an ${dl||''}" onclick="go('${r}')"><span class="orb"></span>${tag?`<span class="tag">${tag}</span>`:''}<span class="e">${ic}</span><b>${t}</b><span>${d}</span></button>`;}
+function homeAnnHTML(){return ANNOUNCE.length?ANNOUNCE.slice(0,3).map(a=>`<div class="annr"><div class="i">${a.ic}</div><div><div class="t">${a.t}</div><div class="s">${a.s||''}</div></div></div>`).join(""):'<p style="color:var(--muted);font-size:13px;padding:6px 0">ยังไม่มีประกาศ</p>';}
 function mission(ic,t,s,rt,onc){return `<div class="rowi" style="cursor:pointer" onclick="${onc}"><div class="ic">${ic}</div><div class="tx"><b>${t}</b><span>${s}</span></div><div class="rt">${rt}</div></div>`;}
 function checkinHTML(){
   const days=(ME.checkinDays||0), goal=ME.monthDays||30, off=(2*Math.PI*43)*(1-Math.min(1,days/goal));
@@ -821,7 +824,7 @@ function checkinHTML(){
   <button class="big-btn ${ME.checkedToday?'done':''}" id="ci-btn" onclick="doCheckin()"><span id="ci-e">${ME.checkedToday?'✓':`<img src="${SUMIC.coin}" alt="" style="width:22px;height:22px;object-fit:contain;vertical-align:-5px">`}</span><span id="ci-t">${ME.checkedToday?'เช็คอินแล้ววันนี้':'เช็คอินรับเหรียญ'}</span></button>`;
 }
 async function hydrateTeamActivity(){if(!SERVER)return;const r=await api("getTeamActivity");if(r&&r.ok){TEAMACT=r.activities||[];const el=document.querySelector(".learning-pulse");if(CUR==="home"&&el)el.outerHTML=learningPulse();}}
-POST.home=()=>{ const days=(ME.checkinDays||0), off=(2*Math.PI*43)*(1-Math.min(1,days/(ME.monthDays||30))); setTimeout(()=>{const r=document.getElementById("ring-fg");if(r)r.style.strokeDashoffset=off;},250); if(SERVER){hydrateProfile();hydrateMissions();hydrateCelebrations();hydrateTeamActivity();} };
+POST.home=()=>{ const days=(ME.checkinDays||0), off=(2*Math.PI*43)*(1-Math.min(1,days/(ME.monthDays||30))); setTimeout(()=>{const r=document.getElementById("ring-fg");if(r)r.style.strokeDashoffset=off;},250); if(SERVER){hydrateProfile();hydrateMissions();hydrateCelebrations();hydrateTeamActivity();hydrateEvents();hydrateActivity();} };
 POST.celebrate=()=>{ if(SERVER)hydrateCelebrations(); };
 POST.life=()=>hydrateFeed();
 POST.share=()=>hydrateListings();
@@ -1612,7 +1615,7 @@ let EVENTS=[
 function eventsHTML(){ const es=EVENTS||[]; if(!es.length) return '<p style="color:var(--muted-2);font-size:13px;padding:6px 0">ยังไม่มีกิจกรรมในปฏิทิน</p>';
   return es.map(e=>calrow(e.day,e.month,esc(e.title),esc(e.detail),e.colorVar||'var(--blue)')).join(""); }
 async function hydrateEvents(){ if(!SERVER)return; const r=await api("getEvents");
-  if(r&&r.ok&&Array.isArray(r.events)){ EVENTS=r.events; const el=document.getElementById("events-box"); if(el&&CUR==="calendar")el.innerHTML=eventsHTML(); } }
+  if(r&&r.ok&&Array.isArray(r.events)){ EVENTS=r.events; const el=document.getElementById("events-box"); if(el&&CUR==="calendar")el.innerHTML=eventsHTML(); const home=document.getElementById("home-events");if(home&&CUR==="home")home.innerHTML=eventsHTML(); } }
 /* ---------- ADMIN: จัดการกิจกรรมปฏิทิน ---------- */
 let EVENT_ADMIN=null;
 const EVCOLORS=[["blue","🔵 น้ำเงิน"],["amber","🟡 เหลือง"],["green","🟢 เขียว"],["pink","🩷 ชมพู"]];
