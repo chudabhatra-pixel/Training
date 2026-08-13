@@ -830,7 +830,8 @@ POST.me=()=>{ window.__meHydrated=false; hydrateProfile(); };
 
 async function doCheckin(){
   if(ME.checkedToday) return;
-  // แสดงผลทันทีเพื่อไม่ให้หน่วง (optimistic)
+  window.__ciToday=true;   // ตั้งธงทันทีตั้งแต่กด: เช็คอินแล้วในเซสชันนี้ → ห้าม hydrate ตัวไหนเด้งสถานะกลับ
+  // แสดงผลทันที (optimistic)
   ME.checkedToday=true; ME.coins+=5; ME.xp+=5; ME.streak=(ME.streak||0)+1; ME.checkinDays=(ME.checkinDays||0)+1;
   const el=document.getElementById("checkin"); if(el)el.innerHTML=checkinHTML();
   refreshChips(); if(CUR==="home")POST.home(); burst(); toast("🎉 เช็คอินสำเร็จ +5 🪙 +5 XP");
@@ -838,8 +839,6 @@ async function doCheckin(){
   let r=null; try{r=await api("checkin");}catch(e){}
   if(r&&r.ok===false&&r.msg) toast(r.msg);
   await hydrateProfile(); refreshNotifs();
-  // กันปุ่มเด้งกลับ: ถ้าเซิร์ฟเวอร์ยืนยันว่าวันนี้เช็คอินแล้ว (สำเร็จ หรือขึ้นว่าเช็คไปแล้ว) ให้คงสถานะ "เช็คแล้ว" เสมอ ไม่ให้ค่าเก่ามาเขียนทับ
-  if(r && (r.ok===true || (r.ok===false && r.msg))){ window.__ciToday=true; ME.checkedToday=true; }
   const _ci=document.getElementById("checkin"); if(_ci)_ci.innerHTML=checkinHTML();
   if(CUR==="home")POST.home();
 }
