@@ -328,6 +328,10 @@ nav{position:fixed;inset:0 auto 0 0;width:264px;background:linear-gradient(180de
 .nav-link:hover{color:#fff;background:rgba(255,255,255,.08);transform:translateX(2px)}
 .nav-link.on{color:#fff;background:linear-gradient(135deg,rgba(108,139,255,.26),rgba(133,213,195,.15));border:1px solid rgba(255,255,255,.12);box-shadow:inset 3px 0 #85D5C3}
 .nav-icon{width:27px;height:27px;border-radius:9px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-size:14px;flex-shrink:0;color:#DDE6FF}
+.nav-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;display:block}
+.nav-link:hover .nav-icon-disease{color:#fff;background:rgba(255,255,255,.14)}
+.nav-link.on .nav-icon-disease{color:#17325F;background:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.35)}
+.nav-link.on .nav-icon-disease svg{stroke:#17325F;stroke-width:2.1}
 .nav-text{display:inline-block}
 .nav-link.on .nav-icon{background:#fff;color:#2459D3}
 .nav-badge{margin-left:auto;border-radius:999px;padding:2px 7px;background:#F04D5D;font-size:9px}
@@ -471,6 +475,41 @@ body.modal-open{overflow:hidden}
 .sc-block-head{background:#F4F7FB}.sc-intro{border-radius:0 14px 14px 0;background:#FFF4F5}
 .sc-tip,.sc-warn-line,.sc-flow,.sc-psych,.sc-mistakes,.sc-swap,.sc-list{border-radius:0 10px 10px 0}
 
+
+/* ═══ UX UPGRADE: Disease Finder + Sales Quick Actions ═══ */
+.dz-finder{display:grid;grid-template-columns:1.35fr .65fr;gap:14px;margin:18px 0 24px}
+.dz-searchbox,.dz-scenario{background:#fff;border:1px solid var(--rule);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow-sm)}
+.dz-searchrow{display:flex;gap:10px;align-items:center}
+.dz-searchrow input{flex:1;border:0;outline:0;background:#F7F9FC;border-radius:11px;padding:13px 14px;font-size:14px;color:var(--ink)}
+.dz-searchrow button{border:0;border-radius:11px;background:#14213D;color:#fff;padding:12px 16px;font-weight:700;cursor:pointer}
+.dz-finder-label{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--ink3);margin-bottom:8px;text-transform:uppercase}
+.dz-search-hint{font-size:11px;color:var(--ink3);margin-top:8px}
+.dz-scenario select{width:100%;border:1px solid var(--rule);border-radius:11px;background:#F7F9FC;padding:12px;font-size:13px;color:var(--ink);outline:0}
+.dz-results{display:none;margin:0 0 28px;background:#F2F6FF;border:1px solid #C9D7F6;border-radius:18px;padding:18px}
+.dz-results.on{display:block}
+.dz-results-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.dz-results-title{font-family:var(--display);font-size:18px;font-weight:800;color:var(--ink)}
+.dz-results-count{font-size:11px;color:var(--ink3)}
+.dz-result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.dz-result{background:#fff;border:1px solid #D9E3F5;border-radius:13px;padding:13px;cursor:pointer;transition:.16s}
+.dz-result:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,31,61,.08)}
+.dz-result-name{font-weight:800;font-size:14px;color:var(--ink)}
+.dz-result-en{font-size:10px;color:var(--ink3);margin-top:2px}
+.dz-result-match{font-size:11px;color:var(--ink2);line-height:1.45;margin-top:7px}
+.dz-result-actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.dz-mini-action{border:1px solid var(--rule);background:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:700;color:var(--ink2);cursor:pointer}
+.dz-mini-action.primary{background:#2459D3;color:#fff;border-color:#2459D3}
+.dz-empty{font-size:12px;color:var(--ink2);padding:8px 0}
+.dz-new{display:inline-flex;align-items:center;gap:5px;background:#EAF0FF;color:#2459D3;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:800;margin-left:8px;vertical-align:middle}
+.dp-quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.dp-quick button{border:1px solid var(--rule);background:#F7F9FC;border-radius:10px;padding:10px 9px;font-size:11px;font-weight:700;color:var(--ink2);cursor:pointer}
+.dp-quick button:hover{background:#EEF3FB;color:var(--ink)}
+@media(max-width:820px){
+ .dz-finder{grid-template-columns:1fr}
+ .dz-result-grid{grid-template-columns:1fr}
+ .dz-searchrow{flex-direction:column;align-items:stretch}
+ .dz-searchrow button{width:100%}
+}
 @media(max-width:1120px){
   .hero-banner{grid-template-columns:1fr;gap:28px}.hero-path-card{max-width:680px}.category-grid{grid-template-columns:1fr 1fr}.category-grid .hero-cat:last-child{grid-column:1/-1}
   .dp-inner{width:calc(100vw - 300px);grid-template-columns:220px 1fr}
@@ -642,7 +681,7 @@ body.modal-open{overflow:hidden}
     <div class="nav-section-label">LEARNING MENU</div>
     <div class="nav-links">
       <button class="nav-link on" data-page="products" onclick="goPage('products',this)"><span class="nav-icon">⌂</span><span class="nav-text">หน้าหลัก</span></button>
-      <button class="nav-link" data-page="disease" onclick="goPage('disease',this)"><span class="nav-icon">🩺</span><span class="nav-text">ความรู้โรค</span></button>
+      <button class="nav-link" data-page="disease" onclick="goPage('disease',this)"><span class="nav-icon nav-icon-disease" aria-hidden="true"><svg viewBox="0 0 32 32" role="img"><path d="M9 5v8.5a7 7 0 0 0 14 0V5"/><path d="M7 5h4M21 5h4"/><path d="M16 21v6"/><path d="M13 27h6"/><path d="M12 9h8"/></svg></span><span class="nav-text">ความรู้โรค</span></button>
       <button class="nav-link" data-page="faq" onclick="goPage('faq',this)"><span class="nav-icon">?</span><span class="nav-text">FAQ</span></button>
       <button class="nav-link" data-page="compare" onclick="goPage('compare',this)"><span class="nav-icon">⇄</span><span class="nav-text">เปรียบเทียบ</span></button>
       <button class="nav-link" data-page="quiz" onclick="goPage('quiz',this)"><span class="nav-icon">✓</span><span class="nav-text">แบบทดสอบ</span></button>
@@ -678,13 +717,15 @@ body.modal-open{overflow:hidden}
         </div>
       </div>
       <div class="hero-path-card">
-        <div class="path-topline"><span>LEARNING PATH</span><span>4 STEPS</span></div>
+        <div class="path-topline"><span>LEARNING PATH</span><span>5 STEPS</span></div>
         <div class="path-title">เส้นทางเรียนรู้แนะนำ</div>
         <div class="path-list">
           <button class="path-item active" onclick="document.querySelector('.filter-strip').scrollIntoView({behavior:'smooth'})"><span class="path-num">01</span><span><b>รู้จักผลิตภัณฑ์</b><small>อ่านส่วนประกอบและประโยชน์</small></span><span class="path-arrow">→</span></button>
-          <button class="path-item" onclick="goPage('compare',document.querySelector('[data-page=compare]'))"><span class="path-num">02</span><span><b>ฝึกเปรียบเทียบ</b><small>เลือกสินค้าให้เหมาะกับความต้องการ</small></span><span class="path-arrow">→</span></button>
-          <button class="path-item" onclick="goPage('script',document.querySelector('[data-page=script]'))"><span class="path-num">03</span><span><b>ซ้อมบทพูดขาย</b><small>นำเสนออย่างเป็นธรรมชาติ</small></span><span class="path-arrow">→</span></button>
-          <button class="path-item" onclick="goPage('quiz',document.querySelector('[data-page=quiz]'))"><span class="path-num">04</span><span><b>เช็กความพร้อม</b><small>ผ่านเกณฑ์อย่างน้อย 70%</small></span><span class="path-arrow">→</span></button>
+          <button class="path-item" onclick="goPage('disease',document.querySelector('[data-page=disease]'))"><span class="path-num">02</span><span><b>รู้จักโรคและอาการ <span class="dz-new" style="margin-left:4px;padding:3px 6px">NEW</span></b><small>เข้าใจอาการและแนวทางดูแล</small></span><span class="path-arrow">→</span></button>
+          <button class="path-item" onclick="goPage('compare',document.querySelector('[data-page=compare]'))"><span class="path-num">03</span><span><b>ฝึกเปรียบเทียบ</b><small>เลือกสินค้าให้เหมาะกับความต้องการ</small></span><span class="path-arrow">→</span></button>
+          <button class="path-item" onclick="goPage('script',document.querySelector('[data-page=script]'))"><span class="path-num">04</span><span><b>ซ้อมบทพูดขาย</b><small>นำเสนออย่างเป็นธรรมชาติ</small></span><span class="path-arrow">→</span></button>
+          <button class="path-item" onclick="goPage('quiz',document.querySelector('[data-page=quiz]'))"><span class="path-num">05</span><span><b>เช็กความพร้อม</b><small>ผ่านเกณฑ์อย่างน้อย 70%</small></span><span class="path-arrow">→</span></button>
+<span class="path-num">02</span><span><b>ฝึกเปรียบเทียบ</b><small>เลือกสินค้าให้เหมาะกับความต้องการ</small></span><span class="path-arrow">→</span></button>
         </div>
       </div>
     </div>
@@ -770,6 +811,10 @@ body.modal-open{overflow:hidden}
         <div class="dp-bens" id="dp-bens"></div>
         <div class="dp-sell" id="dp-sell"></div>
         <div class="dp-warns" id="dp-warns"></div>
+        <div class="dp-quick">
+          <button onclick="goPage('compare',document.querySelector('[data-page=compare]'));closeDP()">⇄ เปรียบเทียบสินค้า</button>
+          <button onclick="goPage('script',document.querySelector('[data-page=script]'));closeDP()">◫ เปิด Sales Script</button>
+        </div>
       </div>
     </div>
   </div>
@@ -783,7 +828,27 @@ body.modal-open{overflow:hidden}
     <div class="pg-eyebrow eyebrow">Clinical Knowledge</div>
     <div class="pg-title display">ความรู้<br><em>โรคและอาการ</em></div>
     <p class="pg-desc">เจาะลึก 17 กลุ่มโรค — สาเหตุ อาการ แนวทางการแพทย์ และบทบาทของอาหารเสริมในการดูแล</p>
+    <span class="dz-new">NEW · Disease & Symptom Knowledge</span>
   </div>
+  <div class="dz-finder">
+    <div class="dz-searchbox">
+      <div class="dz-finder-label">ค้นหาโรค / อาการ</div>
+      <div class="dz-searchrow"><input id="dz-search" type="search" placeholder="เช่น ปวดเข่า, เบาหวาน, นอนไม่หลับ, ปัสสาวะบ่อย" onkeydown="if(event.key==='Enter')dzSearch()"><button onclick="dzSearch()">🔍 ค้นหา</button></div>
+      <div class="dz-search-hint">ค้นได้จากชื่อโรค ชื่ออังกฤษ สาเหตุ และอาการในคู่มือ</div>
+    </div>
+    <div class="dz-scenario">
+      <div class="dz-finder-label">ลูกค้าบอกแบบนี้ → ดูโรคที่เกี่ยวข้อง</div>
+      <select id="dz-scenario" onchange="dzScenario(this.value)">
+        <option value="">เลือกอาการของลูกค้า</option>
+        <option value="ปวดเข่า">“ช่วงนี้ปวดเข่า”</option>
+        <option value="ปัสสาวะบ่อย">“ช่วงนี้ปัสสาวะบ่อย”</option>
+        <option value="ถ่ายยาก">“ท้องผูก ถ่ายยาก”</option>
+        <option value="ตาแห้ง">“จ้องจอนาน ตาแห้ง”</option>
+        <option value="น้ำหนักเกิน">“อยากลดน้ำหนัก”</option>
+      </select>
+    </div>
+  </div>
+  <div class="dz-results" id="dz-results"></div>
   <div class="dz-cats" id="dz-cats"></div>
   <div id="dz-content"></div>
   <div class="cmpl-wrap" id="dz-compliance"></div>
@@ -1297,6 +1362,35 @@ function buildCompliance(){
   el.innerHTML=`<div class="cmpl-eyebrow">Compliance & Precautions</div>
     <div class="cmpl-title">ข้อควรระวังและจรรยาบรรณการนำเสนอ</div>
     <div class="cmpl-grid">${COMPLIANCE.map(c=>`<div class="cmpl-card${c.warn?' warn':''}"><span class="cmpl-ico">${c.ico}</span><div><div class="cmpl-h">${c.h}</div><div class="cmpl-t">${c.t}</div></div></div>`).join('')}</div>`;
+}
+function dzSearch(q){
+  const input=document.getElementById('dz-search');
+  q=(q||input?.value||'').trim().toLowerCase();
+  const box=document.getElementById('dz-results');
+  if(!box)return;
+  if(!q){box.classList.remove('on');box.innerHTML='';return;}
+  const hits=DISEASES.map(d=>{
+    const hay=[d.th,d.en,d.cause,d.symptom,d.care,d.ings,d.effect].join(' ').toLowerCase();
+    return {d,score:hay.includes(q)?(d.th.toLowerCase().includes(q)?3:d.symptom.toLowerCase().includes(q)?2:1):0};
+  }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,8);
+  box.classList.add('on');
+  box.innerHTML=`<div class="dz-results-head"><div class="dz-results-title">ผลการค้นหา “${q.replace(/</g,'&lt;')}”</div><div class="dz-results-count">${hits.length} รายการ</div></div>`+
+    (hits.length?`<div class="dz-result-grid">${hits.map(({d})=>`<div class="dz-result" onclick="dzFocus(${d.n})"><div class="dz-result-name">${d.th}</div><div class="dz-result-en">${d.en}</div><div class="dz-result-match">${d.symptom}</div><div class="dz-result-actions"><button class="dz-mini-action primary" onclick="event.stopPropagation();dzFocus(${d.n})">ดูความรู้</button><button class="dz-mini-action" onclick="event.stopPropagation();dzProduct(${d.n})">ดูสินค้า</button></div></div>`).join('')}</div>`:`<div class="dz-empty">ไม่พบคำค้นในคู่มือ ลองใช้คำว่า “ปวด”, “น้ำตาล”, “ความดัน”, “ต่อมลูกหมาก” หรือ “ผิว”</div>`);
+}
+function dzScenario(q){if(q){document.getElementById('dz-search').value=q;dzSearch(q);}}
+function dzFocus(n){
+  const d=DISEASES.find(x=>x.n===n);if(!d)return;
+  showDisease(d.cat);
+  setTimeout(()=>{
+    const cards=[...document.querySelectorAll('.dz-card')];
+    const card=cards.find(c=>c.querySelector('.dz-num')?.textContent.trim()==String(n));
+    if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.style.boxShadow='0 0 0 3px rgba(36,89,211,.25),0 14px 34px rgba(15,31,61,.12)';setTimeout(()=>card.style.boxShadow='',1800);}
+  },80);
+}
+function dzProduct(n){
+  const d=DISEASES.find(x=>x.n===n);if(!d||!d.ids?.length)return;
+  goPage('products',document.querySelector('[data-page="products"]'));
+  setTimeout(()=>openDP(d.ids[0]),350);
 }
 function buildDiseasePage(){buildDzCats('all');showDisease('all');buildCompliance();}
 
