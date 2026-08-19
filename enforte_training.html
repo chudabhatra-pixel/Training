@@ -2785,5 +2785,52 @@ showScript('open',document.querySelector('.sc-tab'));
   // Re-run after the existing V4 DOMContentLoaded render has completed.
   setTimeout(function(){ if(typeof window.v4RenderHome==='function') window.v4RenderHome(); },500);
 })();
-</script>\n</body>
+</script>\n
+<script id="v7-learning-fix">
+(function(){
+  'use strict';
+  function scrollToEl(id, delay){
+    setTimeout(function(){
+      var el=document.getElementById(id);
+      if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+    }, delay||80);
+  }
+  window.v4Continue=function(){
+    try{
+      var done=(typeof read==='function')?read(KEY_P):[];
+      var next=path.find(function(x){return !done.includes(x[0]);})||path[0];
+      if(!next){scrollToEl('v4-progress-card');return;}
+      if(next[0]==='products'){
+        var target=document.querySelector('.filter-strip');
+        if(target){target.scrollIntoView({behavior:'smooth',block:'start'});return;}
+        scrollToEl('v4-explore',120); return;
+      }
+      if(typeof window.goPage==='function') window.goPage(next[0],document.querySelector('.nav-link[data-page="'+next[0]+'"]'));
+      else {
+        document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on')});
+        var page=document.getElementById('page-'+next[0]);
+        if(page) page.classList.add('on');
+      }
+      if(next[0]==='products') scrollToEl('v4-explore',160);
+    }catch(e){
+      console.error('Continue Learning error',e);
+      scrollToEl('v4-progress-card',80);
+    }
+  };
+  window.openMyLearning=function(){
+    var home=document.getElementById('page-products');
+    if(home && !home.classList.contains('on') && typeof window.goPage==='function'){
+      window.goPage('products',document.querySelector('.nav-link[data-page="products"]'));
+    }
+    scrollToEl('v4-progress-card',120);
+  };
+  document.addEventListener('click',function(e){
+    var btn=e.target.closest && e.target.closest('.v4-progress-next button');
+    if(btn){e.preventDefault();e.stopPropagation();window.v4Continue();}
+    var ml=e.target.closest && e.target.closest('.v3-top-btn,.v3-my-nav');
+    if(ml){e.preventDefault();e.stopPropagation();window.openMyLearning();}
+  },true);
+})();
+</script>
+</body>
 </html>
