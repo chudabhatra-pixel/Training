@@ -642,6 +642,44 @@ body.modal-open{overflow:hidden}
 .v3-svg{width:18px;height:18px;display:block;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.nav-icon .v3-svg{width:18px;height:18px}
 @media(max-width:900px){.v3-topbar{left:12px;right:12px;top:8px}.v3-topbar .v3-search-hint,.v3-top-btn{display:none}.page{padding-top:80px}.v3-home-tools,.v3-learning{margin-left:20px;margin-right:20px}.v3-home-tools{grid-template-columns:1fr}.v3-mini-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.v3-topbar{height:50px}.v3-global-search input{height:36px}.v3-home-tools{gap:12px}.v3-assistant,.v3-progress{padding:17px}.v3-assist-row{flex-direction:column}.v3-assist-btn{width:100%}.v3-learning{margin-bottom:25px}.v3-learning-header{display:block}.v3-learning-sub{display:block;margin-top:4px}}
+
+/* ═════════════════════════════════════════════════════════════
+   V4 — TRUE ACADEMY HOME REDESIGN
+═════════════════════════════════════════════════════════════ */
+.v4-home{padding:30px 40px 10px;max-width:1440px;margin:0 auto}
+.v4-welcome{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:22px}
+.v4-kicker{font-size:10px;letter-spacing:.16em;font-weight:800;color:#6f819e;text-transform:uppercase;margin-bottom:7px}
+.v4-title{font-size:36px;line-height:1.05;letter-spacing:-.04em;color:#14213D;margin:0}
+.v4-title em{font-style:normal;color:#2459D3}
+.v4-sub{font-size:13px;color:#7a879d;margin:9px 0 0;max-width:620px;line-height:1.65}
+.v4-date{font-size:11px;color:#7a879d;background:#fff;border:1px solid #e1e8f1;border-radius:999px;padding:9px 13px;white-space:nowrap}
+.v4-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.7fr);gap:18px}
+.v4-assist-card{position:relative;overflow:hidden;border-radius:24px;padding:28px;background:linear-gradient(135deg,#12203d,#1d3e72 58%,#207e82);box-shadow:0 18px 50px rgba(20,33,61,.16);color:#fff;min-height:255px}
+.v4-assist-card:after{content:'';position:absolute;width:250px;height:250px;border-radius:50%;right:-100px;top:-110px;border:48px solid rgba(255,255,255,.06)}
+.v4-assist-top{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}
+.v4-assist-label{font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#a9e1d9}
+.v4-assist-badge{font-size:9px;font-weight:800;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14)}
+.v4-assist-title{font-size:25px;font-weight:850;letter-spacing:-.03em;margin:17px 0 5px;position:relative;z-index:1}
+.v4-assist-desc{font-size:11px;color:rgba(255,255,255,.72);position:relative;z-index:1}
+.v4-assist-input{display:flex;gap:8px;margin-top:22px;position:relative;z-index:2}
+.v4-assist-input input{flex:1;height:46px;border:0;border-radius:12px;padding:0 15px;background:rgba(255,255,255,.98);color:#14213D;outline:none;font-size:12px;box-shadow:0 8px 25px rgba(0,0,0,.12)}
+.v4-assist-input button{height:46px;border:0;border-radius:12px;padding:0 17px;background:#F0B94B;color:#14213D;font-size:11px;font-weight:900;cursor:pointer}
+.v4-chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;position:relative;z-index:2}
+.v4-chip{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:6px 9px;font-size:9px;cursor:pointer}
+.v4-progress-card{background:#fff;border:1px solid #e1e8f1;border-radius:24px;padding:25px;box-shadow:0 10px 32px rgba(20,33,61,.07)}
+.v4-progress-head{display:flex;justify-content:space-between;align-items:center}.v4-progress-head b{font-size:13px}.v4-progress-pct{font-size:25px;font-weight:900;color:#2459D3}
+.v4-progress-track{height:9px;border-radius:99px;background:#edf2f7;margin:15px 0 18px;overflow:hidden}.v4-progress-fill{height:100%;width:0;background:linear-gradient(90deg,#2459D3,#6b8cff);border-radius:99px;transition:.4s}
+.v4-progress-next{border-top:1px solid #edf1f6;padding-top:15px}.v4-progress-next span{font-size:9px;color:#9aa5b7;text-transform:uppercase;letter-spacing:.12em;font-weight:800}.v4-progress-next strong{display:block;font-size:14px;margin-top:5px;color:#14213D}.v4-progress-next button{margin-top:11px;width:100%;height:37px;border:1px solid #dbe4ef;background:#f7f9fc;border-radius:10px;color:#2459D3;font-size:10px;font-weight:800;cursor:pointer}
+.v4-section{margin-top:20px}.v4-section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:11px}.v4-section-head h2{font-size:17px;margin:0;color:#14213D}.v4-section-head span{font-size:10px;color:#8b98aa}
+.v4-path{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.v4-path-item{border:1px solid #e1e8f1;background:#fff;border-radius:16px;padding:15px;min-height:95px;text-align:left;cursor:pointer;transition:.2s}.v4-path-item:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(20,33,61,.08)}.v4-path-item.done{border-color:#9ed6cb;background:#f4fbf9}.v4-path-num{font-size:9px;font-weight:900;color:#9aa5b7}.v4-path-item.done .v4-path-num{color:#16826E}.v4-path-name{display:block;font-size:11px;font-weight:800;color:#14213D;margin-top:8px}.v4-path-note{display:block;font-size:9px;color:#8996a8;margin-top:4px;line-height:1.35}
+.v4-topics{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}.v4-topic{height:62px;border:1px solid #e1e8f1;background:#fff;border-radius:15px;padding:0 12px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:9px}.v4-topic:hover{border-color:#b8c9e8;background:#f8faff}.v4-topic-icon{width:29px;height:29px;border-radius:9px;background:#edf3ff;color:#2459D3;display:grid;place-items:center;font-weight:900;font-size:11px}.v4-topic strong{font-size:10px;color:#14213D}.v4-topic small{display:block;color:#98a3b3;font-size:8px;margin-top:2px}
+.v4-library{display:grid;grid-template-columns:1fr 1fr;gap:12px}.v4-lib-card{background:#fff;border:1px solid #e1e8f1;border-radius:18px;padding:16px}.v4-lib-title{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800}.v4-lib-count{font-size:9px;color:#8a97a9;font-weight:600}.v4-lib-items{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}.v4-lib-items span{font-size:9px;background:#f4f7fb;color:#43506A;border-radius:999px;padding:7px 9px;cursor:pointer}
+.v4-explore{margin-top:25px;padding:0 40px 5px;max-width:1440px;margin-left:auto;margin-right:auto}.v4-explore-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:8px}.v4-explore-head h2{font-size:20px;margin:0}.v4-explore-head p{font-size:10px;color:#8a97a9;margin:0}
+/* The old marketing hero is retained in the source for compatibility but hidden from the new home experience. */
+.page-products>.hero{display:none}
+@media(max-width:1050px){.v4-grid{grid-template-columns:1fr}.v4-path{grid-template-columns:repeat(3,1fr)}.v4-topics{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.v4-home{padding:20px}.v4-welcome{align-items:flex-start;flex-direction:column}.v4-title{font-size:29px}.v4-date{display:none}.v4-assist-card{padding:22px}.v4-assist-input{flex-direction:column}.v4-assist-input button{width:100%}.v4-path{grid-template-columns:1fr 1fr}.v4-topics{grid-template-columns:1fr 1fr}.v4-library{grid-template-columns:1fr}.v4-explore{padding:0 20px 5px}.v4-explore-head{align-items:flex-start;flex-direction:column;gap:4px}}
+@media(max-width:430px){.v4-path{grid-template-columns:1fr}.v4-topics{grid-template-columns:1fr}.v4-assist-title{font-size:22px}}
 </style>
 
 </head>
@@ -684,6 +722,32 @@ body.modal-open{overflow:hidden}
 
 <!-- ════════ PRODUCTS PAGE ════════ -->
 <div class="page on" id="page-products">
+
+  <section class="v4-home" aria-label="Enforte Academy Dashboard">
+    <div class="v4-welcome">
+      <div><div class="v4-kicker">ENFORTE ACADEMY · LEARNING HUB</div><h1 class="v4-title">เรียนรู้ให้พร้อม <em>ขายให้มั่นใจ</em></h1><p class="v4-sub">ทุกสิ่งที่ทีมขายต้องใช้ ตั้งแต่ความรู้สินค้า โรคและอาการ ไปจนถึงบทพูดขายและแบบทดสอบ — เชื่อมต่อกันในที่เดียว</p></div>
+      <div class="v4-date">TRAINING HUB · 2026</div>
+    </div>
+    <div class="v4-grid">
+      <div class="v4-assist-card">
+        <div class="v4-assist-top"><span class="v4-assist-label">Sales Assistant</span><span class="v4-assist-badge">NEW · ใช้ข้อมูลจากคู่มือ</span></div>
+        <div class="v4-assist-title">ลูกค้าบอกอะไร? ค้นหาแนวทางต่อได้เลย</div>
+        <div class="v4-assist-desc">ค้นหาอาการหรือคำที่ลูกค้าพูด เช่น ปวดเข่า · นอนไม่หลับ · ปัสสาวะบ่อย</div>
+        <div class="v4-assist-input"><input id="v4-assist-input" placeholder="พิมพ์อาการหรือคำที่ลูกค้าบอก..." onkeydown="if(event.key==='Enter')v3AssistSearch(true)"><button onclick="v3AssistSearch(true)">ค้นหา →</button></div>
+        <div class="v4-chips" id="v4-chips"></div>
+      </div>
+      <div class="v4-progress-card">
+        <div class="v4-progress-head"><b>My Learning</b><span class="v4-progress-pct" id="v4-progress-pct">0%</span></div>
+        <div class="v4-progress-track"><div class="v4-progress-fill" id="v4-progress-fill"></div></div>
+        <div class="v4-progress-next"><span>Continue learning</span><strong id="v4-next-title">Product Knowledge</strong><button onclick="v4Continue()">เรียนต่อ →</button></div>
+      </div>
+    </div>
+    <div class="v4-section"><div class="v4-section-head"><h2>Learning Path</h2><span>5 STEPS · เรียนตามลำดับแนะนำ</span></div><div class="v4-path" id="v4-path"></div></div>
+    <div class="v4-section"><div class="v4-section-head"><h2>Popular Topics</h2><span>ค้นหาเร็วจากอาการที่พบบ่อย</span></div><div class="v4-topics" id="v4-topics"></div></div>
+    <div class="v4-section"><div class="v4-section-head"><h2>My Library</h2><span>รายการที่คุณบันทึกไว้</span></div><div class="v4-library"><div class="v4-lib-card"><div class="v4-lib-title">⭐ Favorites <span class="v4-lib-count" id="v4-fav-count">0 รายการ</span></div><div class="v4-lib-items" id="v4-favs"></div></div><div class="v4-lib-card"><div class="v4-lib-title">🕘 Recently Viewed <span class="v4-lib-count" id="v4-recent-count">0 รายการ</span></div><div class="v4-lib-items" id="v4-recents"></div></div></div></div>
+  </section>
+  <div class="v4-explore"><div class="v4-explore-head"><h2>Explore Products</h2><p>ค้นหาและเรียนรู้รายละเอียดผลิตภัณฑ์ทั้งหมด</p></div></div>
+
 
   <!-- HERO -->
   <section class="hero" aria-labelledby="learning-title">
@@ -2555,5 +2619,28 @@ showScript('open',document.querySelector('.sc-tab'));
 })();
 </script>
 
+
+<script>
+(function(){
+ const path=[['products','รู้จักผลิตภัณฑ์','ส่วนประกอบและประโยชน์'],['disease','โรคและอาการ','เข้าใจลูกค้าให้แม่นขึ้น'],['compare','เปรียบเทียบสินค้า','เลือกให้ตรงความต้องการ'],['script','Sales Playbook','ฝึกบทพูดขาย'],['quiz','Knowledge Test','เช็กความพร้อม']];
+ const qtopics=['ปวดเข่า','นอนไม่หลับ','ปัสสาวะบ่อย','ท้องผูก','ตาแห้ง','ปวดเมื่อย'];
+ window.v4RenderHome=function(){
+   const done=(typeof read==='function')?read(KEY_P):[];
+   const pe=document.getElementById('v4-progress-pct'),pf=document.getElementById('v4-progress-fill');
+   const pct=Math.round(done.length/path.length*100); if(pe)pe.textContent=pct+'%'; if(pf)pf.style.width=pct+'%';
+   const next=path.find(x=>!done.includes(x[0]))||path[path.length-1]; const nt=document.getElementById('v4-next-title');if(nt)nt.textContent=next[1];
+   const el=document.getElementById('v4-path'); if(el)el.innerHTML=path.map((m,i)=>{const d=done.includes(m[0]);return `<button class="v4-path-item ${d?'done':''}" onclick="goPage('${m[0]}',document.querySelector('[data-page=${m[0]}]'))"><span class="v4-path-num">${d?'✓':'0'+(i+1)}</span><span class="v4-path-name">${m[1]}</span><span class="v4-path-note">${m[2]}</span></button>`}).join('');
+   const topics=document.getElementById('v4-topics'); if(topics)topics.innerHTML=qtopics.map((x,i)=>`<button class="v4-topic" onclick="document.getElementById('v4-assist-input').value='${x}';v3AssistSearch(true)"><span class="v4-topic-icon">${['⌁','◒','◷','◌','◉','≈'][i]}</span><span><strong>${x}</strong><small>ค้นหาข้อมูล →</small></span></button>`).join('');
+   if(typeof v3RenderLibrary==='function')v3RenderLibrary();
+   if(typeof v3BuildSuggestions==='function')v3BuildSuggestions();
+   const chips=document.getElementById('v4-chips'); if(chips)chips.innerHTML=qtopics.slice(0,5).map(x=>`<button class="v4-chip" onclick="document.getElementById('v4-assist-input').value='${x}';v3AssistSearch(true)">${x}</button>`).join('');
+ };
+ window.v4Continue=function(){const done=(typeof read==='function')?read(KEY_P):[];const next=path.find(x=>!done.includes(x[0]))||path[0];goPage(next[0],document.querySelector('[data-page='+next[0]+']'));};
+ document.addEventListener('DOMContentLoaded',()=>setTimeout(v4RenderHome,250));
+ const old=window.v3UpdateProgress; window.v3UpdateProgress=function(){if(old)old();setTimeout(v4RenderHome,30)};
+ const oldRecent=window.v3AddRecent; if(oldRecent)window.v3AddRecent=function(id){oldRecent(id);setTimeout(v4RenderHome,30)};
+ const oldFav=window.toggleFavorite; if(oldFav)window.toggleFavorite=function(id,btn){oldFav(id,btn);setTimeout(v4RenderHome,30)};
+})();
+</script>
 </body>
 </html>
