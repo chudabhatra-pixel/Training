@@ -685,6 +685,13 @@ body.modal-open{overflow:hidden}
 @media(max-width:1050px){.v4-grid{grid-template-columns:1fr}.v4-path{grid-template-columns:repeat(3,1fr)}.v4-topics{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.v4-home{padding:20px}.v4-welcome{align-items:flex-start;flex-direction:column}.v4-title{font-size:29px}.v4-date{display:none}.v4-assist-card{padding:22px}.v4-assist-input{flex-direction:column}.v4-assist-input button{width:100%}.v4-path{grid-template-columns:1fr 1fr}.v4-topics{grid-template-columns:1fr 1fr}.v4-library{grid-template-columns:1fr}.v4-explore{padding:0 20px 5px}.v4-explore-head{align-items:flex-start;flex-direction:column;gap:4px}}
 @media(max-width:430px){.v4-path{grid-template-columns:1fr}.v4-topics{grid-template-columns:1fr}.v4-assist-title{font-size:22px}}
+
+/* V6 CLICK FIX — ensure dashboard cards are real interactive controls */
+.v4-path-item,.v4-topic,.v4-chip,.v4-progress-next button,.v4-assist-input button{position:relative;z-index:20;pointer-events:auto!important;}
+.v4-path-item{user-select:none;-webkit-tap-highlight-color:transparent;}
+.v4-topic{user-select:none;-webkit-tap-highlight-color:transparent;}
+.v4-home{position:relative;z-index:1;}
+.v4-assist-card,.v4-progress-card{position:relative;}
 </style>
 
 </head>
@@ -2662,7 +2669,7 @@ showScript('open',document.querySelector('.sc-tab'));
   window.v3GlobalSearch=function(){const q=(document.getElementById('v3-global-input')?.value||'').trim().toLowerCase();const box=document.getElementById('v3-search-results');if(!box)return;if(!q){box.classList.remove('on');return}
     const products=PRODUCTS.filter(p=>(p.name+' '+p.ingredients.map(i=>i.name+' '+i.desc).join(' ')+' '+p.benefits.join(' ')).toLowerCase().includes(q)).slice(0,5);
     const diseases=(typeof SYMPTOMS!=='undefined'?SYMPTOMS:[]).filter(s=>(s.th+' '+s.en+' '+s.sym+' '+s.cause+' '+s.symptom).toLowerCase().includes(q)).slice(0,5);
-    const faq=typeof FAQ!=='undefined'?FAQ.filter(f=>(f.q+' '+f.a).toLowerCase().includes(q)).slice(0,4):[];
+    const faq=typeof FAQS!=='undefined'?FAQS.filter(f=>(f.q+' '+f.a).toLowerCase().includes(q)).slice(0,4):[];
     let h='';
     if(products.length){h+='<div class="v3-result-group">Products</div>'+products.map(p=>`<div class="v3-result" onclick="openDP('${p.id}');v3CloseSearch()"><div class="v3-result-main"><div class="v3-result-title">${p.name}</div><div class="v3-result-sub">${p.benefits?.[0]||''}</div></div><span class="v3-result-type">สินค้า</span></div>`).join('')}
     if(diseases.length){h+='<div class="v3-result-group">Disease & Symptoms</div>'+diseases.map(d=>`<div class="v3-result" onclick="goPage('disease',document.querySelector('[data-page=disease]'));v3CloseSearch()"><div class="v3-result-main"><div class="v3-result-title">${d.th||d.en}</div><div class="v3-result-sub">${d.sym||''}</div></div><span class="v3-result-type">โรค/อาการ</span></div>`).join('')}
@@ -2702,5 +2709,81 @@ showScript('open',document.querySelector('.sc-tab'));
  const oldFav=window.toggleFavorite; if(oldFav)window.toggleFavorite=function(id,btn){oldFav(id,btn);setTimeout(v4RenderHome,30)};
 })();
 </script>
-</body>
+\n<script id="v6-click-fix">
+(function(){
+  'use strict';
+  function byPage(name){ return document.querySelector('.nav-link[data-page="'+name+'"]'); }
+  function nav(name){
+    if(typeof window.goPage==='function'){ window.goPage(name,byPage(name)); return true; }
+    var target=document.getElementById('page-'+name);
+    if(!target) return false;
+    document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on');});
+    target.classList.add('on');
+    document.querySelectorAll('.nav-link[data-page]').forEach(function(b){b.classList.toggle('on',b.dataset.page===name);});
+    window.scrollTo(0,0);
+    return true;
+  }
+  function topicSearch(text){
+    var input=document.getElementById('v4-assist-input');
+    if(input) input.value=text;
+    if(typeof window.v3AssistSearch==='function'){ window.v3AssistSearch(true); return true; }
+    return false;
+  }
+  function bind(){
+    // Use capture phase so these controls remain clickable even if another
+    // document-level listener was attached by an older enhancement layer.
+    document.addEventListener('click',function(e){
+      var path=e.target.closest && e.target.closest('.v4-path-item');
+      if(path){
+        e.preventDefault(); e.stopPropagation();
+        var name=path.getAttribute('data-page');
+        if(name) nav(name);
+        return;
+      }
+      var topic=e.target.closest && e.target.closest('.v4-topic');
+      if(topic){
+        e.preventDefault(); e.stopPropagation();
+        var text=topic.getAttribute('data-topic') || topic.querySelector('strong')?.textContent?.trim();
+        if(text) topicSearch(text);
+        return;
+      }
+      var chip=e.target.closest && e.target.closest('.v4-chip');
+      if(chip){
+        e.preventDefault(); e.stopPropagation();
+        var text=chip.getAttribute('data-topic') || chip.textContent.trim();
+        if(text) topicSearch(text);
+      }
+    },true);
+  }
+  window.v6Nav=nav; window.v6TopicSearch=topicSearch;
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind); else bind();
+
+  // Rebuild V4 controls with data attributes instead of fragile inline handlers.
+  var oldRender=window.v4RenderHome;
+  if(typeof oldRender==='function'){
+    window.v4RenderHome=function(){
+      oldRender();
+      document.querySelectorAll('.v4-path-item').forEach(function(el,i){
+        var names=['products','disease','compare','script','quiz'];
+        el.setAttribute('data-page',names[i]||'products');
+        el.setAttribute('type','button');
+        el.removeAttribute('onclick');
+      });
+      document.querySelectorAll('.v4-topic').forEach(function(el){
+        var s=el.querySelector('strong');
+        el.setAttribute('data-topic',s?s.textContent.trim():'');
+        el.setAttribute('type','button');
+        el.removeAttribute('onclick');
+      });
+      document.querySelectorAll('.v4-chip').forEach(function(el){
+        el.setAttribute('data-topic',el.textContent.trim());
+        el.setAttribute('type','button');
+        el.removeAttribute('onclick');
+      });
+    };
+  }
+  // Re-run after the existing V4 DOMContentLoaded render has completed.
+  setTimeout(function(){ if(typeof window.v4RenderHome==='function') window.v4RenderHome(); },500);
+})();
+</script>\n</body>
 </html>
