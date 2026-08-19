@@ -549,6 +549,70 @@ body.modal-open{overflow:hidden}
   .print-warning .print-list{columns:1}
   .print-note{margin-top:16px;padding-top:10px;border-top:1px solid #E5EAF1;font-size:8px;color:#7A879D;text-align:center}
 }
+
+/* ══════════════════════════════════
+   DISEASE KNOWLEDGE PAGE
+══════════════════════════════════ */
+.dz-wrap{max-width:1180px;margin:0 auto;padding:120px 40px 100px}
+.dz-cats{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 8px}
+.dzcat{font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:.04em;padding:10px 20px;border:1.5px solid var(--rule);background:var(--canvas);color:var(--ink2);cursor:pointer;border-radius:999px;transition:all .18s}
+.dzcat:hover{border-color:var(--ink3);color:var(--ink)}
+.dzcat.on{color:#fff;border-color:transparent}
+.dzcat.on[data-c="all"]{background:var(--ink)}
+.dzcat.on[data-c="hc"]{background:#1F4E79}
+.dzcat.on[data-c="me"]{background:#1A5C2A}
+.dzcat.on[data-c="beauty"]{background:#7A4A8C}
+.dz-catcount{font-size:11px;opacity:.6;margin-left:6px;font-weight:600}
+.dz-secband{display:flex;align-items:center;gap:14px;margin:44px 0 20px}
+.dz-secicon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:20px;color:#fff;flex-shrink:0}
+.dz-sectitle{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.01em;color:var(--ink);line-height:1.1}
+.dz-seceyebrow{font-size:10px;font-weight:700;letter-spacing:.16em;color:var(--ink3);text-transform:uppercase}
+.dz-secline{flex:1;height:1px;background:var(--rule)}
+.dz-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.dz-card{position:relative;background:var(--canvas);border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(15,31,61,.04);transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}
+.dz-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(15,31,61,.10)}
+.dz-stripe{height:5px;width:100%}
+.dz-body{padding:22px 24px 24px}
+.dz-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
+.dz-num{font-family:var(--display);font-weight:900;font-size:26px;line-height:1;color:#fff;width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex-shrink:0}
+.dz-th{font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.01em;color:var(--ink);line-height:1.15}
+.dz-en{font-size:12px;color:var(--ink3);font-weight:600;margin-top:2px;letter-spacing:.02em}
+.dz-row{display:flex;gap:11px;padding:9px 0;border-top:1px dashed var(--rule)}
+.dz-row:first-of-type{border-top:none}
+.dz-ico{font-size:15px;flex-shrink:0;line-height:1.5;width:20px;text-align:center}
+.dz-rc{flex:1}
+.dz-rlabel{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ink3);text-transform:uppercase;margin-bottom:1px}
+.dz-rtext{font-size:14px;color:var(--ink2);line-height:1.55}
+.dz-supp{margin-top:12px;padding:14px 16px;border-radius:12px;background:var(--off);border:1px solid var(--rule)}
+.dz-supp-h{display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);margin-bottom:10px}
+.dz-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:11px}
+.dz-chip{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:999px;color:#fff;cursor:pointer;border:none;transition:transform .12s,filter .12s}
+.dz-chip:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.dz-chip::after{content:"›";font-size:14px;opacity:.7;font-weight:700}
+.dz-meta{font-size:12.5px;line-height:1.5;color:var(--ink2)}
+.dz-meta b{color:var(--ink);font-weight:700}
+.dz-meta+.dz-meta{margin-top:5px}
+.dz-caution{display:flex;gap:9px;align-items:flex-start;margin-top:12px;padding:11px 14px;border-radius:10px;background:#FDECEC;border:1px solid #F6C9C9}
+.dz-caution .ci{font-size:14px;line-height:1.4;flex-shrink:0}
+.dz-caution .ct{font-size:12.5px;line-height:1.5;color:#8B1A1A;font-weight:600}
+.dz-tip{display:flex;gap:9px;align-items:flex-start;margin-top:12px;padding:11px 14px;border-radius:10px;background:#FBF5E4;border:1px solid #EBD9A8}
+.dz-tip .ct{font-size:12.5px;line-height:1.5;color:#7B5A00;font-weight:600}
+/* Compliance block */
+.cmpl-wrap{margin-top:60px;padding:34px 32px;border-radius:20px;background:linear-gradient(160deg,#0F1F3D,#1A2E52);color:#fff;box-shadow:0 20px 50px rgba(15,31,61,.28)}
+.cmpl-eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.cmpl-title{font-family:var(--display);font-weight:800;font-size:23px;letter-spacing:-.01em;margin:6px 0 22px}
+.cmpl-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.cmpl-card{display:flex;gap:13px;padding:16px 18px;border-radius:13px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10)}
+.cmpl-card.warn{border-color:rgba(232,54,61,.45);background:rgba(232,54,61,.12)}
+.cmpl-ico{font-size:20px;flex-shrink:0;line-height:1.2}
+.cmpl-h{font-family:var(--display);font-weight:700;font-size:14.5px;margin-bottom:4px;letter-spacing:.01em}
+.cmpl-t{font-size:12.5px;line-height:1.55;color:rgba(255,255,255,.82)}
+@media(max-width:860px){
+  .dz-wrap{padding:96px 16px 80px}
+  .dz-grid,.cmpl-grid{grid-template-columns:1fr}
+  .dz-secband{margin:34px 0 16px}
+  .cmpl-wrap{padding:24px 18px}
+}
 </style>
 </head>
 <body>
@@ -562,6 +626,7 @@ body.modal-open{overflow:hidden}
     <div class="nav-section-label">LEARNING MENU</div>
     <div class="nav-links">
       <button class="nav-link on" data-page="products" onclick="goPage('products',this)"><span class="nav-icon">⌂</span><span class="nav-text">หน้าหลัก</span></button>
+      <button class="nav-link" data-page="disease" onclick="goPage('disease',this)"><span class="nav-icon">🩺</span><span class="nav-text">ความรู้โรค</span></button>
       <button class="nav-link" data-page="faq" onclick="goPage('faq',this)"><span class="nav-icon">?</span><span class="nav-text">FAQ</span></button>
       <button class="nav-link" data-page="compare" onclick="goPage('compare',this)"><span class="nav-icon">⇄</span><span class="nav-text">เปรียบเทียบ</span></button>
       <button class="nav-link" data-page="quiz" onclick="goPage('quiz',this)"><span class="nav-icon">✓</span><span class="nav-text">แบบทดสอบ</span></button>
@@ -693,6 +758,20 @@ body.modal-open{overflow:hidden}
     </div>
   </div>
 
+</div>
+
+<!-- ════════ DISEASE KNOWLEDGE PAGE ════════ -->
+<div class="page" id="page-disease">
+<div class="dz-wrap">
+  <div class="pg-header">
+    <div class="pg-eyebrow eyebrow">Clinical Knowledge</div>
+    <div class="pg-title display">ความรู้<br><em>โรคและอาการ</em></div>
+    <p class="pg-desc">เจาะลึก 15 กลุ่มโรค — สาเหตุ อาการ แนวทางการแพทย์ และบทบาทของอาหารเสริม Enforte ในการดูแล</p>
+  </div>
+  <div class="dz-cats" id="dz-cats"></div>
+  <div id="dz-content"></div>
+  <div class="cmpl-wrap" id="dz-compliance"></div>
+</div>
 </div>
 
 <!-- ════════ FAQ PAGE ════════ -->
@@ -917,12 +996,199 @@ const SYMPTOMS=[
   {sym:"ล้างสารพิษ / บำรุงตับ",        ids:["bactofin","detarin"]},
   {sym:"ตาแห้ง / ตาล้า",              ids:["vistorin","vistorite"]},
   {sym:"เสื่อมสมรรถภาพผู้ชาย",         ids:["vigasil","duasil","viago","prosofil"]},
-  {sym:"ต่อมลูกหมาก",                  ids:["protolite","urofin","prosxel"]},
+  {sym:"ต่อมลูกหมาก / ต่อมลูกหมากโต",  ids:["protolite","urofin","prosxel"]},
+  {sym:"ต่อมลูกหมากอักเสบ",            ids:["urofin","protolite","prosxel","prosofil"]},
+  {sym:"มะเร็งต่อมลูกหมาก (ดูแล/บำรุง)", ids:["protolite","urofin","prosxel","duasil"]},
   {sym:"ริ้วรอย / ผิวหน้าแก่",        ids:["lavite","cellarin","everlift"]},
   {sym:"ฝ้า / กระ / จุดด่างดำ",        ids:["melavita"]},
   {sym:"น้ำหนักเกิน / ลดน้ำหนัก",     ids:["fitarin","skeptics"]},
   {sym:"ภูมิคุ้มกันต่ำ",               ids:["bactofin","detarin","henofin"]}
 ];
+
+/* ── ความรู้โรค/อาการ (จากคู่มือ Clinical Training) ── */
+const DZ_CAT={
+  hc:{c:'#1F4E79',lbl:'สุขภาพและการดูแลร่างกาย',short:'Healthcare',icon:'✚'},
+  me:{c:'#1A5C2A',lbl:'สุขภาพผู้ชาย',short:'Men Enhancement',icon:'♂'},
+  beauty:{c:'#7A4A8C',lbl:'ความงามและรูปร่าง',short:'Beauty',icon:'✦'}
+};
+const DISEASES=[
+  {n:1,cat:'hc',th:'ข้อเข่าเสื่อม',en:'Osteoarthritis',
+   cause:'กระดูกอ่อนผิวข้อสึกหรอจากอายุ ใช้งานหนัก หรือน้ำหนักตัวมาก',
+   symptom:'ปวดเวลาลงน้ำหนัก มีเสียงกรอบแกรบ ข้อฝืดตอนเช้า',
+   care:'ควบคุมน้ำหนัก กายภาพบำบัด ยาแก้ปวด ฉีดน้ำเลี้ยงข้อ',
+   ings:'Collagen Type II, Aquamin, Curcumin, Beta-glucan',
+   effect:'ช่วยประคับประคองข้อ ลดปวด ชะลอความเสื่อม (ไม่ทดแทนการรักษา)',
+   ids:['movita','vitago','flexabon','flexvits','flexorin']},
+  {n:2,cat:'hc',th:'กระดูกพรุน',en:'Osteoporosis',
+   cause:'มวลกระดูกลดลงตามอายุ/ฮอร์โมน ขาดแคลเซียมและวิตามิน D',
+   symptom:'ช่วงแรกไม่มีอาการ ต่อมาปวดหลัง ตัวเตี้ยลง กระดูกหักง่าย',
+   care:'เสริมแคลเซียม/วิตามิน D ออกกำลังกาย ยา bisphosphonate',
+   ings:'Aquamin (แคลเซียมสาหร่าย), วิตามิน D3, Beta-glucan',
+   effect:'เป็นแหล่งแคลเซียมเสริม ช่วยเพิ่มความหนาแน่นมวลกระดูก',
+   ids:['movita','flexorin','vitago']},
+  {n:3,cat:'hc',th:'ริดสีดวงทวาร',en:'Hemorrhoids',
+   cause:'แรงดันหลอดเลือดดำสูงจากการเบ่งบ่อยหรือท้องผูกเรื้อรัง',
+   symptom:'เลือดออกสีแดงสดขณะถ่าย มีก้อนยื่น คันและปวด',
+   care:'เพิ่มไฟเบอร์ แช่น้ำอุ่น ยาทา/เหน็บ รัดยาง/ผ่าตัด',
+   ings:'Hesperidin, ใบบัวบก, พลูคาว, ไฟเบอร์ FOS',
+   effect:'เสริมความยืดหยุ่นหลอดเลือด บรรเทาอาการอักเสบ',
+   ids:['henofin','hamoxin','pilonix']},
+  {n:4,cat:'hc',th:'ท้องผูก',en:'Constipation',
+   cause:'ทานไฟเบอร์/น้ำน้อย จุลินทรีย์ลำไส้ไม่สมดุล กลั้นถ่ายเป็นสาเหตุหลัก',
+   symptom:'ถ่ายยาก ถ่ายแข็ง ถ่ายน้อยกว่า 3 ครั้ง/สัปดาห์ ท้องอืด',
+   care:'เพิ่มไฟเบอร์และน้ำ ฝึกขับถ่ายเป็นเวลา ยาระบาย',
+   ings:'Psyllium Husk, FOS, ผงกีวี (Prebiotic)',
+   effect:'เสริมไฟเบอร์และปรับสมดุลจุลินทรีย์ กระตุ้นการขับถ่าย',
+   ids:['hamoxin','pilonix','bactofin']},
+  {n:5,cat:'hc',th:'เบาหวาน',en:'Diabetes',
+   cause:'ร่างกายดื้ออินซูลิน พันธุกรรม น้ำหนักเกิน',
+   symptom:'ปัสสาวะ/หิวบ่อย น้ำหนักลด แผลหายช้า ชาปลายมือเท้า',
+   care:'คุมอาหารลดแป้ง/น้ำตาล ยาลดน้ำตาล ฉีดอินซูลิน',
+   ings:'กระบองเพชร, Psyllium, เห็ดหลินจือ, สไปรูลิน่า',
+   effect:'ลดการดูดซึมน้ำตาล/ไขมัน เสริมการควบคุมน้ำตาลร่วมกับยา',
+   ids:['diafin'],
+   caution:'อาหารเสริมไม่ใช่ยา — ห้ามผู้ป่วยหยุดยาเบาหวานหรือความดันเองโดยเด็ดขาด'},
+  {n:6,cat:'hc',th:'ความดันโลหิตสูง',en:'Hypertension',
+   cause:'หลอดเลือดแข็งตัว อายุ กินเค็ม น้ำหนักเกิน เครียด',
+   symptom:'มักไม่มีอาการ (ภัยเงียบ) บางรายปวดท้ายทอย เวียนศีรษะ',
+   care:'ลดอาหารเค็ม ลดน้ำหนัก ยาลดความดัน',
+   ings:'สารสกัดมะกอก, กระเทียม, เซเลอรี่, CoQ10',
+   effect:'ดูแลความยืดหยุ่นหลอดเลือดและบำรุงหัวใจ',
+   ids:['tensirin','cardilite'],
+   caution:'อาหารเสริมไม่ใช่ยา — ห้ามผู้ป่วยหยุดยาความดันหรือเบาหวานเองโดยเด็ดขาด'},
+  {n:7,cat:'hc',th:'สารพิษสะสม / บำรุงตับ',en:'Detox & Liver',
+   cause:'อาหารไม่สมดุล แอลกอฮอล์ สารเคมี ทำให้ตับทำงานหนัก',
+   symptom:'อ่อนเพลีย ท้องอืด เบื่ออาหาร ผิวหมองคล้ำ',
+   care:'งดแอลกอฮอล์ กินอาหารสะอาด ตรวจการทำงานตับ',
+   ings:'L-Glutathione, อาร์ติโชค, ขิง, คลอโรฟิลล์',
+   effect:'สนับสนุนการทำงานของตับและกระบวนการล้างพิษตามธรรมชาติ',
+   ids:['bactofin','detarin']},
+  {n:8,cat:'hc',th:'ภูมิคุ้มกันต่ำ',en:'Low Immunity',
+   cause:'พักผ่อนน้อย เครียด ขาดวิตามิน ไม่ออกกำลังกาย',
+   symptom:'ป่วยบ่อย เป็นหวัดง่าย แผลหายช้า อ่อนเพลียเรื้อรัง',
+   care:'ทานอาหารครบหมู่ นอนพักผ่อน ลดความเครียด',
+   ings:'เห็ดหลินจือ, กระเทียม, มะขามป้อม (วิตามิน C สูง)',
+   effect:'กระตุ้นการทำงานของเม็ดเลือดขาวและต้านอนุมูลอิสระ',
+   ids:['bactofin','detarin','henofin']},
+  {n:9,cat:'hc',th:'ปวดกล้ามเนื้อ / ตะคริว',en:'Muscle Pain & Cramps',
+   cause:'ใช้งานหนัก ขาดแมกนีเซียม/เกลือแร่ ไหลเวียนเลือดไม่ดี',
+   symptom:'ปวดเมื่อย ล้าเร็ว เป็นตะคริวบ่อย (โดยเฉพาะกลางคืน)',
+   care:'ยืดกล้ามเนื้อ ดื่มน้ำ/เกลือแร่ นวดผ่อนคลาย',
+   ings:'Magnesium Amino Acid Chelate, วิตามิน C, คอลลาเจน',
+   effect:'เติมแมกนีเซียมสนับสนุนกล้ามเนื้อ ลดการเกิดตะคริว',
+   ids:['flexvits']},
+  {n:10,cat:'hc',th:'ตาแห้ง / ตาล้า',en:'Dry Eye',
+   cause:'จ้องจอนาน แสงสีฟ้า ต่อมน้ำตาทำงานลดลงตามอายุ',
+   symptom:'แสบตา เคืองตา ตาแดง มองไม่ชัดชั่วคราว',
+   care:'พักสายตา (กฎ 20-20-20) ใช้น้ำตาเทียม',
+   ings:'Lutein, Zeaxanthin, บิลเบอร์รี่',
+   effect:'กรองแสงสีฟ้า บำรุงจอประสาทตา เพิ่มความชุ่มชื้น',
+   ids:['vistorin','vistorite']},
+  {n:11,cat:'me',th:'เสื่อมสมรรถภาพชาย',en:'Erectile Dysfunction (ED)',
+   cause:'เลือดไปเลี้ยงไม่พอ เทสโทสเตอโรนต่ำ เครียด อายุ',
+   symptom:'อวัยวะเพศไม่แข็งตัว ความต้องการลดลง อ่อนเพลีย',
+   care:'ปรับพฤติกรรม ยากลุ่ม PDE5 ปรึกษาแพทย์เฉพาะทาง',
+   ings:'L-Arginine, โสม, ถั่งเช่า, สังกะสี (Zinc)',
+   effect:'ขยายหลอดเลือด บำรุงกำลังและระบบไหลเวียนโลหิต',
+   ids:['vigasil','duasil','viago','prosofil'],
+   caution:'หากมีโรคหัวใจ ควรปรึกษาแพทย์ก่อนใช้'},
+  {n:12,cat:'me',th:'ต่อมลูกหมากโต',en:'BPH (Prostate)',
+   cause:'ต่อมลูกหมากขยายตามอายุ ไปกดทับท่อปัสสาวะ',
+   symptom:'ปัสสาวะบ่อยกลางคืน ปัสสาวะไม่พุ่ง ถ่ายไม่สุด',
+   care:'ยากลุ่ม alpha-blocker ผ่าตัด คัดกรองมะเร็ง',
+   ings:'เมล็ดฟักทอง, Phytosterols, ไลโคปีน',
+   effect:'สนับสนุนสุขภาพต่อมลูกหมากและทางเดินปัสสาวะ',
+   ids:['protolite','urofin','prosxel'],
+   caution:'อาการปัสสาวะผิดปกติควรพบแพทย์เพื่อแยกโรคมะเร็ง'},
+  {n:13,cat:'beauty',th:'ริ้วรอย / ผิวหน้าแก่ก่อนวัย',en:'Wrinkles & Aging',
+   cause:'คอลลาเจน/อีลาสตินลดลง แสงแดด (UV) อนุมูลอิสระ',
+   symptom:'ริ้วรอย ร่องลึก ผิวหย่อนคล้อย แห้งไม่กระชับ',
+   careLabel:'การดูแลผิว',
+   care:'ทากันแดด บำรุงด้วยเรตินอล หัตถการ (เลเซอร์)',
+   ings:'เปปไทด์ (Argireline), Hyaluronic Acid, ไนอาซินาไมด์',
+   effect:'บำรุงผิวจากภายนอก กระตุ้นคอลลาเจน กักเก็บความชุ่มชื้น',
+   ids:['lavite','cellarin','everlift']},
+  {n:14,cat:'beauty',th:'ฝ้า / กระ / จุดด่างดำ',en:'Melasma & Dark Spots',
+   cause:'เมลานินผลิตมากผิดปกติจาก UV ฮอร์โมน หรือการอักเสบ',
+   symptom:'รอยคล้ำเป็นปื้น กระ จุดด่างดำ สีผิวไม่สม่ำเสมอ',
+   careLabel:'การดูแลผิว',
+   care:'กันแดดเคร่งครัด สารลดเม็ดสี เลเซอร์',
+   ings:'L-Glutathione, L-Cysteine, ส้มสีเลือด, เปลือกสน',
+   effect:'ยับยั้งเอนไซม์สร้างเมลานิน ลดจุดด่างดำจากภายใน',
+   ids:['melavita'],
+   tip:'ต้องใช้ครีมกันแดดร่วมด้วยเสมอ จึงจะเห็นผลชัดเจน'},
+  {n:15,cat:'beauty',th:'น้ำหนักเกิน / ต้องการลดน้ำหนัก',en:'Weight Management',
+   cause:'รับพลังงานมากกว่าที่ใช้ ระบบเผาผลาญต่ำ → BMI สูง ไขมันสะสมหน้าท้อง เพิ่มความเสี่ยง NCDs',
+   symptom:'ไขมันสะสม โดยเฉพาะรอบหน้าท้อง น้ำหนักเกินเกณฑ์',
+   careLabel:'การปรับพฤติกรรม (หลัก)',
+   care:'ควบคุมแคลอรี ออกกำลังกาย นอนหลับให้เพียงพอ',
+   ings:'กลไก 1 คุมความหิว: ไฟเบอร์ Psyllium, ส้มแขก, มะม่วงแอฟริกา · กลไก 2 กระตุ้นเผาผลาญ: ชาเขียว, L-Carnitine, สารสกัดพริก',
+   effect:'ช่วยให้อิ่มนาน ลดการกินจุกจิก และกระตุ้นการดึงไขมันสะสมมาใช้เป็นพลังงาน',
+   ids:['fitarin'],
+   tip:'อาหารเสริมเป็นเพียง "ตัวช่วย" ต้องคุมอาหารและออกกำลังกายควบคู่จึงจะเห็นผลจริง'}
+];
+const COMPLIANCE=[
+  {warn:true,ico:'🛑',h:'อาหารเสริม ไม่ใช่ยา',t:'ผลิตภัณฑ์ทุกชนิดใช้เพื่อ "ช่วยดูแล บรรเทา และเสริมสุขภาพ" ไม่มีฤทธิ์รักษาโรคให้หายขาด ห้ามใช้คำโฆษณาที่เกินจริง'},
+  {warn:true,ico:'🛑',h:'ห้ามหยุดยาแพทย์',t:'ผู้ป่วยโรคเรื้อรัง (เช่น เบาหวาน ความดัน) ต้องทานยาตามแพทย์สั่งอย่างเคร่งครัด ห้ามแนะนำให้ลูกค้าหยุดยาเองเด็ดขาด'},
+  {warn:true,ico:'🛑',h:'เฝ้าระวังโรคร้ายแรง & ปรึกษาแพทย์',t:'อาการปัสสาวะผิดปกติในเพศชายหรือมีเลือด ควรพบแพทย์ก่อน ผู้มีโรคหัวใจ สตรีมีครรภ์ หรือทานยาละลายลิ่มเลือด ต้องปรึกษาแพทย์ก่อนทาน'},
+  {warn:false,ico:'💡',h:'ผลลัพธ์เฉพาะบุคคล',t:'ผลลัพธ์ของการทานอาหารเสริมแตกต่างกันในแต่ละบุคคล ควรแนะนำให้ลูกค้าดูแลสุขภาพพื้นฐาน (อาหาร การนอน ออกกำลังกาย) ควบคู่เสมอ'}
+];
+function buildDzCats(active){
+  const el=document.getElementById('dz-cats');if(!el)return;
+  const cats=[['all','ทั้งหมด',DISEASES.length]];
+  ['hc','me','beauty'].forEach(c=>cats.push([c,DZ_CAT[c].lbl,DISEASES.filter(d=>d.cat===c).length]));
+  el.innerHTML=cats.map(([c,lbl,n])=>`<button class="dzcat${c===active?' on':''}" data-c="${c}" onclick="showDisease('${c}',this)">${lbl}<span class="dz-catcount">${n}</span></button>`).join('');
+}
+function dzCardHTML(d){
+  const col=DZ_CAT[d.cat].c;
+  const chips=d.ids.map(id=>{const p=PRODUCTS.find(x=>x.id===id);if(!p)return'';return`<button class="dz-chip" style="background:${col}" onclick="event.stopPropagation();goPage('products',null);setTimeout(()=>openDP('${id}'),380)">${p.name}</button>`;}).join('');
+  const careLabel=d.careLabel||'แนวทางการแพทย์';
+  const caution=d.caution?`<div class="dz-caution"><span class="ci">⚠️</span><span class="ct">${d.caution}</span></div>`:'';
+  const tip=d.tip?`<div class="dz-tip"><span class="ci">💡</span><span class="ct">${d.tip}</span></div>`:'';
+  return `<div class="dz-card">
+    <div class="dz-stripe" style="background:${col}"></div>
+    <div class="dz-body">
+      <div class="dz-head">
+        <div class="dz-num" style="background:${col}">${d.n}</div>
+        <div><div class="dz-th">${d.th}</div><div class="dz-en">${d.en}</div></div>
+      </div>
+      <div class="dz-row"><span class="dz-ico">🔍</span><div class="dz-rc"><div class="dz-rlabel">สาเหตุ</div><div class="dz-rtext">${d.cause}</div></div></div>
+      <div class="dz-row"><span class="dz-ico">⚠️</span><div class="dz-rc"><div class="dz-rlabel">อาการ</div><div class="dz-rtext">${d.symptom}</div></div></div>
+      <div class="dz-row"><span class="dz-ico">🏥</span><div class="dz-rc"><div class="dz-rlabel">${careLabel}</div><div class="dz-rtext">${d.care}</div></div></div>
+      <div class="dz-supp">
+        <div class="dz-supp-h">💊 บทบาทอาหารเสริม Enforte</div>
+        <div class="dz-chips">${chips}</div>
+        <div class="dz-meta"><b>สารสำคัญ:</b> ${d.ings}</div>
+        <div class="dz-meta"><b>สรรพคุณ:</b> ${d.effect}</div>
+      </div>
+      ${caution}${tip}
+    </div>
+  </div>`;
+}
+function showDisease(cat,el){
+  buildDzCats(cat);
+  const wrap=document.getElementById('dz-content');
+  const cats=cat==='all'?['hc','me','beauty']:[cat];
+  wrap.innerHTML=cats.map(c=>{
+    const list=DISEASES.filter(d=>d.cat===c);
+    if(!list.length)return'';
+    const m=DZ_CAT[c];
+    return `<div class="dz-secband">
+        <div class="dz-secicon" style="background:${m.c}">${m.icon}</div>
+        <div><div class="dz-seceyebrow">${m.short}</div><div class="dz-sectitle">${m.lbl}</div></div>
+        <div class="dz-secline"></div>
+      </div>
+      <div class="dz-grid">${list.map(dzCardHTML).join('')}</div>`;
+  }).join('');
+}
+function buildCompliance(){
+  const el=document.getElementById('dz-compliance');if(!el)return;
+  el.innerHTML=`<div class="cmpl-eyebrow">Compliance & Precautions</div>
+    <div class="cmpl-title">ข้อควรระวังและจรรยาบรรณการนำเสนอ</div>
+    <div class="cmpl-grid">${COMPLIANCE.map(c=>`<div class="cmpl-card${c.warn?' warn':''}"><span class="cmpl-ico">${c.ico}</span><div><div class="cmpl-h">${c.h}</div><div class="cmpl-t">${c.t}</div></div></div>`).join('')}</div>`;
+}
+function buildDiseasePage(){buildDzCats('all');showDisease('all');buildCompliance();}
+
 const FAQS=[
   {cat:"general", q:"ผลิตภัณฑ์เหล่านี้เป็นยาหรืออาหารเสริม?",
    a:"<b>อาหารเสริม</b> ไม่ใช่ยา ช่วยเสริมสุขภาพ ไม่ได้รักษาโรค ลูกค้าที่มีโรคประจำตัวควรแจ้งแพทย์ก่อน"},
@@ -1657,6 +1923,7 @@ function goPage(name,btn){
   const activeBtn=btn||document.querySelector(`.nav-link[data-page="${name}"]`);
   if(activeBtn)activeBtn.classList.add('on');
   if(name==='compare'){buildCmp();buildSymGrid();}
+  if(name==='disease')buildDiseasePage();
   if(name==='quiz')startQuiz();
   if(name==='faq')showFaq('all',document.querySelector('.fcat'));
   if(name==='script')showScript('open',document.querySelector('.sc-tab'));
@@ -2052,6 +2319,7 @@ document.getElementById('bt-img').src=IMGS.beauty_photo||'';
 buildSections();
 syncLearningCounts();
 applyF();
+buildDiseasePage();
 showScript('open',document.querySelector('.sc-tab'));
 
 </script>
