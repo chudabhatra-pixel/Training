@@ -2159,18 +2159,70 @@ const FCAT_LBL={general:'ทั่วไป',safety:'ความปลอดภ
 const KEYS=['ก','ข','ค','ง'];
 
 function goPage(name,btn){
+  const target=document.getElementById('page-'+name);
+  if(!target){
+    console.warn('Navigation target not found:',name);
+    return false;
+  }
+
+  // Switch the visible page FIRST so navigation still works even if a page
+  // contains optional rendering code that throws an error.
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('on'));
-  document.getElementById('page-'+name).classList.add('on');
+  target.classList.add('on');
+
   const activeBtn=btn||document.querySelector(`.nav-link[data-page="${name}"]`);
   if(activeBtn)activeBtn.classList.add('on');
-  if(name==='compare'){buildCmp();buildSymGrid();}
-  if(name==='disease')buildDiseasePage();
-  if(name==='quiz')startQuiz();
-  if(name==='faq')showFaq('all',document.querySelector('.fcat'));
-  if(name==='script')showScript('open',document.querySelector('.sc-tab'));
+
+  try{
+    if(name==='compare'){
+      if(typeof buildCmp==='function')buildCmp();
+      if(typeof buildSymGrid==='function')buildSymGrid();
+    }
+    if(name==='disease' && typeof buildDiseasePage==='function')buildDiseasePage();
+    if(name==='quiz' && typeof startQuiz==='function')startQuiz();
+    if(name==='faq' && typeof showFaq==='function')showFaq('all',document.querySelector('.fcat'));
+    if(name==='script' && typeof showScript==='function')showScript('open',document.querySelector('.sc-tab'));
+  }catch(err){
+    console.error('Page render error:',name,err);
+    showNavNotice('เปิดหน้า '+name+' แล้ว แต่มีบางส่วนโหลดไม่สำเร็จ');
+  }
+
   window.scrollTo({top:0,behavior:'smooth'});
+  return false;
 }
+
+function showNavNotice(message){
+  let el=document.getElementById('nav-notice');
+  if(!el){
+    el=document.createElement('div');
+    el.id='nav-notice';
+    el.style.cssText='position:fixed;right:22px;bottom:22px;z-index:99999;background:#14213D;color:#fff;padding:11px 15px;border-radius:12px;font:700 11px/1.4 sans-serif;box-shadow:0 12px 30px rgba(0,0,0,.18);transition:opacity .2s';
+    document.body.appendChild(el);
+  }
+  el.textContent=message;el.style.opacity='1';
+  clearTimeout(window.__navNoticeTimer);
+  window.__navNoticeTimer=setTimeout(()=>{el.style.opacity='0'},2600);
+}
+
+function bindReliableNavigation(){
+  document.querySelectorAll('.nav-link[data-page]').forEach(btn=>{
+    btn.addEventListener('click',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      goPage(this.dataset.page,this);
+    },true);
+  });
+
+  // My Learning is an in-page destination, not a separate page.
+  document.querySelectorAll('.v3-my-nav').forEach(btn=>{
+    btn.addEventListener('click',function(e){
+      e.preventDefault();e.stopPropagation();
+      openMyLearning();
+    },true);
+  });
+}
+
 
 // ── PRODUCTS ──
 function buildCard(p){
@@ -2555,6 +2607,9 @@ function syncLearningCounts(){
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDP();});
 document.getElementById('dp').addEventListener('click',e=>{if(e.target.id==='dp')closeDP();});
 
+// Reliable navigation binding: every sidebar button is guaranteed to have a working click handler.
+bindReliableNavigation();
+
 // ── INIT ──
 document.getElementById('hc-img').src=IMGS.hc_photo||'';
 document.getElementById('me-img').src=IMGS.me_photo||'';
@@ -2592,7 +2647,7 @@ showScript('open',document.querySelector('.sc-tab'));
     pe.textContent=pct+'%';fill.style.width=pct+'%';list.innerHTML=modules.map((m,i)=>`<div class="v3-module ${done.includes(m[0])?'done':''}"><span class="v3-module-dot">${done.includes(m[0])?'✓':i+1}</span><span>${m[1]}</span></div>`).join('');
   };
   window.v3CompleteCurrent=function(){const active=document.querySelector('.nav-link.on')?.dataset.page||'products';let a=read(KEY_P);if(!a.includes(active)){a.push(active);write(KEY_P,a);v3UpdateProgress()}};
-  window.openMyLearning=function(){if(!document.getElementById('page-products').classList.contains('on'))goPage('products',document.querySelector('[data-page=products]'));setTimeout(()=>document.getElementById('my-learning')?.scrollIntoView({behavior:'smooth',block:'start'}),120)};
+  window.openMyLearning=function(){const productsBtn=document.querySelector('[data-page=products]');if(!document.getElementById('page-products')?.classList.contains('on'))goPage('products',productsBtn);setTimeout(()=>{const el=document.getElementById('my-learning');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});else showNavNotice('ส่วน My Learning ยังไม่พร้อมใช้งาน');},180)};
 
   window.v3AssistSearch=function(force){const input=document.getElementById('v3-assist-input');const q=(input?.value||'').trim().toLowerCase();const out=document.getElementById('v3-assist-result');if(!out)return;
     if(!q){out.classList.remove('on');return}
