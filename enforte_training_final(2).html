@@ -597,6 +597,22 @@ body.modal-open{overflow:hidden}
 .dz-caution .ct{font-size:12.5px;line-height:1.5;color:#8B1A1A;font-weight:600}
 .dz-tip{display:flex;gap:9px;align-items:flex-start;margin-top:12px;padding:11px 14px;border-radius:10px;background:#FBF5E4;border:1px solid #EBD9A8}
 .dz-tip .ct{font-size:12.5px;line-height:1.5;color:#7B5A00;font-weight:600}
+/* In-depth expandable */
+.dz-more-btn{margin-top:12px;width:100%;font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--ink2);background:var(--canvas);border:1.5px solid var(--rule);border-radius:10px;padding:9px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.dz-more-btn:hover{border-color:var(--ink3);color:var(--ink)}
+.dz-more-btn .chev{transition:transform .2s;font-size:10px}
+.dz-more-btn.open .chev{transform:rotate(180deg)}
+.dz-detail{display:none;margin-top:10px;padding:15px 17px;border-radius:12px;background:#F5F8FC;border:1px solid var(--rule)}
+.dz-detail.open{display:block}
+.dz-dgroup+.dz-dgroup{margin-top:12px;padding-top:12px;border-top:1px dashed var(--rule)}
+.dz-dh{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--ink);text-transform:uppercase;margin-bottom:6px}
+.dz-dlist{list-style:none;margin:0;padding:0}
+.dz-dlist li{position:relative;padding-left:16px;font-size:13px;line-height:1.55;color:var(--ink2);margin-bottom:4px}
+.dz-dlist li::before{content:"";position:absolute;left:3px;top:9px;width:4px;height:4px;border-radius:50%;background:var(--ink3)}
+.dz-dlist li b{color:var(--ink);font-weight:700}
+.dz-redflag{display:flex;gap:8px;align-items:flex-start;margin-top:12px;padding:10px 13px;border-radius:9px;background:#FFF3E6;border:1px solid #F5D5A8}
+.dz-redflag .rfi{font-size:14px;line-height:1.4;flex-shrink:0}
+.dz-redflag .rf{font-size:12.5px;line-height:1.5;color:#9A5B00;font-weight:600}
 /* Compliance block */
 .cmpl-wrap{margin-top:60px;padding:34px 32px;border-radius:20px;background:linear-gradient(160deg,#0F1F3D,#1A2E52);color:#fff;box-shadow:0 20px 50px rgba(15,31,61,.28)}
 .cmpl-eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.55)}
@@ -635,7 +651,7 @@ body.modal-open{overflow:hidden}
     <div class="nav-learning-card">
       <div class="nlc-label">KNOWLEDGE CHECK</div>
       <div class="nlc-title">พร้อมทดสอบความรู้แล้วหรือยัง?</div>
-      <a class="nav-exam" href="sales_exam.html">เปิดข้อสอบฉบับเต็ม <span>→</span></a>
+      <a class="nav-exam" href="sales_exam.html" target="_blank" rel="noopener">เปิดข้อสอบฉบับเต็ม <span>→</span></a>
     </div>
     <div class="nav-footer-note">Training Material · Internal Use</div>
   </div>
@@ -766,7 +782,7 @@ body.modal-open{overflow:hidden}
   <div class="pg-header">
     <div class="pg-eyebrow eyebrow">Clinical Knowledge</div>
     <div class="pg-title display">ความรู้<br><em>โรคและอาการ</em></div>
-    <p class="pg-desc">เจาะลึก 15 กลุ่มโรค — สาเหตุ อาการ แนวทางการแพทย์ และบทบาทของอาหารเสริม Enforte ในการดูแล</p>
+    <p class="pg-desc">เจาะลึก 17 กลุ่มโรค — สาเหตุ อาการ แนวทางการแพทย์ และบทบาทของอาหารเสริมในการดูแล</p>
   </div>
   <div class="dz-cats" id="dz-cats"></div>
   <div id="dz-content"></div>
@@ -1125,8 +1141,94 @@ const DISEASES=[
    ings:'กลไก 1 คุมความหิว: ไฟเบอร์ Psyllium, ส้มแขก, มะม่วงแอฟริกา · กลไก 2 กระตุ้นเผาผลาญ: ชาเขียว, L-Carnitine, สารสกัดพริก',
    effect:'ช่วยให้อิ่มนาน ลดการกินจุกจิก และกระตุ้นการดึงไขมันสะสมมาใช้เป็นพลังงาน',
    ids:['fitarin'],
-   tip:'อาหารเสริมเป็นเพียง "ตัวช่วย" ต้องคุมอาหารและออกกำลังกายควบคู่จึงจะเห็นผลจริง'}
+   tip:'อาหารเสริมเป็นเพียง "ตัวช่วย" ต้องคุมอาหารและออกกำลังกายควบคู่จึงจะเห็นผลจริง'},
+  {n:16,cat:'me',th:'ต่อมลูกหมากอักเสบ',en:'Prostatitis',
+   cause:'การติดเชื้อแบคทีเรียหรือการอักเสบเรื้อรังของต่อมลูกหมาก การคั่งของปัสสาวะ ภูมิคุ้มกันลดลง',
+   symptom:'ปวด/แสบขณะปัสสาวะ ปัสสาวะบ่อย ปวดบริเวณอุ้งเชิงกราน/หว่างขา บางรายมีไข้',
+   care:'ยาปฏิชีวนะ (กรณีติดเชื้อ) ยาแก้อักเสบ/แก้ปวด ปรึกษาแพทย์เฉพาะทางระบบทางเดินปัสสาวะ',
+   ings:'เมล็ดฟักทอง, ไลโคปีน, สังกะสี (Zinc), Phytosterols',
+   effect:'สนับสนุนสุขภาพต่อมลูกหมากและระบบทางเดินปัสสาวะ ต้านอนุมูลอิสระ (ไม่ใช่ยาปฏิชีวนะ ไม่ทดแทนการรักษาการติดเชื้อ)',
+   ids:['urofin','protolite','prosxel','prosofil'],
+   caution:'หากปวด/แสบขณะปัสสาวะ มีไข้ หรือมีเลือดปน ควรพบแพทย์เพื่อวินิจฉัยและรับยาปฏิชีวนะ อาหารเสริมไม่ทดแทนการรักษาการติดเชื้อ'},
+  {n:17,cat:'me',th:'มะเร็งต่อมลูกหมาก (ดูแล/บำรุง)',en:'Prostate Cancer — Supportive Care',
+   cause:'เซลล์ต่อมลูกหมากเจริญผิดปกติ ปัจจัยเสี่ยงคืออายุมาก (50 ปีขึ้นไป) พันธุกรรม และฮอร์โมน',
+   symptom:'ระยะแรกมักไม่มีอาการ ต่อมาปัสสาวะลำบาก/มีเลือดปน ปวดหลังหรือสะโพก ควรตรวจคัดกรอง PSA',
+   care:'ตรวจ PSA และชิ้นเนื้อ ผ่าตัด ฉายรังสี หรือฮอร์โมนบำบัดตามแพทย์วินิจฉัย',
+   ings:'ไลโคปีน, Phytosterols, สังกะสี (Zinc), สารสกัดทับทิม',
+   effect:'ช่วยดูแลสุขภาพต่อมลูกหมากและต้านอนุมูลอิสระ — ไม่มีฤทธิ์รักษาหรือป้องกันมะเร็ง',
+   ids:['protolite','urofin','prosxel'],
+   caution:'มะเร็งต่อมลูกหมากต้องได้รับการวินิจฉัยและรักษาโดยแพทย์เท่านั้น อาหารเสริมไม่สามารถรักษาหรือป้องกันมะเร็งได้ ห้ามแนะนำให้ใช้แทนการรักษา และควรแนะนำให้ลูกค้าพบแพทย์เพื่อตรวจคัดกรองทันที'}
 ];
+/* ── ความรู้เชิงลึกของแต่ละโรค (ชนิด/ระยะ/ปัจจัยเสี่ยง + สัญญาณเตือน) ── */
+const DZ_DETAIL={
+  1:{groups:[
+      {h:'ระยะของโรค (4 ระยะ)',items:['<b>ระยะ 1:</b> กระดูกอ่อนเริ่มสึก ยังแทบไม่มีอาการ','<b>ระยะ 2:</b> เริ่มปวดหลังใช้งาน มีเสียงในข้อ','<b>ระยะ 3:</b> ปวดบ่อยขึ้น ข้อบวม ฝืด เดินลำบาก','<b>ระยะ 4:</b> กระดูกอ่อนสึกเกือบหมด ปวดตลอดเวลา ข้อผิดรูป']},
+      {h:'ปัจจัยเสี่ยง',items:['อายุ 50 ปีขึ้นไป · น้ำหนักเกิน','หญิงวัยหมดประจำเดือน · เคยบาดเจ็บข้อ']}],
+    redflag:'ข้อบวมแดงร้อน ปวดรุนแรงจนเดินไม่ได้ หรือข้อผิดรูป ควรพบแพทย์'},
+  2:{groups:[
+      {h:'ระดับความรุนแรง (ค่า T-score จาก BMD)',items:['<b>ปกติ:</b> มากกว่า −1.0','<b>กระดูกบาง (Osteopenia):</b> −1.0 ถึง −2.5','<b>กระดูกพรุน (Osteoporosis):</b> น้อยกว่า −2.5']},
+      {h:'ปัจจัยเสี่ยง',items:['หญิงวัยหมดประจำเดือน · อายุมาก','สูบบุหรี่ · ดื่มแอลกอฮอล์ · ใช้สเตียรอยด์นาน','ขาดแคลเซียมและวิตามิน D']}],
+    redflag:'กระดูกหักจากการล้มเบาๆ ความสูงลดลงกว่า 3 ซม. หรือปวดหลังเรื้อรัง ควรตรวจมวลกระดูก'},
+  3:{groups:[
+      {h:'ริดสีดวงภายใน 4 ระยะ (Grade)',items:['<b>ระยะ 1:</b> มีเลือดออก ยังไม่มีติ่งยื่น','<b>ระยะ 2:</b> ติ่งยื่นขณะเบ่ง แล้วหดกลับเอง','<b>ระยะ 3:</b> ติ่งยื่น ต้องใช้มือดันกลับ','<b>ระยะ 4:</b> ติ่งยื่นตลอดเวลา ดันกลับไม่ได้']},
+      {h:'ชนิด',items:['ริดสีดวงภายใน (Internal) · ริดสีดวงภายนอก (External)']}],
+    redflag:'เลือดออกมาก ปวดรุนแรง ก้อนดันกลับไม่ได้ หรือเลือดออกเรื้อรังจนซีด ควรพบแพทย์'},
+  4:{groups:[
+      {h:'ชนิดของท้องผูก',items:['<b>ทั่วไป (Functional):</b> จากพฤติกรรม อาหาร น้ำน้อย','<b>ลำไส้เคลื่อนตัวช้า (Slow transit)</b>','<b>ปัญหาการขับถ่ายส่วนปลาย (Outlet)</b>']},
+      {h:'เกณฑ์วินิจฉัย (Rome IV)',items:['ถ่ายน้อยกว่า 3 ครั้ง/สัปดาห์ · อุจจาระแข็ง','ต้องเบ่งมาก · รู้สึกถ่ายไม่สุด']}],
+    redflag:'ท้องผูกสลับท้องเสีย มีเลือดปน น้ำหนักลด หรือท้องผูกเฉียบพลันในผู้สูงอายุ (อาจเป็นสัญญาณมะเร็งลำไส้) ควรพบแพทย์'},
+  5:{groups:[
+      {h:'ชนิดของเบาหวาน',items:['<b>ชนิดที่ 1:</b> ตับอ่อนสร้างอินซูลินไม่ได้ (มักพบในเด็ก/วัยรุ่น ต้องฉีดอินซูลิน)','<b>ชนิดที่ 2:</b> ร่างกายดื้ออินซูลิน — พบมากที่สุด (~90–95%) สัมพันธ์กับน้ำหนักเกิน','<b>ขณะตั้งครรภ์ (Gestational)</b>','<b>ภาวะก่อนเบาหวาน (Prediabetes)</b>']},
+      {h:'ค่าวินิจฉัย · ภาวะแทรกซ้อน',items:['น้ำตาลอดอาหาร ≥ 126 mg/dL หรือ HbA1c ≥ 6.5%','แทรกซ้อน: จอตา ไต เส้นประสาท หัวใจ แผลเรื้อรัง']}],
+    redflag:'น้ำตาลสูงมาก ซึม สับสน หรือแผลติดเชื้อ ควรพบแพทย์ทันที'},
+  6:{groups:[
+      {h:'ระดับความดัน (mmHg)',items:['<b>ปกติ:</b> น้อยกว่า 120/80','<b>เริ่มสูง:</b> 120–129 / น้อยกว่า 80','<b>ระยะ 1:</b> 130–139 / 80–89','<b>ระยะ 2:</b> ตั้งแต่ 140/90 ขึ้นไป','<b>วิกฤต:</b> ตั้งแต่ 180/120 → พบแพทย์ทันที']},
+      {h:'ชนิด',items:['ปฐมภูมิ: ไม่ทราบสาเหตุ (~90%)','ทุติยภูมิ: จากโรคไต/ฮอร์โมน']}],
+    redflag:'ความดันตั้งแต่ 180/120 ปวดหัวรุนแรง เจ็บหน้าอก หรือตาพร่า ควรพบแพทย์ทันที'},
+  7:{groups:[
+      {h:'โรคตับที่พบบ่อย',items:['ไขมันพอกตับ (Fatty Liver) · ตับอักเสบ A/B/C','ตับแข็ง (Cirrhosis)']},
+      {h:'ระยะไขมันพอกตับ',items:['ระยะ 1 ไขมันสะสม → ระยะ 2 อักเสบ (NASH)','→ ระยะ 3 พังผืด → ระยะ 4 ตับแข็ง']}],
+    redflag:'ตัว/ตาเหลือง (ดีซ่าน) ท้องบวม ปัสสาวะสีเข้ม หรืออ่อนเพลียมาก ควรพบแพทย์'},
+  8:{groups:[
+      {h:'สาเหตุที่พบบ่อย',items:['พักผ่อนน้อย · เครียดเรื้อรัง · ขาดสารอาหาร','โรคประจำตัว (เช่น เบาหวาน) · ยากดภูมิ']},
+      {h:'สัญญาณ · วิตามินสำคัญ',items:['ป่วยบ่อยกว่า 4 ครั้ง/ปี แผลหายช้า ติดเชื้อซ้ำๆ','วิตามินต่อภูมิคุ้มกัน: C, D และสังกะสี (Zinc)']}],
+    redflag:'ติดเชื้อรุนแรง/บ่อยผิดปกติ ไข้เรื้อรัง หรือต่อมน้ำเหลืองโต ควรพบแพทย์'},
+  9:{groups:[
+      {h:'ชนิด',items:['ปวดกล้ามเนื้อจากการใช้งาน (DOMS)','ตะคริว (Muscle cramp) · กล้ามเนื้ออักเสบ']},
+      {h:'สาเหตุตะคริว',items:['ขาดแมกนีเซียม/โพแทสเซียม/แคลเซียม','ขาดน้ำ · ไหลเวียนเลือดไม่ดี']}],
+    redflag:'ปวดกล้ามเนื้อรุนแรงไม่ทราบสาเหตุ บวมแดง อ่อนแรง หรือปัสสาวะสีเข้ม (อาจเป็นภาวะกล้ามเนื้อสลาย) ควรพบแพทย์'},
+  10:{groups:[
+      {h:'ชนิดของตาแห้ง',items:['<b>น้ำตาระเหยเร็ว (Evaporative):</b> พบบ่อยสุด จากต่อมไขมันเปลือกตาอุดตัน','<b>สร้างน้ำตาน้อย (Aqueous deficient)</b>']},
+      {h:'ที่พบบ่อยในปัจจุบัน',items:['Computer Vision Syndrome: จ้องจอนาน กะพริบตาน้อยลง']}],
+    redflag:'ปวดตารุนแรง การมองเห็นลดลง แพ้แสงมาก หรือตาแดงเรื้อรัง ควรพบจักษุแพทย์'},
+  11:{groups:[
+      {h:'ระดับความรุนแรง',items:['ประเมินด้วยแบบสอบถาม IIEF: เล็กน้อย / ปานกลาง / รุนแรง']},
+      {h:'สาเหตุ',items:['<b>หลอดเลือด:</b> พบบ่อยสุด สัมพันธ์กับเบาหวาน ความดัน ไขมัน','<b>ฮอร์โมน:</b> เทสโทสเตอโรนต่ำ','<b>จิตใจ:</b> เครียด วิตกกังวล · หรือจากยาบางชนิด']}],
+    redflag:'ED อาจเป็นสัญญาณเตือนโรคหัวใจและหลอดเลือด หากเป็นต่อเนื่องเกิน 3 เดือนหรือมีโรคหัวใจ ควรพบแพทย์'},
+  12:{groups:[
+      {h:'ความรุนแรง',items:['ประเมินด้วยคะแนน IPSS: น้อย / ปานกลาง / รุนแรง']},
+      {h:'BPH ต่างจากมะเร็งอย่างไร',items:['BPH คือการโตแบบ<b>ไม่ร้าย</b> แต่ต้องคัดกรองแยกมะเร็งด้วยค่า PSA','แทรกซ้อน: ปัสสาวะไม่ออกเฉียบพลัน ติดเชื้อ นิ่ว ไตเสื่อม']}],
+    redflag:'ปัสสาวะไม่ออกเลย มีเลือดปน หรือปวดท้องน้อยมาก ควรพบแพทย์ทันที'},
+  13:{groups:[
+      {h:'ชนิดของริ้วรอย',items:['<b>ริ้วรอยตื้น (Fine lines):</b> จากผิวแห้ง ขาดน้ำ','<b>ริ้วรอยลึก (Wrinkles):</b> จากคอลลาเจนลดลง','<b>ร่องลึก (Folds):</b> เช่น ร่องแก้ม']},
+      {h:'สาเหตุหลัก',items:['แสงแดด UV เป็นสาเหตุถึง ~80% ของความแก่ผิว','อายุ · สูบบุหรี่ · อนุมูลอิสระ']}],
+    redflag:'หากต้องการหัตถการ เช่น เลเซอร์ ฟิลเลอร์ โบท็อกซ์ ควรพบแพทย์ผิวหนัง'},
+  14:{groups:[
+      {h:'ชนิด',items:['<b>ฝ้า (Melasma):</b> ปื้นน้ำตาลจากฮอร์โมน+แดด มักที่แก้ม','<b>กระ (Freckles):</b> จุดเล็กจากพันธุกรรม+แดด','<b>จุดด่างดำจากแดด (Solar lentigines)</b>','<b>รอยดำหลังการอักเสบ (PIH):</b> จากสิว/แผล']},
+      {h:'ชั้นของฝ้า',items:['ตื้น (Epidermal) รักษาง่ายกว่า','ลึก (Dermal) รักษายากกว่า']}],
+    redflag:'จุดด่างดำที่โตเร็ว เปลี่ยนสี/รูปร่าง หรือมีเลือดออก ควรพบแพทย์เพื่อแยกมะเร็งผิวหนัง'},
+  15:{groups:[
+      {h:'เกณฑ์ BMI (มาตรฐานคนเอเชีย)',items:['<b>ปกติ:</b> 18.5–22.9','<b>น้ำหนักเกิน:</b> 23–24.9','<b>อ้วนระดับ 1:</b> 25–29.9','<b>อ้วนระดับ 2:</b> ตั้งแต่ 30 ขึ้นไป']},
+      {h:'รอบเอวเสี่ยง · ความเสี่ยง',items:['ชายเกิน 90 ซม. / หญิงเกิน 80 ซม.','เพิ่มเสี่ยง: เบาหวาน ความดัน ไขมัน หัวใจ ข้อเข่า']}],
+    redflag:'หากมีโรคประจำตัว หรือต้องการลดน้ำหนักจำนวนมาก ควรปรึกษาแพทย์/นักโภชนาการ'},
+  16:{groups:[
+      {h:'ชนิด (4 ประเภทตาม NIH)',items:['<b>เฉียบพลันจากแบคทีเรีย:</b> มีไข้ ปวดมาก ต้องรักษาด่วน','<b>เรื้อรังจากแบคทีเรีย:</b> ติดเชื้อซ้ำๆ','<b>ปวดอุ้งเชิงกรานเรื้อรัง (CP/CPPS):</b> พบบ่อยสุด มักไม่พบเชื้อชัดเจน','<b>อักเสบแบบไม่มีอาการ (Asymptomatic)</b>']}],
+    redflag:'มีไข้สูง หนาวสั่น ปัสสาวะไม่ออก หรือปวดรุนแรง อาจเป็นการติดเชื้อรุนแรง ควรพบแพทย์ทันที'},
+  17:{groups:[
+      {h:'ระยะของมะเร็ง (Staging)',items:['<b>ระยะ 1–2 (เฉพาะที่):</b> มะเร็งอยู่ในต่อมลูกหมาก <b>มักไม่มีอาการ</b> ตรวจพบจากค่า PSA/การคัดกรอง','<b>ระยะ 3 (ลุกลามเฉพาะที่):</b> ลามออกนอกต่อม','<b>ระยะ 4 (แพร่กระจาย):</b> ลามไปกระดูก ต่อมน้ำเหลือง หรืออวัยวะอื่น']},
+      {h:'สำคัญที่สุด — การคัดกรอง',items:['ระยะแรกมักไม่มีอาการ จึงควรตรวจ PSA คัดกรองในชายอายุ 50 ปีขึ้นไป (หรือ 45 ปี หากมีประวัติครอบครัว)','ยิ่งพบเร็ว ยิ่งรักษาได้ผลดี']}],
+    redflag:'ปัสสาวะมีเลือด ปัสสาวะลำบาก หรือปวดกระดูก/หลังเรื้อรัง ควรพบแพทย์และตรวจคัดกรองทันที'}
+};
 const COMPLIANCE=[
   {warn:true,ico:'🛑',h:'อาหารเสริม ไม่ใช่ยา',t:'ผลิตภัณฑ์ทุกชนิดใช้เพื่อ "ช่วยดูแล บรรเทา และเสริมสุขภาพ" ไม่มีฤทธิ์รักษาโรคให้หายขาด ห้ามใช้คำโฆษณาที่เกินจริง'},
   {warn:true,ico:'🛑',h:'ห้ามหยุดยาแพทย์',t:'ผู้ป่วยโรคเรื้อรัง (เช่น เบาหวาน ความดัน) ต้องทานยาตามแพทย์สั่งอย่างเคร่งครัด ห้ามแนะนำให้ลูกค้าหยุดยาเองเด็ดขาด'},
@@ -1138,6 +1240,14 @@ function buildDzCats(active){
   const cats=[['all','ทั้งหมด',DISEASES.length]];
   ['hc','me','beauty'].forEach(c=>cats.push([c,DZ_CAT[c].lbl,DISEASES.filter(d=>d.cat===c).length]));
   el.innerHTML=cats.map(([c,lbl,n])=>`<button class="dzcat${c===active?' on':''}" data-c="${c}" onclick="showDisease('${c}',this)">${lbl}<span class="dz-catcount">${n}</span></button>`).join('');
+}
+function dzToggle(n,btn){const p=document.getElementById('dz-det-'+n);const open=p.classList.toggle('open');btn.classList.toggle('open',open);btn.querySelector('.lbl').textContent=open?'ซ่อนความรู้เชิงลึก':'ความรู้เชิงลึก';}
+function dzDetailHTML(d){
+  const dt=DZ_DETAIL[d.n];if(!dt)return'';
+  const groups=(dt.groups||[]).map(g=>`<div class="dz-dgroup"><div class="dz-dh">${g.h}</div><ul class="dz-dlist">${g.items.map(it=>`<li>${it}</li>`).join('')}</ul></div>`).join('');
+  const rf=dt.redflag?`<div class="dz-redflag"><span class="rfi">🚩</span><span class="rf">${dt.redflag}</span></div>`:'';
+  return `<button class="dz-more-btn" onclick="event.stopPropagation();dzToggle(${d.n},this)"><span class="lbl">ความรู้เชิงลึก</span><span class="chev">▼</span></button>
+    <div class="dz-detail" id="dz-det-${d.n}">${groups}${rf}</div>`;
 }
 function dzCardHTML(d){
   const col=DZ_CAT[d.cat].c;
@@ -1156,11 +1266,12 @@ function dzCardHTML(d){
       <div class="dz-row"><span class="dz-ico">⚠️</span><div class="dz-rc"><div class="dz-rlabel">อาการ</div><div class="dz-rtext">${d.symptom}</div></div></div>
       <div class="dz-row"><span class="dz-ico">🏥</span><div class="dz-rc"><div class="dz-rlabel">${careLabel}</div><div class="dz-rtext">${d.care}</div></div></div>
       <div class="dz-supp">
-        <div class="dz-supp-h">💊 บทบาทอาหารเสริม Enforte</div>
+        <div class="dz-supp-h">💊 บทบาทอาหารเสริม</div>
         <div class="dz-chips">${chips}</div>
         <div class="dz-meta"><b>สารสำคัญ:</b> ${d.ings}</div>
         <div class="dz-meta"><b>สรรพคุณ:</b> ${d.effect}</div>
       </div>
+      ${dzDetailHTML(d)}
       ${caution}${tip}
     </div>
   </div>`;
