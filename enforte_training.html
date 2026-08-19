@@ -677,6 +677,11 @@ body.modal-open{overflow:hidden}
 .v4-explore{margin-top:25px;padding:0 40px 5px;max-width:1440px;margin-left:auto;margin-right:auto}.v4-explore-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:8px}.v4-explore-head h2{font-size:20px;margin:0}.v4-explore-head p{font-size:10px;color:#8a97a9;margin:0}
 /* The old marketing hero is retained in the source for compatibility but hidden from the new home experience. */
 .page-products>.hero{display:none}
+/* FIX: keep the fixed global search bar from covering the Academy header */
+#page-products{padding-top:92px}
+#page-products .v4-home{padding-top:12px}
+@media(max-width:900px){#page-products{padding-top:74px}}
+@media(max-width:700px){#page-products{padding-top:68px}.page-products .v4-home{padding-top:12px}}
 @media(max-width:1050px){.v4-grid{grid-template-columns:1fr}.v4-path{grid-template-columns:repeat(3,1fr)}.v4-topics{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.v4-home{padding:20px}.v4-welcome{align-items:flex-start;flex-direction:column}.v4-title{font-size:29px}.v4-date{display:none}.v4-assist-card{padding:22px}.v4-assist-input{flex-direction:column}.v4-assist-input button{width:100%}.v4-path{grid-template-columns:1fr 1fr}.v4-topics{grid-template-columns:1fr 1fr}.v4-library{grid-template-columns:1fr}.v4-explore{padding:0 20px 5px}.v4-explore-head{align-items:flex-start;flex-direction:column;gap:4px}}
 @media(max-width:430px){.v4-path{grid-template-columns:1fr}.v4-topics{grid-template-columns:1fr}.v4-assist-title{font-size:22px}}
