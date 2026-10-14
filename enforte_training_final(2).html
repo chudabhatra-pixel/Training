@@ -588,6 +588,8 @@ body.modal-open{overflow:hidden}
   .print-title{font-size:30px;line-height:1.08;margin:0 0 12px}
   .print-badges{display:flex;flex-wrap:wrap;gap:7px}
   .print-badge{font-size:10px;border:1px solid #DDE5EF;border-radius:999px;padding:5px 9px;background:#F7F9FC}
+  .print-fda-badge{border-color:#1F4E79;background:#F0F6FC;color:#173F63;font-weight:700;break-inside:avoid;page-break-inside:avoid}
+  .print-fda-badge strong{font-weight:800;margin-right:4px}
   .print-section{margin-top:18px}
   .print-section h2{font-size:13px;margin:0 0 9px;padding-bottom:6px;border-bottom:1px solid #DDE5EF;color:var(--print-col,#16233F)}
   .print-ingredients{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -2295,6 +2297,10 @@ function buildPrintHost(p){
   const benefits=p.benefits.map(b=>`<li>${b}</li>`).join('');
   const facts=p.facts?`<section class="print-section"><h2>${p.facts.title.replace(/^\S+\s/,'')}</h2><div class="print-ingredients">${p.facts.rows.map(r=>`<div class="print-ingredient"><b>${r[0]}</b><span>${r[1]}</span></div>`).join('')}${p.facts.scale?`<div class="print-ingredient"><b>ตารางเทียบ UMF ↔ MGO</b><span>${p.facts.scale.map(x=>x[0]+' = '+x[1]).join(' · ')}</span></div>`:''}</div></section>`:'';
   const logo=document.querySelector('.brand-logo-img')?.src||'';
+  const registration=FDA_REGISTRATION[p.id];
+  const registrationBadge=registration&&registration.number
+    ? `<span class="print-badge print-fda-badge"><strong>เลข อย. / Registration No.</strong> ${registration.number}</span>`
+    : `<span class="print-badge print-fda-badge"><strong>เลข อย.</strong> ${registration?registration.status:'ไม่พบข้อมูลทะเบียน'}</span>`;
 
   document.getElementById('mobile-print-host')?.remove();
 
@@ -2313,6 +2319,7 @@ function buildPrintHost(p){
             <span class="print-badge">วิธีใช้: ${p.dosage}</span>
             <span class="print-badge">${packageText}</span>
             ${p.freshOnly?'<span class="print-badge">Fresh เท่านั้น</span>':''}
+            ${registrationBadge}
           </div>
         </div>
       </section>
