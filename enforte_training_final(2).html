@@ -1048,7 +1048,7 @@ body.modal-open{overflow:hidden}
 <footer style="border-top:1px solid rgba(208,219,203,.65);padding:32px 40px;margin-top:80px;background:rgba(248,251,247,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)">
   <div style="max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
     <span style="font-family:var(--display);font-size:17px;font-weight:900;letter-spacing:-0.02em">Products<span style="color:var(--red)">.</span></span>
-    <span style="font-size:12px;color:var(--ink3)">33 Products · FAQ · Compare · Quiz · Sales Script</span>
+    <span style="font-size:12px;color:var(--ink3)"><span id="footer-count">35</span> Products · FAQ · Compare · Quiz · Sales Script</span>
   </div>
 </footer>
 
@@ -2887,6 +2887,7 @@ function syncLearningCounts(){
   const totals={hc:0,me:0,beauty:0};
   PRODUCTS.forEach(p=>{if(totals[p.category]!==undefined)totals[p.category]++;});
   document.getElementById('total-count').textContent=PRODUCTS.length;
+  const fc=document.getElementById('footer-count');if(fc)fc.textContent=PRODUCTS.length;
   const hc=document.getElementById('hc-count');
   const me=document.getElementById('me-count');
   const beauty=document.getElementById('beauty-count');
