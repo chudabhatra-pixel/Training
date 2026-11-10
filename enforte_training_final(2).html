@@ -939,8 +939,171 @@ body.modal-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){
   .bm-scan,.bm-ring ellipse,.bm-hot .pulse,.bm-welcome .big{animation:none}
 }
+
+/* ══════════ ธีมคริสต์มาส + ปีใหม่ (เปิด/ปิดด้วยคลาส html.xmas) ══════════ */
+#xm-snow,#xm-fw{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:150}
+#xm-fw{z-index:9998}
+html:not(.xmas) #xm-snow,html:not(.xmas) .xm-only{display:none!important}
+.xm-toggle{position:fixed;right:18px;bottom:18px;z-index:400;width:52px;height:52px;border-radius:50%;border:0;cursor:pointer;font-size:24px;
+  background:linear-gradient(135deg,#C8102E,#8E0B1F);color:#fff;box-shadow:0 10px 26px rgba(200,16,46,.4);transition:.25s;display:grid;place-items:center}
+.xm-toggle .ic{display:inline-block;transition:transform .3s}.xm-toggle:hover .ic{transform:rotate(-20deg) scale(1.12)}
+html:not(.xmas) .xm-toggle{background:#fff;color:#14213D;box-shadow:0 8px 22px rgba(20,33,61,.18);filter:grayscale(1)}
+.xm-toggle .tip{position:absolute;right:62px;white-space:nowrap;background:#14213D;color:#fff;font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px;opacity:0;pointer-events:none;transition:.2s}
+.xm-toggle:hover .tip{opacity:1}
+
+/* hero */
+html.xmas .hero-banner{background:radial-gradient(circle at 18% 12%,rgba(255,215,120,.16),transparent 38%),radial-gradient(circle at 85% 95%,rgba(200,16,46,.28),transparent 45%),linear-gradient(135deg,#0E2A2A 0%,#123C36 42%,#1B2F5A 100%)!important}
+html.xmas .hero-title em{color:#FFD36E!important;text-shadow:0 0 24px rgba(255,211,110,.35)}
+.xm-cap{position:absolute;left:-4px;right:-4px;top:-2px;height:34px;z-index:4;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 34' preserveAspectRatio='none'%3E%3Cpath fill='%23ffffff' d='M0 0H400V10C390 22 378 26 368 16C360 30 344 30 336 14C326 26 312 20 304 12C296 28 276 30 266 14C256 24 240 22 232 10C222 28 200 30 190 14C180 24 166 22 158 12C148 30 128 28 118 14C108 24 92 22 84 10C74 26 56 28 46 14C38 24 22 24 14 12C8 18 4 16 0 12Z'/%3E%3C/svg%3E") top/100% 100% no-repeat;
+  filter:drop-shadow(0 3px 4px rgba(0,0,0,.12));opacity:.96}
+.xm-lights{position:absolute;left:0;right:0;top:18px;height:34px;z-index:5;pointer-events:none}
+.xm-lights svg{display:block;overflow:visible}
+.xm-bulb{animation:xmBlink 1.6s ease-in-out infinite}
+.xm-bulb:nth-child(3n){animation-delay:.5s}.xm-bulb:nth-child(3n+1){animation-delay:1s}
+@keyframes xmBlink{0%,100%{opacity:1;filter:drop-shadow(0 0 5px currentColor)}50%{opacity:.35;filter:none}}
+
+.xm-greet{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:-6px 0 22px;padding:12px 16px;border-radius:16px;position:relative;z-index:2;
+  background:linear-gradient(90deg,rgba(200,16,46,.28),rgba(255,211,110,.12));border:1px solid rgba(255,211,110,.35);backdrop-filter:blur(4px);max-width:640px}
+.xm-greet .t1{font-weight:900;color:#fff;font-size:15px;line-height:1.3}
+.xm-greet .t1 small{display:block;font-weight:600;color:#FFE3A3;font-size:12px;letter-spacing:.04em}
+.xm-cd{display:flex;gap:6px;margin-left:auto}
+.xm-cd div{min-width:46px;text-align:center;background:rgba(0,0,0,.28);border-radius:10px;padding:5px 6px;color:#fff;font-weight:900;font-size:18px;line-height:1.1;font-variant-numeric:tabular-nums}
+.xm-cd div small{display:block;font-size:9.5px;font-weight:700;color:#FFD36E;letter-spacing:.06em}
+.xm-fwbtn{border:0;cursor:pointer;background:#FFD36E;color:#5A2A00;font:inherit;font-weight:900;font-size:12.5px;border-radius:999px;padding:7px 12px;transition:.2s}
+.xm-fwbtn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(255,211,110,.45)}
+.xm-tree{position:absolute;left:46%;bottom:18px;width:120px;z-index:1;pointer-events:none;opacity:.9}
+.xm-tree .star{transform-origin:60px 14px;animation:xmStar 2.4s ease-in-out infinite}
+@keyframes xmStar{50%{transform:scale(1.25) rotate(12deg)}}
+.xm-tree .orn{animation:xmBlink 2s ease-in-out infinite}.xm-tree .orn:nth-of-type(2n){animation-delay:.7s}
+
+/* sidebar */
+.xm-hat{position:absolute;width:34px;left:63px;top:6px;transform:rotate(-18deg);z-index:2;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))}
+.nav-brand{position:relative}
+html.xmas nav{background:linear-gradient(180deg,#0F2A2A 0%,#13283F 55%,#17284A 100%)!important}
+html.xmas .nav-link.on,html.xmas .nav-link.active{box-shadow:inset 3px 0 0 #FFD36E!important}
+.xm-navgift{margin:10px 0 0;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,rgba(200,16,46,.35),rgba(255,211,110,.15));border:1px solid rgba(255,211,110,.3);color:#FFE9B8;font-size:12px;line-height:1.45}
+.xm-navgift b{color:#fff;display:block;font-size:13px}
+
+/* category cards & product cards: หิมะเกาะขอบบน */
+html.xmas .hero-cat::after{content:"";position:absolute;left:0;right:0;top:0;height:14px;z-index:4;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath fill='%23ffffff' d='M0 0H200V5C192 12 184 12 178 6C170 13 158 13 152 6C144 12 132 12 126 5C118 13 104 13 98 6C90 12 78 12 72 5C64 13 50 13 44 6C36 12 24 12 18 5C12 10 6 10 0 6Z'/%3E%3C/svg%3E") top/100% 100% no-repeat;opacity:.95}
+html.xmas .pc{border-top-color:#C8102E}
+html.xmas .bm-hero,html.xmas .sim-hero{box-shadow:inset 0 -3px 0 rgba(255,211,110,.35)}
+html.xmas .pg-header{position:relative}
+.xm-ribbon{position:absolute;right:22px;top:-8px;font-size:30px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.15));pointer-events:none}
+
+@media(max-width:900px){
+  .xm-greet{max-width:none;margin-top:26px}.xm-cd{margin-left:0}.xm-tree{display:none}.xm-navgift{display:none!important}.xm-toggle .tip{display:none}
+  .xm-hat{width:26px;left:48px;top:10px}
+  .xm-toggle{width:46px;height:46px;font-size:21px;right:14px;bottom:14px}
+}
+@media(prefers-reduced-motion:reduce){.xm-bulb,.xm-tree .star,.xm-tree .orn{animation:none}}
+@media print{#xm-snow,#xm-fw,.xm-toggle,.xm-only{display:none!important}}
+
+/* ══════════ ธีมเทศกาล: ลูกเล่นเพิ่มเติม ══════════ */
+/* ซานต้าบินผ่าน */
+.xm-sleigh{position:fixed;left:0;top:14%;width:300px;z-index:160;cursor:pointer;pointer-events:auto;will-change:transform;display:none;filter:drop-shadow(0 8px 14px rgba(0,0,0,.25))}
+.xm-sleigh.fly{display:block;animation:xmFly 13s linear forwards}
+@keyframes xmFly{0%{transform:translate(-340px,0) rotate(-3deg)}25%{transform:translate(22vw,-22px) rotate(2deg)}50%{transform:translate(48vw,10px) rotate(-2deg)}75%{transform:translate(74vw,-18px) rotate(2deg)}100%{transform:translate(105vw,6px) rotate(-3deg)}}
+.xm-sleigh .deer{animation:xmGallop .5s ease-in-out infinite alternate}
+.xm-sleigh .deer2{animation-delay:.25s}
+@keyframes xmGallop{to{transform:translateY(-5px)}}
+.xm-sleigh .trail{animation:xmTw 1s linear infinite}
+@keyframes xmTw{50%{opacity:.3}}
+.xm-bubble{position:fixed;z-index:9000;background:#fff;color:#C8102E;font-weight:900;font-size:15px;padding:10px 14px;border-radius:16px;box-shadow:0 10px 26px rgba(0,0,0,.2);pointer-events:none;animation:xmPop .25s cubic-bezier(.2,1.6,.4,1) both,xmFade .5s 2.2s forwards;white-space:nowrap}
+.xm-bubble::after{content:"";position:absolute;left:22px;bottom:-8px;border:8px solid transparent;border-top-color:#fff;border-bottom:0}
+@keyframes xmPop{from{transform:scale(.5);opacity:0}}
+@keyframes xmFade{to{opacity:0;transform:translateY(-10px)}}
+.xm-drop{position:fixed;z-index:9000;font-size:26px;pointer-events:none;animation:xmDrop 1.6s cubic-bezier(.4,0,.8,1) forwards}
+@keyframes xmDrop{to{transform:translateY(70vh) rotate(260deg);opacity:0}}
+
+/* ล่าของขวัญ */
+.xm-gift{position:absolute;z-index:6;width:38px;height:38px;border:0;background:none;padding:0;cursor:pointer;animation:xmBob 2.4s ease-in-out infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
+.xm-gift svg{width:100%;height:100%}
+.xm-gift:hover{animation-play-state:paused;transform:scale(1.2) rotate(-8deg)}
+.xm-gift.got{animation:xmGot .6s forwards;pointer-events:none}
+@keyframes xmBob{50%{transform:translateY(-6px) rotate(4deg)}}
+@keyframes xmGot{40%{transform:scale(1.6) rotate(-15deg)}100%{transform:scale(0) rotate(40deg);opacity:0}}
+.xm-hunt{margin-top:8px;display:flex;align-items:center;gap:8px}
+.xm-hunt .bar{flex:1;height:7px;border-radius:9px;background:rgba(255,255,255,.15);overflow:hidden}
+.xm-hunt .bar i{display:block;height:100%;background:linear-gradient(90deg,#FFD36E,#FF4D5E);border-radius:9px;transition:width .6s}
+.xm-hunt b{font-size:12px;color:#FFD36E;display:inline}
+.xm-navbtn{margin-top:9px;width:100%;border:0;border-radius:10px;padding:8px 10px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;background:#FFD36E;color:#5A2A00}
+.xm-navbtn:hover{filter:brightness(1.05)}
+
+/* โมดัล (ปฏิทิน + รางวัล) */
+.xm-modal{position:fixed;inset:0;z-index:9500;background:rgba(8,16,30,.62);backdrop-filter:blur(5px);display:grid;place-items:center;padding:20px;animation:xmIn .25s}
+@keyframes xmIn{from{opacity:0}}
+.xm-mbox{position:relative;width:min(760px,100%);max-height:88vh;overflow:auto;border-radius:24px;padding:26px 26px 22px;color:#fff;
+  background:radial-gradient(circle at 15% 0%,rgba(255,211,110,.18),transparent 40%),linear-gradient(160deg,#0F3B2E,#123049 60%,#2A1240);box-shadow:0 30px 80px rgba(0,0,0,.45);animation:xmPop .35s cubic-bezier(.2,1.4,.4,1)}
+.xm-mbox h3{margin:0;font-size:24px;font-weight:900}
+.xm-mbox p.sub{margin:4px 0 16px;color:#CFE3FF;font-size:13.5px}
+.xm-x{position:absolute;right:14px;top:12px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:18px;cursor:pointer}
+.xm-adv{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:9px}
+.xm-door{position:relative;aspect-ratio:1;border-radius:14px;border:0;cursor:pointer;font:inherit;color:#fff;perspective:600px;background:none;padding:0}
+.xm-door .f,.xm-door .b{position:absolute;inset:0;border-radius:14px;display:grid;place-items:center;backface-visibility:hidden;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.xm-door .f{background:linear-gradient(145deg,#C8102E,#8E0B1F);font-size:28px;font-weight:900;box-shadow:inset 0 0 0 2px rgba(255,211,110,.5)}
+.xm-door:nth-child(3n) .f{background:linear-gradient(145deg,#1F7A4D,#145238)}
+.xm-door:nth-child(4n) .f{background:linear-gradient(145deg,#B8862B,#7A5512)}
+.xm-door .f small{position:absolute;bottom:6px;font-size:10px;font-weight:700;opacity:.8}
+.xm-door .b{background:#fff;color:#14213D;transform:rotateY(180deg);font-size:26px}
+.xm-door.open .f{transform:rotateY(-180deg)}.xm-door.open .b{transform:rotateY(0)}
+.xm-door.lock{cursor:not-allowed}.xm-door.lock .f{filter:grayscale(.55) brightness(.75)}
+.xm-door.today .f{box-shadow:inset 0 0 0 3px #FFD36E,0 0 18px rgba(255,211,110,.6);animation:xmBob 1.6s ease-in-out infinite}
+.xm-tipcard{margin-top:16px;background:#fff;color:#14213D;border-radius:18px;padding:16px;display:flex;gap:14px;align-items:center;animation:xmPop .35s}
+.xm-tipcard img{width:96px;height:80px;object-fit:contain;background:#F3F6FB;border-radius:12px;flex:0 0 96px}
+.xm-tipcard .d{font-size:11px;font-weight:800;color:#C8102E;letter-spacing:.08em}
+.xm-tipcard b{display:block;font-size:17px;margin:2px 0 4px}
+.xm-tipcard p{margin:0;font-size:13.5px;color:#4A5568}
+.xm-tipcard button{margin-top:8px;border:0;background:#14213D;color:#fff;font:inherit;font-weight:800;font-size:12.5px;border-radius:10px;padding:7px 12px;cursor:pointer}
+.xm-award{text-align:center}
+.xm-award .medal{font-size:84px;animation:xmBob 1.8s ease-in-out infinite}
+.xm-award h3{font-size:28px;margin-top:6px}
+.xm-award .row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+.xm-award .row span{background:rgba(255,255,255,.12);border-radius:999px;padding:6px 12px;font-size:13px}
+
+/* ตุ๊กตาหิมะ */
+.xm-snowman{position:fixed;left:286px;bottom:-14px;width:92px;z-index:155;cursor:pointer;transition:transform .35s cubic-bezier(.2,1.4,.4,1);transform:translateY(46px)}
+.xm-snowman:hover{transform:translateY(0)}
+.xm-snowman .arm{transform-origin:72px 70px;transition:transform .3s}
+.xm-snowman.wave .arm{animation:xmWave .4s ease-in-out 4 alternate}
+@keyframes xmWave{from{transform:rotate(0)}to{transform:rotate(-28deg)}}
+
+/* ลูกบอลประดับแขวน */
+.xm-orns{position:absolute;right:76px;top:0;display:flex;gap:26px;z-index:3;pointer-events:none}
+.xm-orn{transform-origin:50% 0;animation:xmSwing 3s ease-in-out infinite alternate}
+.xm-orn:nth-child(2){animation-delay:-1s}.xm-orn:nth-child(3){animation-delay:-2s}
+@keyframes xmSwing{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+
+/* หมวกซานต้าบนอวาตาร์ลูกค้าจำลอง */
+html.xmas .sim-av{position:relative;overflow:visible}
+html.xmas .sim-av::after{content:"";position:absolute;width:30px;height:26px;top:-13px;right:-8px;transform:rotate(22deg);
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 56'%3E%3Cpath d='M8 42 C14 20 30 6 50 10 C44 18 46 28 52 38 Z' fill='%23D7263D'/%3E%3Cpath d='M50 10 C56 12 60 20 58 26' stroke='%23D7263D' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='58' cy='28' r='6' fill='%23fff'/%3E%3Crect x='2' y='38' width='54' height='13' rx='6.5' fill='%23fff'/%3E%3C/svg%3E") center/contain no-repeat}
+html.xmas .sim-head .sim-av::after{width:24px;height:21px;top:-10px;right:-7px}
+html:not(.xmas) .xm-sleigh,html:not(.xmas) .xm-snowman,html:not(.xmas) .xm-gift{display:none!important}
+
+@media(max-width:900px){
+  .xm-snowman{display:none}.xm-orns{display:none}
+  .xm-sleigh{width:200px;top:12%}
+  .xm-gift{width:32px;height:32px}
+}
+@media(prefers-reduced-motion:reduce){.xm-sleigh{display:none!important}.xm-gift,.xm-orn,.xm-door.today .f{animation:none}}
+@media print{.xm-sleigh,.xm-snowman,.xm-gift,.xm-modal{display:none!important}}
+.xm-toggle.xm-music{bottom:80px;width:44px;height:44px;right:22px;font-size:19px;background:#fff;color:#14213D;box-shadow:0 8px 22px rgba(20,33,61,.2)}
+.xm-toggle.xm-music.on{background:linear-gradient(135deg,#1F7A4D,#145238);color:#fff;box-shadow:0 8px 22px rgba(31,122,77,.4)}
+.xm-toggle.xm-music.on .ic{animation:xmBob 1.2s ease-in-out infinite}
+html:not(.xmas) .xm-toggle.xm-music{display:none}
+.xm-hint{position:fixed;right:76px;bottom:88px;z-index:401;background:#14213D;color:#fff;font-size:13px;font-weight:700;padding:9px 14px;border-radius:12px;box-shadow:0 10px 26px rgba(0,0,0,.25);animation:xmPop .3s cubic-bezier(.2,1.6,.4,1) both,xmNudge 1.6s 1s ease-in-out infinite}
+@keyframes xmNudge{50%{transform:translateX(-6px)}}
+.xm-hint::after{content:"";position:absolute;right:-7px;top:50%;margin-top:-7px;border:7px solid transparent;border-left-color:#14213D;border-right:0}
+@media(max-width:900px){.xm-toggle.xm-music{bottom:68px;right:17px;width:40px;height:40px;font-size:17px}.xm-hint{right:64px;bottom:72px;font-size:12px}}
+@media print{.xm-hint{display:none!important}}
+@media(max-width:1100px){.xm-gift:not([data-g=p7]){top:10px!important;right:12px!important;bottom:auto!important;left:auto!important}.xm-ribbon{display:none}.xm-orns{right:56px}}
+.xm-door.sp .f{background:linear-gradient(145deg,#FFD36E,#C98A12)!important;color:#4A2600;box-shadow:inset 0 0 0 2px #fff}
+.xm-door.sp .f small{font-weight:800}
 </style>
-</head>
+<script>try{if(localStorage.getItem('enf_theme_xmas')!=='0')document.documentElement.classList.add('xmas')}catch(e){document.documentElement.classList.add('xmas')}</script></head>
 <body>
 
 <!-- NAV -->
@@ -3219,7 +3382,7 @@ function simEnd(){
 }
 function simConfetti(){
   try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;}catch(e){}
-  const cols=['#FF5C8A','#FFD36E','#3DDC97','#6EA8FF','#8B5CF6','#FF9A3C'];
+  const cols=document.documentElement.classList.contains('xmas')?['#C8102E','#FFD36E','#1F7A4D','#ffffff','#4ADE80','#FF4D5E']:['#FF5C8A','#FFD36E','#3DDC97','#6EA8FF','#8B5CF6','#FF9A3C'];
   for(let i=0;i<90;i++){const c=document.createElement('i');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.background=cols[i%cols.length];c.style.animationDuration=(1.8+Math.random()*1.8)+'s';c.style.animationDelay=(Math.random()*.5)+'s';c.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(c);setTimeout(()=>c.remove(),4200);}
 }
 
@@ -3720,6 +3883,343 @@ applyF();
 buildDiseasePage();
 showScript('open',document.querySelector('.sc-tab'));
 
+</script>
+<script>
+// ══════════ ธีมคริสต์มาส + ปีใหม่ ══════════
+(function(){
+  const KEY='enf_theme_xmas';
+  const NY=new Date('2027-01-01T00:00:00+07:00').getTime();
+  const reduce=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
+  function getOn(){try{const v=localStorage.getItem(KEY);return v===null?true:v==='1'}catch(e){return true}}
+  function setOn(v){try{localStorage.setItem(KEY,v?'1':'0')}catch(e){}}
+  const root=document.documentElement;
+
+  // ── หิมะตก ──
+  let snowRAF=0,flakes=[],cv,ctx,W=0,H=0;
+  function resize(){if(!cv)return;const d=Math.min(window.devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0);}
+  function mkFlake(top){const r=Math.random()*2.6+0.9;return{x:Math.random()*W,y:top?Math.random()*H:-10,r,vy:r*0.38+0.25,vx:Math.random()*0.4-0.2,ph:Math.random()*6.28,a:Math.random()*0.5+0.45}}
+  function startSnow(){
+    if(reduce)return;
+    if(!cv){cv=document.createElement('canvas');cv.id='xm-snow';cv.setAttribute('aria-hidden','true');document.body.appendChild(cv);ctx=cv.getContext('2d');addEventListener('resize',resize);}
+    resize();const n=innerWidth<700?45:110;flakes=Array.from({length:n},()=>mkFlake(true));
+    cancelAnimationFrame(snowRAF);
+    (function loop(){
+      if(!root.classList.contains('xmas')){ctx.clearRect(0,0,W,H);return;}
+      if(!document.hidden){
+        ctx.clearRect(0,0,W,H);
+        for(const f of flakes){f.ph+=0.012;f.y+=f.vy;f.x+=f.vx+Math.sin(f.ph)*0.35;
+          if(f.y>H+6||f.x<-10||f.x>W+10)Object.assign(f,mkFlake(false));
+          ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,6.283);ctx.fillStyle=`rgba(255,255,255,${f.a})`;ctx.shadowColor='rgba(180,215,255,.9)';ctx.shadowBlur=f.r*2;ctx.fill();}
+      }
+      snowRAF=requestAnimationFrame(loop);
+    })();
+  }
+
+  // ── พลุ ──
+  let fwCv,fwCtx,parts=[],fwRAF=0;
+  window.xmFireworks=function(n){
+    if(reduce){if(typeof simConfetti==='function')simConfetti();return;}
+    if(!fwCv){fwCv=document.createElement('canvas');fwCv.id='xm-fw';fwCv.setAttribute('aria-hidden','true');document.body.appendChild(fwCv);fwCtx=fwCv.getContext('2d');}
+    fwCv.width=innerWidth;fwCv.height=innerHeight;
+    const cols=['#FFD36E','#FF5C7A','#7FE0B0','#8FC8FF','#ffffff','#FF9A3C'];
+    for(let b=0;b<(n||5);b++){
+      setTimeout(()=>{const cx=innerWidth*(0.2+Math.random()*0.6),cy=innerHeight*(0.18+Math.random()*0.35),c=cols[Math.floor(Math.random()*cols.length)];
+        for(let i=0;i<70;i++){const a=Math.PI*2*i/70,sp=Math.random()*3.2+1.6;parts.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1,c:Math.random()<.25?'#ffffff':c});}
+        if(!fwRAF)tick();},b*380);
+    }
+    function tick(){
+      fwCtx.globalCompositeOperation='destination-out';fwCtx.fillStyle='rgba(0,0,0,.22)';fwCtx.fillRect(0,0,fwCv.width,fwCv.height);
+      fwCtx.globalCompositeOperation='lighter';
+      parts=parts.filter(p=>p.life>0);
+      for(const p of parts){p.x+=p.vx;p.y+=p.vy;p.vy+=0.045;p.vx*=0.985;p.vy*=0.985;p.life-=0.013;
+        fwCtx.globalAlpha=Math.max(p.life,0);fwCtx.fillStyle=p.c;fwCtx.beginPath();fwCtx.arc(p.x,p.y,2,0,6.283);fwCtx.fill();}
+      fwCtx.globalAlpha=1;
+      if(parts.length){fwRAF=requestAnimationFrame(tick);}else{fwRAF=0;fwCtx.clearRect(0,0,fwCv.width,fwCv.height);}
+    }
+  };
+
+  // ── ไฟประดับ ──
+  function lightsSVG(W){
+    W=Math.max(300,Math.round(W||900));const cols=['#FF4D5E','#FFD36E','#4ADE80','#60A5FA','#F472B6'];const N=Math.max(8,Math.round(W/52));const seg=W/N;let bulbs='',d='M0 4';
+    for(let i=0;i<N;i++){const x0=i*seg,x1=(i+1)*seg,bx=(x0+x1)/2;d+=` Q${bx.toFixed(1)} 20 ${x1.toFixed(1)} 4`;
+      bulbs+=`<g class="xm-bulb" style="color:${cols[i%cols.length]}"><rect x="${(bx-2.5).toFixed(1)}" y="10" width="5" height="5" rx="1" fill="#2B3A55"/><ellipse cx="${bx.toFixed(1)}" cy="21" rx="4.6" ry="7" fill="currentColor"/></g>`;}
+    return `<svg viewBox="0 0 ${W} 32" width="${W}" height="32" aria-hidden="true"><path d="${d}" fill="none" stroke="#2B3A55" stroke-width="1.6"/>${bulbs}</svg>`;
+  }
+  function drawLights(){document.querySelectorAll('.xm-lights').forEach(el=>{el.innerHTML=lightsSVG(el.clientWidth);});}
+  addEventListener('resize',()=>{clearTimeout(window.__xmLR);window.__xmLR=setTimeout(drawLights,200);});
+  const TREE=`<svg class="xm-tree xm-only" viewBox="0 0 120 150" aria-hidden="true">
+    <polygon class="star" points="60,2 64,11 74,11 66,17 69,27 60,21 51,27 54,17 46,11 56,11" fill="#FFD36E"/>
+    <path d="M60 22 L88 62 H74 L98 96 H80 L108 130 H12 L40 96 H22 L46 62 H32 Z" fill="#1F7A4D" stroke="#2FA36A" stroke-width="1.5"/>
+    <path d="M36 60 Q60 72 84 58 M28 94 Q60 108 92 92" stroke="#FFD36E" stroke-width="2" fill="none" opacity=".8"/>
+    <circle class="orn" cx="50" cy="52" r="4" fill="#FF4D5E"/><circle class="orn" cx="72" cy="74" r="4" fill="#60A5FA"/><circle class="orn" cx="44" cy="84" r="4" fill="#FFD36E"/>
+    <circle class="orn" cx="80" cy="110" r="4.5" fill="#F472B6"/><circle class="orn" cx="38" cy="116" r="4.5" fill="#4ADE80"/><circle class="orn" cx="62" cy="100" r="4" fill="#FF4D5E"/>
+    <rect x="52" y="130" width="16" height="16" rx="2" fill="#7A4A26"/></svg>`;
+  const HAT=`<svg class="xm-hat xm-only" viewBox="0 0 64 56" aria-hidden="true"><path d="M8 42 C14 20 30 6 50 10 C44 18 46 28 52 38 Z" fill="#D7263D"/><path d="M50 10 C56 12 60 20 58 26" stroke="#D7263D" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="58" cy="28" r="6" fill="#fff"/><rect x="2" y="38" width="54" height="13" rx="6.5" fill="#fff"/></svg>`;
+
+  function pad(n){return String(n).padStart(2,'0')}
+  function tickCD(){
+    const el=document.getElementById('xm-cd');if(!el)return;
+    const ms=NY-Date.now(),t1=document.getElementById('xm-t1');
+    if(ms<=0){el.innerHTML='';t1.innerHTML='🎉 สวัสดีปีใหม่ 2027!<small>HAPPY NEW YEAR · ขอให้ปีนี้ยอดขายปังทั้งทีม</small>';
+      if(!window.__xmNY){window.__xmNY=1;if(root.classList.contains('xmas'))xmFireworks(8);}return;}
+    const d=Math.floor(ms/864e5),h=Math.floor(ms/36e5)%24,m=Math.floor(ms/6e4)%60,s=Math.floor(ms/1e3)%60;
+    el.innerHTML=`<div>${d}<small>วัน</small></div><div>${pad(h)}<small>ชม.</small></div><div>${pad(m)}<small>นาที</small></div><div>${pad(s)}<small>วินาที</small></div>`;
+  }
+
+  function decorate(){
+    const hb=document.querySelector('.hero-banner');
+    if(hb&&!hb.querySelector('.xm-cap')){
+      hb.insertAdjacentHTML('afterbegin',`<div class="xm-cap xm-only"></div><div class="xm-lights xm-only"></div>${TREE}`);
+      const eb=hb.querySelector('.hero-eyebrow');
+      if(eb)eb.insertAdjacentHTML('beforebegin',`<div class="xm-greet xm-only"><div class="t1" id="xm-t1">🎄 Merry Christmas &amp; Happy New Year<small>นับถอยหลังสู่ปี 2027</small></div><div class="xm-cd" id="xm-cd"></div><button class="xm-fwbtn" onclick="xmFireworks(6)">🎆 จุดพลุ</button></div>`);
+    }
+    const br=document.querySelector('.nav-brand');if(br&&!br.querySelector('.xm-hat'))br.insertAdjacentHTML('beforeend',HAT);
+    const nlc=document.querySelector('.nav-footer-note');
+    if(nlc&&!document.querySelector('.xm-navgift'))nlc.insertAdjacentHTML('beforebegin',`<div class="xm-navgift xm-only"><b>🎁 Season's Greetings</b>ขอบคุณทุกคนที่ตั้งใจเรียนรู้ตลอดปี</div>`);
+    document.querySelectorAll('.pg-header').forEach(h=>{if(!h.querySelector('.xm-ribbon'))h.insertAdjacentHTML('beforeend','<span class="xm-ribbon xm-only" aria-hidden="true">🎀</span>')});
+    if(!document.querySelector('.xm-toggle')){
+      const b=document.createElement('button');b.className='xm-toggle';b.type='button';
+      b.addEventListener('click',()=>apply(!root.classList.contains('xmas'),true));document.body.appendChild(b);
+    }
+  }
+  function apply(on,user){
+    root.classList.toggle('xmas',on);if(user)setOn(on);
+    const b=document.querySelector('.xm-toggle');
+    if(b){b.innerHTML='<span class="ic">'+(on?'❄️':'🎄')+'</span>'+`<span class="tip">${on?'ปิดธีมเทศกาล':'เปิดธีมคริสต์มาส'}</span>`;b.setAttribute('aria-label',on?'ปิดธีมเทศกาล':'เปิดธีมคริสต์มาส');b.setAttribute('aria-pressed',on);}
+    if(on){startSnow();setTimeout(drawLights,30);if(user)xmFireworks(3);}
+  }
+  function init(){decorate();apply(getOn(),false);drawLights();tickCD();setInterval(tickCD,1000);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+<script>
+// ══════════ ธีมเทศกาล: ลูกเล่นเพิ่มเติม ══════════
+(function(){
+  const root=document.documentElement,on=()=>root.classList.contains('xmas');
+  const reduce=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
+  const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+  // ── เสียงกระดิ่ง (สร้างด้วย Web Audio เล่นเฉพาะตอนผู้ใช้กด) ──
+  let actx=null;
+  window.xmJingle=function(short){
+    try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();}catch(e){return}
+    const E=659.3,G=784,C=523.3,D=587.3;
+    const seq=short?[[E,.14],[G,.14],[C*2,.3]]:[[E,.16],[E,.16],[E,.32],[E,.16],[E,.16],[E,.32],[E,.16],[G,.16],[C,.22],[D,.12],[E,.5]];
+    let t=actx.currentTime+0.02;
+    seq.forEach(([f,d])=>{[1,2.76].forEach((m,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.type=i?'sine':'triangle';o.frequency.value=f*m;
+      g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(i?0.03:0.11,t+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t+d+0.35);
+      o.connect(g).connect(actx.destination);o.start(t);o.stop(t+d+0.4);});t+=d;});
+  };
+  function bubble(x,y,txt){const b=document.createElement('div');b.className='xm-bubble';b.textContent=txt;b.style.left=Math.max(8,Math.min(innerWidth-260,x-24))+'px';b.style.top=Math.max(8,y-58)+'px';document.body.appendChild(b);setTimeout(()=>b.remove(),2900);}
+  function drops(x,y,n,set){const em=set||['🎁','🍬','⭐','🎄','🔔'];for(let i=0;i<(n||8);i++){const d=document.createElement('div');d.className='xm-drop';d.textContent=em[i%em.length];d.style.left=(x+(Math.random()*120-60))+'px';d.style.top=y+'px';d.style.animationDelay=(i*0.08)+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),2400);}}
+
+  // ── ล่าของขวัญ ──
+  const GIFT_SPOTS=[
+    ['p1','#page-products .hero-banner','left:57%;bottom:150px','#C8102E','#FFD36E'],
+    ['p2','#page-disease .pg-header','right:70px;bottom:22px','#1F7A4D','#FF4D5E'],
+    ['p3','#page-faq .pg-header','right:150px;bottom:16px','#2563EB','#FFD36E'],
+    ['p4','#page-compare .pg-header','right:110px;bottom:18px','#B8862B','#fff'],
+    ['p5','#page-quiz .pg-header','right:40px;bottom:20px','#8B5CF6','#FFD36E'],
+    ['p6','#page-script .pg-header','right:80px;bottom:18px','#C8102E','#4ADE80'],
+    ['p7','#bm-fig','left:18px;bottom:48px','#1F7A4D','#FFD36E'],
+    ['p8','#page-sim .sim-hero','right:34px;bottom:24px','#FF5C8A','#fff']
+  ];
+  const TOTAL=GIFT_SPOTS.length+1; // +1 = จับซานต้า
+  const giftSVG=(c,r)=>`<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="15" width="30" height="21" rx="3" fill="${c}"/><rect x="3" y="10" width="34" height="8" rx="2" fill="${c}" style="filter:brightness(1.15)"/><rect x="17" y="10" width="6" height="26" fill="${r}"/><path d="M20 10 C14 2 6 4 10 9 C12 11 17 10 20 10 C23 10 28 11 30 9 C34 4 26 2 20 10Z" fill="${r}"/></svg>`;
+  function got(){return LS.get('enf_xm_gifts',[])}
+  function updHunt(){const n=got().length;document.querySelectorAll('.xm-hunt').forEach(h=>{h.querySelector('i').style.width=(n/TOTAL*100)+'%';h.querySelector('b').textContent=`${n}/${TOTAL}`;});}
+  function collect(id,x,y){
+    const g=got();if(g.includes(id))return;g.push(id);LS.set('enf_xm_gifts',g);updHunt();
+    xmJingle(true);drops(x,y,6);
+    bubble(x,y,g.length>=TOTAL?'🎉 ครบทุกชิ้นแล้ว!':`🎁 เจอของขวัญ ${g.length}/${TOTAL}`);
+    if(g.length>=TOTAL)setTimeout(award,900);
+  }
+  function placeGifts(){
+    const g=got();
+    GIFT_SPOTS.forEach(([id,sel,pos,c,r])=>{
+      if(g.includes(id))return;const host=document.querySelector(sel);if(!host||host.querySelector(`.xm-gift[data-g="${id}"]`))return;
+      if(getComputedStyle(host).position==='static')host.style.position='relative';
+      const b=document.createElement('button');b.className='xm-gift';b.dataset.g=id;b.type='button';b.setAttribute('aria-label','ของขวัญที่ซ่อนอยู่');b.style.cssText=pos;b.innerHTML=giftSVG(c,r);
+      b.addEventListener('click',e=>{e.stopPropagation();b.classList.add('got');collect(id,e.clientX,e.clientY);setTimeout(()=>b.remove(),650);});
+      host.appendChild(b);
+    });
+  }
+  function modal(html){const m=document.createElement('div');m.className='xm-modal';m.innerHTML=`<div class="xm-mbox" role="dialog" aria-modal="true"><button class="xm-x" aria-label="ปิด">✕</button>${html}</div>`;
+    m.addEventListener('click',e=>{if(e.target===m||e.target.classList.contains('xm-x'))m.remove();});document.addEventListener('keydown',function k(e){if(e.key==='Escape'){m.remove();document.removeEventListener('keydown',k)}});document.body.appendChild(m);return m;}
+  function award(){
+    modal(`<div class="xm-award"><div class="medal">🏅</div><h3>ผู้ช่วยซานต้าแห่งปี 2026</h3><p class="sub">คุณเก็บของขวัญครบทั้ง ${TOTAL} ชิ้นจากทุกหน้าในคู่มือ แปลว่าคุณสำรวจครบทุกเครื่องมือการเรียนรู้แล้ว!</p>
+      <div class="row"><span>🧴 สินค้า</span><span>📚 ความรู้โรค</span><span>❓ FAQ</span><span>⚖️ เปรียบเทียบ</span><span>✅ แบบทดสอบ</span><span>🗣️ บทพูดขาย</span><span>🧍 แผนที่ร่างกาย</span><span>🎭 ซ้อมขาย</span><span>🛷 จับซานต้า</span></div>
+      <p class="sub">Merry Christmas &amp; Happy New Year 🎄✨</p></div>`);
+    if(window.xmFireworks)xmFireworks(7);xmJingle(false);
+  }
+  window.xmResetGifts=function(){LS.set('enf_xm_gifts',[]);updHunt();placeGifts();};
+
+  // ── ปฏิทินนับถอยหลัง 1 ธ.ค. – 1 ม.ค. (เปิดวันละ 1 ช่อง) ──
+  const DAYS=[...Array.from({length:31},(_,i)=>({n:i+1,y:2026,m:11,d:i+1,lbl:'ธ.ค.'})),{n:32,y:2027,m:0,d:1,lbl:'ม.ค.'}];
+  const SPECIAL={25:['🎄','คริสต์มาส'],31:['🎆','ส่งท้ายปี'],32:['🎉','ปีใหม่!']};
+  function bkkNow(){const d=new Date(Date.now()+7*36e5);return{y:d.getUTCFullYear(),m:d.getUTCMonth(),d:d.getUTCDate()}}
+  const key=(y,m,d)=>y*10000+m*100+d;
+  function unlocked(x){const t=bkkNow();return key(t.y,t.m,t.d)>=key(x.y,x.m,x.d);}
+  function isToday(x){const t=bkkNow();return key(t.y,t.m,t.d)===key(x.y,x.m,x.d);}
+  function dayProduct(n){const list=(window.PRODUCTS||[]).filter(p=>!/_box$/.test(p.id));return list[(n*7+3)%list.length];}
+  window.xmAdvent=function(){
+    const opened=LS.get('enf_xm_adv',[]),t=bkkNow();
+    const pre=key(t.y,t.m,t.d)<key(2026,11,1)?Math.ceil((Date.UTC(2026,11,1)-Date.UTC(t.y,t.m,t.d))/864e5):0;
+    const m=modal(`<h3>📅 Advent Calendar</h3><p class="sub">${pre?`ช่องแรกเปิดได้วันที่ 1 ธ.ค. (อีก ${pre} วัน) · `:''}เปิดได้วันละ 1 ช่องจนถึงวันปีใหม่ แต่ละช่องมีเคล็ดลับสินค้าประจำวัน</p>
+      <div class="xm-adv">${DAYS.map(x=>{const ok=unlocked(x),op=opened.includes(x.n),sp=SPECIAL[x.n];
+        return `<button class="xm-door${op?' open':''}${ok?'':' lock'}${isToday(x)&&!op?' today':''}${sp?' sp':''}" data-n="${x.n}"><span class="f">${x.d}<small>${ok?(op?x.lbl:'แตะเพื่อเปิด'):(sp?sp[0]+' '+sp[1]:'🔒 '+x.lbl)}</small></span><span class="b">${sp?sp[0]:['🎁','⭐','🔔','🍪','🧦','🎄','⛄','🕯️'][x.n%8]}</span></button>`}).join('')}</div><div id="xm-tip"></div>`);
+    m.querySelectorAll('.xm-door').forEach(d=>d.addEventListener('click',e=>{
+      const x=DAYS[+d.dataset.n-1];
+      if(!unlocked(x)){d.classList.add('shake');setTimeout(()=>d.classList.remove('shake'),420);bubble(e.clientX,e.clientY,`🔒 เปิดได้วันที่ ${x.d} ${x.lbl}`);return;}
+      d.classList.add('open');d.classList.remove('today');const o=LS.get('enf_xm_adv',[]);if(!o.includes(x.n)){o.push(x.n);LS.set('enf_xm_adv',o);xmJingle(true);}
+      if(x.n===32&&window.xmFireworks)xmFireworks(6);
+      const p=dayProduct(x.n);if(!p)return;const sp=SPECIAL[x.n];
+      m.querySelector('#xm-tip').innerHTML=`<div class="xm-tipcard"><img src="${(window.IMGS||{})[p.img]||''}" alt=""><div><div class="d">${sp?sp[0]+' '+sp[1]+' · ':'🎄 '}เคล็ดลับวันที่ ${x.d} ${x.lbl}</div><b>${p.name}</b><p>${(p.benefits||[])[0]||''} · วิธีทาน: ${p.dosage||''}</p><button onclick="this.closest('.xm-modal').remove();openDP('${p.id}')">ดูรายละเอียดสินค้า →</button></div></div>`;
+      m.querySelector('#xm-tip').scrollIntoView({behavior:'smooth',block:'nearest'});
+    }));
+  };
+
+  // ── ซานต้าบินผ่าน ──
+  const SLEIGH=`<svg viewBox="0 0 300 110" aria-hidden="true">
+    <g class="trail" fill="#FFE9A8"><circle cx="4" cy="70" r="2"/><circle cx="-14" cy="62" r="1.5"/><circle cx="-30" cy="74" r="1.2"/><path d="M-6 56 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/></g>
+    <path d="M118 70 L200 52 M118 76 L250 52" stroke="#8B5A2B" stroke-width="1.6" fill="none"/>
+    <g class="deer"><g transform="translate(180 34)"><ellipse cx="22" cy="20" rx="20" ry="9" fill="#8B5A2B"/><path d="M8 26 l-6 14 M14 27 l-2 15 M30 27 l4 14 M36 25 l8 12" stroke="#6B4220" stroke-width="3" stroke-linecap="round"/><path d="M38 16 l8 -12" stroke="#8B5A2B" stroke-width="6" stroke-linecap="round"/><ellipse cx="50" cy="3" rx="7" ry="5.5" fill="#8B5A2B"/><path d="M47 -2 l-4 -10 M45 -7 l-6 -2 M51 -2 l2 -11 M52 -8 l5 -3" stroke="#C9A36B" stroke-width="2" stroke-linecap="round"/><circle cx="52" cy="1" r="1.4" fill="#222"/><circle cx="57" cy="5" r="2.6" fill="#7A4A26"/><path d="M14 14 Q22 20 34 14" stroke="#C8102E" stroke-width="2.5" fill="none"/><circle cx="24" cy="18" r="2" fill="#FFD36E"/></g></g>
+    <g class="deer deer2"><g transform="translate(232 30)"><ellipse cx="22" cy="20" rx="20" ry="9" fill="#9A6634"/><path d="M8 26 l-6 14 M14 27 l-2 15 M30 27 l4 14 M36 25 l8 12" stroke="#6B4220" stroke-width="3" stroke-linecap="round"/><path d="M38 16 l8 -12" stroke="#9A6634" stroke-width="6" stroke-linecap="round"/><ellipse cx="50" cy="3" rx="7" ry="5.5" fill="#9A6634"/><path d="M47 -2 l-4 -10 M45 -7 l-6 -2 M51 -2 l2 -11 M52 -8 l5 -3" stroke="#C9A36B" stroke-width="2" stroke-linecap="round"/><circle cx="52" cy="1" r="1.4" fill="#222"/><circle cx="57.5" cy="5" r="3" fill="#FF3B3B"/><path d="M14 14 Q22 20 34 14" stroke="#C8102E" stroke-width="2.5" fill="none"/><circle cx="24" cy="18" r="2" fill="#FFD36E"/></g></g>
+    <ellipse cx="44" cy="44" rx="20" ry="18" fill="#8B5A2B"/><path d="M30 30 q14 -10 28 0" stroke="#6B4220" stroke-width="3" fill="none"/><rect x="36" y="22" width="12" height="10" rx="2" fill="#4ADE80"/><rect x="48" y="26" width="10" height="9" rx="2" fill="#60A5FA"/>
+    <circle cx="80" cy="44" r="15" fill="#D7263D"/><circle cx="80" cy="24" r="10" fill="#F6C9A8"/><path d="M70 26 q10 16 20 0 q-2 12 -10 14 q-8 -2 -10 -14z" fill="#fff"/><circle cx="76" cy="22" r="1.2" fill="#222"/><circle cx="84" cy="22" r="1.2" fill="#222"/><circle cx="80" cy="26" r="2" fill="#F08A7E"/>
+    <path d="M69 18 q11 -18 24 -2" fill="#D7263D"/><path d="M92 16 q8 2 6 10" stroke="#D7263D" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="98" cy="27" r="4" fill="#fff"/><rect x="68" y="15" width="25" height="6" rx="3" fill="#fff"/>
+    <path d="M94 42 q14 6 26 -2" stroke="#D7263D" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="120" cy="39" r="3.5" fill="#fff"/>
+    <path d="M18 48 H122 Q126 48 124 56 L116 76 Q114 82 106 82 H34 Q20 82 18 66 Z" fill="#C8102E"/><path d="M22 54 H120" stroke="#FFD36E" stroke-width="2.5"/><path d="M40 66 q8 -6 16 0 q8 6 16 0 q8 -6 16 0 q8 6 16 0" stroke="#FFD36E" stroke-width="2" fill="none"/>
+    <path d="M10 92 H120 Q140 92 140 80" stroke="#FFD36E" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M40 82 V92 M100 82 V92" stroke="#FFD36E" stroke-width="3"/></svg>`;
+  let sl=null,slTimer=0;
+  function fly(){
+    if(!on()||reduce||document.hidden)return;
+    if(!sl){sl=document.createElement('div');sl.className='xm-sleigh';sl.setAttribute('role','button');sl.setAttribute('aria-label','ซานต้าบินผ่าน กดเพื่อรับของขวัญ');sl.innerHTML=SLEIGH;document.body.appendChild(sl);
+      sl.addEventListener('click',e=>{xmJingle(false);bubble(e.clientX,e.clientY,'โฮ่ โฮ่ โฮ่! 🎅 Merry Christmas!');drops(e.clientX,e.clientY,10);collect('santa',e.clientX,e.clientY);});
+      sl.addEventListener('animationend',()=>sl.classList.remove('fly'));}
+    sl.style.top=(9+Math.random()*16)+'%';sl.classList.remove('fly');void sl.offsetWidth;sl.classList.add('fly');
+  }
+  window.xmSanta=fly;
+
+  // ── ตุ๊กตาหิมะ ──
+  const SNOWMAN=`<svg viewBox="0 0 100 120" aria-hidden="true"><circle cx="50" cy="92" r="28" fill="#fff" stroke="#DCE7F5" stroke-width="2"/><circle cx="50" cy="48" r="20" fill="#fff" stroke="#DCE7F5" stroke-width="2"/>
+    <rect x="34" y="20" width="32" height="8" rx="2" fill="#14213D"/><rect x="38" y="2" width="24" height="20" rx="3" fill="#14213D"/><rect x="38" y="15" width="24" height="4" fill="#C8102E"/>
+    <circle cx="43" cy="44" r="2.4" fill="#14213D"/><circle cx="57" cy="44" r="2.4" fill="#14213D"/><path d="M50 49 l12 3 -12 2z" fill="#FF8A3D"/><path d="M42 56 q8 6 16 0" stroke="#14213D" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M32 64 q18 10 36 0 l2 8 q-20 10 -40 0z" fill="#C8102E"/><path d="M60 68 l6 16 6 -2 -4 -14z" fill="#C8102E"/>
+    <circle cx="50" cy="84" r="2.6" fill="#14213D"/><circle cx="50" cy="96" r="2.6" fill="#14213D"/>
+    <path d="M28 80 L8 64 M14 68 l-6 -2" stroke="#7A4A26" stroke-width="3" stroke-linecap="round"/><g class="arm"><path d="M72 76 L92 58 M86 62 l6 -1" stroke="#7A4A26" stroke-width="3" stroke-linecap="round"/></g></svg>`;
+  const SM_MSG=['สู้ ๆ นะทีม! ☃️','อย่าลืมถามอาการก่อนเสนอสินค้านะ','เรียนครบ 7 ขั้นแล้วหรือยัง? 📚','ลองหาของขวัญที่ซ่อนอยู่ทุกหน้าสิ 🎁','Merry Christmas! 🎄','ห้ามพูดว่า “หายขาด” นะ ☝️','ขอให้ปีใหม่นี้ยอดขายปัง ✨'];
+  function snowman(){
+    if(document.querySelector('.xm-snowman'))return;const s=document.createElement('div');s.className='xm-snowman';s.setAttribute('role','button');s.setAttribute('aria-label','ตุ๊กตาหิมะ');s.innerHTML=SNOWMAN;document.body.appendChild(s);
+    s.addEventListener('click',e=>{s.classList.remove('wave');void s.offsetWidth;s.classList.add('wave');xmJingle(true);bubble(e.clientX+10,e.clientY-30,SM_MSG[Math.floor(Math.random()*SM_MSG.length)]);});
+  }
+
+  // ── ลูกบอลประดับ + เมนู + หมวกบนแผนที่ร่างกาย ──
+  function orns(){
+    document.querySelectorAll('.pg-header').forEach(hb=>{if(hb.querySelector('.xm-orns'))return;
+    const o=[['#C8102E',28],['#FFD36E',50],['#1F7A4D',20]].map(([c,l])=>`<svg class="xm-orn" width="34" height="${l+34}" viewBox="0 0 34 ${l+34}"><line x1="17" y1="0" x2="17" y2="${l}" stroke="#E7D49A" stroke-width="1.2"/><rect x="12" y="${l-2}" width="10" height="6" rx="1.5" fill="#D9B45A"/><circle cx="17" cy="${l+17}" r="14" fill="${c}"/><circle cx="12" cy="${l+11}" r="4" fill="#fff" opacity=".45"/><path d="M4 ${l+17} q13 7 26 0" stroke="#fff" stroke-opacity=".5" stroke-width="2" fill="none"/></svg>`).join('');
+    hb.insertAdjacentHTML('beforeend',`<div class="xm-orns xm-only" aria-hidden="true">${o}</div>`);});
+  }
+  function navCard(){
+    const c=document.querySelector('.xm-navgift');if(!c||c.querySelector('.xm-hunt'))return;
+    c.insertAdjacentHTML('beforeend',`<div class="xm-hunt" title="ของขวัญซ่อนอยู่หน้าละ 1 ชิ้น + จับซานต้าที่บินผ่าน"><span>🎁</span><span class="bar"><i></i></span><b></b></div><button class="xm-navbtn" onclick="xmAdvent()">📅 Advent Calendar</button>`);
+    updHunt();
+  }
+  function bmHat(){
+    const svg=document.querySelector('.bm-svg');if(!svg||svg.querySelector('.bm-xhat'))return;svg.style.overflow='visible';
+    svg.insertAdjacentHTML('beforeend',`<g class="xm-only bm-xhat" transform="translate(127 -15) rotate(-10) scale(.72)" pointer-events="none"><path d="M8 42 C14 20 30 6 50 10 C44 18 46 28 52 38 Z" fill="#D7263D"/><path d="M50 10 C56 12 60 20 58 26" stroke="#D7263D" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="58" cy="28" r="6" fill="#fff"/><rect x="2" y="38" width="54" height="13" rx="6.5" fill="#fff"/></g>`);
+  }
+  if(typeof window.buildBodyMap==='function'){const _b=window.buildBodyMap;window.buildBodyMap=function(){_b.apply(this,arguments);bmHat();placeGifts();};}
+  if(typeof window.simHome==='function'){const _s=window.simHome;window.simHome=function(){_s.apply(this,arguments);placeGifts();};}
+
+  function init(){
+    orns();navCard();snowman();placeGifts();
+    const greet=document.querySelector('.xm-greet');
+    if(greet&&!greet.querySelector('.xm-advbtn'))greet.querySelector('.xm-fwbtn').insertAdjacentHTML('afterend','<button class="xm-fwbtn xm-advbtn" style="background:#fff;color:#C8102E" onclick="xmAdvent()">📅 Advent Calendar</button>');
+    setTimeout(fly,6000);slTimer=setInterval(fly,48000);
+    document.addEventListener('click',e=>{if(e.target.closest('.nav-link'))setTimeout(placeGifts,60);},true);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else setTimeout(init,0);
+})();
+</script>
+<script>
+// ══════════ เพลงเทศกาล (เพลงสาธารณะ: Jingle Bells · We Wish You a Merry Christmas · Deck the Halls) ══════════
+// สร้างเสียงสดด้วย Web Audio ไม่ใช้ไฟล์เสียง — เบราว์เซอร์อนุญาตให้เริ่มเล่นหลังผู้ใช้แตะ/คลิกครั้งแรกเท่านั้น
+(function(){
+  const KEY='enf_xm_music';
+  const root=document.documentElement,themeOn=()=>root.classList.contains('xmas');
+  const pref=()=>{try{return localStorage.getItem(KEY)!=='0'}catch(e){return true}};
+  const setPref=v=>{try{localStorage.setItem(KEY,v?'1':'0')}catch(e){}};
+  const N={C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11};
+  const hz=s=>{if(s==='R')return 0;const m=s.match(/^([A-G]#?)(\d)$/);return 440*Math.pow(2,(N[m[1]]+(+m[2]+1)*12-69)/12);};
+  const parse=str=>str.trim().split(/\s+/).map(t=>{const[n,d]=t.split(':');return[hz(n),+d];});
+  const SONGS=[
+    {name:'Jingle Bells',bpm:150,bells:true,mel:parse(`E5:1 E5:1 E5:2 E5:1 E5:1 E5:2 E5:1 G5:1 C5:1.5 D5:.5 E5:4 F5:1 F5:1 F5:1.5 F5:.5 F5:1 E5:1 E5:1 E5:.5 E5:.5 E5:1 D5:1 D5:1 E5:1 D5:2 G5:2
+      E5:1 E5:1 E5:2 E5:1 E5:1 E5:2 E5:1 G5:1 C5:1.5 D5:.5 E5:4 F5:1 F5:1 F5:1.5 F5:.5 F5:1 E5:1 E5:1 E5:.5 E5:.5 G5:1 G5:1 F5:1 D5:1 C5:4`),
+     bass:parse(`C3:4 C3:4 C3:4 C3:4 F3:4 C3:4 G3:4 G3:4 C3:4 C3:4 C3:4 C3:4 F3:4 C3:4 G3:4 C3:4`)},
+    {name:'We Wish You a Merry Christmas',bpm:132,mel:parse(`G4:1 C5:1 C5:.5 D5:.5 C5:.5 B4:.5 A4:1 A4:1 A4:1 D5:1 D5:.5 E5:.5 D5:.5 C5:.5 B4:1 G4:1 G4:1 E5:1 E5:.5 F5:.5 E5:.5 D5:.5 C5:1 A4:1 G4:.5 G4:.5 A4:1 D5:1 B4:1 C5:3
+      G4:1 C5:1 C5:1 C5:1 B4:2 B4:1 C5:1 B4:1 A4:1 G4:2 D5:1 E5:1 D5:1 C5:1 G5:1 G4:1 G4:.5 G4:.5 A4:1 D5:1 B4:1 C5:3 R:1`),
+     bass:parse(`R:1 C3:3 F3:3 D3:3 G3:3 E3:3 F3:3 G3:3 C3:3 R:1 C3:3 G3:3 G3:3 C3:3 G3:3 C3:3 G3:3 C3:3 R:1`)},
+    {name:'Deck the Halls',bpm:140,mel:parse(`D5:1.5 C5:.5 B4:1 A4:1 G4:1 A4:1 B4:1 G4:1 A4:.5 B4:.5 C5:.5 A4:.5 B4:1.5 A4:.5 G4:1 F#4:1 G4:2
+      D5:1.5 C5:.5 B4:1 A4:1 G4:1 A4:1 B4:1 G4:1 A4:.5 B4:.5 C5:.5 A4:.5 B4:1.5 A4:.5 G4:1 F#4:1 G4:2
+      A4:1.5 B4:.5 C5:1 A4:1 B4:1.5 C5:.5 D5:1 A4:1 B4:.5 C#5:.5 D5:1 E5:.5 F#5:.5 G5:1 F#5:1 E5:1 D5:2
+      D5:1.5 C5:.5 B4:1 A4:1 G4:1 A4:1 B4:1 G4:1 E5:.5 E5:.5 E5:.5 E5:.5 D5:1.5 C5:.5 B4:1 A4:1 G4:2 R:2`),
+     bass:parse(`G2:4 G2:2 D3:2 G2:4 D3:2 G2:2 G2:4 G2:2 D3:2 G2:4 D3:2 G2:2 D3:4 D3:4 D3:4 A2:2 D3:2 G2:4 G2:4 C3:2 D3:2 G2:2 R:2`)}
+  ];
+  let ctx=null,master=null,playing=false,timer=0,si=0,mi=0,bi=0,mt=0,bt=0,noiseBuf=null;
+  function ensure(){
+    if(ctx)return true;
+    try{ctx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){return false}
+    master=ctx.createGain();master.gain.value=0.5;
+    const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=5200;master.connect(lp).connect(ctx.destination);
+    noiseBuf=ctx.createBuffer(1,ctx.sampleRate*0.2,ctx.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    return true;
+  }
+  function box(f,t,dur){ // เสียงกล่องดนตรี/ระฆัง
+    [[1,'triangle',0.09],[2,'sine',0.025],[3.01,'sine',0.012]].forEach(([m,type,v])=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.value=f*m;
+      g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(v,t+0.008);g.gain.exponentialRampToValueAtTime(0.0001,t+Math.min(1.6,dur+0.6));
+      o.connect(g).connect(master);o.start(t);o.stop(t+dur+0.7);});
+  }
+  function bass(f,t,dur){const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=f;
+    g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.06,t+0.03);g.gain.exponentialRampToValueAtTime(0.0001,t+dur*0.95);o.connect(g).connect(master);o.start(t);o.stop(t+dur);}
+  function sleigh(t){const s=ctx.createBufferSource(),hp=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=noiseBuf;hp.type='highpass';hp.frequency.value=7000;
+    g.gain.setValueAtTime(0.025,t);g.gain.exponentialRampToValueAtTime(0.0001,t+0.12);s.connect(hp).connect(g).connect(master);s.start(t);s.stop(t+0.15);}
+  function schedule(){
+    if(!playing)return;const song=SONGS[si],beat=60/song.bpm,ahead=ctx.currentTime+0.6;
+    while(mt<ahead){
+      if(mi>=song.mel.length){ // จบเพลง → เว้นช่วงแล้วเพลงถัดไป
+        si=(si+1)%SONGS.length;mi=0;bi=0;const gap=mt+beat*2;mt=gap;bt=gap;return;}
+      const[f,d]=song.mel[mi++];if(f)box(f,mt,d*beat);
+      if(song.bells&&d>=1){for(let k=0;k<d;k++)sleigh(mt+k*beat);}
+      mt+=d*beat;
+    }
+    while(bt<ahead&&bi<song.bass.length){const[f,d]=song.bass[bi++];if(f)bass(f,bt,d*beat);bt+=d*beat;}
+  }
+  function start(){
+    if(playing||!themeOn()||!pref())return;if(!ensure())return;
+    ctx.resume&&ctx.resume();playing=true;mt=bt=ctx.currentTime+0.15;mi=bi=0;
+    clearInterval(timer);timer=setInterval(schedule,120);schedule();ui();hideHint();
+  }
+  function stop(){playing=false;clearInterval(timer);if(ctx){try{master.gain.setTargetAtTime(0,ctx.currentTime,0.05);setTimeout(()=>{if(!playing&&master)master.gain.value=0.5},400);}catch(e){}}ui();}
+  window.xmMusic={start,stop,toggle(){if(playing){setPref(false);stop();}else{setPref(true);start();}},get playing(){return playing}};
+
+  // ── ปุ่มเปิด/ปิดเพลง + ป้ายชวนแตะ ──
+  let btn,hint;
+  function ui(){if(!btn)return;btn.innerHTML=`<span class="ic">${playing?'🎵':'🔇'}</span><span class="tip">${playing?'ปิดเพลง':'เปิดเพลงคริสต์มาส'}</span>`;btn.classList.toggle('on',playing);btn.setAttribute('aria-pressed',playing);btn.setAttribute('aria-label',playing?'ปิดเพลง':'เปิดเพลงคริสต์มาส');}
+  function hideHint(){if(hint){hint.remove();hint=null;}}
+  function build(){
+    btn=document.createElement('button');btn.type='button';btn.className='xm-toggle xm-music xm-only';
+    btn.addEventListener('click',e=>{e.stopPropagation();xmMusic.toggle();});document.body.appendChild(btn);ui();
+    if(pref()&&themeOn()){hint=document.createElement('div');hint.className='xm-hint xm-only';hint.innerHTML='🎵 แตะที่ไหนก็ได้เพื่อเปิดเพลงคริสต์มาส';document.body.appendChild(hint);setTimeout(hideHint,9000);}
+    const first=()=>{if(themeOn()&&pref())start();['pointerdown','keydown','touchstart'].forEach(ev=>removeEventListener(ev,first,true));};
+    ['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,first,true));
+    // ปิดธีม → หยุดเพลง / เปิดธีม → เล่นต่อ
+    new MutationObserver(()=>{if(!themeOn())stop();else if(pref()&&ctx)start();}).observe(root,{attributes:true,attributeFilter:['class']});
+    document.addEventListener('visibilitychange',()=>{if(!ctx)return;if(document.hidden)ctx.suspend&&ctx.suspend();else if(playing)ctx.resume&&ctx.resume();});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build);else build();
+})();
 </script>
 </body>
 </html>
