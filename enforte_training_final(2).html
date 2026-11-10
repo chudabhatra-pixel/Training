@@ -1217,6 +1217,36 @@ html:not(.loy) .lk-gift{display:none!important}
 }
 @media(prefers-reduced-motion:reduce){.lk-boat,.lk-wave,.lk-moon,.lk-stars,.lk-hang svg,.lk-gift{animation:none}.lk-sail{animation-duration:.01s}}
 @media print{#lk-lanterns,.lk-toggle,.lk-only,.lk-gift,.lk-sail{display:none!important}}
+
+/* ── ตกแต่งเพิ่ม: โคมในแบนเนอร์ พวงมาลัย วัดริมน้ำ ดอกบัว ลายไทย ── */
+.lk-hcv{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.lk-garland{position:absolute;left:0;right:0;top:-2px;height:80px;z-index:3;pointer-events:none;overflow:hidden;filter:drop-shadow(0 3px 3px rgba(0,0,0,.25))}
+.lk-garland svg{display:block}
+.lk-sky{position:absolute;left:0;right:0;bottom:62px;height:124px;z-index:0;pointer-events:none;opacity:.9}
+.lk-temple{width:100%;height:100%;display:block}
+.lk-lotus{position:absolute;bottom:-4px;width:110px;z-index:2;pointer-events:none;filter:drop-shadow(0 0 10px rgba(255,180,200,.35))}
+.lk-lotus svg{width:100%;display:block}
+.lk-lotus.l1{left:-14px}.lk-lotus.l2{left:110px;width:80px;bottom:-6px;opacity:.95}
+.lk-flies i{position:absolute;width:4px;height:4px;border-radius:50%;background:#FFF3B0;box-shadow:0 0 8px 3px rgba(255,230,120,.7);animation:lkFly 6s ease-in-out infinite}
+.lk-flies i:nth-child(1){left:12%;bottom:30px}.lk-flies i:nth-child(2){left:28%;bottom:44px;animation-delay:-1s}.lk-flies i:nth-child(3){left:47%;bottom:24px;animation-delay:-2s}
+.lk-flies i:nth-child(4){left:63%;bottom:50px;animation-delay:-3s}.lk-flies i:nth-child(5){left:80%;bottom:28px;animation-delay:-4s}.lk-flies i:nth-child(6){left:92%;bottom:46px;animation-delay:-5s}
+@keyframes lkFly{0%,100%{transform:translate(0,0);opacity:.2}30%{opacity:1}50%{transform:translate(14px,-12px);opacity:.9}80%{opacity:.3}}
+html.loy .hero-left{margin-top:18px}
+/* โลโก้ */
+.lk-logo{position:absolute;width:34px;left:58px;top:2px;z-index:2;pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
+.lk-logo svg{width:100%;display:block}
+/* ลายประจำยามสีทอง */
+.lk-band{position:absolute;left:0;right:0;bottom:0;height:14px;pointer-events:none;border-radius:0 0 inherit inherit;opacity:.9;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 14'%3E%3Crect width='28' height='14' fill='%23F7EBCB'/%3E%3Cpath d='M14 1 L21 7 L14 13 L7 7Z' fill='%23D9A53A'/%3E%3Cpath d='M14 4 L17.5 7 L14 10 L10.5 7Z' fill='%23FFF6DC'/%3E%3Ccircle cx='14' cy='7' r='1.4' fill='%23B5520B'/%3E%3Ccircle cx='0' cy='7' r='2' fill='%23D9A53A'/%3E%3Ccircle cx='28' cy='7' r='2' fill='%23D9A53A'/%3E%3C/svg%3E") repeat-x left center/28px 14px}
+html.loy .pg-header{overflow:hidden}
+.lk-wm{position:absolute;right:28px;bottom:16px;width:120px;opacity:.16;pointer-events:none}
+.lk-wm svg{width:100%;display:block}
+html.loy .hero-cat::after{content:"";position:absolute;left:0;right:0;top:0;height:12px;z-index:4;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 12'%3E%3Crect width='24' height='12' fill='%23B5862B'/%3E%3Cpath d='M12 1 L18 6 L12 11 L6 6Z' fill='%23FFD27A'/%3E%3Ccircle cx='12' cy='6' r='1.4' fill='%238A4B0B'/%3E%3C/svg%3E") repeat-x left center/24px 12px}
+html.loy nav::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.07;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M20 4 L30 20 L20 36 L10 20Z' fill='none' stroke='%23FFD27A' stroke-width='1.5'/%3E%3Ccircle cx='20' cy='20' r='3' fill='%23FFD27A'/%3E%3C/svg%3E") 0 0/40px 40px}
+@media(max-width:900px){.lk-lotus.l2{display:none}.lk-lotus.l1{width:80px}.lk-sky{bottom:52px;height:90px}.lk-logo{width:26px;left:44px;top:6px}.lk-wm{display:none}.lk-garland{height:60px}}
+@media(prefers-reduced-motion:reduce){.lk-flies i{animation:none}}
 </style>
 <script>
 // ธีมเทศกาลเปลี่ยนเองตามวันที่ (เวลาไทย): ลอยกระทง ≤ 25 พ.ย. 2569 · คริสต์มาส+ปีใหม่ 26 พ.ย. 2569 – 15 ม.ค. 2570 · หลังจากนั้นหน้าปกติ
@@ -4368,30 +4398,66 @@ showScript('open',document.querySelector('.sc-tab'));
       <rect x="38.5" y="14" width="3" height="16" rx="1" fill="#FFF3D6"/><path class="lk-flame" d="M40 3 C44 9 43 13 40 14 C37 13 36 9 40 3Z" fill="#FFB648"/></svg>`
   };
 
-  // ── โคมลอย ──
-  let cv,ctx,W,H,lan=[],raf=0;
-  function rs(){if(!cv)return;const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0);}
-  function mk(start){const s=Math.random()*0.7+0.55;return{x:Math.random()*W,y:start?Math.random()*H:H+40,s,vy:0.25+s*0.35,ph:Math.random()*6.28,amp:0.3+Math.random()*0.5,fl:Math.random()*6.28,a:0.55+Math.random()*0.4}}
+  // ── โคมลอย + พลุ: วาดเฉพาะในแบนเนอร์หน้าแรก ──
+  let cv,ctx,W,H,lan=[],sparks=[],raf=0,visible=true,lastFw=0;
+  function rs(){if(!cv)return;const r=cv.parentElement.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0);}
+  function mk(i){const s=Math.random()*0.6+0.5;return{x:W*0.04+Math.random()*W*0.92,y:H-50+i*26+Math.random()*30,s,vy:0.6+s*0.45,ph:Math.random()*6.28,amp:0.2+Math.random()*0.35,fl:Math.random()*6.28,a:0.6+Math.random()*0.35}}
   function drawLantern(l){
-    const w=16*l.s,h=22*l.s,x=l.x,y=l.y,fade=Math.min(1,Math.max(0,(y)/(H*0.35)));
-    ctx.save();ctx.globalAlpha=l.a*fade;
-    const g=ctx.createRadialGradient(x,y+h*0.25,1,x,y+h*0.2,h*1.6);g.addColorStop(0,'rgba(255,190,90,.55)');g.addColorStop(1,'rgba(255,140,40,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y+h*0.2,h*1.6,0,6.283);ctx.fill();
+    const w=15*l.s,h=20*l.s,x=l.x,y=l.y,fade=Math.min(1,Math.max(0,y/(H*0.3)))*Math.min(1,Math.max(0,(H-40-y)/60));
+    ctx.save();ctx.globalAlpha=Math.max(0,l.a*fade);
+    const g=ctx.createRadialGradient(x,y+h*0.25,1,x,y+h*0.2,h*1.5);g.addColorStop(0,'rgba(255,190,90,.5)');g.addColorStop(1,'rgba(255,140,40,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y+h*0.2,h*1.5,0,6.283);ctx.fill();
     const b=ctx.createLinearGradient(x,y-h/2,x,y+h/2);b.addColorStop(0,'#FFB347');b.addColorStop(.6,'#FF8C2A');b.addColorStop(1,'#FFE08A');
     ctx.fillStyle=b;ctx.beginPath();ctx.moveTo(x-w*0.42,y-h/2);ctx.lineTo(x+w*0.42,y-h/2);ctx.quadraticCurveTo(x+w*0.62,y,x+w*0.36,y+h/2);ctx.lineTo(x-w*0.36,y+h/2);ctx.quadraticCurveTo(x-w*0.62,y,x-w*0.42,y-h/2);ctx.fill();
-    const f=0.75+Math.sin(l.fl)*0.25;ctx.fillStyle=`rgba(255,250,210,${0.8*f})`;ctx.beginPath();ctx.ellipse(x,y+h*0.32,w*0.16,h*0.12*f,0,0,6.283);ctx.fill();
-    ctx.restore();
+    const f=0.75+Math.sin(l.fl)*0.25;ctx.fillStyle=`rgba(255,250,210,${0.8*f})`;ctx.beginPath();ctx.ellipse(x,y+h*0.32,w*0.16,h*0.12*f,0,0,6.283);ctx.fill();ctx.restore();
   }
+  function burst(){const cx=W*(0.08+Math.random()*0.5),cy=H*(0.12+Math.random()*0.25),cols=['#FFD27A','#FF9A3C','#FF6B9A','#BFE6FF','#ffffff'];const c=cols[Math.floor(Math.random()*cols.length)];
+    for(let i=0;i<46;i++){const a=6.283*i/46,sp=Math.random()*1.6+0.9;sparks.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1,c:Math.random()<.3?'#fff':c});}}
   function startLanterns(){
-    if(reduce)return;
-    if(!cv){cv=document.createElement('canvas');cv.id='lk-lanterns';cv.setAttribute('aria-hidden','true');document.body.appendChild(cv);ctx=cv.getContext('2d');addEventListener('resize',rs);}
-    rs();const n=innerWidth<700?12:26;lan=Array.from({length:n},()=>mk(true));cancelAnimationFrame(raf);
-    (function loop(){
+    if(reduce)return;const hb=document.querySelector('.hero-banner');if(!hb)return;
+    if(!cv){cv=document.createElement('canvas');cv.className='lk-hcv lk-only';cv.setAttribute('aria-hidden','true');hb.insertBefore(cv,hb.querySelector('.lk-water'));ctx=cv.getContext('2d');
+      try{new ResizeObserver(rs).observe(hb)}catch(e){addEventListener('resize',rs)}
+      try{new IntersectionObserver(es=>{visible=es[0].isIntersecting}).observe(hb)}catch(e){}}
+    rs();lan=Array.from({length:innerWidth<700?8:18},(_,i)=>{const l=mk(0);l.y=H*0.08+Math.random()*(H*0.8);return l;});/* เปิดหน้ามาโคมลอยอยู่ทั่วฟ้าแล้ว */sparks=[];let shots=0;cancelAnimationFrame(raf);
+    (function loop(t){
       if(!on()){ctx.clearRect(0,0,W,H);return;}
-      if(!document.hidden){ctx.clearRect(0,0,W,H);for(const l of lan){l.ph+=0.01;l.fl+=0.25;l.y-=l.vy;l.x+=Math.sin(l.ph)*l.amp;if(l.y<-40)Object.assign(l,mk(false));drawLantern(l);}}
+      if(!document.hidden&&visible&&hb.offsetParent){
+        ctx.clearRect(0,0,W,H);
+        for(const l of lan){l.ph+=0.01;l.fl+=0.25;l.y-=l.vy;l.x+=Math.sin(l.ph)*l.amp;if(l.y<-40)Object.assign(l,mk(Math.random()*3));if(l.y<H-40)drawLantern(l);} // ลอยต่อเนื่อง เฉพาะในแบนเนอร์
+        if(t-lastFw>(shots<3?2200:4500+Math.random()*3000)){lastFw=t;shots++;burst();} // พลุจุดเป็นระยะ
+        ctx.save();ctx.globalCompositeOperation='lighter';
+        sparks=sparks.filter(p=>p.life>0);for(const p of sparks){p.x+=p.vx;p.y+=p.vy;p.vy+=0.02;p.vx*=0.985;p.life-=0.011;ctx.globalAlpha=Math.max(0,p.life)*0.85;ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,1.6,0,6.283);ctx.fill();}
+        ctx.restore();
+      }
       raf=requestAnimationFrame(loop);
-    })();
+    })(0);
   }
 
+  // ── พวงมาลัยดาวเรือง-มะลิ + ระย้า ──
+  function garland(Wd){
+    Wd=Math.max(320,Math.round(Wd));const N=Math.max(3,Math.round(Wd/240)),seg=Wd/N;let beads='',tass='';
+    for(let i=0;i<N;i++){const x0=i*seg,x1=x0+seg,cx=(x0+x1)/2,sag=34;
+      for(let k=0;k<=28;k++){const t=k/28,x=(1-t)*(1-t)*x0+2*(1-t)*t*cx+t*t*x1,y=4+2*(1-t)*t*sag*2;
+        const jas=k%4===0;beads+=jas?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.4" fill="#FFFDF4"/>`:`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.6" fill="${k%2?'#F59E0B':'#F97316'}"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.6" fill="#B45309"/>`;}
+      const tx=x1;if(i<N-1){let y=6;for(let k=0;k<5;k++){y+=8;tass+=k%2?`<circle cx="${tx}" cy="${y}" r="3" fill="#FFFDF4"/>`:`<circle cx="${tx}" cy="${y}" r="3.8" fill="#F59E0B"/>`;}
+        tass+=`<path d="M${tx-6} ${y+5} Q${tx} ${y-2} ${tx+6} ${y+5} Q${tx} ${y+14} ${tx-6} ${y+5}Z" fill="#E11D48"/><path d="M${tx-4} ${y+12} L${tx-6} ${y+28} M${tx} ${y+12} V${y+30} M${tx+4} ${y+12} L${tx+6} ${y+28}" stroke="#E9C06A" stroke-width="1.6"/>`;}
+    }
+    return `<svg viewBox="0 0 ${Wd} 80" width="${Wd}" height="80" aria-hidden="true"><path d="M0 4 H${Wd}" stroke="#B5862B" stroke-width="3"/>${beads}${tass}</svg>`;
+  }
+  function drawGarland(){document.querySelectorAll('.lk-garland').forEach(el=>{el.innerHTML=garland(el.clientWidth);});}
+  addEventListener('resize',()=>{clearTimeout(window.__lkG);window.__lkG=setTimeout(drawGarland,200);});
+
+  // ── วัดและต้นตาลริมน้ำ (เงา) ──
+  function chedi(x,s){ // เจดีย์ทรงดอกบัวตูมแบบสุโขทัย
+    const b=(dx,dy)=>`${(x+dx*s).toFixed(1)} ${(120-dy*s).toFixed(1)}`;
+    return `<path d="M${b(-34,0)} L${b(-34,8)} L${b(-28,8)} L${b(-28,16)} L${b(-22,16)} L${b(-22,26)} L${b(-14,26)} L${b(-14,44)} C${b(-16,54)} ${b(-12,62)} ${b(-8,66)} L${b(-6,70)} C${b(-14,80)} ${b(-10,92)} ${b(0,98)} C${b(10,92)} ${b(14,80)} ${b(6,70)} L${b(8,66)} C${b(12,62)} ${b(16,54)} ${b(14,44)} L${b(14,26)} L${b(22,26)} L${b(22,16)} L${b(28,16)} L${b(28,8)} L${b(34,8)} L${b(34,0)} Z"/><path d="M${b(0,98)} L${b(0,124)}" stroke-width="${(2*s).toFixed(1)}" stroke-linecap="round"/>`;
+  }
+  function palm(x,s){const b=(dx,dy)=>`${(x+dx*s).toFixed(1)} ${(120-dy*s).toFixed(1)}`;
+    return `<path d="M${b(-1.5,0)} L${b(-1,70)} L${b(1,70)} L${b(1.5,0)}Z"/><path d="M${b(0,70)} l${-22*s} ${8*s} M${b(0,70)} l${-18*s} ${-6*s} M${b(0,70)} l${-8*s} ${-14*s} M${b(0,70)} l${6*s} ${-15*s} M${b(0,70)} l${18*s} ${-7*s} M${b(0,70)} l${22*s} ${7*s}" fill="none" stroke-width="${(4*s).toFixed(1)}" stroke-linecap="round"/>`;}
+  const SKY=()=>`<svg class="lk-temple" viewBox="0 0 1000 124" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><g fill="#1B2A5E" stroke="#E9C06A" stroke-opacity=".45" stroke-width="1" style="filter:drop-shadow(0 0 6px rgba(255,210,122,.35))">
+    ${palm(30,.75)}${palm(370,.85)}${chedi(450,.8)}${chedi(530,1.25)}${chedi(610,.8)}<rect x="420" y="112" width="220" height="12"/>${palm(680,1)}${palm(720,.8)}${chedi(860,.7)}${palm(960,.9)}<rect x="0" y="118" width="1000" height="6"/></g>
+    <g fill="#FFD27A" opacity=".7"><circle cx="530" cy="-1" r="2.5"/></g></svg>`;
+  const LOTUS=(c1,c2)=>`<svg viewBox="0 0 120 70" aria-hidden="true"><ellipse cx="60" cy="62" rx="54" ry="8" fill="#1E5F3E"/><path d="M14 60 Q30 46 50 58Z M106 60 Q90 46 70 58Z" fill="#2E8B57"/>
+    <path d="M30 58 Q30 30 48 50 Q50 20 60 46 Q70 20 72 50 Q90 30 90 58 Q60 66 30 58Z" fill="${c1}"/><path d="M48 54 Q52 28 60 48 Q68 28 72 54Z" fill="${c2}"/><circle cx="60" cy="50" r="4" fill="#FFD27A"/></svg>`;
   // ── นับถอยหลังคืนลอยกระทง ──
   const pad=n=>String(n).padStart(2,'0');
   function tick(){
@@ -4466,12 +4532,14 @@ showScript('open',document.querySelector('.sc-tab'));
     const hb=document.querySelector('.hero-banner');
     if(hb&&!hb.querySelector('.lk-moon')){
       const boats=['lotus','leaf','bread','lotus'].map((k,i)=>`<div class="lk-boat" style="animation-duration:${34+i*7}s;animation-delay:-${i*11}s">${KT[k]()}</div>`).join('');
-      hb.insertAdjacentHTML('afterbegin',`<div class="lk-stars lk-only"></div><div class="lk-moon lk-only"></div><div class="lk-water lk-only"><div class="lk-reflect"></div><div class="lk-wave w1"></div><div class="lk-wave w2"></div>${boats}</div>`);
+      hb.insertAdjacentHTML('afterbegin',`<div class="lk-stars lk-only"></div><div class="lk-moon lk-only"></div><div class="lk-garland lk-only"></div><div class="lk-sky lk-only">${SKY()}</div><div class="lk-water lk-only"><div class="lk-reflect"></div><div class="lk-wave w1"></div><div class="lk-wave w2"></div>${boats}<div class="lk-flies"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="lk-lotus l1 lk-only">${LOTUS('#F48FB1','#FBC4D8')}</div><div class="lk-lotus l2 lk-only">${LOTUS('#FFFFFF','#FDE7EF')}</div>`);
       const eb=hb.querySelector('.hero-eyebrow');
       if(eb)eb.insertAdjacentHTML('beforebegin',`<div class="lk-greet lk-only"><div class="t1" id="lk-t1">🪷 สุขสันต์วันลอยกระทง 2569<small>นับถอยหลังสู่คืนวันเพ็ญ · อังคารที่ 24 พ.ย.</small></div><div class="xm-cd" id="lk-cd" style="margin-left:auto"></div>
         <div class="lk-btns"><button class="lk-btn" onclick="lkWish()">🪷 ลอยกระทงอธิษฐาน</button><button class="lk-btn alt" onclick="xmFireworks&&xmFireworks(6)">🎆 จุดพลุ</button></div></div>`);
     }
     document.querySelectorAll('.pg-header').forEach(h=>{if(!h.querySelector('.lk-hang'))h.insertAdjacentHTML('beforeend',`<div class="lk-hang lk-only" aria-hidden="true">${HANG()}</div>`)});
+    const br=document.querySelector('.nav-brand');if(br&&!br.querySelector('.lk-logo'))br.insertAdjacentHTML('beforeend',`<div class="lk-logo lk-only">${LOTUS('#F48FB1','#FBC4D8')}</div>`);
+    document.querySelectorAll('.pg-header').forEach(h=>{if(!h.querySelector('.lk-band'))h.insertAdjacentHTML('beforeend',`<div class="lk-band lk-only"></div><div class="lk-wm lk-only">${LOTUS('#F48FB1','#FBC4D8')}</div>`)});
     const note=document.querySelector('.nav-footer-note');
     if(note&&!document.querySelector('.lk-navcard'))note.insertAdjacentHTML('beforebegin',`<div class="lk-navcard lk-only"><b>🪷 สุขสันต์วันลอยกระทง</b>ตามหากระทงที่ซ่อนอยู่ทุกหน้า<div class="xm-hunt lk-hunt"><span>🪷</span><span class="bar"><i></i></span><b></b></div><button class="xm-navbtn" onclick="lkWish()">🕯️ ลอยกระทงอธิษฐาน</button></div>`);
     updHunt();
@@ -4480,11 +4548,11 @@ showScript('open',document.querySelector('.sc-tab'));
   function apply(v,user){
     root.classList.toggle('loy',v);if(user)setOn(v);
     const b=document.querySelector('.lk-toggle');if(b){b.innerHTML=`<span class="ic">${v?'🪷':'🌑'}</span><span class="tip">${v?'ปิดธีมลอยกระทง':'เปิดธีมลอยกระทง'}</span>`;b.setAttribute('aria-label',v?'ปิดธีมลอยกระทง':'เปิดธีมลอยกระทง');b.setAttribute('aria-pressed',v);}
-    if(v){startLanterns();if(user&&window.xmFireworks)xmFireworks(2);}
+    if(v){startLanterns();setTimeout(drawGarland,30);if(user&&window.xmFireworks)xmFireworks(2);}
   }
   if(typeof window.buildBodyMap==='function'){const _b=window.buildBodyMap;window.buildBodyMap=function(){_b.apply(this,arguments);placeHunt();};}
   if(typeof window.simHome==='function'){const _s=window.simHome;window.simHome=function(){_s.apply(this,arguments);placeHunt();};}
-  function init(){decorate();apply(getOn(),false);placeHunt();tick();setInterval(tick,1000);
+  function init(){decorate();apply(getOn(),false);drawGarland();placeHunt();tick();setInterval(tick,1000);
     document.addEventListener('click',e=>{if(e.target.closest('.nav-link'))setTimeout(placeHunt,60);},true);}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else setTimeout(init,0);
 })();
