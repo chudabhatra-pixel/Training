@@ -735,6 +735,202 @@ body.modal-open{overflow:hidden}
 @media(max-width:700px){.lb-btn .lb-lbl{display:none}.lb-btn{padding:0 11px}}
 .dp-fda-link{text-decoration:none;cursor:pointer;color:#1F4E79!important;border-color:#1F4E79!important;background:#F0F6FC!important}.dp-fda-link:hover{background:#1F4E79!important;color:#fff!important}
 .print-qr{display:flex;align-items:center;gap:10px;margin-top:12px;break-inside:avoid;page-break-inside:avoid}.print-qr svg{width:78px;height:78px;flex:0 0 78px;border:1px solid #DDE5EF;border-radius:6px}.print-qr-txt{font-size:10px;color:#4A5568;line-height:1.45}.print-qr-txt b{display:block;font-size:11px;color:#173F63}
+
+/* ══════════ FX: 3D TILT CARDS ══════════ */
+.tilt-on{transform:perspective(900px) rotateX(var(--rx,0)) rotateY(var(--ry,0)) translateY(-6px) scale(1.015)!important;transition:transform .09s linear,box-shadow .25s!important;box-shadow:0 22px 50px rgba(20,33,61,.18)!important;z-index:3}
+.tilt-on::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:5;
+  background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.55) 0%,rgba(255,255,255,.12) 22%,transparent 48%),
+  linear-gradient(115deg,transparent 30%,rgba(120,200,255,.16) 42%,rgba(255,140,220,.14) 50%,rgba(255,230,120,.14) 58%,transparent 70%);
+  background-size:100% 100%,220% 220%;background-position:0 0,var(--hx,50%) 50%;mix-blend-mode:soft-light}
+.tilt-reset{transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .3s!important}
+
+/* ══════════ BODY MAP ══════════ */
+.bm-wrap{max-width:1180px;margin:0 auto;padding:42px 42px 70px}
+.bm-hero{position:relative;overflow:hidden;border-radius:24px;padding:30px 32px;margin-bottom:22px;color:#fff;
+  background:radial-gradient(circle at 85% 20%,rgba(64,160,255,.35),transparent 45%),linear-gradient(135deg,#0B1630,#16305E)}
+.bm-hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(120,180,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(120,180,255,.08) 1px,transparent 1px);background-size:26px 26px;mask-image:linear-gradient(90deg,transparent,#000 60%)}
+.bm-eyebrow{font-size:11px;letter-spacing:.18em;color:#7FD3FF;font-weight:700;position:relative}
+.bm-title{font-size:clamp(30px,4vw,46px);font-weight:900;line-height:1.35;margin-top:6px;position:relative}
+.bm-title em{font-style:normal;display:inline-block;padding:.14em .04em .2em;margin:-.14em 0 -.2em;background:linear-gradient(90deg,#7FD3FF,#B69CFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bm-sub{color:#B9C8E6;margin-top:10px;font-size:15px;position:relative;max-width:640px}
+.bm-modes{display:flex;gap:8px;margin-top:18px;position:relative;flex-wrap:wrap}
+.bm-mode{border:1px solid rgba(127,211,255,.35);background:rgba(255,255,255,.06);color:#DCEBFF;padding:9px 16px;border-radius:999px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:.2s}
+.bm-mode:hover{background:rgba(127,211,255,.15)}
+.bm-mode.on{background:#7FD3FF;color:#0B1630;border-color:#7FD3FF;box-shadow:0 0 22px rgba(127,211,255,.45)}
+.bm-chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.bm-chip{border:1px solid var(--rule);background:#fff;border-radius:999px;padding:7px 13px;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink2);cursor:pointer;transition:.18s}
+.bm-chip:hover{border-color:#9DB6DA;color:var(--ink)}
+.bm-chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.bm-chip b{font-weight:800;margin-left:4px;opacity:.6}
+.bm-stage{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:20px;align-items:start}
+.bm-figure{position:sticky;top:20px;border-radius:24px;overflow:hidden;background:radial-gradient(circle at 50% 35%,#18346A 0%,#0B1630 70%);box-shadow:0 18px 50px rgba(11,22,48,.35);padding:14px 10px 6px}
+.bm-figure::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(120,180,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(120,180,255,.07) 1px,transparent 1px);background-size:20px 20px;pointer-events:none}
+.bm-hud{position:absolute;left:16px;right:16px;top:12px;display:flex;justify-content:space-between;font-size:10px;letter-spacing:.14em;color:#7FD3FF;font-weight:700;z-index:2;pointer-events:none}
+.bm-hud span:last-child{color:#B69CFF}
+.bm-svg{width:100%;height:auto;display:block;position:relative}
+.bm-body path,.bm-body ellipse{fill:url(#bmGrad);stroke:#7FC4FF;stroke-width:1.2;stroke-opacity:.7}
+.bm-body{filter:drop-shadow(0 0 10px rgba(80,170,255,.45))}
+.bm-scan{animation:bmScan 3.6s ease-in-out infinite}
+@keyframes bmScan{0%{transform:translateY(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(560px);opacity:0}}
+.bm-ring{transform-origin:150px 604px;animation:bmSpin 8s linear infinite}
+@keyframes bmSpin{to{transform:rotate(360deg)}}
+.bm-hot{cursor:pointer;outline:none}
+.bm-hot .core{fill:#7FD3FF;stroke:#fff;stroke-width:1.5;transition:.2s}
+.bm-hot .pulse{fill:none;stroke:#7FD3FF;stroke-width:1.5;transform-box:fill-box;transform-origin:center;animation:bmPulse 2.2s ease-out infinite}
+.bm-hot:nth-of-type(2n) .pulse{animation-delay:.6s}.bm-hot:nth-of-type(3n) .pulse{animation-delay:1.1s}
+@keyframes bmPulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.6);opacity:0}}
+.bm-hot:hover .core,.bm-hot:focus .core{fill:#fff;r:8}
+.bm-hot.on .core{fill:#FFD36E;stroke:#fff}
+.bm-hot.on .pulse{stroke:#FFD36E}
+.bm-hot.ok .core{fill:#3DDC97}.bm-hot.bad .core{fill:#FF6B7A}
+.bm-hot.dim{opacity:.35}
+.bm-tag{pointer-events:none;opacity:0;transition:opacity .2s}
+.bm-tag.show{opacity:1}
+.bm-tag rect{fill:rgba(11,22,48,.9);stroke:#FFD36E;stroke-width:1}
+.bm-tag text{fill:#fff;font-size:11px;font-weight:700;font-family:inherit}
+.bm-panel{min-height:520px}
+.bm-card{background:#fff;border:1px solid var(--rule);border-radius:22px;padding:24px 26px;box-shadow:var(--shadow-sm);animation:bmIn .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes bmIn{from{opacity:0;transform:translateY(14px) scale(.99)}to{opacity:1;transform:none}}
+.bm-zh{display:flex;align-items:center;gap:14px}
+.bm-zi{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:27px;background:linear-gradient(135deg,#EAF4FF,#F1EBFF);flex:0 0 54px}
+.bm-zt{font-size:24px;font-weight:900;color:var(--ink);line-height:1.15}
+.bm-zs{font-size:12px;color:var(--ink3);letter-spacing:.06em;margin-top:2px}
+.bm-found{margin-left:auto;font-size:12px;font-weight:800;color:#16826E;background:#E7F7F1;border-radius:999px;padding:6px 12px;white-space:nowrap}
+.bm-sec{margin-top:18px}
+.bm-lbl{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink3);text-transform:uppercase;margin-bottom:8px}
+.bm-says{display:flex;flex-direction:column;gap:7px}
+.bm-say{align-self:flex-start;background:#F1F5FA;border-radius:16px 16px 16px 4px;padding:10px 14px;font-size:14px;color:var(--ink)}
+.bm-ask{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.bm-ask li{background:linear-gradient(90deg,#EEF5FF,#fff);border-left:3px solid #2459D3;border-radius:10px;padding:9px 12px;font-size:14px;color:var(--ink2)}
+.bm-ask li b{color:#2459D3;margin-right:6px}
+.bm-prods{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.bm-prod{position:relative;background:#fff;border:1px solid var(--rule);border-radius:16px;padding:10px;cursor:pointer;text-align:left;font:inherit;transition:.2s;animation:bmPop .5s cubic-bezier(.2,1.4,.4,1) both}
+.bm-prod:hover{border-color:#9DB6DA}
+@keyframes bmPop{from{opacity:0;transform:scale(.85) translateY(10px)}to{opacity:1;transform:none}}
+.bm-prod img{width:100%;aspect-ratio:1.2;object-fit:contain;background:linear-gradient(145deg,#F7F9FC,#EDF2F8);border-radius:11px;display:block}
+.bm-pn{font-weight:800;font-size:14px;color:var(--ink);margin-top:8px;line-height:1.25}
+.bm-pd{font-size:11.5px;color:var(--ink3);margin-top:3px}
+.bm-soon{position:absolute;top:14px;left:14px;background:#F0B94B;color:#3A2A00;font-size:10px;font-weight:800;border-radius:999px;padding:3px 8px;z-index:2}
+.bm-warn{background:#FFF7E8;border:1px solid #F6DFAE;border-radius:14px;padding:11px 14px;font-size:13.5px;color:#7A5410}
+.bm-welcome{text-align:center;padding:46px 26px}
+.bm-welcome .big{font-size:56px;animation:bmFloat 3s ease-in-out infinite}
+@keyframes bmFloat{50%{transform:translateY(-8px)}}
+.bm-welcome h3{font-size:22px;font-weight:900;color:var(--ink);margin:10px 0 6px}
+.bm-welcome p{color:var(--ink3);font-size:14.5px}
+.bm-stats{display:flex;justify-content:center;gap:26px;margin-top:20px}
+.bm-stats div{font-size:12px;color:var(--ink3)}.bm-stats b{display:block;font-size:26px;color:var(--ink);font-weight:900}
+.bm-game-q{background:linear-gradient(135deg,#0B1630,#1C3A72);color:#fff;border-radius:20px;padding:22px 24px;position:relative;overflow:hidden}
+.bm-game-q .who{font-size:12px;color:#7FD3FF;font-weight:800;letter-spacing:.1em}
+.bm-game-q .q{font-size:21px;font-weight:800;margin-top:8px;line-height:1.4}
+.bm-game-q .hint{font-size:13px;color:#B9C8E6;margin-top:10px}
+.bm-gbar{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13px;color:var(--ink2);font-weight:700}
+.bm-gdots{display:flex;gap:5px}.bm-gdots i{width:22px;height:6px;border-radius:9px;background:#DDE5EF}.bm-gdots i.ok{background:#3DDC97}.bm-gdots i.bad{background:#FF6B7A}.bm-gdots i.cur{background:#2459D3}
+.bm-res{margin-top:14px;border-radius:16px;padding:14px 16px;font-size:14.5px;animation:bmIn .35s}
+.bm-res.ok{background:#E7F7F1;color:#0F5C45}.bm-res.bad{background:#FFECEE;color:#8E1F2C}
+.bm-btn{border:0;background:var(--ink);color:#fff;font:inherit;font-weight:800;font-size:14px;padding:11px 20px;border-radius:12px;cursor:pointer;transition:.2s}
+.bm-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(20,33,61,.25)}
+.bm-btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--rule)}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* ══════════ SALES SIMULATOR ══════════ */
+.sim-wrap{max-width:1080px;margin:0 auto;padding:42px 42px 70px}
+.sim-hero{position:relative;overflow:hidden;border-radius:24px;padding:30px 32px;color:#fff;margin-bottom:22px;
+  background:radial-gradient(circle at 90% 10%,rgba(255,120,160,.35),transparent 40%),radial-gradient(circle at 10% 100%,rgba(90,140,255,.35),transparent 45%),linear-gradient(135deg,#140F2E,#2A1B5C)}
+.sim-hero .bm-eyebrow{color:#FFB3CB}
+.sim-hero .bm-title em{background-image:linear-gradient(90deg,#FFB3CB,#FFD36E)}
+.sim-flow{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px;position:relative}
+.sim-flow span{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;color:#F3EAFF}
+.sim-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.sim-top h3{font-size:18px;font-weight:900;color:var(--ink);margin:0}
+.sim-filters{display:flex;gap:6px;flex-wrap:wrap}
+.sim-rand{background:linear-gradient(135deg,#FF5C8A,#FF9A3C);color:#fff;border:0;font:inherit;font-weight:800;padding:11px 18px;border-radius:14px;cursor:pointer;box-shadow:0 10px 24px rgba(255,92,138,.35);transition:.2s}
+.sim-rand:hover{transform:translateY(-2px) rotate(-1deg)}
+.sim-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.sim-card{position:relative;background:#fff;border:1px solid var(--rule);border-radius:20px;padding:18px;cursor:pointer;text-align:left;font:inherit;overflow:hidden;transition:.2s}
+.sim-card:hover{border-color:#C7B8F2}
+.sim-av{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;font-size:30px;background:linear-gradient(135deg,#FFF0F5,#EEF0FF)}
+.sim-type{position:absolute;top:16px;right:16px;font-size:10.5px;font-weight:800;border-radius:999px;padding:4px 9px}
+.sim-type.new{background:#EAF2FF;color:#2459D3}.sim-type.old{background:#FFF1E2;color:#B5620B}
+.sim-name{font-weight:900;font-size:16.5px;color:var(--ink);margin-top:12px}
+.sim-topic{font-size:13px;color:var(--ink3);margin-top:3px;min-height:36px}
+.sim-meta{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12px;color:var(--ink3)}
+.sim-lv{letter-spacing:2px;color:#F0B94B}
+.sim-best{font-weight:800;border-radius:999px;padding:3px 9px;background:#F1F5FA;color:var(--ink2)}
+.sim-best.S,.sim-best.A{background:#E7F7F1;color:#0F7A55}
+.sim-game{display:grid;grid-template-columns:1fr 280px;gap:18px;align-items:start}
+.sim-main{background:#fff;border:1px solid var(--rule);border-radius:22px;box-shadow:var(--shadow-sm);overflow:hidden}
+.sim-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--rule);background:linear-gradient(90deg,#FBFAFF,#fff)}
+.sim-head .sim-av{width:44px;height:44px;font-size:24px;border-radius:14px}
+.sim-head b{display:block;color:var(--ink);font-size:15px}.sim-head small{color:var(--ink3);font-size:12px}
+.sim-live{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:#E5484D}
+.sim-live i{width:8px;height:8px;border-radius:50%;background:#E5484D;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+.sim-steps{display:flex;gap:4px;padding:12px 18px 0}
+.sim-steps div{flex:1;text-align:center;font-size:10.5px;font-weight:800;color:var(--ink3);padding-bottom:8px;border-bottom:3px solid #E6EBF2;transition:.3s}
+.sim-steps div.done{color:#16826E;border-color:#3DDC97}.sim-steps div.cur{color:#6B3FD8;border-color:#8B5CF6}
+.sim-chat{padding:18px;display:flex;flex-direction:column;gap:12px;min-height:340px;max-height:56vh;overflow-y:auto;scroll-behavior:smooth;background:linear-gradient(#fff,#FAFBFE)}
+.sim-ctx{align-self:center;max-width:92%;background:#F3F0FF;color:#4B2FA8;border-radius:12px;padding:9px 14px;font-size:13px;text-align:center}
+.sim-stage{align-self:center;font-size:11px;font-weight:800;letter-spacing:.08em;color:#8B5CF6;background:#F5F0FF;border-radius:999px;padding:4px 12px}
+.sim-msg{display:flex;gap:8px;align-items:flex-end;max-width:84%;animation:bmIn .35s}
+.sim-msg .who{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-size:16px;background:#F1F5FA;flex:0 0 30px}
+.sim-msg .bub{padding:11px 14px;border-radius:16px;font-size:14.5px;line-height:1.55}
+.sim-msg.cust .bub{background:#F1F5FA;color:var(--ink);border-bottom-left-radius:4px}
+.sim-msg.me{align-self:flex-end;flex-direction:row-reverse}
+.sim-msg.me .bub{background:linear-gradient(135deg,#6B3FD8,#2459D3);color:#fff;border-bottom-right-radius:4px}
+.sim-msg.me .who{background:#EEE8FF}
+.sim-typing{display:inline-flex;gap:4px;padding:14px 16px}.sim-typing i{width:7px;height:7px;border-radius:50%;background:#9AA7BD;animation:typ 1s infinite}.sim-typing i:nth-child(2){animation-delay:.15s}.sim-typing i:nth-child(3){animation-delay:.3s}
+@keyframes typ{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+.sim-fb{border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.55;animation:bmIn .35s;border:1px solid}
+.sim-fb.g2{background:#E9F9F2;border-color:#BDEBD6;color:#0F5C45}
+.sim-fb.g1{background:#FFF8E6;border-color:#F4DFA6;color:#7A5410}
+.sim-fb.g0{background:#FFEEF0;border-color:#F7C5CC;color:#8E1F2C}
+.sim-fb b{display:block;margin-bottom:3px;font-size:14px}
+.sim-fb .tag{display:inline-block;margin-top:6px;background:#E5484D;color:#fff;font-size:11px;font-weight:800;border-radius:999px;padding:3px 9px}
+.sim-fb .best{margin-top:8px;background:rgba(255,255,255,.7);border-radius:10px;padding:8px 10px;color:var(--ink2);font-size:13px}
+.sim-ops{padding:14px 18px 18px;border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:8px;background:#fff}
+.sim-ops .lbl{font-size:11px;font-weight:800;color:var(--ink3);letter-spacing:.1em}
+.sim-op{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1.5px solid var(--rule);background:#fff;border-radius:14px;padding:11px 13px;font:inherit;font-size:14px;color:var(--ink);cursor:pointer;transition:.18s;animation:bmPop .4s both}
+.sim-op:nth-child(3){animation-delay:.06s}.sim-op:nth-child(4){animation-delay:.12s}
+.sim-op:hover{border-color:#8B5CF6;background:#FBF9FF;transform:translateX(3px)}
+.sim-op .k{flex:0 0 26px;height:26px;border-radius:8px;background:#F1EDFF;color:#6B3FD8;font-weight:900;display:grid;place-items:center;font-size:13px}
+.sim-next{align-self:flex-end}
+.sim-side{display:flex;flex-direction:column;gap:12px;position:sticky;top:20px}
+.sim-box{background:#fff;border:1px solid var(--rule);border-radius:18px;padding:16px}
+.sim-box h4{margin:0 0 10px;font-size:12px;letter-spacing:.1em;color:var(--ink3);font-weight:800}
+.sim-meter{height:12px;border-radius:99px;background:#EEF1F6;overflow:hidden}
+.sim-meter i{display:block;height:100%;border-radius:99px;transition:width .7s cubic-bezier(.2,.8,.2,1),background .4s}
+.sim-mv{display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:var(--ink3)}
+.sim-mv b{font-size:20px;color:var(--ink)}
+.sim-delta{font-weight:900;font-size:13px;animation:bmIn .3s}
+.sim-delta.up{color:#16A36E}.sim-delta.down{color:#E5484D}
+.sim-rules{margin:0;padding-left:18px;font-size:12.5px;color:var(--ink2);line-height:1.7}
+.sim-result{padding:28px;text-align:center;animation:bmIn .5s}
+.sim-grade{width:120px;height:120px;border-radius:50%;margin:0 auto;display:grid;place-items:center;font-size:54px;font-weight:900;color:#fff;box-shadow:0 14px 34px rgba(0,0,0,.18);animation:bmPop .7s cubic-bezier(.2,1.6,.4,1) both}
+.sim-grade.S{background:conic-gradient(#FFD36E,#FF9A3C,#FF5C8A,#8B5CF6,#FFD36E)}
+.sim-grade.A{background:linear-gradient(135deg,#3DDC97,#16826E)}.sim-grade.B{background:linear-gradient(135deg,#6EA8FF,#2459D3)}.sim-grade.C{background:linear-gradient(135deg,#FF8A8A,#E5484D)}
+.sim-result h3{font-size:24px;font-weight:900;color:var(--ink);margin:16px 0 4px}
+.sim-result p{color:var(--ink3);margin:0}
+.sim-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+.sim-kpi div{background:#F6F8FC;border-radius:14px;padding:12px;font-size:12px;color:var(--ink3)}.sim-kpi b{display:block;font-size:22px;color:var(--ink);font-weight:900}
+.sim-viol{text-align:left;background:#FFEEF0;border:1px solid #F7C5CC;border-radius:14px;padding:12px 16px;color:#8E1F2C;font-size:13.5px;margin-bottom:14px}
+.sim-viol ul{margin:6px 0 0;padding-left:18px}
+.sim-learn{text-align:left;background:#F5F0FF;border-radius:14px;padding:12px 16px;font-size:13.5px;color:#3B2A7A;margin-bottom:16px}
+.sim-acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.confetti{position:fixed;top:-12px;width:9px;height:14px;z-index:9999;pointer-events:none;animation:conf linear forwards}
+@keyframes conf{to{transform:translateY(105vh) rotate(720deg);opacity:.9}}
+
+@media(max-width:900px){
+  .bm-wrap,.sim-wrap{padding:28px 16px 60px}
+  .bm-stage{grid-template-columns:1fr}
+  .bm-figure{position:relative;top:0;max-width:380px;margin:0 auto;width:100%}
+  .sim-game{grid-template-columns:1fr}
+  .sim-side{position:static;order:-1;display:grid;grid-template-columns:1fr 1fr;gap:10px}.sim-side .sim-box{padding:12px 14px}.sim-side .rules{display:none}.sim-side>.bm-btn{grid-column:1/-1;padding:9px}.sim-steps div{font-size:9.5px}
+  .sim-msg{max-width:94%}
+}
+@media(prefers-reduced-motion:reduce){
+  .bm-scan,.bm-ring,.bm-hot .pulse,.bm-welcome .big{animation:none}
+}
 </style>
 </head>
 <body>
@@ -753,6 +949,8 @@ body.modal-open{overflow:hidden}
       <button class="nav-link" data-page="compare" onclick="goPage('compare',this)"><span class="nav-icon">⇄</span><span class="nav-text">เปรียบเทียบ</span></button>
       <button class="nav-link" data-page="quiz" onclick="goPage('quiz',this)"><span class="nav-icon">✓</span><span class="nav-text">แบบทดสอบ</span></button>
       <button class="nav-link" data-page="script" onclick="goPage('script',this)"><span class="nav-icon">◫</span><span class="nav-text">บทพูดขาย</span></button>
+      <button class="nav-link" data-page="bodymap" onclick="goPage('bodymap',this)"><span class="nav-icon">⦿</span><span class="nav-text">แผนที่ร่างกาย</span></button>
+      <button class="nav-link" data-page="sim" onclick="goPage('sim',this)"><span class="nav-icon">▶</span><span class="nav-text">ซ้อมขายจำลอง</span></button>
     </div>
     <div class="nav-learning-card">
       <div class="nlc-label">KNOWLEDGE CHECK</div>
@@ -780,18 +978,20 @@ body.modal-open{overflow:hidden}
         <div class="hero-stats">
           <div class="hstat"><div class="hstat-n" id="total-count">35</div><div class="hstat-l">รายการสินค้า</div></div>
           <div class="hstat"><div class="hstat-n">3</div><div class="hstat-l">หมวดหลัก</div></div>
-          <div class="hstat"><div class="hstat-n">5</div><div class="hstat-l">เครื่องมือเรียนรู้</div></div>
+          <div class="hstat"><div class="hstat-n">7</div><div class="hstat-l">เครื่องมือเรียนรู้</div></div>
         </div>
       </div>
       <div class="hero-path-card">
-        <div class="path-topline"><span>LEARNING PATH</span><span>5 STEPS</span></div>
+        <div class="path-topline"><span>LEARNING PATH</span><span>7 STEPS</span></div>
         <div class="path-title">เส้นทางเรียนรู้แนะนำ</div>
         <div class="path-list">
           <button class="path-item active" onclick="document.querySelector('.filter-strip').scrollIntoView({behavior:'smooth'})"><span class="path-num">01</span><span><b>รู้จักผลิตภัณฑ์</b><small>อ่านส่วนประกอบและประโยชน์</small></span><span class="path-arrow">→</span></button>
-          <button class="path-item" onclick="goPage('disease',document.querySelector('[data-page=disease]'))"><span class="path-num">02</span><span><b>รู้จักโรคและอาการ <span class="dz-new" style="margin-left:4px;padding:3px 6px">NEW</span></b><small>เข้าใจอาการและแนวทางดูแล</small></span><span class="path-arrow">→</span></button>
-          <button class="path-item" onclick="goPage('compare',document.querySelector('[data-page=compare]'))"><span class="path-num">03</span><span><b>ฝึกเปรียบเทียบ</b><small>เลือกสินค้าให้เหมาะกับความต้องการ</small></span><span class="path-arrow">→</span></button>
-          <button class="path-item" onclick="goPage('script',document.querySelector('[data-page=script]'))"><span class="path-num">04</span><span><b>ซ้อมบทพูดขาย</b><small>นำเสนออย่างเป็นธรรมชาติ</small></span><span class="path-arrow">→</span></button>
-          <button class="path-item" onclick="goPage('quiz',document.querySelector('[data-page=quiz]'))"><span class="path-num">05</span><span><b>เช็กความพร้อม</b><small>ผ่านเกณฑ์อย่างน้อย 70%</small></span><span class="path-arrow">→</span></button>
+          <button class="path-item" onclick="goPage('disease',document.querySelector('[data-page=disease]'))"><span class="path-num">02</span><span><b>รู้จักโรคและอาการ</b><small>เข้าใจอาการและแนวทางดูแล</small></span><span class="path-arrow">→</span></button>
+          <button class="path-item" onclick="goPage('bodymap',document.querySelector('[data-page=bodymap]'))"><span class="path-num">03</span><span><b>สแกนแผนที่ร่างกาย <span class="dz-new" style="margin-left:4px;padding:3px 6px">NEW</span></b><small>จับคู่อาการลูกค้ากับสินค้า</small></span><span class="path-arrow">→</span></button>
+          <button class="path-item" onclick="goPage('compare',document.querySelector('[data-page=compare]'))"><span class="path-num">04</span><span><b>ฝึกเปรียบเทียบ</b><small>เลือกสินค้าให้เหมาะกับความต้องการ</small></span><span class="path-arrow">→</span></button>
+          <button class="path-item" onclick="goPage('script',document.querySelector('[data-page=script]'))"><span class="path-num">05</span><span><b>ซ้อมบทพูดขาย</b><small>นำเสนออย่างเป็นธรรมชาติ</small></span><span class="path-arrow">→</span></button>
+          <button class="path-item" onclick="goPage('sim',document.querySelector('[data-page=sim]'))"><span class="path-num">06</span><span><b>ซ้อมขายกับลูกค้าจำลอง <span class="dz-new" style="margin-left:4px;padding:3px 6px">NEW</span></b><small>ฝึกตอบทีละขั้น ระวังข้อห้าม</small></span><span class="path-arrow">→</span></button>
+          <button class="path-item" onclick="goPage('quiz',document.querySelector('[data-page=quiz]'))"><span class="path-num">07</span><span><b>เช็กความพร้อม</b><small>ผ่านเกณฑ์อย่างน้อย 70%</small></span><span class="path-arrow">→</span></button>
         </div>
       </div>
     </div>
@@ -1044,6 +1244,34 @@ body.modal-open{overflow:hidden}
     <button class="sc-tab" onclick="showScript('resell',this)">รีเซลล์/CIT</button>
   </div>
   <div id="sc-content"></div>
+</div>
+</div>
+
+<div class="page" id="page-bodymap">
+<div class="bm-wrap" id="bm-root">
+  <section class="bm-hero">
+    <div class="bm-eyebrow">INTERACTIVE · BODY SCAN</div>
+    <div class="bm-title">แผนที่ร่างกาย <em>สแกนอาการ → สินค้า</em></div>
+    <p class="bm-sub">แตะจุดบนร่างกายเพื่อดูว่าลูกค้ามักพูดอะไร ควรถามต่ออย่างไร และสินค้าตัวไหนเกี่ยวข้อง ข้อมูลอ้างอิงจากตารางเสนอสินค้าใน Sales Script</p>
+    <div class="bm-modes"><button class="bm-mode on" data-m="explore" onclick="bmSetMode('explore',this)">🔍 โหมดสำรวจ</button><button class="bm-mode" data-m="game" onclick="bmSetMode('game',this)">🎯 เกมทายจุด</button></div>
+  </section>
+  <div class="bm-chips" id="bm-chips"></div>
+  <div class="bm-stage">
+    <div class="bm-figure" id="bm-fig"><div class="bm-hud"><span>● SCANNING</span><span>ENFORTE BODY MAP</span></div></div>
+    <div class="bm-panel" id="bm-panel"></div>
+  </div>
+</div>
+</div>
+
+<div class="page" id="page-sim">
+<div class="sim-wrap">
+  <section class="sim-hero bm-hero">
+    <div class="bm-eyebrow">SALES SIMULATOR · ROLE-PLAY</div>
+    <div class="bm-title">ซ้อมขายกับ <em>ลูกค้าจำลอง</em></div>
+    <p class="bm-sub">เลือกคำตอบทีละขั้นตามโครง Sales Script แล้วดูว่าลูกค้าไว้ใจคุณแค่ไหน ระวังข้อห้าม: ตอบผิดครั้งเดียว ความไว้ใจลดฮวบ!</p>
+    <div class="sim-flow"><span>① เปิดสาย</span><span>② ถามอาการ</span><span>③ เชื่อมสินค้า</span><span>④ ข้อโต้แย้ง</span><span>⑤ ปิดการขาย</span></div>
+  </section>
+  <div id="sim-root"></div>
 </div>
 </div>
 
@@ -2418,6 +2646,587 @@ const SUB_LBL={
 const FCAT_LBL={general:'ทั่วไป / สินค้า',health:'สุขภาพ & อาการ',safety:'ความปลอดภัย',usage:'วิธีใช้',selling:'เทคนิคขาย'};
 const KEYS=['ก','ข','ค','ง'];
 
+
+// ══════════ 3D TILT CARDS ══════════
+(function(){
+  try{
+    if(!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  }catch(e){return;}
+  const SEL='.pc,.bm-prod,.sim-card';
+  let cur=null;
+  function reset(c){c.classList.remove('tilt-on');c.classList.add('tilt-reset');c.style.removeProperty('--rx');c.style.removeProperty('--ry');setTimeout(()=>c.classList.remove('tilt-reset'),460);}
+  document.addEventListener('pointermove',e=>{
+    const c=e.target.closest&&e.target.closest(SEL);
+    if(c!==cur){if(cur)reset(cur);cur=c;}
+    if(!c)return;
+    const r=c.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+    c.style.setProperty('--rx',((0.5-y)*11).toFixed(2)+'deg');
+    c.style.setProperty('--ry',((x-0.5)*13).toFixed(2)+'deg');
+    c.style.setProperty('--gx',(x*100).toFixed(1)+'%');
+    c.style.setProperty('--gy',(y*100).toFixed(1)+'%');
+    c.style.setProperty('--hx',(x*100).toFixed(1)+'%');
+    c.classList.add('tilt-on');
+  },{passive:true});
+  document.addEventListener('pointerleave',()=>{if(cur){reset(cur);cur=null;}});
+  window.addEventListener('blur',()=>{if(cur){reset(cur);cur=null;}});
+})();
+
+// ══════════ BODY MAP ══════════
+// โซนร่างกาย → สินค้า อ้างอิงตารางเสนอสินค้าใน TMS Scripts v4/v5 และคำถามจากข้อ ② ของแต่ละสินค้า
+const BM_ZONES=[
+  {id:'ear',ic:'👂',th:'หู / การได้ยิน',en:'Hearing',pts:[[182,66]],
+   ids:['heralite'],
+   says:['หูอื้อบ่อย บางทีได้ยินไม่ชัด','เวลาคุยกับคนอื่นต้องให้พูดซ้ำบ่อย ๆ'],
+   ask:[['เปิด','ตอนนี้รู้สึกอย่างไรกับการได้ยินคะ มีหูอื้อหรือได้ยินไม่ชัดไหม'],['ถามลึก','เป็นมานานแค่ไหนคะ ได้พบแพทย์หูคอจมูกหรือยัง'],['ผลกระทบ','ส่งผลกับการคุยหรือการทำงานไหมคะ']],
+   warn:'เรื่องหูควรแนะนำให้พบแพทย์ก่อนเสมอ Heralite เป็นผลิตภัณฑ์เสริมอาหาร ไม่ใช่ยารักษา'},
+  {id:'eye',ic:'👁️',th:'ดวงตา / สายตา',en:'Eye Care',pts:[[138,58]],
+   ids:['visilite','vistorite','vistorin'],
+   says:['ใช้คอมทั้งวัน ตอนเย็นตาล้าตาแห้ง','ใช้คอมกับมือถือรวมกัน 10 ชั่วโมง ตอนเย็นตาล้ามาก'],
+   ask:[['เปิด','ใช้หน้าจอวันละกี่ชั่วโมงคะ มือถือกับคอมรวมกัน'],['ถามลึก','ตอนนี้รู้สึกตาล้า ตาแห้ง หรือแพ้แสงไหมคะ'],['ผลกระทบ','เป็นช่วงไหนของวันมากที่สุดคะ']],
+   warn:'ถ้ามองไม่ชัดหรือตามัว ควรแนะนำพบจักษุแพทย์ · Visilite เด็กและสตรีมีครรภ์ไม่ควรทาน'},
+  {id:'face',ic:'✨',th:'ผิวหน้า / ริ้วรอย',en:'Skin & Anti-aging',pts:[[162,86]],
+   ids:['lavite','everlift','cellarin','lameral','melavita'],soon:['lameral'],
+   says:['ผิวแห้ง รอบตาเริ่มไม่เรียบเนียน','หน้าเริ่มหมอง มีริ้วรอยตรงหางตา'],
+   ask:[['เปิด','ผิวหน้าตอนนี้อยากดูแลเรื่องไหนคะ ความชุ่มชื้น ความกระชับ หรือรอบดวงตา'],['ถามลึก','ใช้สกินแคร์อะไรอยู่ มีเรื่องที่ยังไม่พอใจไหมคะ'],['ผลกระทบ','ผิวแห้งตอนไหนมากที่สุดคะ']],
+   warn:'แนะนำทดสอบการแพ้ที่ท้องแขนก่อนใช้ ผลลัพธ์แต่ละคนไม่เท่ากัน และควรทาครีมกันแดดตอนกลางวัน'},
+  {id:'throat',ic:'🍯',th:'ภูมิคุ้มกัน / ของฝาก',en:'Immunity & Gift',pts:[[150,112]],
+   ids:['manuka'],
+   says:['อยากได้น้ำผึ้งดี ๆ ไว้ทานทุกเช้า','หาของฝากผู้ใหญ่ที่ดูแลสุขภาพ'],
+   ask:[['เปิด','ซื้อทานเองหรือซื้อเป็นของฝากคะ'],['ถามลึก','ปกติทานน้ำผึ้งแบบไหน ผสมเครื่องดื่มหรือทานตรง ๆ คะ'],['ผลกระทบ','ผู้ที่จะทานมีเบาหวานหรือแพ้น้ำผึ้งไหมคะ']],
+   warn:'ผู้ป่วยเบาหวานควรปรึกษาแพทย์ · ทารกต่ำกว่า 1 ปีห้ามทาน · ผู้แพ้น้ำผึ้งหรือเกสรดอกไม้ไม่ควรทาน'},
+  {id:'heart',ic:'❤️',th:'หัวใจ / ความดัน',en:'Heart & Blood Pressure',pts:[[167,160]],
+   ids:['cardilite','cartiosil','tensirin','cardilite_box'],
+   says:['หมอบอกว่าความดันค่อนข้างสูง พ่อก็เป็นความดัน','ตรวจสุขภาพแล้วไขมันกับความดันเริ่มสูง'],
+   ask:[['เปิด','ช่วงนี้ได้ตรวจสุขภาพหรือวัดความดันหรือยังคะ ผลเป็นอย่างไรบ้าง'],['ถามลึก','ในครอบครัวมีใครเป็นโรคหัวใจหรือความดันไหมคะ'],['ผลกระทบ','ปกติทานยาประจำอยู่หรือเปล่าคะ']],
+   warn:'ไม่ใช่ยา ห้ามหยุดหรือลดยาที่หมอสั่ง ให้แจ้งแพทย์/เภสัชกรก่อนทานควบคู่ · Cartiosil ห้ามใช้ร่วมกับยาต้านเกล็ดเลือดหรือยาละลายลิ่มเลือด'},
+  {id:'men',ic:'💪',th:'พลังและสมรรถภาพชาย',en:'Men Vitality',pts:[[150,308]],
+   ids:['viago','duasil','vigasil','prosofil','titonum','duasil_box'],
+   says:['ช่วงนี้เหนื่อยง่าย ไม่ค่อยมีแรง','อายุมากขึ้น รู้สึกกำลังวังชาไม่เหมือนเดิม'],
+   ask:[['เปิด','ช่วงนี้รู้สึกเหนื่อยง่าย หรือกำลังวังชาลดลงไหมคะ'],['ถามลึก','เป็นมานานแค่ไหนแล้วคะ นอนหลับพักผ่อนพอไหม'],['ผลกระทบ','มีโรคประจำตัวหรือทานยาอะไรอยู่ไหมคะ']],
+   warn:'สตรีไม่ควรรับประทาน (Duasil, Viago, Prosofil) · ผู้มีโรคประจำตัวควรปรึกษาแพทย์ก่อน (Vigasil CBD)'},
+  {id:'sugar',ic:'🩸',th:'น้ำตาล / ไขมัน',en:'Blood Sugar',pts:[[133,212]],
+   ids:['diafin'],
+   says:['น้ำตาลค่อนข้างสูง ชอบทานของหวาน','หมอบอกเริ่มเป็นเบาหวาน ไขมันก็สูง'],
+   ask:[['เปิด','ตอนนี้ได้ตรวจน้ำตาลหรือไขมันในเลือดไหมคะ ผลเป็นอย่างไรบ้าง'],['ถามลึก','ปกติควบคุมอาหารหวานหรือแป้งได้แค่ไหนคะ'],['ผลกระทบ','ทานยาประจำอยู่หรือเปล่าคะ']],
+   warn:'Diafin ไม่ใช่ยารักษาเบาหวาน ห้ามหยุดยาที่หมอสั่ง ใช้เสริมควบคู่การคุมอาหารและออกกำลังกายเท่านั้น'},
+  {id:'gut',ic:'🌿',th:'ระบบย่อย / ลำไส้',en:'Digestive',pts:[[160,252]],
+   ids:['detarin','paratinol','bactofin'],
+   says:['กินเสร็จแล้วท้องอืดแน่นบ่อย ขับถ่ายไม่ค่อยเป็นเวลา','ถ่ายไม่ค่อยออก บางวันไม่ถ่ายเลย'],
+   ask:[['เปิด','ช่วงนี้ท้องอืด แน่นท้อง หรือขับถ่ายผิดปกติไหมคะ'],['ถามลึก','เป็นบ่อยแค่ไหนคะ หลังมื้อไหนมากที่สุด'],['ผลกระทบ','ปกติกินอาหารเป็นเวลาไหมคะ ทานผักผลไม้พอไหม']],
+   warn:'ถ้ามีโรคประจำตัวหรือใช้ยา แนะนำปรึกษาแพทย์ก่อน · Paratinol ไม่ใช่ยากำจัดพยาธิ'},
+  {id:'weight',ic:'⚖️',th:'รูปร่าง / น้ำหนัก',en:'Weight',pts:[[114,282]],
+   ids:['fitarin','skeptics'],
+   says:['ตอนบ่ายกับก่อนนอนจะหิวมาก คุมไม่อยู่','ชอบกินแป้ง กินจุบจิบเลิกยาก'],
+   ask:[['เปิด','ช่วงนี้อยากดูแลเรื่องรูปร่างเพราะอะไรคะ มีเป้าหมายหรือโอกาสพิเศษไหม'],['ถามลึก','ปกติช่วงไหนของวันที่หิวหรือกินจุบจิบมากที่สุดคะ'],['ผลกระทบ','ที่ผ่านมาเคยลองคุมอาหารหรือกินตัวช่วยอะไรมาแล้วบ้างคะ']],
+   warn:'ไม่ใช่ยาลดน้ำหนัก ต้องควบคู่การคุมอาหารและออกกำลังกาย · ไม่แนะนำในหญิงตั้งครรภ์หรือให้นมบุตร'},
+  {id:'prostate',ic:'🚻',th:'ต่อมลูกหมาก / ปัสสาวะ',en:'Prostate',pts:[[136,340]],
+   ids:['prosxel','urofin','protolite','prosofil'],
+   says:['ลุกปัสสาวะกลางคืน อยากลองดูแลก่อน','ปัสสาวะบ่อย ไม่ค่อยสุด'],
+   ask:[['เปิด','ช่วงนี้มีเรื่องปัสสาวะที่รบกวนไหมคะ เช่น ต้องลุกกลางคืน'],['ถามลึก','อายุและสุขภาพโดยรวมเป็นอย่างไรบ้างคะ'],['ผลกระทบ','เคยใช้ตัวเสริมดูแลต่อมลูกหมากมาก่อนไหมคะ']],
+   warn:'สตรีและเด็กไม่ควรรับประทาน · ถ้าปัสสาวะแสบขัด มีเลือดปน หรืออาการรุนแรง ให้แนะนำพบแพทย์'},
+  {id:'hemor',ic:'🪑',th:'ขับถ่าย / นั่งนาน',en:'Hemorrhoid Care',pts:[[166,342]],
+   ids:['pilonix','henofin'],
+   says:['ถ่ายยาก นั่งนานแล้วไม่สบายตัว','นั่งทำงานทั้งวัน ขับถ่ายลำบาก'],
+   ask:[['เปิด','ตอนนี้ขับถ่ายเป็นอย่างไรบ้างคะ มีความไม่สบายตัวบริเวณไหนไหม'],['ถามลึก','เป็นมานานแค่ไหนแล้วคะ นั่งทำงานนานหรือเปล่า'],['ผลกระทบ','เคยพบแพทย์เรื่องนี้หรือยังคะ']],
+   warn:'ถ้ามีเลือดออกหรืออาการรุนแรง ต้องแนะนำให้พบแพทย์ก่อน ผลิตภัณฑ์นี้ไม่ใช่ยา'},
+  {id:'joint',ic:'🦵',th:'ข้อเข่า / กระดูก',en:'Joint & Bone',pts:[[128,446],[172,446]],
+   ids:['flexvits','movacap','flexorin','flexvits_box'],
+   says:['ลุกนั่งแล้วเข่าฝืด ขึ้นบันไดก็ไม่ค่อยสบาย','ตอนเช้าลุกแล้วเข่าฝืด ขึ้นบันไดต้องจับราว'],
+   ask:[['เปิด','ตอนนี้ข้อหรือกระดูกตรงไหนที่รู้สึกไม่สบายคะ เข่า สะโพก หรือหลัง'],['ถามลึก','ไม่สบายตอนไหนมากที่สุดคะ เช่น ลุกจากเก้าอี้ ขึ้นบันได หรือตอนเช้า'],['ผลกระทบ','เป็นมานานแค่ไหนแล้วคะ ส่งผลกับการทำงานหรือการเดินไหม']],
+   warn:'ผู้ใช้ยาต้านการแข็งตัวของเลือดควรปรึกษาแพทย์ก่อน (Flexvits) · Movacap ห้ามในผู้เป็นโรคนิ่ว/ท่อน้ำดีอุดตัน · ปวดมากหรือบวมแดงควรพบแพทย์'}
+];
+// สินค้าที่ยังไม่อยู่ในโซนใด จะถูกเพิ่มตามหมวดย่อยโดยอัตโนมัติ
+const BM_SUB2ZONE={hearing:'ear',eye:'eye',cream:'face',hyper:'heart',men:'men',diabetes:'sugar',detox:'gut',prostate:'prostate',hemor:'hemor',joint:'joint',freckle:'face'};
+let bmZone=null,bmMode='explore',bmBuilt=false,bmGame=null;
+
+function bmProducts(z){
+  const ids=[...z.ids];
+  PRODUCTS.forEach(p=>{
+    const inAny=BM_ZONES.some(zz=>zz.ids.includes(p.id));
+    if(!inAny&&BM_SUB2ZONE[p.sub]===z.id&&!ids.includes(p.id))ids.push(p.id);
+  });
+  return ids.map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean);
+}
+function bmSVG(){
+  const hots=BM_ZONES.map(z=>z.pts.map(([x,y],i)=>`<g class="bm-hot" data-z="${z.id}" tabindex="0" role="button" aria-label="${z.th}" transform="translate(${x} ${y})"><circle class="pulse" r="7"/><circle class="core" r="6.5"/><title>${z.th}</title></g>`).join('')).join('');
+  return `<svg class="bm-svg" viewBox="0 0 300 620" role="img" aria-label="แผนภาพร่างกาย">
+  <defs>
+    <linearGradient id="bmGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5FB2FF" stop-opacity=".34"/><stop offset="1" stop-color="#6E5BFF" stop-opacity=".18"/></linearGradient>
+    <linearGradient id="bmScanG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7FD3FF" stop-opacity="0"/><stop offset=".85" stop-color="#7FD3FF" stop-opacity=".35"/><stop offset="1" stop-color="#E6F7FF" stop-opacity=".95"/></linearGradient>
+  </defs>
+  <g class="bm-ring" opacity=".7"><ellipse cx="150" cy="604" rx="78" ry="11" fill="none" stroke="#7FD3FF" stroke-width="1.2" stroke-dasharray="6 7"/></g>
+  <ellipse cx="150" cy="604" rx="54" ry="7" fill="none" stroke="#B69CFF" stroke-opacity=".6"/>
+  <g class="bm-body">
+    <ellipse cx="150" cy="64" rx="30" ry="38"/>
+    <path d="M138 96 L162 96 L164 124 L136 124 Z"/>
+    <path d="M104 128 C124 120 176 120 196 128 C206 132 210 142 210 156 L204 236 C200 262 194 286 192 304 C196 322 198 340 196 356 L104 356 C102 340 104 322 108 304 C106 286 100 262 96 236 L90 156 C90 142 94 132 104 128 Z"/>
+    <path d="M100 132 C86 136 80 150 78 168 L66 250 L58 330 C57 338 66 342 70 334 L84 256 L98 190 Z"/>
+    <path d="M200 132 C214 136 220 150 222 168 L234 250 L242 330 C243 338 234 342 230 334 L216 256 L202 190 Z"/>
+    <ellipse cx="62" cy="346" rx="9" ry="13"/><ellipse cx="238" cy="346" rx="9" ry="13"/>
+    <path d="M106 352 L148 352 L146 430 L140 520 L136 590 C136 600 116 600 116 590 L114 520 L110 430 Z"/>
+    <path d="M152 352 L194 352 L190 430 L186 520 L184 590 C184 600 164 600 164 590 L160 520 L154 430 Z"/>
+  </g>
+  <g stroke="#9FD8FF" stroke-opacity=".35" fill="none" stroke-width="1">
+    <path d="M150 128 V352"/><path d="M118 180 Q150 196 182 180"/><path d="M114 230 Q150 244 186 230"/>
+  </g>
+  <rect class="bm-scan" x="20" y="0" width="260" height="34" fill="url(#bmScanG)" pointer-events="none"/>
+  ${hots}
+  <g class="bm-tag" id="bm-tag"><rect rx="8" height="24"/><text y="16"></text></g>
+</svg>`;
+}
+function buildBodyMap(){
+  const root=document.getElementById('bm-root');if(!root)return;
+  if(!bmBuilt){
+    document.getElementById('bm-fig').insertAdjacentHTML('beforeend',bmSVG());
+    document.querySelectorAll('.bm-hot').forEach(h=>{
+      h.addEventListener('click',()=>bmPick(h.dataset.z));
+      h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();bmPick(h.dataset.z);}});
+      h.addEventListener('mouseenter',()=>bmShowTag(h.dataset.z));
+      h.addEventListener('mouseleave',()=>bmShowTag(bmMode==='explore'?bmZone:null));
+    });
+    bmBuilt=true;
+  }
+  bmRenderChips();
+  if(bmMode==='explore'){bmZone?bmRenderZone(bmZone):bmWelcome();}
+}
+function bmRenderChips(){
+  const el=document.getElementById('bm-chips');
+  el.style.display=bmMode==='explore'?'flex':'none';
+  el.innerHTML=BM_ZONES.map(z=>`<button class="bm-chip${bmZone===z.id?' on':''}" onclick="bmPick('${z.id}')">${z.ic} ${z.th}<b>${bmProducts(z).length}</b></button>`).join('');
+}
+function bmShowTag(zid){
+  const tag=document.getElementById('bm-tag');if(!tag)return;
+  if(!zid){tag.classList.remove('show');return;}
+  const z=BM_ZONES.find(x=>x.id===zid);if(!z)return;
+  const [x,y]=z.pts[0];const t=tag.querySelector('text');t.textContent=z.ic+' '+z.th;
+  const w=t.getComputedTextLength?t.getComputedTextLength()+18:120;
+  let tx=x+14,ty=y-12;if(tx+w>296)tx=x-14-w;if(tx<4){tx=Math.max(4,Math.min(296-w,x-w/2));ty=y-40;}
+  tag.querySelector('rect').setAttribute('width',w);tag.setAttribute('transform',`translate(${tx} ${ty})`);t.setAttribute('x',9);
+  tag.classList.add('show');
+}
+function bmMark(zid){
+  document.querySelectorAll('.bm-hot').forEach(h=>{h.classList.toggle('on',h.dataset.z===zid);h.classList.toggle('dim',!!zid&&h.dataset.z!==zid);});
+}
+function bmSetMode(m,btn){
+  bmMode=m;document.querySelectorAll('.bm-mode').forEach(b=>b.classList.toggle('on',b===btn));
+  document.querySelectorAll('.bm-hot').forEach(h=>h.classList.remove('on','dim','ok','bad'));
+  bmShowTag(null);
+  if(m==='game'){bmStartGame();}else{bmGame=null;bmZone=null;bmRenderChips();bmWelcome();}
+}
+function bmPick(zid){
+  if(bmMode==='game'){bmAnswer(zid);return;}
+  bmZone=zid;bmMark(zid);bmShowTag(zid);bmRenderChips();bmRenderZone(zid);
+  if(window.innerWidth<900)document.getElementById('bm-panel').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function bmWelcome(){
+  bmMark(null);
+  const total=new Set(BM_ZONES.flatMap(z=>bmProducts(z).map(p=>p.id))).size;
+  document.getElementById('bm-panel').innerHTML=`<div class="bm-card bm-welcome"><div class="big">🧍</div>
+  <h3>แตะจุดบนร่างกายเพื่อสแกน</h3><p>แต่ละจุดจะแสดงคำที่ลูกค้ามักพูด คำถามที่ควรถาม (ข้อ ② ใน Sales Script) สินค้าที่เกี่ยวข้อง และข้อควรระวัง</p>
+  <div class="bm-stats"><div><b>${BM_ZONES.length}</b>จุดร่างกาย</div><div><b>${total}</b>สินค้า</div><div><b>${BM_ZONES.reduce((a,z)=>a+z.ask.length,0)}</b>คำถามแนะนำ</div></div>
+  <div style="margin-top:22px"><button class="bm-btn" onclick="bmSetMode('game',document.querySelector('.bm-mode[data-m=game]'))">🎯 ลองเล่นเกมทายจุด</button></div></div>`;
+}
+function bmProdCard(p,i,soon){
+  const pk=p.packageLabel||(p.capsCount?p.capsCount+' แคปซูล/'+(p.unit||'กล่อง'):'');
+  return `<button class="bm-prod" style="animation-delay:${i*0.06}s" onclick="openDP('${p.id}')">${soon?'<span class="bm-soon">รอเข้าคลัง</span>':''}<img src="${IMGS[p.img]||''}" alt="${p.name}" loading="lazy"><div class="bm-pn">${p.name}</div><div class="bm-pd">${p.dosage}${pk?' · '+pk:''}</div></button>`;
+}
+function bmRenderZone(zid){
+  const z=BM_ZONES.find(x=>x.id===zid);if(!z)return;
+  const prods=bmProducts(z);
+  document.getElementById('bm-panel').innerHTML=`<div class="bm-card">
+    <div class="bm-zh"><div class="bm-zi">${z.ic}</div><div><div class="bm-zt">${z.th}</div><div class="bm-zs">${z.en.toUpperCase()}</div></div><div class="bm-found">พบ ${prods.length} สินค้า</div></div>
+    <div class="bm-sec"><div class="bm-lbl">💬 ลูกค้ามักพูดว่า</div><div class="bm-says">${z.says.map(s=>`<div class="bm-say">“${s}”</div>`).join('')}</div></div>
+    <div class="bm-sec"><div class="bm-lbl">❓ คำถามที่ควรถาม (ข้อ ② ถามทีละข้อ ฟังให้จบ)</div><ul class="bm-ask">${z.ask.map(a=>`<li><b>${a[0]}:</b>${a[1]}</li>`).join('')}</ul></div>
+    <div class="bm-sec"><div class="bm-lbl">📦 สินค้าที่เกี่ยวข้อง · กดเพื่อดูรายละเอียด</div><div class="bm-prods">${prods.map((p,i)=>bmProdCard(p,i,(z.soon||[]).includes(p.id))).join('')}</div></div>
+    <div class="bm-sec"><div class="bm-warn">⚠️ <b>ข้อควรระวัง:</b> ${z.warn}</div></div>
+  </div>`;
+}
+// ── เกมทายจุด ──
+function bmStartGame(){
+  const pool=BM_ZONES.flatMap(z=>z.says.map(s=>({z:z.id,s})));
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  const seen=new Set(),qs=[];
+  for(const q of pool){if(!seen.has(q.z)){seen.add(q.z);qs.push(q);}if(qs.length===8)break;}
+  bmGame={qs,i:0,res:[],locked:false};bmRenderChips();bmRenderGame();
+}
+function bmRenderGame(){
+  const g=bmGame;bmMark(null);document.querySelectorAll('.bm-hot').forEach(h=>h.classList.remove('ok','bad'));bmShowTag(null);
+  if(g.i>=g.qs.length){bmGameEnd();return;}
+  const q=g.qs[g.i];
+  document.getElementById('bm-panel').innerHTML=`<div class="bm-card">
+    <div class="bm-game-q"><div class="who">📞 ลูกค้าพูดว่า · ข้อ ${g.i+1}/${g.qs.length}</div><div class="q">“${q.s}”</div><div class="hint">👉 แตะจุดบนร่างกายที่ควรดูแลเรื่องนี้</div></div>
+    <div class="bm-gbar"><div class="bm-gdots">${g.qs.map((_,k)=>`<i class="${k<g.res.length?(g.res[k]?'ok':'bad'):(k===g.i?'cur':'')}"></i>`).join('')}</div><div>คะแนน ${g.res.filter(Boolean).length*10}</div></div>
+    <div id="bm-gres"></div></div>`;
+  g.locked=false;
+}
+function bmAnswer(zid){
+  const g=bmGame;if(!g||g.locked)return;g.locked=true;
+  const q=g.qs[g.i],ok=zid===q.z,z=BM_ZONES.find(x=>x.id===q.z);
+  g.res.push(ok);
+  document.querySelectorAll(`.bm-hot[data-z="${q.z}"]`).forEach(h=>h.classList.add('ok'));
+  if(!ok){document.querySelectorAll(`.bm-hot[data-z="${zid}"]`).forEach(h=>h.classList.add('bad'));document.getElementById('bm-fig').classList.add('shake');setTimeout(()=>document.getElementById('bm-fig').classList.remove('shake'),420);}
+  bmShowTag(q.z);
+  const prods=bmProducts(z).slice(0,4);
+  document.getElementById('bm-gres').innerHTML=`<div class="bm-res ${ok?'ok':'bad'}"><b>${ok?'✅ ถูกต้อง! +10':'❌ ยังไม่ใช่'}</b> — เรื่องนี้คือ <b>${z.ic} ${z.th}</b><br>ถามต่อ: “${z.ask[0][1]}”</div>
+    <div class="bm-sec"><div class="bm-prods">${prods.map((p,i)=>bmProdCard(p,i,(z.soon||[]).includes(p.id))).join('')}</div></div>
+    <div style="text-align:right;margin-top:14px"><button class="bm-btn" onclick="bmGame.i++;bmRenderGame()">${g.i+1<g.qs.length?'ข้อต่อไป →':'ดูผลคะแนน 🏁'}</button></div>`;
+  const dots=document.querySelectorAll('.bm-gdots i');if(dots[g.i])dots[g.i].className=ok?'ok':'bad';
+}
+function bmGameEnd(){
+  const g=bmGame,n=g.res.filter(Boolean).length,t=g.qs.length;
+  const msg=n===t?'🏆 เป๊ะทุกข้อ! แม่นเรื่องอาการ → สินค้าแล้ว':n>=t*0.75?'🔥 เก่งมาก! อีกนิดเดียวก็เต็ม':n>=t*0.5?'👍 ใช้ได้ ลองโหมดสำรวจทบทวนอีกรอบ':'📚 ลองกดสำรวจแต่ละจุดแล้วกลับมาเล่นใหม่นะ';
+  if(n===t&&typeof simConfetti==='function')simConfetti();
+  document.getElementById('bm-panel').innerHTML=`<div class="bm-card bm-welcome"><div class="big">${n===t?'🏆':n>=t*0.5?'🎯':'🧠'}</div>
+  <h3>ได้ ${n}/${t} ข้อ · ${n*10} คะแนน</h3><p>${msg}</p>
+  <div style="margin-top:20px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="bm-btn" onclick="bmStartGame()">🔁 เล่นอีกรอบ</button><button class="bm-btn ghost" onclick="bmSetMode('explore',document.querySelector('.bm-mode[data-m=explore]'))">🔍 กลับไปสำรวจ</button></div></div>`;
+}
+
+// ══════════ SALES SIMULATOR ══════════
+// สถานการณ์อ้างอิงขั้นตอน ①–⑤ ใน TMS Scripts: v4 = ทีม Fresh (ลูกค้าลงทะเบียนใหม่) · v5 = ทีม Resell (ลูกค้าเดิม)
+// s: 2 = ตอบดีที่สุด, 1 = พอใช้, 0 = ไม่ควรตอบ · v = ผิดข้อห้าม (บันทึกในผลสรุป)
+const SIM_STAGES=['① เปิดสาย','② ถามอาการ','③ เชื่อมสินค้า','④ ข้อโต้แย้ง','⑤ ปิดการขาย'];
+const SIM_RULES=['วินิจฉัยโรค','พูดว่ารักษา/หาย','แนะนำให้หยุดหรือปรับยาที่หมอสั่ง','รับประกันผล','ไม่แนะนำพบแพทย์เมื่ออาการรุนแรง','ไม่เตือนข้อห้ามของสินค้า'];
+const SIM=[
+{id:'f_knee',team:'fresh',av:'👵',name:'คุณป้าสมศรี',age:63,lv:1,topic:'ปวดเข่า ขึ้นบันไดลำบาก · ทานยาละลายลิ่มเลือดอยู่',
+ ctx:'ลูกค้าลงทะเบียนขอข้อมูลเรื่องข้อเข่าไว้ เราโทรกลับเป็นครั้งแรก',prods:['flexvits','movacap','flexorin'],
+ learn:'ลูกค้าที่ใช้ยาต้านการแข็งตัวของเลือด ต้องแนะนำให้ปรึกษาแพทย์ก่อน (ข้อ ④ ของ Flexvits) และห้ามพูดว่าหายขาด',
+ steps:[
+ {st:0,c:'ฮัลโหล ใครพูดคะ',o:[
+  {t:'สวัสดีค่ะ คุณสมศรีใช่ไหมคะ ดิฉันมายด์ โทรจาก [แบรนด์] นะคะ พอดีคุณป้าลงทะเบียนขอข้อมูลเรื่องดูแลข้อเข่าไว้ เลยโทรมาให้คำแนะนำค่ะ ตอนนี้สะดวกคุยสัก 2–3 นาทีไหมคะ',s:2,f:'ครบสูตรเปิดสาย: ยืนยันชื่อ แนะนำตัว+แบรนด์ อ้างอิงว่าลูกค้าลงทะเบียนเรื่องอะไร แล้วขออนุญาตคุย'},
+  {t:'สวัสดีค่ะ สนใจอาหารเสริมบำรุงข้อไหมคะ ตอนนี้มีโปรพิเศษค่ะ',s:0,f:'เปิดสายแบบขายลอย ๆ ไม่อ้างอิงว่าลูกค้าลงทะเบียนไว้ ลูกค้ามักวางสายทันที'},
+  {t:'สวัสดีค่ะ โทรจาก [แบรนด์] ค่ะ เรื่องสินค้าบำรุงข้อนะคะ',s:1,f:'แนะนำแบรนด์แล้ว แต่ยังไม่ได้ยืนยันชื่อ อ้างอิงการลงทะเบียน และขออนุญาตคุย'}]},
+ {st:1,c:'อ๋อ จ้ะ ป้าปวดเข่ามาก ขึ้นลงบันไดลำบาก',o:[
+  {t:'เข้าใจเลยค่ะ ไม่สบายตอนไหนมากที่สุดคะ ลุกจากเก้าอี้ ขึ้นบันได หรือตอนเช้า แล้วเป็นมานานแค่ไหนแล้วคะ',s:2,f:'ถามลึกตามข้อ ② ทีละเรื่อง ได้ข้อมูลไปเชื่อมสินค้าได้ตรง'},
+  {t:'เป็นข้อเข่าเสื่อมแน่นอนค่ะคุณป้า',s:0,v:'วินิจฉัยโรค',f:'พนักงานขายวินิจฉัยโรคไม่ได้ ให้ถามอาการและฟังลูกค้าแทน'},
+  {t:'ปวดเข่าเป็นเรื่องปกติของคนอายุเยอะค่ะ',s:1,f:'ไม่ผิดข้อห้าม แต่ปิดบทสนทนา ไม่ได้ถามอาการต่อ'}]},
+ {st:1,c:'ตอนเช้าลุกแล้วเข่าฝืด เป็นมาปีนึงแล้ว... อ้อ ป้ากินยาละลายลิ่มเลือดอยู่ด้วยนะ',o:[
+  {t:'ขอบคุณที่บอกนะคะ เรื่องยาละลายลิ่มเลือดสำคัญมาก ถ้าจะทานผลิตภัณฑ์เสริมอาหารตัวไหน แนะนำให้ปรึกษาแพทย์หรือเภสัชกรก่อนนะคะ',s:2,f:'จับประเด็นยาได้ทันที Flexvits ระบุว่าผู้ใช้ยาต้านการแข็งตัวของเลือดควรปรึกษาแพทย์ก่อน'},
+  {t:'ไม่เป็นไรค่ะ อาหารเสริมธรรมชาติ ทานร่วมกับยาอะไรก็ได้',s:0,v:'ไม่เตือนข้อห้ามของสินค้า',f:'ข้อมูลผิด ผลิตภัณฑ์บางตัวต้องระวังเมื่อใช้ร่วมกับยาละลายลิ่มเลือด'},
+  {t:'งั้นหยุดยาไปก่อนก็ได้ค่ะ แล้วทานตัวนี้แทน',s:0,v:'แนะนำให้หยุดหรือปรับยาที่หมอสั่ง',f:'ห้ามแนะนำให้หยุดยาที่หมอสั่งเด็ดขาด อันตรายต่อลูกค้า'}]},
+ {st:2,c:'แล้วมีตัวไหนช่วยเรื่องเข่าบ้างล่ะ',o:[
+  {t:'ที่คุณป้าเล่ามาเป็นเรื่องความคล่องตัวของข้อตอนเช้าค่ะ Movacap มีขมิ้น ขิง งา ชาเขียว กับคอลลาเจนไทป์ทู ช่วยดูแลข้อให้รู้สึกสบายเวลาเคลื่อนไหว ส่วน Flexvits ดูแลได้ทั้งข้อและกระดูกค่ะ',s:2,f:'ทวนคำลูกค้า → เชื่อมส่วนผสม ตามข้อ ③ เป๊ะ'},
+  {t:'Flexvits รักษาข้อเข่าเสื่อมให้หายขาด ไม่ต้องผ่าตัดค่ะ',s:0,v:'พูดว่ารักษา/หาย',f:'ผลิตภัณฑ์เสริมอาหารใช้คำว่า “ดูแล/สนับสนุน” เท่านั้น ห้ามพูดว่ารักษาหรือหาย'},
+  {t:'มีหลายตัวเลยค่ะ ลองทุกตัวดีไหมคะ',s:1,f:'ไม่ได้เชื่อมอาการกับส่วนผสม ลูกค้าจะไม่เห็นว่าทำไมต้องตัวนี้'}]},
+ {st:3,c:'กินแล้วกี่วันหาย',o:[
+  {t:'ผลต่างกันแต่ละคนค่ะ ข้อต้องดูแลต่อเนื่อง แนะนำทานเป็นคอร์สควบคู่การขยับร่างกายเบา ๆ ถ้าปวดมากหรือบวมแดงควรพบแพทย์นะคะ',s:2,f:'ตอบตามข้อ ④ ไม่รับประกันผล และบอกสัญญาณที่ควรพบแพทย์'},
+  {t:'7 วันเห็นผลแน่นอนค่ะ ไม่หายคืนเงิน',s:0,v:'รับประกันผล',f:'ห้ามรับประกันผลหรือระบุจำนวนวันที่จะหาย'},
+  {t:'ไม่แน่ใจค่ะ แล้วแต่ดวงเลย',s:0,f:'ไม่ผิดข้อห้าม แต่ดูไม่เป็นมืออาชีพ ลูกค้าหมดความมั่นใจ'}]},
+ {st:4,c:'โอเค ป้าจะลองปรึกษาเภสัชฯ ที่ร้านยาก่อนนะ',o:[
+  {t:'ดีเลยค่ะคุณป้า ขออนุญาตส่งรายละเอียดส่วนผสมให้ทาง LINE จะได้นำไปให้เภสัชกรดูนะคะ แล้วพรุ่งนี้บ่ายดิฉันโทรกลับไปถามผลได้ไหมคะ',s:2,f:'เคารพการตัดสินใจ และนัดติดตามที่ชัดเจน ลูกค้าไว้ใจและยังมีโอกาสปิดการขาย'},
+  {t:'โปรหมดวันนี้นะคะ ถ้าไม่สั่งตอนนี้จะไม่ได้ราคานี้แล้ว',s:0,f:'กดดันลูกค้าที่ต้องปรึกษาเรื่องยา เสี่ยงต่อความปลอดภัยและเสียความไว้ใจ'},
+  {t:'ได้ค่ะ ถ้าสนใจโทรกลับมานะคะ',s:1,f:'สุภาพ แต่ไม่ได้นัดติดตาม โอกาสหลุดสูง'}]}
+ ]},
+{id:'f_skin',team:'fresh',av:'👩',name:'คุณนิดา',age:41,lv:1,topic:'ผิวแห้ง เริ่มมีริ้วรอยรอบตา · ผิวแพ้ง่าย',
+ ctx:'ลูกค้าลงทะเบียนขอข้อมูลครีมบำรุงผิวหน้าผ่านโฆษณา',prods:['everlift','lavite','cellarin'],
+ learn:'สกินแคร์ต้องถามสภาพผิวและเตือนให้ทดสอบการแพ้ก่อนใช้เสมอ และห้ามสัญญาว่าหน้าขาวหรือริ้วรอยหายภายในกี่วัน',
+ steps:[
+ {st:0,c:'ค่ะ ใครคะ',o:[
+  {t:'สวัสดีค่ะ คุณนิดาใช่ไหมคะ ดิฉันมายด์ โทรจาก [แบรนด์] ค่ะ พอดีคุณนิดาลงทะเบียนขอข้อมูลเรื่องครีมบำรุงผิวหน้าไว้ เลยโทรมาให้คำแนะนำค่ะ สะดวกคุยสัก 2–3 นาทีไหมคะ',s:2,f:'เปิดสายครบ 4 องค์ประกอบ'},
+  {t:'โทรจากบริษัทเครื่องสำอางค่ะ มีครีมมาแนะนำค่ะ',s:0,f:'ไม่ยืนยันชื่อ ไม่อ้างอิงการลงทะเบียน ฟังดูเหมือนสายขายสุ่ม'},
+  {t:'คุณนิดาใช่ไหมคะ มีครีมตัวใหม่อยากเล่าให้ฟังค่ะ',s:1,f:'ยืนยันชื่อแล้ว แต่ยังไม่แนะนำตัว/แบรนด์ และไม่ขออนุญาตคุย'}]},
+ {st:1,c:'อ๋อ ใช่ค่ะ ช่วงนี้ผิวแห้ง รอบตาเริ่มมีริ้ว',o:[
+  {t:'ผิวหน้าตอนนี้อยากดูแลเรื่องไหนมากที่สุดคะ ความชุ่มชื้น ความกระชับ หรือรอบดวงตา แล้วตอนนี้ใช้สกินแคร์อะไรอยู่บ้างคะ',s:2,f:'ถามตามข้อ ② ของ Everlift ได้ข้อมูลไปเลือกสินค้าที่เหมาะ'},
+  {t:'ครีมเราใช้ได้ทุกคน ไม่มีทางแพ้ค่ะ',s:0,v:'รับประกันผล',f:'ไม่มีใครรับประกันได้ว่าจะไม่แพ้ ต้องถามสภาพผิวก่อน'},
+  {t:'ริ้วรอยรอบตาเป็นกันทุกคนค่ะ',s:1,f:'ไม่ผิด แต่ไม่ได้ต่อยอดคำถาม'}]},
+ {st:1,c:'ใช้แค่กันแดดค่ะ ผิวแพ้ง่ายนิดหน่อย เคยใช้ครีมแล้วแดง',o:[
+  {t:'ขอบคุณที่บอกนะคะ ถ้าผิวแพ้ง่าย แนะนำทดสอบที่ท้องแขนก่อน ถ้าไม่แดงไม่คันค่อยใช้ทั่วหน้า ถ้าระคายเคืองให้หยุดใช้ทันทีนะคะ',s:2,f:'เตือนทดสอบการแพ้ตามข้อควรระวังของครีมทุกตัว'},
+  {t:'ไม่ต้องห่วงค่ะ ทาหนา ๆ ได้เลย',s:0,v:'ไม่เตือนข้อห้ามของสินค้า',f:'ลูกค้าผิวแพ้ง่ายต้องเตือนทดสอบการแพ้ก่อน'},
+  {t:'งั้นลองใช้ดูก่อนแล้วกันค่ะ',s:1,f:'ยังขาดคำแนะนำเรื่องการทดสอบการแพ้'}]},
+ {st:2,c:'มีตัวไหนช่วยเรื่องผิวแห้งกับรอบตาบ้างคะ',o:[
+  {t:'ที่เล่ามาคือผิวแห้งและรอบตาไม่เรียบเนียนค่ะ Everlift มีไฮยาลูโรนิกช่วยให้ผิวชุ่มชื้นนาน มีอาร์จิรีลีนกับสารสกัดดอกเดซี่ ช่วยให้ผิวรอบดวงตาดูเรียบเนียนค่ะ',s:2,f:'ทวนคำลูกค้า แล้วเชื่อมเข้าส่วนผสมตามข้อ ③ ของ Everlift'},
+  {t:'ครีมเราเหมือนฉีดโบท็อกซ์ ริ้วรอยหายเกลี้ยงค่ะ',s:0,v:'พูดว่ารักษา/หาย',f:'โฆษณาเกินจริง ใช้ได้แค่ “ช่วยให้ดูเรียบเนียน”'},
+  {t:'ทุกตัวเหมือนกันหมดค่ะ เลือกตัวไหนก็ได้',s:0,f:'ลูกค้าไม่เห็นคุณค่าของสินค้า และเราไม่ได้ช่วยเลือกให้ตรงปัญหา'}]},
+ {st:3,c:'ใช้แล้วหน้าจะขาวขึ้นไหมคะ',o:[
+  {t:'ครีมช่วยให้ผิวดูกระจ่างใสและชุ่มชื้นค่ะ ผลต่างกันแต่ละคน ควรใช้สม่ำเสมอเช้า–เย็น และทาครีมกันแดดตอนกลางวันนะคะ',s:2,f:'ตอบตามข้อ ④ ของ Everlift แบบเป๊ะ'},
+  {t:'ขาวขึ้น 2 ระดับใน 7 วันค่ะ',s:0,v:'รับประกันผล',f:'ห้ามระบุผลลัพธ์เป็นตัวเลขหรือระยะเวลา'},
+  {t:'ขาวแน่นอนค่ะ',s:0,v:'รับประกันผล',f:'การยืนยันผลแบบนี้เท่ากับรับประกันผล'}]},
+ {st:4,c:'น่าสนใจค่ะ ราคาเท่าไหร่',o:[
+  {t:'ตอนนี้มี [โปรโมชั่น/ราคา] ค่ะ แนะนำใช้ต่อเนื่องจะเห็นความต่างชัดกว่า สะดวกให้จัดส่งที่อยู่ไหนดีคะ',s:2,f:'แจ้งข้อเสนอ แล้วปิดด้วยคำถามเรื่องที่อยู่จัดส่งตามข้อ ⑤'},
+  {t:'แพงหน่อยนะคะ แต่คุ้มค่ะ เอาไหมคะ',s:1,f:'ปิดการขายแบบไม่มีทิศทาง ไม่ได้ชวนเป็นคอร์สหรือยืนยันการจัดส่ง'},
+  {t:'ซื้อ 5 กระปุกเลยค่ะ จะได้ไม่ขาด รับรองหน้าใส',s:0,v:'รับประกันผล',f:'ยัดจำนวนเกินจำเป็นและรับประกันผล'}]}
+ ]},
+{id:'f_preg',team:'fresh',av:'🤰',name:'คุณพลอย',age:29,lv:3,topic:'อยากลดน้ำหนัก แต่กำลังตั้งครรภ์ 4 เดือน',
+ ctx:'ลูกค้าลงทะเบียนขอข้อมูลเรื่องควบคุมน้ำหนัก (เคสทดสอบข้อห้าม)',prods:['fitarin','skeptics'],prodsLbl:'สินค้าที่ “ไม่ควรแนะนำ” ในเคสนี้',
+ learn:'เคสนี้ “ไม่ขาย” คือคำตอบที่ถูก ผลิตภัณฑ์ควบคุมน้ำหนักไม่แนะนำในหญิงตั้งครรภ์ การดูแลลูกค้าดี ๆ ทำให้ได้ลูกค้าระยะยาว',
+ steps:[
+ {st:0,c:'ฮัลโหลค่ะ',o:[
+  {t:'สวัสดีค่ะ คุณพลอยใช่ไหมคะ ดิฉันมายด์ โทรจาก [แบรนด์] ค่ะ คุณพลอยลงทะเบียนขอข้อมูลเรื่องดูแลรูปร่าง/ควบคุมน้ำหนักไว้ เลยโทรมาให้คำแนะนำค่ะ สะดวกคุยสัก 2–3 นาทีไหมคะ',s:2,f:'เปิดสายครบสูตร'},
+  {t:'คุณพลอยคะ อยากผอมไหมคะ ตัวนี้ลดได้ไวมาก',s:0,v:'รับประกันผล',f:'เปิดด้วยการขายและอ้างผลลัพธ์'},
+  {t:'สวัสดีค่ะ มีสินค้าลดน้ำหนักมาแนะนำค่ะ',s:1,f:'ยังไม่ยืนยันชื่อและไม่อ้างอิงการลงทะเบียน'}]},
+ {st:1,c:'ค่ะ อยากลดน้ำหนัก ตอนนี้ท้องได้ 4 เดือน น้ำหนักขึ้นเร็วมาก',o:[
+  {t:'ยินดีด้วยนะคะ 🙂 ช่วงตั้งครรภ์เรื่องน้ำหนักควรให้คุณหมอฝากครรภ์ดูแลเป็นหลักค่ะ ขอไม่แนะนำผลิตภัณฑ์ควบคุมน้ำหนักในช่วงนี้นะคะ',s:2,f:'จับข้อห้ามได้ทันที และสื่อสารอย่างอบอุ่น'},
+  {t:'Skeptics ช่วยคุมหิวได้ดี ทานได้เลยค่ะ',s:0,v:'ไม่เตือนข้อห้ามของสินค้า',f:'ไม่ควรแนะนำผลิตภัณฑ์ควบคุมน้ำหนักให้หญิงตั้งครรภ์'},
+  {t:'ทานครึ่งโดสก็ได้ค่ะ จะได้ปลอดภัย',s:0,v:'ไม่เตือนข้อห้ามของสินค้า',f:'การลดขนาดเองไม่ได้ทำให้ปลอดภัย และยังเป็นการแนะนำให้คนตั้งครรภ์ทาน'}]},
+ {st:3,c:'แต่เพื่อนบอกว่าเป็นสมุนไพร ไม่อันตรายนะ',o:[
+  {t:'เข้าใจค่ะ แต่ถึงจะเป็นส่วนผสมจากธรรมชาติ ช่วงตั้งครรภ์ก็ควรได้รับคำแนะนำจากแพทย์ก่อนทุกครั้ง เพื่อความปลอดภัยของคุณแม่และน้องค่ะ',s:2,f:'ยืนหลักความปลอดภัยโดยไม่ทำให้ลูกค้ารู้สึกผิด'},
+  {t:'จริงค่ะ ธรรมชาติปลอดภัยทุกอย่าง',s:0,v:'ไม่เตือนข้อห้ามของสินค้า',f:'“ธรรมชาติ” ไม่ได้แปลว่าปลอดภัยสำหรับทุกคน'},
+  {t:'แล้วแต่คุณพลอยตัดสินใจเลยค่ะ',s:1,f:'ปล่อยให้ลูกค้าตัดสินใจเองโดยไม่ให้ข้อมูลความปลอดภัย'}]},
+ {st:2,c:'งั้นตอนนี้ทำอะไรได้บ้างคะ',o:[
+  {t:'ลองปรึกษาคุณหมอเรื่องอาหารและการขยับร่างกายที่เหมาะกับช่วงนี้ได้เลยค่ะ หลังคลอดและหมดช่วงให้นมแล้ว ถ้ายังสนใจ ทักมาได้เลย เดี๋ยวช่วยดูให้นะคะ',s:2,f:'ให้ทางออกที่ปลอดภัย และเปิดโอกาสขายในอนาคต'},
+  {t:'งดข้าวเย็นไปเลยค่ะ น้ำหนักลงเร็ว',s:0,v:'ไม่แนะนำพบแพทย์เมื่ออาการรุนแรง',f:'ให้คำแนะนำสุขภาพที่อาจอันตรายต่อคนตั้งครรภ์'},
+  {t:'ไม่รู้เหมือนกันค่ะ',s:0,f:'ทิ้งลูกค้าไว้โดยไม่มีคำแนะนำ'}]},
+ {st:4,c:'โอเคค่ะ ขอบคุณนะ ไว้หลังคลอดจะทักมา',o:[
+  {t:'ยินดีค่ะ ขอให้คุณแม่และน้องแข็งแรงนะคะ ขออนุญาตบันทึกไว้ แล้วจะติดต่อกลับหลังคลอดนะคะ 🙏',s:2,f:'ปิดสายอย่างมืออาชีพ บันทึกลูกค้าไว้ติดตามในอนาคต'},
+  {t:'ซื้อเก็บไว้ก่อนไหมคะ โปรหมดพรุ่งนี้',s:0,f:'กดดันขายสินค้าที่ลูกค้ายังใช้ไม่ได้'},
+  {t:'ค่ะ',s:1,f:'จบสายห้วนไป ควรปิดสายให้อบอุ่นและนัดติดตาม'}]}
+ ]},
+{id:'f_prost',team:'fresh',av:'👨‍🦳',name:'คุณสมพงษ์',age:56,lv:2,topic:'ลุกปัสสาวะกลางคืน 3–4 รอบ · ภรรยาอยากทานด้วย',
+ ctx:'ภรรยาลงทะเบียนขอข้อมูลเรื่องต่อมลูกหมากให้คุณสมพงษ์',prods:['prosxel','urofin','protolite'],
+ learn:'ห้ามวินิจฉัยว่าเป็นต่อมลูกหมากโต ต้องแนะนำให้ตรวจกับแพทย์ และเตือนว่าสินค้ากลุ่มนี้สตรีไม่ควรรับประทาน',
+ steps:[
+ {st:0,c:'ครับ ใครพูดครับ',o:[
+  {t:'สวัสดีค่ะ คุณสมพงษ์ใช่ไหมคะ ดิฉันมายด์ โทรจาก [แบรนด์] ค่ะ พอดีมีการลงทะเบียนขอข้อมูลเรื่องดูแลต่อมลูกหมากไว้ เลยโทรมาให้คำแนะนำค่ะ สะดวกคุยสัก 2–3 นาทีไหมคะ',s:2,f:'เปิดสายครบสูตร'},
+  {t:'คุณมีปัญหาต่อมลูกหมากใช่ไหมคะ',s:0,v:'วินิจฉัยโรค',f:'เปิดสายด้วยการตัดสินอาการลูกค้า ทำให้ลูกค้าไม่สบายใจ'},
+  {t:'สวัสดีค่ะ โทรจาก [แบรนด์] ค่ะ',s:1,f:'แนะนำแบรนด์แล้ว แต่ยังขาดการยืนยันชื่อ อ้างอิงการลงทะเบียน และขออนุญาตคุย'}]},
+ {st:1,c:'ภรรยาลงให้น่ะ ช่วงนี้ตื่นมาปัสสาวะกลางคืน 3–4 รอบ',o:[
+  {t:'ขอบคุณคุณภรรยาด้วยนะคะ 🙂 อาการนี้เป็นมานานไหมคะ มีปัสสาวะแสบขัด หรือมีเลือดปนด้วยไหมคะ',s:2,f:'ถามระยะเวลาและอาการที่บอกว่าต้องพบแพทย์'},
+  {t:'เป็นต่อมลูกหมากโตแน่นอนค่ะ',s:0,v:'วินิจฉัยโรค',f:'ปัสสาวะบ่อยเกิดได้หลายสาเหตุ พนักงานวินิจฉัยไม่ได้'},
+  {t:'ผู้ชายวัยนี้เป็นทุกคนค่ะ',s:1,f:'ไม่ผิด แต่ไม่ได้ถามข้อมูลที่จำเป็น'}]},
+ {st:1,c:'เป็นมาครึ่งปี ไม่แสบ ไม่มีเลือด ยังไม่เคยไปหาหมอ',o:[
+  {t:'แนะนำให้ไปตรวจกับแพทย์ด้วยนะคะ เพื่อหาสาเหตุให้ชัด เพราะปัสสาวะบ่อยเกิดได้หลายสาเหตุ ส่วนผลิตภัณฑ์เสริมอาหารใช้ดูแลควบคู่ได้ค่ะ',s:2,f:'แนะนำพบแพทย์โดยไม่ตัดโอกาสขาย'},
+  {t:'ไม่ต้องไปหาหมอค่ะ ทานของเราก็พอ',s:0,v:'ไม่แนะนำพบแพทย์เมื่ออาการรุนแรง',f:'ห้ามแนะนำให้ลูกค้าไม่ไปพบแพทย์'},
+  {t:'ค่อยไปหาหมอทีหลังก็ได้ค่ะ',s:1,f:'ลดความสำคัญของการตรวจ ควรแนะนำให้ไปตรวจ'}]},
+ {st:2,c:'มีตัวไหนช่วยดูแลได้บ้าง',o:[
+  {t:'Prosxel เป็นสูตรไฟโตสเตอรอล ไลโคปีน ทับทิม ซิงก์ ช่วยสนับสนุนต่อมลูกหมากค่ะ มีกล่อง 10 แคปซูล ลองดูแลตัวเองก่อนได้ค่ะ',s:2,f:'เชื่อมเข้าส่วนผสมตามข้อ ③ ของ Prosxel และเสนอกล่องเล็กให้ลองก่อน'},
+  {t:'Prosxel ป้องกันมะเร็งต่อมลูกหมากได้ 100% ค่ะ',s:0,v:'พูดว่ารักษา/หาย',f:'อ้างป้องกันโรค ผิดข้อห้ามร้ายแรง'},
+  {t:'Prosxel ดีที่สุดในตลาดค่ะ',s:1,f:'อ้างลอย ๆ ไม่ได้เชื่อมกับอาการหรือส่วนผสม'}]},
+ {st:3,c:'ภรรยาบอกอยากทานด้วย ได้ไหม',o:[
+  {t:'ผลิตภัณฑ์กลุ่มต่อมลูกหมากสตรีและเด็กไม่ควรรับประทานค่ะ ถ้าคุณภรรยามีเรื่องสุขภาพที่อยากดูแล เดี๋ยวช่วยดูตัวที่เหมาะให้แยกนะคะ',s:2,f:'เตือนข้อห้ามและเปลี่ยนเป็นโอกาส cross-sell อย่างถูกต้อง'},
+  {t:'ได้ค่ะ ทานด้วยกันประหยัดดี',s:0,v:'ไม่เตือนข้อห้ามของสินค้า',f:'สินค้ากลุ่มนี้ระบุว่าสตรีไม่ควรรับประทาน'},
+  {t:'ไม่แน่ใจค่ะ ลองทานดูก่อนก็ได้',s:0,v:'ไม่เตือนข้อห้ามของสินค้า',f:'ถ้าไม่แน่ใจต้องตรวจสอบก่อน ห้ามให้ลองเอง'}]},
+ {st:4,c:'ก็ว่าจะลองกล่องเล็กก่อน 10 แคปซูลจะได้ผลไหม',o:[
+  {t:'ลองครบกล่อง 10 วันเพื่อดูตัวเองก่อนได้ค่ะ ผลต่างกันแต่ละคน ถ้าต่อเนื่องเป็นคอร์สจะสม่ำเสมอกว่า สะดวกให้จัดส่งที่อยู่ไหนดีคะ',s:2,f:'ตอบตามข้อ ④ ของ Prosxel แล้วปิดด้วยการถามที่อยู่'},
+  {t:'10 วันเห็นผลแน่นอนค่ะ',s:0,v:'รับประกันผล',f:'ห้ามรับประกันผล'},
+  {t:'กล่องเล็กไม่ค่อยได้ผลหรอกค่ะ เอากล่องใหญ่ดีกว่า',s:1,f:'กดดันให้ซื้อมากขึ้นโดยไม่มีเหตุผล ลูกค้าอาจไม่ซื้อเลย'}]}
+ ]},
+{id:'r_cardi',team:'resell',av:'👨',name:'คุณวิชัย',age:58,lv:2,topic:'เคยซื้อ Cardilite ใกล้หมด · ทานยาความดันอยู่',
+ ctx:'ลูกค้าเดิม เคยสั่ง Cardilite เมื่อ 3 สัปดาห์ก่อน (เปิดดูประวัติการสั่งซื้อก่อนโทร)',prods:['cardilite','cartiosil'],
+ learn:'ทีม Resell เริ่มจากขอบคุณ → ถามผลการใช้ของเดิม → ชวนต่อคอร์สก่อนหมด และย้ำเสมอว่าห้ามหยุดหรือลดยาที่หมอสั่ง',
+ steps:[
+ {st:0,c:'ครับ',o:[
+  {t:'สวัสดีค่ะ คุณวิชัยใช่ไหมคะ ดิฉันมายด์ โทรจาก [แบรนด์] ค่ะ ขอบคุณที่เคยไว้วางใจสั่งสินค้ากับเรานะคะ โทรมาสอบถามการใช้ Cardilite และดูแลต่อค่ะ สะดวกคุยสัก 2–3 นาทีไหมคะ',s:2,f:'เปิดสายแบบลูกค้าเดิม (v5): ขอบคุณ + อ้างสินค้าเดิม'},
+  {t:'สวัสดีค่ะ คุณลูกค้าลงทะเบียนขอข้อมูลไว้ใช่ไหมคะ',s:0,f:'ใช้บทของลูกค้าใหม่กับลูกค้าเดิม แสดงว่าไม่ได้เปิดประวัติก่อนโทร'},
+  {t:'สวัสดีค่ะ ตอนนี้มีโปรใหม่มาค่ะ สนใจไหมคะ',s:1,f:'ข้ามการขอบคุณและการถามผลการใช้ ลูกค้ารู้สึกโดนไล่ขาย'}]},
+ {st:1,c:'อ๋อ ใกล้หมดแล้วครับ ก็ทานทุกวัน',o:[
+  {t:'ช่วงที่ทานรู้สึกอย่างไรบ้างคะ แล้วช่วงนี้ได้วัดความดันบ้างไหมคะ ผลเป็นอย่างไร',s:2,f:'ถามผลการใช้ของเดิมก่อนชวนซื้อซ้ำ ตามขั้นตอน v5'},
+  {t:'งั้นสั่งเพิ่ม 3 กล่องเลยนะคะ',s:0,f:'ข้ามการถามผลการใช้ ลูกค้าไม่รู้สึกว่าเราใส่ใจ'},
+  {t:'ทานต่อไปเรื่อย ๆ นะคะ',s:1,f:'ไม่ได้ข้อมูลอะไรเพิ่ม และไม่ได้ปิดการขาย'}]},
+ {st:1,c:'รู้สึกตัวเบาขึ้นนะ วัดล่าสุด 140/90 หมอยังให้ทานยาความดันอยู่',o:[
+  {t:'ดีใจด้วยค่ะที่รู้สึกดีขึ้น ทานยาตามที่คุณหมอสั่งต่อเนื่องนะคะ Cardilite ใช้เสริมควบคู่ ไม่ทดแทนยาค่ะ',s:2,f:'ชื่นชมผลลัพธ์โดยไม่ยกเครดิตเกินจริง และย้ำว่าต้องทานยาต่อ'},
+  {t:'ความดันลงแล้ว ลองลดยาครึ่งนึงได้เลยค่ะ',s:0,v:'แนะนำให้หยุดหรือปรับยาที่หมอสั่ง',f:'อันตรายมาก การปรับยาต้องให้แพทย์เป็นผู้ตัดสินใจเท่านั้น'},
+  {t:'เพราะ Cardilite ช่วยลดความดันแน่นอนค่ะ',s:0,v:'พูดว่ารักษา/หาย',f:'อ้างว่าสินค้าทำให้ความดันลด ทั้งที่ลูกค้าทานยาอยู่'}]},
+ {st:2,c:'มีตัวอื่นที่ดูแลหัวใจเพิ่มไหม',o:[
+  {t:'มี Cartiosil ค่ะ แต่ก่อนแนะนำขอถามนิดนึงนะคะ ตอนนี้ทานยาต้านเกล็ดเลือดหรือยาละลายลิ่มเลือดอยู่ไหมคะ เพราะตัวนี้ห้ามใช้ร่วมกันค่ะ',s:2,f:'Cross-sell พร้อมเช็กข้อห้ามสำคัญของ Cartiosil'},
+  {t:'Cartiosil ทานคู่กันได้เลยค่ะ ไม่มีข้อห้าม',s:0,v:'ไม่เตือนข้อห้ามของสินค้า',f:'Cartiosil ห้ามใช้ร่วมกับยาต้านเกล็ดเลือด/ยาละลายลิ่มเลือด'},
+  {t:'ตัวเดิมก็พอแล้วค่ะ',s:1,f:'ปลอดภัย แต่ปิดโอกาส cross-sell โดยไม่ได้ถามข้อมูล'}]},
+ {st:3,c:'ทานยาความดันอยู่ จะทานร่วมกันเยอะ ๆ ได้ใช่ไหม',o:[
+  {t:'ตัวนี้ไม่ใช่ยาค่ะ ห้ามหยุดหรือลดยาที่หมอสั่ง ถ้าจะทานควบคู่ ขอให้แจ้งแพทย์หรือเภสัชกรก่อนนะคะ และทานตามขนาดที่แนะนำค่ะ',s:2,f:'ตอบตามข้อ ④ ของ Cardilite แบบคำต่อคำ'},
+  {t:'ได้ค่ะ ยิ่งทานเยอะยิ่งดี',s:0,v:'ไม่เตือนข้อห้ามของสินค้า',f:'ต้องทานตามขนาดที่แนะนำ ห้ามแนะนำให้ทานเกิน'},
+  {t:'น่าจะได้ค่ะ',s:1,f:'ตอบไม่ชัด ควรให้ข้อมูลความปลอดภัยที่ถูกต้อง'}]},
+ {st:4,c:'งั้นเอา Cardilite ต่ออีกนะ',o:[
+  {t:'ขอบคุณค่ะ ตอนนี้มี [โปรโมชั่นลูกค้าเดิม] แนะนำสั่งเป็นคอร์สก่อนหมดจะได้ทานต่อเนื่องค่ะ สะดวกให้จัดส่งที่อยู่เดิมไหมคะ',s:2,f:'ปิดการขายซ้ำตามข้อ ⑤ ของ v5 และยืนยันที่อยู่'},
+  {t:'ได้ค่ะ เดี๋ยวส่งไปนะคะ',s:1,f:'ไม่ได้เสนอคอร์สหรือยืนยันที่อยู่ เสี่ยงส่งผิด'},
+  {t:'เอา 10 กล่องเลยไหมคะ จะได้หายขาด',s:0,v:'พูดว่ารักษา/หาย',f:'ยัดจำนวนและอ้างว่าหาย'}]}
+ ]},
+{id:'r_diab',team:'resell',av:'👵🏻',name:'คุณป้าบุญมี',age:60,lv:3,topic:'เคยซื้อ Flexvits · มีเบาหวาน ฉีดอินซูลิน',
+ ctx:'ลูกค้าเดิม ทาน Flexvits ครบแล้ว โทรถามผลและชวนดูแลเรื่องอื่น (Cross-sell)',prods:['diafin','flexvits'],
+ learn:'Cross-sell ต้องถามอาการใหม่ตามข้อ ② ทุกครั้ง และ Diafin ไม่ใช่ยารักษาเบาหวาน ห้ามแนะนำให้หยุดหรือลดอินซูลิน',
+ steps:[
+ {st:0,c:'จ้ะ ใครโทรมา',o:[
+  {t:'สวัสดีค่ะ คุณป้าบุญมีใช่ไหมคะ ดิฉันมายด์ โทรจาก [แบรนด์] ค่ะ ขอบคุณที่เคยไว้วางใจสั่ง Flexvits กับเรานะคะ โทรมาถามผลการใช้และดูแลต่อค่ะ สะดวกคุยสัก 2–3 นาทีไหมคะ',s:2,f:'เปิดสายลูกค้าเดิมครบสูตร'},
+  {t:'คุณป้ามีเบาหวานใช่ไหมคะ มีตัวใหม่มาแนะนำค่ะ',s:0,f:'ข้ามการขอบคุณและการถามผลของเดิม'},
+  {t:'สวัสดีค่ะ โทรจาก [แบรนด์] นะคะ',s:1,f:'ยังไม่อ้างอิงสินค้าเดิมและไม่ขอบคุณ'}]},
+ {st:1,c:'Flexvits ทานหมดแล้ว เข่าสบายขึ้น ลุกนั่งดีขึ้นหน่อย',o:[
+  {t:'ดีใจด้วยค่ะ ถ้าอยากดูแลต่อเนื่องแนะนำสั่งต่อเป็นคอร์สนะคะ แล้วนอกจากเรื่องข้อ ช่วงนี้มีเรื่องสุขภาพอื่นที่อยากดูแลเพิ่มไหมคะ',s:2,f:'ชวนซื้อซ้ำ แล้วเปิดประเด็น cross-sell ตามแนวทาง v5'},
+  {t:'Flexvits รักษาเข่าหายแล้วนะคะ',s:0,v:'พูดว่ารักษา/หาย',f:'ห้ามพูดว่ารักษาหรือหาย'},
+  {t:'โอเคค่ะ',s:1,f:'พลาดทั้งโอกาสขายซ้ำและ cross-sell'}]},
+ {st:1,c:'ป้าเป็นเบาหวาน ฉีดอินซูลินอยู่ เบื่อมาก อยากหาสมุนไพรมากินแทน',o:[
+  {t:'เข้าใจเลยค่ะว่าฉีดยาทุกวันเหนื่อย แต่อินซูลินเป็นยาที่คุณหมอสั่งเพื่อคุมน้ำตาล ห้ามหยุดเองนะคะ ช่วงนี้ตรวจน้ำตาลล่าสุดเป็นอย่างไรบ้างคะ',s:2,f:'เห็นใจลูกค้า ยืนหลักเรื่องยา แล้วถามอาการต่อตามข้อ ② ของ Diafin'},
+  {t:'Diafin ทานแทนอินซูลินได้เลยค่ะ',s:0,v:'แนะนำให้หยุดหรือปรับยาที่หมอสั่ง',f:'อันตรายถึงชีวิต ห้ามแนะนำให้ใช้แทนยา'},
+  {t:'ลองลดอินซูลินลงครึ่งนึงก่อนก็ได้ค่ะ',s:0,v:'แนะนำให้หยุดหรือปรับยาที่หมอสั่ง',f:'ห้ามแนะนำให้ปรับยาเอง'}]},
+ {st:2,c:'น้ำตาลยังสูงอยู่ ชอบกินของหวาน แล้ว Diafin ช่วยอะไร',o:[
+  {t:'เรื่องน้ำตาลเป็นสิ่งที่ควรดูแลต่อเนื่องค่ะ Diafin มีกระเทียมดำ อินอซิทอล กระบองเพชร ช่วยสนับสนุนการเผาผลาญและการจัดการน้ำตาลไขมันจากอาหาร ทานควบคู่การคุมอาหารและยาที่หมอสั่งค่ะ',s:2,f:'ทวนคำลูกค้า แล้วเชื่อมส่วนผสมตามข้อ ③ ของ Diafin'},
+  {t:'Diafin ทำให้น้ำตาลกลับมาปกติ หายจากเบาหวานค่ะ',s:0,v:'พูดว่ารักษา/หาย',f:'อ้างรักษาโรค ผิดข้อห้ามร้ายแรง'},
+  {t:'ช่วยได้ทุกอย่างเลยค่ะ',s:0,f:'คำตอบกว้างเกินไปและเกินจริง'}]},
+ {st:3,c:'ถ้าทานแล้วน้ำตาลลง ป้าหยุดยาได้ไหม',o:[
+  {t:'ไม่ได้ค่ะ ตัวนี้ไม่ใช่ยา ห้ามหยุดยาที่หมอสั่ง ใช้เป็นตัวเสริมควบคู่การคุมอาหารและออกกำลังกายเท่านั้น แนะนำแจ้งคุณหมอด้วยนะคะ',s:2,f:'ตอบตามข้อ ④ ของ Diafin แบบเป๊ะ'},
+  {t:'ถ้าน้ำตาลปกติแล้วหยุดได้ค่ะ',s:0,v:'แนะนำให้หยุดหรือปรับยาที่หมอสั่ง',f:'การหยุดยาต้องให้แพทย์ตัดสินใจเท่านั้น'},
+  {t:'ไม่ต้องบอกหมอก็ได้ค่ะ',s:0,v:'แนะนำให้หยุดหรือปรับยาที่หมอสั่ง',f:'ต้องแนะนำให้แจ้งแพทย์เสมอ'}]},
+ {st:4,c:'เอา Flexvits ต่อ แล้วลอง Diafin ด้วย',o:[
+  {t:'ขอบคุณค่ะคุณป้า ตอนนี้มี [โปรโมชั่นลูกค้าเดิม] นะคะ แนะนำนำฉลาก Diafin ไปให้คุณหมอดูก่อนเริ่มทานด้วยค่ะ สะดวกให้จัดส่งที่อยู่เดิมไหมคะ',s:2,f:'ปิดการขายทั้ง 2 ตัว พร้อมย้ำเรื่องความปลอดภัย'},
+  {t:'ได้ค่ะ ทานคู่กันแล้วเลิกฉีดยาได้เลยนะคะ',s:0,v:'แนะนำให้หยุดหรือปรับยาที่หมอสั่ง',f:'ทำลายทั้งเคสด้วยประโยคเดียว'},
+  {t:'ได้ค่ะ เดี๋ยวส่งไปนะคะ',s:1,f:'ยังไม่ยืนยันที่อยู่และข้อเสนอ'}]}
+ ]},
+{id:'r_eye',team:'resell',av:'🧑‍💻',name:'คุณเอก',age:34,lv:2,topic:'เคยซื้อ Visilite · บอกว่า “ยังไม่เห็นความต่าง”',
+ ctx:'ลูกค้าเดิม สั่ง Visilite ไป 1 กล่อง โทรถามผลการใช้',prods:['visilite','vistorite'],
+ learn:'ถ้าลูกค้ายังไม่เห็นความต่าง v5 ให้เช็กวิธีทานและระยะเวลาก่อน แล้วกลับไปถามอาการ ไม่ใช่ยอมแพ้หรือรับประกันผล',
+ steps:[
+ {st:0,c:'ครับผม',o:[
+  {t:'สวัสดีค่ะ คุณเอกใช่ไหมคะ ดิฉันมายด์ โทรจาก [แบรนด์] ค่ะ ขอบคุณที่เคยไว้วางใจสั่ง Visilite กับเรานะคะ โทรมาสอบถามการใช้และดูแลต่อค่ะ สะดวกคุยสัก 2–3 นาทีไหมคะ',s:2,f:'เปิดสายลูกค้าเดิมครบสูตร'},
+  {t:'คุณเอกคะ Visilite หมดหรือยังคะ สั่งเพิ่มเลยไหม',s:0,f:'ขายทันทีโดยไม่ถามผล ลูกค้าที่ยังไม่พอใจจะปฏิเสธทันที'},
+  {t:'สวัสดีค่ะ โทรจาก [แบรนด์] ค่ะ',s:1,f:'ยังไม่อ้างสินค้าเดิมและไม่ขอบคุณ'}]},
+ {st:1,c:'ทานไปเกือบหมดแล้ว แต่ยังไม่ค่อยเห็นความต่างเลยครับ',o:[
+  {t:'ขอบคุณที่บอกตรง ๆ นะคะ ขอเช็กนิดนึงค่ะ ปกติทานวันละกี่แคปซูล ทานต่อเนื่องทุกวันไหม แล้วเริ่มทานมานานเท่าไหร่แล้วคะ',s:2,f:'ทำตามแนวทาง v5: ยังไม่เห็นความต่าง → เช็กวิธีทานและระยะเวลาก่อน'},
+  {t:'แปลกจัง คนอื่นเห็นผลกันหมดนะคะ',s:0,f:'โทษลูกค้า ทำให้ลูกค้าเสียความรู้สึก'},
+  {t:'งั้นคงไม่เหมาะกับคุณเอกค่ะ',s:1,f:'ยอมแพ้เร็วไป ยังไม่ได้เช็กวิธีทาน'}]},
+ {st:1,c:'ทานบ้างไม่ทานบ้าง ลืมบ่อย ใช้คอมกับมือถือวันละ 10 ชั่วโมง ตอนเย็นตาล้ามาก',o:[
+  {t:'เข้าใจค่ะ ถ้าทานไม่สม่ำเสมออาจยังไม่รู้สึกถึงความต่าง ลองตั้งเวลาทานวันละ 1 แคปซูลพร้อมมื้อเช้าทุกวัน ควบคู่กับพักสายตาทุก ๆ ชั่วโมงดูนะคะ',s:2,f:'แก้ที่ต้นเหตุ (ทานไม่ต่อเนื่อง) และแนะนำพฤติกรรมเสริม'},
+  {t:'ทานวันละ 3 แคปซูลเลยค่ะ จะได้ไว',s:0,v:'ไม่เตือนข้อห้ามของสินค้า',f:'ห้ามแนะนำให้ทานเกินขนาดที่ระบุบนฉลาก'},
+  {t:'ใช้หน้าจอน้อยลงก็หายเองค่ะ',s:1,f:'คำแนะนำดีบางส่วน แต่ไม่ได้ช่วยเรื่องการใช้สินค้าให้ถูกวิธี'}]},
+ {st:2,c:'แล้ว Visilite ช่วยเรื่องจ้องจอได้จริงเหรอ',o:[
+  {t:'คนใช้หน้าจอนานแบบคุณเอก ตาต้องรับแสงสีฟ้าต่อเนื่องค่ะ Visilite มีลูทีนกับซีแซนทีนจากดาวเรือง ช่วยกรองแสงสีฟ้า และมีเบอร์รี่ 4 ชนิด ช่วยให้ตาล้าและแห้งน้อยลงค่ะ',s:2,f:'ทวนคำลูกค้า → ส่วนผสม ตามข้อ ③ ของ Visilite'},
+  {t:'ทานแล้วสายตาสั้นจะหายค่ะ ไม่ต้องใส่แว่น',s:0,v:'พูดว่ารักษา/หาย',f:'อ้างรักษาโรค ผิดข้อห้ามร้ายแรง'},
+  {t:'ช่วยได้ค่ะ ลองไปเรื่อย ๆ',s:1,f:'ไม่ได้อธิบายเหตุผล ลูกค้าไม่มั่นใจ'}]},
+ {st:3,c:'ช่วงนี้บางทีมองไม่ค่อยชัดด้วยนะ',o:[
+  {t:'ถ้ามองไม่ชัดหรือตามัว แนะนำให้ไปพบจักษุแพทย์ตรวจก่อนนะคะ Visilite ใช้ดูแลบำรุงควบคู่ได้ค่ะ',s:2,f:'ตามข้อ ④: อาการผิดปกติ → แนะนำพบแพทย์'},
+  {t:'ทาน Visilite ต่อเดี๋ยวก็ชัดเองค่ะ',s:0,v:'ไม่แนะนำพบแพทย์เมื่ออาการรุนแรง',f:'อาการมองไม่ชัดต้องแนะนำพบแพทย์'},
+  {t:'คงเพราะเหนื่อยค่ะ',s:1,f:'คาดเดาสาเหตุเอง ควรแนะนำให้ตรวจ'}]},
+ {st:4,c:'โอเค จะลองทานให้ต่อเนื่องดู',o:[
+  {t:'ดีเลยค่ะ แนะนำต่อเป็นคอร์สจะได้ทานต่อเนื่องไม่ขาดช่วง ตอนนี้มี [โปรโมชั่นลูกค้าเดิม] ค่ะ สะดวกให้จัดส่งที่อยู่เดิมไหมคะ แล้วอีก 2 สัปดาห์ดิฉันโทรถามผลนะคะ',s:2,f:'ปิดการขาย + นัดติดตามผล สร้างลูกค้าระยะยาว'},
+  {t:'คอร์สนี้รับประกันตาหายล้าแน่นอนค่ะ',s:0,v:'รับประกันผล',f:'ห้ามรับประกันผล'},
+  {t:'ค่ะ ถ้าหมดแล้วโทรมานะคะ',s:1,f:'ไม่ได้ปิดการขายหรือนัดติดตาม'}]}
+ ]},
+{id:'r_ear',team:'resell',av:'👩‍🦳',name:'คุณมาลี',age:52,lv:2,topic:'เคยซื้อ Detarin · ช่วงนี้หูอื้อบ่อย',
+ ctx:'ลูกค้าเดิม ทาน Detarin อยู่ โทรถามผลการใช้และดูแลเพิ่ม',prods:['heralite','detarin'],
+ learn:'เรื่องหู ตารางเสนอสินค้าของ v5 ระบุว่า Heralite “แนะนำพบแพทย์ก่อน” ต้องพูดเรื่องพบแพทย์ก่อนเสนอสินค้าเสมอ',
+ steps:[
+ {st:0,c:'ค่ะ',o:[
+  {t:'สวัสดีค่ะ คุณมาลีใช่ไหมคะ ดิฉันมายด์ โทรจาก [แบรนด์] ค่ะ ขอบคุณที่เคยไว้วางใจสั่ง Detarin กับเรานะคะ โทรมาสอบถามการใช้และดูแลต่อค่ะ สะดวกคุยสัก 2–3 นาทีไหมคะ',s:2,f:'เปิดสายลูกค้าเดิมครบสูตร'},
+  {t:'สวัสดีค่ะ คุณลูกค้าลงทะเบียนขอข้อมูลไว้ใช่ไหมคะ',s:0,f:'ใช้บทลูกค้าใหม่กับลูกค้าเดิม'},
+  {t:'คุณมาลีคะ มีสินค้าใหม่ค่ะ',s:1,f:'ข้ามการขอบคุณและการถามผลของเดิม'}]},
+ {st:1,c:'Detarin ดีนะ ท้องอืดน้อยลง ยังเหลืออีกครึ่งกล่อง',o:[
+  {t:'ดีใจด้วยค่ะ ใกล้หมดเมื่อไหร่แนะนำต่อเป็นคอร์สนะคะ แล้วนอกจากเรื่องท้อง ช่วงนี้มีเรื่องสุขภาพอื่นที่อยากดูแลเพิ่มไหมคะ',s:2,f:'ขายซ้ำ + เปิดประเด็น cross-sell ตาม v5'},
+  {t:'เพราะ Detarin รักษาโรคกระเพาะได้ค่ะ',s:0,v:'พูดว่ารักษา/หาย',f:'ห้ามพูดว่ารักษา'},
+  {t:'ทานต่อนะคะ',s:1,f:'พลาดโอกาสถามเรื่องอื่น'}]},
+ {st:1,c:'ช่วงนี้หูอื้อบ่อย บางทีได้ยินไม่ชัด',o:[
+  {t:'เป็นมานานแค่ไหนแล้วคะ ได้พบแพทย์หูคอจมูกหรือยังคะ แล้วส่งผลกับการคุยหรือการทำงานไหมคะ',s:2,f:'ถามตามข้อ ② ของ Heralite ครบ'},
+  {t:'เป็นประสาทหูเสื่อมแน่ ๆ ค่ะ',s:0,v:'วินิจฉัยโรค',f:'ห้ามวินิจฉัยโรค'},
+  {t:'อายุเยอะก็เป็นปกติค่ะ',s:1,f:'ไม่ได้ถามข้อมูลสำคัญ'}]},
+ {st:2,c:'เป็นมาเดือนนึง ยังไม่ได้ไปหาหมอ',o:[
+  {t:'เรื่องหูควรพบแพทย์ก่อนนะคะ ส่วน Heralite เป็นวิตามินรวม (เอ อี ซี ดี โฟลิก ซิงก์ ALA) ช่วยต้านอนุมูลอิสระ สนับสนุนระบบประสาท ใช้เป็นตัวเสริมควบคู่ได้ค่ะ',s:2,f:'พูดเรื่องพบแพทย์ก่อน แล้วค่อยเชื่อมสินค้า ตามข้อ ③'},
+  {t:'ไม่ต้องไปหาหมอค่ะ ทาน Heralite ก็พอ',s:0,v:'ไม่แนะนำพบแพทย์เมื่ออาการรุนแรง',f:'v5 ระบุชัดว่า Heralite ต้องแนะนำพบแพทย์ก่อน'},
+  {t:'Heralite ดีมากค่ะ ทานเลย',s:1,f:'ข้ามการแนะนำพบแพทย์และไม่ได้อธิบายส่วนผสม'}]},
+ {st:3,c:'ทานแล้วหูอื้อจะหายไหม',o:[
+  {t:'ตัวนี้เป็นผลิตภัณฑ์เสริมอาหารค่ะ ไม่ใช่ยารักษา ถ้าหูอื้อหรือได้ยินลดลงควรพบแพทย์ ใช้เป็นตัวช่วยเสริมสารอาหารควบคู่กับการรักษาของแพทย์ได้ค่ะ',s:2,f:'ตอบตามข้อ ④ ของ Heralite'},
+  {t:'หายแน่นอนค่ะ ภายใน 1 เดือน',s:0,v:'รับประกันผล',f:'ห้ามรับประกันผล'},
+  {t:'น่าจะหายค่ะ',s:0,v:'พูดว่ารักษา/หาย',f:'แม้จะพูดว่า “น่าจะ” ก็ยังสื่อว่ารักษาให้หาย'}]},
+ {st:4,c:'งั้นจะไปหาหมอก่อน แล้วค่อยสั่ง',o:[
+  {t:'ดีเลยค่ะ ขออนุญาตจดไว้ แล้วสัปดาห์หน้าดิฉันโทรถามผลตรวจนะคะ ระหว่างนี้ Detarin ใกล้หมดเมื่อไหร่ แจ้งได้เลยค่ะ',s:2,f:'เคารพการตัดสินใจ นัดติดตาม และไม่ลืมการขายซ้ำของเดิม'},
+  {t:'สั่งเลยดีกว่าค่ะ หมอก็ไม่ได้ช่วยอะไร',s:0,v:'ไม่แนะนำพบแพทย์เมื่ออาการรุนแรง',f:'ห้ามลดความสำคัญของแพทย์'},
+  {t:'ค่ะ',s:1,f:'จบสายโดยไม่นัดติดตาม'}]}
+ ]}
+];
+let simS=null,simTeam='all';
+function simBest(){try{return JSON.parse(localStorage.getItem('enf_sim_best')||'{}')}catch(e){return{}}}
+function simSaveBest(id,pct,grade){try{const b=simBest();if(!b[id]||b[id].pct<pct){b[id]={pct,grade};localStorage.setItem('enf_sim_best',JSON.stringify(b));}}catch(e){}}
+function simHome(){
+  simS=null;
+  const best=simBest();
+  const list=SIM.filter(s=>simTeam==='all'||s.team===simTeam);
+  document.getElementById('sim-root').innerHTML=`
+  <div class="sim-top"><h3>เลือกลูกค้าที่จะซ้อมคุย</h3>
+   <div class="sim-filters">
+    ${[['all','ทั้งหมด'],['fresh','ทีม Fresh (v4)'],['resell','ทีม Resell (v5)']].map(([k,l])=>`<button class="bm-chip${simTeam===k?' on':''}" onclick="simTeam='${k}';simHome()">${l}</button>`).join('')}
+    <button class="sim-rand" onclick="simRandom()">🎲 สุ่มลูกค้า</button>
+   </div></div>
+  <div class="sim-grid">${list.map(s=>{const b=best[s.id];return `<button class="sim-card" onclick="simStart('${s.id}')">
+    <span class="sim-type ${s.team==='fresh'?'new':'old'}">${s.team==='fresh'?'ลูกค้าใหม่ · Fresh':'ลูกค้าเดิม · Resell'}</span>
+    <div class="sim-av">${s.av}</div><div class="sim-name">${s.name}, ${s.age}</div><div class="sim-topic">${s.topic}</div>
+    <div class="sim-meta"><span class="sim-lv" title="ระดับความยาก">${'★'.repeat(s.lv)}${'☆'.repeat(3-s.lv)}</span>${b?`<span class="sim-best ${b.grade}">ดีที่สุด ${b.grade} · ${b.pct}%</span>`:'<span class="sim-best">ยังไม่เคยเล่น</span>'}</div></button>`}).join('')}</div>`;
+}
+function simRandom(){const list=SIM.filter(s=>simTeam==='all'||s.team===simTeam);simStart(list[Math.floor(Math.random()*list.length)].id);}
+function simStart(id){
+  const sc=SIM.find(s=>s.id===id);if(!sc)return;
+  simS={sc,i:0,score:0,trust:50,viol:[],picks:[],busy:false};
+  document.getElementById('sim-root').innerHTML=`
+  <div class="sim-game">
+   <div class="sim-main">
+    <div class="sim-head"><div class="sim-av">${sc.av}</div><div><b>${sc.name}, ${sc.age} ปี</b><small>${sc.team==='fresh'?'ลูกค้าใหม่ (ทีม Fresh · Script v4)':'ลูกค้าเดิม (ทีม Resell · Script v5)'}</small></div><div class="sim-live"><i></i>กำลังสนทนา</div></div>
+    <div class="sim-steps" id="sim-steps">${SIM_STAGES.map(s=>`<div>${s}</div>`).join('')}</div>
+    <div class="sim-chat" id="sim-chat"><div class="sim-ctx">📋 ${sc.ctx}</div></div>
+    <div class="sim-ops" id="sim-ops"></div>
+   </div>
+   <div class="sim-side">
+    <div class="sim-box"><h4>💗 ความไว้ใจของลูกค้า</h4><div class="sim-meter"><i id="sim-tm"></i></div><div class="sim-mv"><b id="sim-tv">50</b><span id="sim-td"></span></div></div>
+    <div class="sim-box"><h4>⭐ คะแนน</h4><div class="sim-mv" style="margin:0"><b id="sim-sc">0</b><span>/ ${sc.steps.length*10}</span></div></div>
+    <div class="sim-box rules"><h4>🚫 ข้อห้าม (จาก Script)</h4><ul class="sim-rules">${SIM_RULES.map(r=>`<li>${r}</li>`).join('')}</ul></div>
+    <button class="bm-btn ghost" onclick="simHome()">← เลือกลูกค้าใหม่</button>
+   </div>
+  </div>`;
+  simMeter(0);simStep();
+  if(window.innerWidth<900)document.getElementById('sim-root').scrollIntoView({behavior:'smooth'});
+}
+function simMeter(d){
+  const t=simS.trust,m=document.getElementById('sim-tm');if(!m)return;
+  m.style.width=t+'%';m.style.background=t>=70?'linear-gradient(90deg,#3DDC97,#16A36E)':t>=40?'linear-gradient(90deg,#FFD36E,#F0A93B)':'linear-gradient(90deg,#FF8A8A,#E5484D)';
+  document.getElementById('sim-tv').textContent=t;
+  const td=document.getElementById('sim-td');
+  td.innerHTML=d?`<span class="sim-delta ${d>0?'up':'down'}">${d>0?'▲ +':'▼ '}${d}</span>`:'';
+  document.getElementById('sim-sc').textContent=simS.score;
+}
+function simScroll(){const c=document.getElementById('sim-chat');if(c)c.scrollTop=c.scrollHeight;}
+function simStep(){
+  const s=simS,sc=s.sc,step=sc.steps[s.i],chat=document.getElementById('sim-chat');
+  document.querySelectorAll('#sim-steps div').forEach((d,k)=>{d.className=k<step.st?'done':k===step.st?'cur':'';});
+  const prev=s.i>0?sc.steps[s.i-1].st:-1;
+  if(step.st!==prev)chat.insertAdjacentHTML('beforeend',`<div class="sim-stage">${SIM_STAGES[step.st]}</div>`);
+  chat.insertAdjacentHTML('beforeend',`<div class="sim-msg cust" id="sim-typing"><div class="who">${sc.av}</div><div class="bub sim-typing"><i></i><i></i><i></i></div></div>`);
+  simScroll();
+  document.getElementById('sim-ops').innerHTML='<div class="lbl">ลูกค้ากำลังพิมพ์…</div>';
+  setTimeout(()=>{
+    const t=document.getElementById('sim-typing');if(!t||!simS||simS.sc!==sc)return;
+    t.removeAttribute('id');t.querySelector('.bub').className='bub';t.querySelector('.bub').textContent=step.c;
+    const ops=step.o.map((o,k)=>({o,k}));
+    for(let i=ops.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ops[i],ops[j]]=[ops[j],ops[i]];}
+    document.getElementById('sim-ops').innerHTML=`<div class="lbl">เลือกคำตอบของคุณ · ${SIM_STAGES[step.st]}</div>`+ops.map((x,n)=>`<button class="sim-op" onclick="simPick(${x.k})"><span class="k">${['ก','ข','ค'][n]}</span><span>${x.o.t}</span></button>`).join('');
+    simScroll();
+  },700+Math.min(900,step.c.length*12));
+}
+function simPick(k){
+  const s=simS;if(!s||s.busy)return;s.busy=true;
+  const step=s.sc.steps[s.i],o=step.o[k],best=step.o.find(x=>x.s===2);
+  const pts=o.s===2?10:o.s===1?5:0;s.score+=pts;
+  let d=o.s===2?12:o.s===1?2:-10;if(o.v){d=-22;s.viol.push({v:o.v,t:o.t});}
+  s.trust=Math.max(0,Math.min(100,s.trust+d));s.picks.push(o.s);
+  const chat=document.getElementById('sim-chat');
+  chat.insertAdjacentHTML('beforeend',`<div class="sim-msg me"><div class="who">🎧</div><div class="bub">${o.t}</div></div>`);
+  const head=o.s===2?'✅ ยอดเยี่ยม! +10':o.s===1?'🟡 พอใช้ +5':(o.v?'⛔ ผิดข้อห้าม!':'❌ ไม่ควรตอบแบบนี้');
+  chat.insertAdjacentHTML('beforeend',`<div class="sim-fb g${o.s}"><b>${head}</b>${o.f}${o.v?`<br><span class="tag">ข้อห้าม: ${o.v}</span>`:''}${o.s<2&&best?`<div class="best">💡 คำตอบที่ดีกว่า: “${best.t}”</div>`:''}</div>`);
+  simMeter(d);simScroll();
+  if(o.v){const m=document.querySelector('.sim-main');m.classList.add('shake');setTimeout(()=>m.classList.remove('shake'),420);}
+  const last=s.i>=s.sc.steps.length-1;
+  document.getElementById('sim-ops').innerHTML=`<button class="bm-btn sim-next" onclick="simNext()">${last?'ดูผลการขาย 🏁':'ไปต่อ →'}</button>`;
+}
+function simNext(){const s=simS;s.busy=false;s.i++;if(s.i>=s.sc.steps.length){simEnd();return;}simStep();}
+function simEnd(){
+  const s=simS,sc=s.sc,max=sc.steps.length*10,pct=Math.round(s.score/max*100);
+  let g=pct>=90?'S':pct>=75?'A':pct>=55?'B':'C';if(s.viol.length&&g!=='C')g=s.viol.length>1?'C':'B';
+  simSaveBest(sc.id,pct,g);
+  const title={S:'สุดยอดเซลส์มืออาชีพ! 🏆',A:'เก่งมาก ปิดการขายได้สวย 🔥',B:'ผ่าน แต่ยังพัฒนาได้อีก 👍',C:'ลองใหม่อีกรอบนะ 💪'}[g];
+  const sub=s.viol.length?`พบการตอบผิดข้อห้าม ${s.viol.length} ครั้ง เกรดถูกจำกัดไว้`:'ไม่ผิดข้อห้ามเลย ยอดเยี่ยม!';
+  const prods=sc.prods.map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean);
+  document.getElementById('sim-ops').innerHTML='';
+  document.querySelectorAll('#sim-steps div').forEach(d=>d.className='done');
+  const main=document.querySelector('.sim-main');
+  main.insertAdjacentHTML('beforeend',`<div class="sim-result" id="sim-result">
+    <div class="sim-grade ${g}">${g}</div><h3>${title}</h3><p>${sub}</p>
+    <div class="sim-kpi"><div><b>${pct}%</b>คะแนน</div><div><b>${s.trust}</b>ความไว้ใจ</div><div><b>${s.picks.filter(x=>x===2).length}/${s.picks.length}</b>ตอบดีที่สุด</div></div>
+    ${s.viol.length?`<div class="sim-viol"><b>⛔ ข้อห้ามที่พลาด</b><ul>${s.viol.map(v=>`<li><b>${v.v}</b> — “${v.t}”</li>`).join('')}</ul></div>`:''}
+    <div class="sim-learn">📌 <b>บทเรียนจากเคสนี้:</b> ${sc.learn}</div>
+    ${prods.length?`<div class="bm-lbl" style="text-align:left">${sc.prodsLbl||'สินค้าในเคสนี้ · กดเพื่อทบทวน'}</div><div class="bm-prods" style="margin-bottom:18px">${prods.map((p,i)=>bmProdCard(p,i,false)).join('')}</div>`:''}
+    <div class="sim-acts"><button class="bm-btn" onclick="simStart('${sc.id}')">🔁 เล่นเคสนี้อีกครั้ง</button><button class="sim-rand" onclick="simRandom()">🎲 สุ่มลูกค้าคนใหม่</button><button class="bm-btn ghost" onclick="simHome()">← กลับไปเลือกเคส</button></div>
+  </div>`);
+  document.getElementById('sim-result').scrollIntoView({behavior:'smooth',block:'start'});
+  if((g==='S'||g==='A')&&!s.viol.length)simConfetti();
+}
+function simConfetti(){
+  try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;}catch(e){}
+  const cols=['#FF5C8A','#FFD36E','#3DDC97','#6EA8FF','#8B5CF6','#FF9A3C'];
+  for(let i=0;i<90;i++){const c=document.createElement('i');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.background=cols[i%cols.length];c.style.animationDuration=(1.8+Math.random()*1.8)+'s';c.style.animationDelay=(Math.random()*.5)+'s';c.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(c);setTimeout(()=>c.remove(),4200);}
+}
+
 function goPage(name,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('on'));
@@ -2429,6 +3238,8 @@ function goPage(name,btn){
   if(name==='quiz')startQuiz();
   if(name==='faq')showFaq('all',document.querySelector('.fcat'));
   if(name==='script')showScript('open',document.querySelector('.sc-tab'));
+  if(name==='bodymap')buildBodyMap();
+  if(name==='sim'&&!simS)simHome();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
