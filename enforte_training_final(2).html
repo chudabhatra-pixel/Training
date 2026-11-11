@@ -1426,7 +1426,7 @@ window.FEST_SEASON=function(){var d=new Date(Date.now()+7*36e5),k=d.getUTCFullYe
 .nav-link .ail-nav-ic{background:linear-gradient(135deg,#00B894,#6C5CE7);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900}
 @media(max-width:900px){
   .ail-chat,.ail-setup-grid,.ail-cols,.ail-score{grid-template-columns:1fr}
-  .ail-side{flex-direction:row;flex-wrap:wrap}.ail-side .ail-card{flex:1;min-width:150px}.ail-side .ail-btn{flex:1 1 140px}.ail-side .ail-card{flex:1 1 150px}
+  .ail-side{flex-direction:row;flex-wrap:wrap}.ail-side .ail-card{flex:1 1 150px;min-width:150px}.ail-side .ail-btn{flex:1 1 140px}
   .ail-tpill{display:inline-block!important}
   .ail-callbar{flex-wrap:wrap}
   .ail-ring{margin:0 auto}
@@ -1434,6 +1434,13 @@ window.FEST_SEASON=function(){var d=new Date(Date.now()+7*36e5),k=d.getUTCFullYe
   .ail-bar{grid-template-columns:100px 1fr 40px}
   .ail-call{min-height:480px}
 }
+.ail-ext{margin-top:18px;border-radius:18px;padding:16px;background:linear-gradient(135deg,#F5F7FF,#F2FBF8);border:1px solid #DDE5F3}
+.ail-ext-h{font-family:var(--display);font-weight:800;font-size:15.5px;color:var(--ink);margin-bottom:4px}
+.ail-x{color:#fff}
+.ail-x.gpt{background:#10A37F}
+.ail-x.cld{background:#D97757}
+.ail-x.gem{background:linear-gradient(90deg,#4285F4,#9B72CB)}
+@media(max-width:600px){.ail-ext .ail-btn{flex:1 1 45%}}
 
 </style>
 </head>
@@ -4726,14 +4733,28 @@ showScript('open',document.querySelector('.sc-tab'));
   const IM=id=>{const p=P[id];return p&&typeof IMGS!=='undefined'?(IMGS[p.img]||''):''};
   const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 
-  /* ── ความสามารถของหน้า (ใช้ได้เมื่อเปิดผ่านลิงก์ Claude) ── */
-  let SAMPLE=null,DICT=null,TTS=null,capTried=false;
+  /* ── ตั้งค่า AI สำหรับ GitHub (วิธี B) ──
+     วาง URL ของ Google Apps Script (Web app) ที่ลงท้ายด้วย /exec ระหว่างเครื่องหมาย ' ' ด้านล่าง
+     เว้นว่างไว้ = ไม่ใช้ (หน้า GitHub จะแสดงปุ่มเปิดใน ChatGPT / Claude / Gemini แทน) */
+  const AI_PROXY_URL='';
+  let PROXY=AI_PROXY_URL;
+  try{const u=new URLSearchParams(location.search).get('ai');if(u!==null){if(u)localStorage.setItem('enf_ai_proxy',u);else localStorage.removeItem('enf_ai_proxy')}PROXY=PROXY||localStorage.getItem('enf_ai_proxy')||''}catch(e){}
+  const proxySample=PROXY?async function(prompt){
+    let r;
+    try{r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({prompt:String(prompt)})})}catch(e){throw{code:'network'}}
+    let j;try{j=await r.json()}catch(e){throw{code:'bad_response'}}
+    if(j.error)throw{code:j.code||'proxy_error',message:j.error};
+    return{text:String(j.text||'')};
+  }:null;
+
+  /* ── ความสามารถของหน้า (ลิงก์ Claude ใช้ AI ของ Claude · GitHub ใช้ตัวกลางด้านบนถ้าตั้งค่าไว้) ── */
+  let SAMPLE=proxySample,DICT=null,TTS=null,capTried=false;
   function loadCaps(){
     if(capTried)return;
     if(!(window.claude&&typeof claude.use==='function'))return;
     capTried=true;
     const g=n=>Promise.resolve().then(()=>claude.use(n)).catch(()=>null);
-    g('sample').then(s=>{SAMPLE=s;render(true)});
+    g('sample').then(s=>{if(s){SAMPLE=s;render(true)}});
     g('dictation').then(d=>{DICT=d;if(d){try{d.onPartial(({text})=>MIC.tg&&MIC.tg.partial(text));d.onFinal(({text})=>MIC.tg&&MIC.tg.final(text));d.onState(({state})=>MIC.setOn(state==='listening'))}catch(e){}}render(true)});
     g('tts').then(t=>{TTS=t;if(t){try{t.onState(({state})=>{const b=$('#ail-tts');if(b)b.classList.toggle('speaking',state==='speaking')})}catch(e){}}});
   }
@@ -4782,7 +4803,7 @@ showScript('open',document.querySelector('.sc-tab'));
     }
     throw last;
   }
-  function aiErr(e){const c=e&&e.code;return c==='not_granted'?'ยังไม่ได้อนุญาตให้หน้านี้ใช้ AI':c==='rate_limited'?'ใช้งาน AI ถี่เกินไป รอสักครู่แล้วลองใหม่ค่ะ':c==='unavailable'?'AI ใช้ได้เฉพาะเมื่อเปิดผ่านลิงก์ Claude':'AI ตอบกลับไม่สำเร็จ ลองใหม่อีกครั้งค่ะ'}
+  function aiErr(e){const c=e&&e.code;if(c==='daily_limit')return 'วันนี้ใช้ AI ครบโควตาของทีมแล้ว พรุ่งนี้ลองใหม่นะคะ';if(c==='network'||c==='bad_response')return 'ติดต่อ AI ไม่ได้ ลองเช็กอินเทอร์เน็ตแล้วลองใหม่ค่ะ';return c==='not_granted'?'ยังไม่ได้อนุญาตให้หน้านี้ใช้ AI':c==='rate_limited'?'ใช้งาน AI ถี่เกินไป รอสักครู่แล้วลองใหม่ค่ะ':c==='unavailable'?'AI ใช้ได้เฉพาะเมื่อเปิดผ่านลิงก์ Claude':'AI ตอบกลับไม่สำเร็จ ลองใหม่อีกครั้งค่ะ'}
 
   /* ── ข้อมูลสินค้าแบบย่อให้ AI ── */
   const BASEP=PRODUCTS.filter(p=>!/_box$/.test(p.id));
@@ -4804,6 +4825,31 @@ showScript('open',document.querySelector('.sc-tab'));
     {r:'วินิจฉัยโรค',re:/(คุณ|ลูกค้า|ป้า|ลุง|พี่)(ลูกค้า)?(น่าจะ)?เป็นโรค|เป็น\S{0,14}แน่นอน(ค่ะ|ครับ)?$|อาการแบบนี้คือโรค/}
   ];
   const localFlags=t=>BAN.filter(b=>b.re.test(t)).map(b=>b.r);
+
+  /* ── วิธี A: ส่งพร้อมต์ไปเปิดใน ChatGPT / Claude / Gemini ── */
+  const EXT={};let extSeq=0;
+  function copyText(t){
+    let ok=false;
+    try{const ta=document.createElement('textarea');ta.value=t;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:-1000px;opacity:0';document.body.appendChild(ta);ta.select();ok=document.execCommand('copy');ta.remove()}catch(e){}
+    try{navigator.clipboard&&navigator.clipboard.writeText(t).catch(()=>{})}catch(e){}
+    return ok;
+  }
+  function extOpen(id,where){
+    const f=EXT[id];if(!f)return;const p=f();copyText(p);
+    const enc=encodeURIComponent(p),short=enc.length<14000;
+    const url=where==='chatgpt'?(short?'https://chatgpt.com/?q='+enc:'https://chatgpt.com/'):where==='claude'?(short?'https://claude.ai/new?q='+enc:'https://claude.ai/new'):'https://gemini.google.com/app';
+    window.open(url,'_blank','noopener');
+    toast(where==='gemini'||!short?'คัดลอกพร้อมต์แล้ว กด Ctrl+V (มือถือ: กดค้างแล้ววาง) ในช่องพิมพ์ แล้วส่งได้เลย':'เปิดแล้ว ถ้าข้อความยังไม่ขึ้นในช่องพิมพ์ ให้กด Ctrl+V วางได้เลย (คัดลอกไว้ให้แล้ว)');
+  }
+  function extBtns(build,title,note){
+    const id='x'+(++extSeq);EXT[id]=build;
+    return `<div class="ail-ext"><div class="ail-ext-h">${title||'💬 ใช้กับ AI ที่คุณมี'}</div>${note?`<div class="ail-muted" style="margin-bottom:10px">${note}</div>`:''}<div class="ail-row">
+      <button class="ail-btn ail-x gpt" onclick="AIL.ext('${id}','chatgpt')">เปิดใน ChatGPT</button>
+      <button class="ail-btn ail-x cld" onclick="AIL.ext('${id}','claude')">เปิดใน Claude</button>
+      <button class="ail-btn ail-x gem" onclick="AIL.ext('${id}','gemini')">คัดลอกไป Gemini</button>
+      <button class="ail-btn ghost" onclick="AIL.extCopy('${id}')">📋 คัดลอกพร้อมต์</button></div></div>`;
+  }
+  const shortProd=id=>{const p=P[id];if(!p)return'';const w=(typeof WARNS!=='undefined'&&WARNS[id])||[];return `- ${p.name}: ${strip((p.benefits||[])[0]||'').slice(0,90)}${w.length?' (ข้อห้าม: '+w.join(', ').slice(0,120)+')':''}`};
 
   /* ══════════ 1) ค้นหาอัจฉริยะ ══════════ */
   const ZK={
@@ -4865,9 +4911,32 @@ showScript('open',document.querySelector('.sc-tab'));
       </div>
       <div class="ail-chips">${ex.map(e=>`<button class="ail-chip" onclick="AIL.ex(this)">${esc(e)}</button>`).join('')}</div>
       <div id="ail-sres" class="ail-res"></div>
+      ${SAMPLE?'':extBtns(searchPrompt,'💬 อยากให้ AI ช่วยวิเคราะห์ละเอียดขึ้น?','พิมพ์สิ่งที่ลูกค้าเล่าในช่องด้านบนก่อน แล้วกดเปิดใน AI ที่คุณใช้')}
     </div>`;
     const q=$('#ail-q'),mb=$('#ail-qmic');
     mb.onclick=()=>MIC.toggle(micTarget(q,mb,{state(v){mb.classList.toggle('on',v);mb.textContent=v?'■':'🎙️';if(!v&&q.value.trim())AIL.search()}}));
+  }
+  function searchPrompt(){
+    const q=($('#ail-q')&&$('#ail-q').value.trim())||'[พิมพ์สิ่งที่ลูกค้าเล่าตรงนี้]';
+    const byGroup={};BASEP.forEach(p=>{const g=strip((typeof SUB_LBL!=='undefined'&&SUB_LBL[p.sub])||p.sub).replace(/\s*\(.*\)/,'');(byGroup[g]=byGroup[g]||[]).push(p.name)});
+    const zl=localSearch(q).zones.flatMap(z=>z.ids).filter((v,i,a)=>P[v]&&!/_box$/.test(v)&&a.indexOf(v)===i);
+    return `คุณคือโค้ชฝ่ายขายอาหารเสริมทางโทรศัพท์ (ไทย) ช่วยฉันซึ่งเป็นพนักงานขาย
+ลูกค้าเล่าว่า: "${q}"
+
+สินค้าที่บริษัทมี (แยกหมวด):
+${Object.entries(byGroup).map(([g,a])=>'- '+g+': '+a.join(', ')).join('\n')}
+${zl.length?'\nรายละเอียดสินค้าที่น่าจะเกี่ยวข้อง:\n'+zl.map(shortProd).join('\n'):''}
+
+กติกา: เป็นอาหารเสริม ไม่ใช่ยา ห้ามวินิจฉัยโรค ห้ามพูดว่ารักษาหาย ห้ามรับประกันผล ห้ามแนะนำให้หยุด/ปรับยา ต้องแนะนำพบแพทย์เมื่อมีอาการอันตราย ต้องเตือนข้อห้ามสินค้า (สินค้าผู้ชายห้ามเสนอผู้หญิง) อาการไหนไม่มีสินค้าตรง ให้บอกตรงๆ ห้ามยัดสินค้าที่ไม่เกี่ยว ใช้เฉพาะสินค้าในรายการนี้
+
+ตอบเป็นภาษาไทย สั้น กระชับ ตามหัวข้อนี้:
+1) ลูกค้าต้องการอะไร (1 บรรทัด)
+2) ต้องแนะนำพบแพทย์ไหม เพราะอะไร
+3) สินค้าที่เหมาะ (ไม่เกิน 3 ตัว) พร้อมเหตุผล
+4) อาการที่ไม่มีสินค้าตรง
+5) คำถามที่ควรถามลูกค้าต่อ 3 ข้อ
+6) ประโยคพูดกับลูกค้า 2-3 ประโยค
+7) สิ่งที่ห้ามพูดกับลูกค้ารายนี้`;
   }
   function doSearch(){
     const q=$('#ail-q').value.trim(),out=$('#ail-sres');if(!q){out.innerHTML='';return}
@@ -4925,7 +4994,7 @@ ${CATALOG()}
   function renderChatSetup(){
     const zs=zonesAll(),best=LS.get('enf_ail_best',null);
     $('#ail-root').innerHTML=`<div class="ail-panel">
-      <div class="ail-h">🤖 คุยกับลูกค้า AI <span class="ail-badge ${SAMPLE?'':'off'}">${SAMPLE?'AI พร้อม':'ต้องเปิดผ่านลิงก์ Claude'}</span></div>
+      <div class="ail-h">🤖 คุยกับลูกค้า AI <span class="ail-badge ${SAMPLE?'':'off'}">${SAMPLE?'AI พร้อม':'ใช้ผ่าน ChatGPT / Claude / Gemini'}</span></div>
       <div class="ail-muted">พิมพ์หรือพูดตอบเองได้อิสระ ลูกค้า AI จะตอบโต้ตามนิสัย ความไว้ใจขึ้นลงตามคำพูด จบสายแล้ว AI ให้คะแนนตามขั้นตอน Sales Script</div>
       ${SAMPLE?'':lockBox()}
       <div class="ail-setup-grid">
@@ -4941,12 +5010,13 @@ ${CATALOG()}
           <div class="ail-pers">${PERS.map(p=>`<button class="ail-per ${cfg.per===p.id?'on':''}" onclick="AIL.cfg('per','${p.id}')"><span class="e">${p.ic}</span><b>${p.lbl}</b><small>ระดับ: ${p.lv}</small></button>`).join('')}</div>
         </div>
       </div>
-      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><button class="ail-btn ai" onclick="AIL.start()" ${SAMPLE?'':'disabled'}>📞 เริ่มโทร</button></div>
+      ${SAMPLE?`<div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><button class="ail-btn ai" onclick="AIL.start()">📞 เริ่มโทร</button></div>`:''}
+      ${extBtns(extChatPrompt,SAMPLE?'หรือซ้อมใน AI ที่คุณใช้':'📞 ซ้อมกับลูกค้า AI ใน ChatGPT / Claude / Gemini','เลือกทีม เรื่อง และนิสัยลูกค้าด้านบน แล้วกดปุ่ม ระบบจะสุ่มลูกค้าและใส่ข้อมูลสินค้า ข้อห้าม และวิธีให้คะแนนให้ครบ คุยจบแล้วพิมพ์ “จบสาย” เพื่อดูคะแนน')}
     </div>`;
   }
-  function lockBox(){return `<div class="ail-lock" style="margin:14px 0 4px"><span class="ic">🔒</span><span><b>ส่วนนี้ใช้ AI ของ Claude</b><br><span class="ail-muted">ใช้ได้เมื่อเปิดไฟล์ผ่านลิงก์ Claude (artifact) เท่านั้น ถ้าเปิดจาก GitHub ยังใช้ได้แค่ “ค้นหาอัจฉริยะ” และ “ซ้อมพูดด้วยเสียง”</span></span></div>`}
+  function lockBox(){return `<div class="ail-lock" style="margin:14px 0 4px"><span class="ic">💡</span><span><b>ซ้อมในหน้านี้ยังไม่ได้ แต่ซ้อมใน ChatGPT / Claude / Gemini ได้เลย</b><br><span class="ail-muted">ตั้งค่าโจทย์ด้านล่าง แล้วกดปุ่มด้านล่างสุด ระบบจะส่งโจทย์ไปให้ AI เล่นเป็นลูกค้าให้</span></span></div>`}
 
-  function startChat(){
+  function makeCust(){
     const zs=zonesAll();const z=cfg.zone==='rand'?pick(zs):zs.find(x=>x.id===cfg.zone)||pick(zs);
     const per=PERS.find(p=>p.id===cfg.per)||PERS[0];
     const male=['men','prostate'].includes(z.id)||(z.id!=='face'&&Math.random()<.45);
@@ -4955,13 +5025,38 @@ ${CATALOG()}
     const med=per.id==='elder'?pick(MEDLIST):(Math.random()<.3?pick(MEDLIST):'ไม่ได้ทานยาประจำ');
     const ids=z.ids.filter(i=>P[i]&&!/_box$/.test(i));
     const bought=P[pick(ids)];
-    CH={z,per,name,male,age,med,ids,bought,team:cfg.team,trust:50,stage:0,flags:[],msgs:[],t0:Date.now(),busy:false,ended:false,tts:LS.get('enf_ail_tts',false)};
+    return {z,per,name,male,age,med,ids,bought,team:cfg.team};
+  }
+  function extChatPrompt(){
+    const c=makeCust();
+    return `เล่นบทบาทสมมติฝึกขายอาหารเสริมทางโทรศัพท์ (ภาษาไทย) ฉันคือพนักงานขาย คุณคือลูกค้า
+ตัวละคร: ${c.name} ${c.male?'ชาย':'หญิง'} ${c.age} ปี (ลงท้าย${c.male?'ครับ':'ค่ะ'})
+นิสัย: ${c.per.desc}
+สถานการณ์: ${scenarioText(c)}
+กังวลเรื่อง: ${c.z.th}
+ข้อมูลลับ (บอกเมื่อถูกถาม): เป็นมา 1 ปี, ${c.med}${c.team==='resell'?', ใช้ '+c.bought.name+' แล้วดีขึ้นนิดหน่อย':''}
+สินค้าที่เกี่ยวข้อง:
+${c.ids.map(shortProd).join('\n')}
+
+กติกา:
+- ตอบสั้น 1-3 ประโยคแบบคุยโทรศัพท์ ไม่ช่วย ไม่เฉลย
+- ท้ายทุกข้อความใส่ [ความไว้ใจ xx%] เริ่ม 50%
+- ถ้าฉันผิดข้อห้าม (${RULES.join(', ')}) ความไว้ใจลดหนัก
+- ต่ำกว่า 15% = วางสาย · ปิดการขายดีและ 70% ขึ้นไป = ยอมซื้อ
+- เมื่อฉันพิมพ์ "จบสาย" ให้ออกจากบท แล้วให้คะแนน /100 แยก 5 ขั้น (${STAGES.join(' ')}) ขั้นละ 20 พร้อมข้อห้ามที่ผิด (ยกคำพูด) จุดดี จุดที่ควรปรับ และประโยคที่ควรพูดแทน (ผิดข้อห้าม = ไม่เกิน 60)
+
+เริ่ม: พูดแค่ "ฮัลโหล ใครพูด${c.male?'ครับ':'คะ'}" แล้วรอ`;
+  }
+  function startChat(){
+    const b=makeCust();
+    CH=Object.assign(b,{trust:50,stage:0,flags:[],msgs:[],t0:Date.now(),busy:false,ended:false,tts:LS.get('enf_ail_tts',false)});
+    const male=b.male;
     const first=cfg.team==='resell'?'ฮัลโหล ค่ะ ใครพูดคะ':'ฮัลโหล ใครพูดคะ';
     CH.msgs.push({r:'c',t:male?first.replace(/ค่ะ|คะ/g,'ครับ'):first});
     renderChat();
   }
-  function scenarioText(){
-    const c=CH;
+  function scenarioText(c){
+    c=c||CH;
     return c.team==='resell'
       ?`ลูกค้าเคยซื้อ ${c.bought.name} ของแบรนด์จากทีมขายอีกทีมไปเมื่อประมาณ 3 สัปดาห์ก่อน ตอนนี้ใกล้หมดแล้ว พนักงานทีม Resell โทรมาติดตามผลและเสนอราคาพิเศษสำหรับลูกค้าเก่า (ลูกค้ารู้สึกว่าพอใช้ได้ แต่ยังไม่แน่ใจว่าจะซื้อต่อ)`
       :`ลูกค้าเคยกรอกข้อมูลขอรายละเอียดเรื่อง "${c.z.th}" ทางโฆษณาเฟซบุ๊กไว้เมื่อ 2 วันก่อน (อาจจำไม่ค่อยได้) พนักงานทีม Fresh โทรกลับครั้งแรก ลูกค้ายังไม่เคยซื้อสินค้า`;
@@ -5139,6 +5234,7 @@ ${transcript()}
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><button class="ail-btn" onclick="AIL.check()">✓ ตรวจคำตอบ</button>${SAMPLE?'<button class="ail-btn ai" id="ail-vai" onclick="AIL.checkAI()">✨ ให้ AI โค้ชละเอียด</button>':''}<button class="ail-btn ghost" onclick="AIL.nextVoice()">ข้อต่อไป →</button></div>
       <div id="ail-vres" class="ail-res"></div>
+      ${SAMPLE?'':extBtns(voicePrompt,'💬 อยากให้ AI โค้ชคำตอบนี้ละเอียดขึ้น?','พูดหรือพิมพ์คำตอบก่อน แล้วกดเปิดใน AI ที่คุณใช้')}
     </div>`;
     const ta=$('#ail-vt'),mb=$('#ail-vmic');
     if(mb)mb.onclick=()=>MIC.toggle(micTarget(ta,mb,{
@@ -5178,6 +5274,17 @@ ${transcript()}
     }catch(e){toast(aiErr(e))}
     b.disabled=false;b.innerHTML='✨ ให้ AI โค้ชละเอียด';
   }
+  function voicePrompt(){
+    const v=VS,t=($('#ail-vt')&&$('#ail-vt').value.trim())||'[วางคำตอบของคุณตรงนี้]';
+    return `คุณคือโค้ชการขายอาหารเสริมทางโทรศัพท์ ช่วยตรวจคำตอบของฉัน (ถอดจากเสียง อาจมีคำผิด ไม่ต้องสนใจการสะกด)
+สถานการณ์: ${v.sc.ctx||''} ลูกค้า ${v.sc.name} (${v.sc.topic||''})
+ขั้นตอนตอนนี้: ${STAGES[v.st.st]}
+ลูกค้าพูดว่า: "${v.st.c}"
+ฉันตอบว่า: "${t}"
+ตัวอย่างคำตอบที่ดีของบริษัท: "${v.best?v.best.t:''}"
+ข้อห้าม: ${RULES.join(', ')}
+ให้คะแนนเต็ม 10 บอกจุดที่ดี สิ่งที่ควรปรับ แล้วเขียนคำตอบที่ปรับแล้วโดยคงสไตล์ของฉัน พูดออกเสียงได้ลื่น 1-3 ประโยค ตอบเป็นภาษาไทยสั้นๆ`;
+  }
   function hear(){
     const t=VS&&VS.st.c;if(!t)return;
     if(TTS){TTS.speak(t,{voice:'airy'}).catch(()=>{});return}
@@ -5202,6 +5309,7 @@ ${transcript()}
     start:startChat,send,end:endChat,
     tts(){if(!CH)return;CH.tts=!CH.tts;LS.set('enf_ail_tts',CH.tts);const b=$('#ail-tts');if(b)b.classList.toggle('on',CH.tts);if(!CH.tts){try{TTS?TTS.stop():speechSynthesis.cancel()}catch(e){}}},
     showLog(){const l=$('#ail-log');if(!l||!CH)return;l.innerHTML=`<div class="ail-msgs" style="max-height:none;margin-top:14px;border-radius:16px;border:1px solid #E3E8F0">${CH.msgs.map(m=>m.r==='coach'?`<div class="ail-coach ${m.bad?'bad':''}">${esc(m.t)}</div>`:`<div class="ail-m ${m.r}">${esc(m.t)}</div>`).join('')}</div>`},
+    ext:extOpen,extCopy(id){const f=EXT[id];if(f){copyText(f());toast('คัดลอกพร้อมต์แล้ว เอาไปวางใน AI ที่ใช้ได้เลย')}},
     nextVoice(){if(MIC.on)MIC.stop();VS=null;renderVoice()},check:checkVoice,checkAI:checkVoiceAI,hear,
     _local:localSearch
   };
