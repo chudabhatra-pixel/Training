@@ -4765,7 +4765,9 @@ showScript('open',document.querySelector('.sc-tab'));
   try{const u=new URLSearchParams(location.search).get('ai');if(u!==null){if(u)localStorage.setItem('enf_ai_proxy',u);else localStorage.removeItem('enf_ai_proxy')}PROXY=PROXY||localStorage.getItem('enf_ai_proxy')||''}catch(e){}
   const proxySample=PROXY?async function(prompt){
     let r;
-    try{r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({prompt:String(prompt)})})}catch(e){throw{code:'network'}}
+    const ac=new AbortController(),to=setTimeout(()=>ac.abort(),60000);
+    try{r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({prompt:String(prompt)}),signal:ac.signal})}catch(e){clearTimeout(to);throw{code:ac.signal.aborted?'busy':'network'}}
+    clearTimeout(to);
     let j;try{j=await r.json()}catch(e){throw{code:'bad_response'}}
     if(j.error)throw{code:j.code||'proxy_error',message:j.error};
     return{text:String(j.text||'')};
@@ -5262,10 +5264,8 @@ ${transcript()}
     LS.set(key,d);
   }
   /* ── ให้ AI สร้างสถานการณ์ใหม่ (ไม่ซ้ำกับชุดโจทย์ในไฟล์) ── */
-  let genBusy=false;
-  async function genVoice(){
-    if(!SAMPLE||genBusy)return;genBusy=true;if(MIC.on)MIC.stop();
-    const b=$('#ail-vgen');if(b){b.disabled=true;b.innerHTML='<span class="ail-spin"></span> AI กำลังคิดสถานการณ์'}
+  let genBusy=false,NEXTGEN=null,genTimer=null;
+  async function makeScenario(){
     const z=pick(zonesAll()),per=pick(PERS),team=cfg.team||'fresh',stg=Math.floor(Math.random()*5);
     const ids=z.ids.filter(i=>P[i]&&!/_box$/.test(i));
     const twist=pick(['ลูกค้าเคยโดนหลอกซื้อของออนไลน์มาก่อน','ลูกค้ากำลังขับรถอยู่','ลูกค้าซื้อให้พ่อแม่ ไม่ได้ใช้เอง','ลูกค้าทานยาประจำอยู่แต่ไม่ได้บอกตรงๆ','ลูกค้าเห็นรีวิวในติ๊กต็อก','ลูกค้าเคยลองยี่ห้ออื่นแล้วไม่เห็นผล','ลูกค้าอยากได้ผลเร็วภายใน 1 สัปดาห์','ลูกค้าถามว่าทานคู่กับกาแฟ/แอลกอฮอล์ได้ไหม','ลูกค้าบอกว่าลูกเป็นพยาบาลห้ามซื้ออาหารเสริม','ลูกค้าขอให้ส่งข้อมูลทางไลน์ก่อน']);
@@ -5281,14 +5281,33 @@ ${ids.map(shortProd).join('\n')}
 
 ตอบเป็น JSON เท่านั้น:
 {"name":"ชื่อลูกค้า เช่น คุณ...","male":true/false,"age":ตัวเลข,"topic":"สรุปโจทย์สั้นๆ 1 บรรทัด","ctx":"บริบทก่อนเริ่มคุย 1-2 ประโยค","prev":"สิ่งที่ลูกค้าพูดก่อนหน้านี้ (ถ้าไม่ใช่ขั้นแรก) ไม่งั้นเว้นว่าง","line":"สิ่งที่ลูกค้าพูดตอนนี้ ภาษาพูด 1-3 ประโยค ให้พนักงานต้องตอบในขั้น ${STAGES[stg]}","best":"ตัวอย่างคำตอบที่ดีของพนักงาน 1-3 ประโยค ห้ามผิดข้อห้าม","why":"ทำไมคำตอบนี้ดี 1 ประโยค"}`;
+    const j=await askJSON(prompt,'quick');
+    if(!j||!j.line)throw{code:'bad_response'};
+    const bad=localFlags(String(j.best||''));
+    return {ai:true,team,sc:{name:j.name||'ลูกค้า',av:j.male?(+j.age>=60?'👴':'👨'):(+j.age>=60?'👵':'👩'),topic:(j.topic||z.th)+(j.age?' · '+j.age+' ปี':''),ctx:j.ctx||''},st:{st:stg,c:j.line},best:bad.length?null:{t:j.best,f:j.why},t0:0,dur:0,ci:0,cn:1,si:stg,sn:5,prev:j.prev||''};
+  }
+  /* เตรียมสถานการณ์ถัดไปไว้ล่วงหน้า กดแล้วขึ้นทันที */
+  function prefetch(){
+    if(!SAMPLE||NEXTGEN)return;
+    const team=cfg.team||'fresh';
+    NEXTGEN=makeScenario().then(v=>v,e=>{NEXTGEN=null;return null});
+    NEXTGEN.team=team;
+  }
+  async function genVoice(){
+    if(!SAMPLE||genBusy)return;genBusy=true;if(MIC.on)MIC.stop();LS.set('enf_ail_genused',true);
+    const btns=()=>[$('#ail-vgen'),$('#ail-vgen2')].filter(Boolean);
+    const t0=Date.now();
+    const tick=()=>btns().forEach(b=>{b.disabled=true;b.innerHTML=`<span class="ail-spin"></span> AI กำลังคิด… ${Math.round((Date.now()-t0)/1000)} วิ`});
+    tick();clearInterval(genTimer);genTimer=setInterval(tick,1000);
     try{
-      const j=await askJSON(prompt,'default');
-      if(!j||!j.line)throw{code:'bad_response'};
-      const bad=localFlags(String(j.best||''));
-      VS={ai:true,sc:{name:j.name||'ลูกค้า',av:j.male?(+j.age>=60?'👴':'👨'):(+j.age>=60?'👵':'👩'),topic:(j.topic||z.th)+(j.age?' · '+j.age+' ปี':''),ctx:j.ctx||''},st:{st:stg,c:j.line},best:bad.length?null:{t:j.best,f:j.why},t0:0,dur:0,ci:0,cn:1,si:stg,sn:5,prev:j.prev||''};
-      renderVoice();
+      if(NEXTGEN&&NEXTGEN.team!==(cfg.team||'fresh'))NEXTGEN=null;
+      let v=NEXTGEN?await NEXTGEN:null;NEXTGEN=null;
+      if(!v)v=await makeScenario();
+      VS=v;clearInterval(genTimer);genBusy=false;renderVoice();
     }catch(e){toast(aiErr(e))}
-    genBusy=false;const b2=$('#ail-vgen');if(b2){b2.disabled=false;b2.innerHTML='✨ ให้ AI สร้างสถานการณ์ใหม่'}
+    clearInterval(genTimer);genBusy=false;
+    btns().forEach(b=>{b.disabled=false;b.innerHTML=b.id==='ail-vgen2'?'✨ สถานการณ์ใหม่ →':'✨ ให้ AI สร้างสถานการณ์ใหม่'});
+    prefetch();
   }
   function renderVoice(){
     if(!VS)newVoice();
@@ -5304,10 +5323,11 @@ ${ids.map(shortProd).join('\n')}
         <div style="flex:1;min-width:240px"><div class="ail-muted" id="ail-vhint">${MIC.avail()?'กดไมค์แล้วเริ่มพูด กดอีกครั้งเมื่อพูดจบ':'เบราว์เซอร์นี้ใช้ไมค์ไม่ได้ (ลอง Chrome) พิมพ์คำตอบแทนได้ค่ะ'}</div>
           <textarea class="ail-in" id="ail-vt" rows="3" style="width:100%;margin-top:8px" placeholder="คำพูดของคุณจะขึ้นตรงนี้ (แก้ไขได้)"></textarea></div>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><button class="ail-btn" onclick="AIL.check()">✓ ตรวจคำตอบ</button>${SAMPLE?'<button class="ail-btn ai" id="ail-vai" onclick="AIL.checkAI()">✨ ให้ AI โค้ชละเอียด</button>':''}${VS&&VS.ai?'<button class="ail-btn ghost" onclick="AIL.genVoice()">✨ สถานการณ์ใหม่ →</button><button class="ail-btn ghost" onclick="AIL.backBank()">กลับไปชุดโจทย์เดิม</button>':'<button class="ail-btn ghost" onclick="AIL.nextVoice()">ขั้นต่อไป →</button>'}</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><button class="ail-btn" onclick="AIL.check()">✓ ตรวจคำตอบ</button>${SAMPLE?'<button class="ail-btn ai" id="ail-vai" onclick="AIL.checkAI()">✨ ให้ AI โค้ชละเอียด</button>':''}${VS&&VS.ai?'<button class="ail-btn ghost" id="ail-vgen2" onclick="AIL.genVoice()">✨ สถานการณ์ใหม่ →</button><button class="ail-btn ghost" onclick="AIL.backBank()">กลับไปชุดโจทย์เดิม</button>':'<button class="ail-btn ghost" onclick="AIL.nextVoice()">ขั้นต่อไป →</button>'}</div>
       <div id="ail-vres" class="ail-res"></div>
       ${SAMPLE?'':extBtns(voicePrompt,'💬 อยากให้ AI โค้ชคำตอบนี้ละเอียดขึ้น?','พูดหรือพิมพ์คำตอบก่อน แล้วกดเปิดใน AI ที่คุณใช้')}
     </div>`;
+    if(SAMPLE&&LS.get('enf_ail_genused',false))setTimeout(prefetch,1500);
     const ta=$('#ail-vt'),mb=$('#ail-vmic');
     if(mb)mb.onclick=()=>MIC.toggle(micTarget(ta,mb,{
       begin(){this._b=ta.value.trim()?ta.value.trim()+' ':'';v.t0=Date.now()},
