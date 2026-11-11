@@ -4825,12 +4825,18 @@ showScript('open',document.querySelector('.sc-tab'));
   /* ถอดเสียงภาษาไทยมักเว้นวรรคทุกคำ: รวมคำให้ติดกัน แล้วเว้นวรรคหลังคำลงท้าย */
   const tidySpeech=t=>String(t).replace(/([\u0E00-\u0E7F]) (?=[\u0E00-\u0E7F])/g,'$1').replace(/(ค่ะ|ครับ|คะ|นะคะ|นะครับ|จ้ะ|จ้า)(?=[\u0E00-\u0E7F])/g,'$1 ');
   function parseJSON(t){t=String(t||'').replace(/```json|```/g,'');const a=t.indexOf('{'),b=t.lastIndexOf('}');return JSON.parse(a>=0?t.slice(a,b+1):t)}
+  function todayCtx(){
+    const d=new Date();
+    const th=d.toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'});
+    return `[ข้อมูลพื้นฐาน: วันนี้คือ ${th} (ค.ศ. ${d.getFullYear()}) ถือว่าวันที่นี้ถูกต้องเสมอ ไม่ต้องโต้แย้งหรือพูดถึงเรื่องปีปัจจุบัน]\n`;
+  }
   async function askJSON(prompt,tier){
     if(!SAMPLE)throw{code:'unavailable'};
+    prompt=todayCtx()+prompt;
     let last;
     for(let i=0;i<2;i++){
       try{const r=await SAMPLE(prompt+'\n\nเขียนภาษาไทยที่ถูกต้อง สะกดถูก ห้ามมีอักขระภาษาอื่นปน'+(i?'\nสำคัญ: ตอบเป็น JSON ที่ถูกต้องเท่านั้น':''),{modelTier:tier||'default',cache:false});return cleanDeep(parseJSON(r.text))}
-      catch(e){last=e;if(e&&e.code)throw e}
+      catch(e){last=e;if(e&&e.code==='busy'&&!i){await new Promise(r=>setTimeout(r,1500));continue}if(e&&e.code)throw e}
     }
     throw last;
   }
@@ -4866,7 +4872,7 @@ showScript('open',document.querySelector('.sc-tab'));
     return ok;
   }
   function extOpen(id,where){
-    const f=EXT[id];if(!f)return;const p=f();copyText(p);
+    const f=EXT[id];if(!f)return;const p=todayCtx()+f();copyText(p);
     const enc=encodeURIComponent(p),short=enc.length<14000;
     const url=where==='chatgpt'?(short?'https://chatgpt.com/?q='+enc:'https://chatgpt.com/'):where==='claude'?(short?'https://claude.ai/new?q='+enc:'https://claude.ai/new'):'https://gemini.google.com/app';
     window.open(url,'_blank','noopener');
@@ -5158,7 +5164,7 @@ ${prods}
 ข้อห้ามของพนักงาน: ${RULES.join(', ')}
 ขั้นตอนการขายที่ดี: ${STAGES.join(' → ')}
 
-วิธีเล่น: พูดเหมือนคนจริงคุยโทรศัพท์ สั้น 1-3 ประโยค ภาษาพูด ไม่ช่วยพนักงาน ไม่เฉลย ไม่พูดแทนพนักงาน ไม่ต้องสนใจว่าราคาที่พนักงานบอกถูกต้องไหม
+วิธีเล่น: พูดเหมือนคนจริงคุยโทรศัพท์ สั้น 1-3 ประโยค ภาษาพูด ไม่ช่วยพนักงาน ไม่เฉลย ไม่พูดแทนพนักงาน ไม่ต้องสนใจว่าราคา วันผลิต วันหมดอายุ หรือโปรโมชันที่พนักงานบอกถูกต้องไหม (เชื่อตามที่พนักงานบอก) ความสงสัยของลูกค้าให้เน้นเรื่องความน่าเชื่อถือ ผลลัพธ์ ความปลอดภัย และความคุ้มค่า
 ปรับความไว้ใจ (0-100) ตามข้อความล่าสุดของพนักงาน: พูดดี ฟังลูกค้า ถามอาการ เชื่อมสินค้าตรงประเด็น +5 ถึง +15 · พูดยืดยาว วกวน กดดัน -5 ถึง -15 · ทำผิดข้อห้าม -20 ถึง -35 และแสดงความสงสัยหรือไม่พอใจ
 ถ้าความไว้ใจต่ำกว่า 15 ให้วางสาย (end=hangup) · ถ้าพนักงานปิดการขายดีและความไว้ใจ ≥ 70 ยอมซื้อได้ (end=buy)
 
@@ -5167,11 +5173,14 @@ ${transcript()}
 
 ความไว้ใจก่อนข้อความล่าสุด: ${c.trust}
 ตอบเป็น JSON เท่านั้น:
-{"reply":"คำพูดถัดไปของลูกค้า","trust":ตัวเลขใหม่,"stage":ตัวเลข 0-4 ขั้นที่พนักงานทำอยู่ตอนนี้,"flags":["ข้อห้ามที่พนักงานทำในข้อความล่าสุด ใช้ชื่อจากรายการ ถ้าไม่มีให้ว่าง"],"tip":"คำแนะนำโค้ชถึงพนักงาน 1 ประโยคสั้น","end":"none หรือ buy หรือ hangup"}`;
+{"reply":"คำพูดถัดไปของลูกค้า","trust":ตัวเลขใหม่,"stage":ตัวเลข 0-4 ขั้นที่พนักงานทำอยู่ตอนนี้,"flags":[{"rule":"ชื่อข้อห้ามจากรายการ","quote":"คัดลอกคำพูดที่ผิดจากข้อความล่าสุดของพนักงานแบบคำต่อคำ"}] (ใส่เฉพาะเมื่อผิดชัดเจน ถ้าไม่ผิดให้เป็น [] — การพูดถึงวันที่ ราคา โปรโมชัน ส่วนผสม หรือข้อมูลสินค้า ไม่ใช่การวินิจฉัยโรค),"tip":"คำแนะนำโค้ชถึงพนักงาน 1 ประโยคสั้น","end":"none หรือ buy หรือ hangup"}`;
     try{
       const j=await askJSON(prompt,'default');
       if(CH!==c)return;
-      const fl=[...new Set([...(j.flags||[]).filter(f=>RULES.includes(f)),...lf])];
+      const nz=x=>String(x||'').replace(/[\s"'“”‘’.,!?…]/g,'');const st=nz(txt);
+      const HINT={'วินิจฉัยโรค':/โรค|เสื่อม|อักเสบ|ติดเชื้อ|อาการแบบนี้คือ|น่าจะเป็น/,'พูดว่ารักษา/หาย':/รักษา|หาย/,'รับประกันผล':/รับประกัน|การันตี|แน่นอน|แน่|100|ทุกคน|ชัวร์|เห็นผล|ได้ผล/,'แนะนำให้หยุดหรือปรับยาที่หมอสั่ง':/ยา/};
+      const aiF=(j.flags||[]).filter(f=>f&&typeof f==='object'&&RULES.includes(f.rule)&&nz(f.quote).length>=4&&st.includes(nz(f.quote))&&(!HINT[f.rule]||HINT[f.rule].test(f.quote))).map(f=>f.rule);
+      const fl=[...new Set([...aiF,...lf])];
       c.flags.push(...fl);
       if(typeof j.trust==='number')c.trust=Math.max(0,Math.min(100,Math.round(j.trust)));
       if(fl.length&&c.trust>40)c.trust=Math.max(0,c.trust-20);
@@ -5203,7 +5212,7 @@ ${c.ids.map(i=>prodLine(P[i])).join('\n')}
 บทสนทนา:
 ${transcript()}
 
-ให้คะแนนอย่างยุติธรรมและเจาะจง (อ้างคำพูดจริงในบทสนทนา) ขั้นที่ยังไม่ได้ทำให้ได้คะแนนต่ำ ถ้าทำผิดข้อห้ามคะแนนรวมต้องไม่เกิน 60
+ให้คะแนนอย่างยุติธรรมและเจาะจง (อ้างคำพูดจริงในบทสนทนา) ข้อห้ามต้องมีคำพูดของพนักงานยืนยันชัดเจน การพูดถึงวันที่ ราคา โปรโมชัน หรือข้อมูลสินค้าไม่นับเป็นการวินิจฉัยโรค ขั้นที่ยังไม่ได้ทำให้ได้คะแนนต่ำ ถ้าทำผิดข้อห้ามคะแนนรวมต้องไม่เกิน 60
 ตอบเป็น JSON เท่านั้น:
 {"total":0-100,"verdict":"สรุปภาพรวม 1-2 ประโยค เป็นกันเอง ให้กำลังใจ","stages":[{"name":"ชื่อขั้นตามรายการ","score":0-20,"comment":"สั้นๆ"}],"violations":[{"rule":"ชื่อข้อห้าม","quote":"คำพูดที่ผิด"}],"good":["จุดที่ทำได้ดี"],"improve":["สิ่งที่ควรปรับ"],"better":[{"instead":"คำพูดเดิมของพนักงาน","say":"ควรพูดว่า"}]}`;
     try{
@@ -5401,7 +5410,7 @@ ${ids.map(shortProd).join('\n')}
     start:startChat,send,end:endChat,
     tts(){if(!CH)return;CH.tts=!CH.tts;LS.set('enf_ail_tts',CH.tts);const b=$('#ail-tts');if(b)b.classList.toggle('on',CH.tts);if(!CH.tts){try{TTS?TTS.stop():speechSynthesis.cancel()}catch(e){}}},
     showLog(){const l=$('#ail-log');if(!l||!CH)return;l.innerHTML=`<div class="ail-msgs" style="max-height:none;margin-top:14px;border-radius:16px;border:1px solid #E3E8F0">${CH.msgs.map(m=>m.r==='coach'?`<div class="ail-coach ${m.bad?'bad':''}">${esc(m.t)}</div>`:`<div class="ail-m ${m.r}">${esc(m.t)}</div>`).join('')}</div>`},
-    ext:extOpen,extCopy(id){const f=EXT[id];if(f){copyText(f());toast('คัดลอกพร้อมต์แล้ว เอาไปวางใน AI ที่ใช้ได้เลย')}},
+    ext:extOpen,extCopy(id){const f=EXT[id];if(f){copyText(todayCtx()+f());toast('คัดลอกพร้อมต์แล้ว เอาไปวางใน AI ที่ใช้ได้เลย')}},
     genVoice,backBank(){VS=null;renderVoice()},
     nextVoice(){if(MIC.on)MIC.stop();advVoice(false);VS=null;renderVoice()},
     skipVoice(){if(MIC.on)MIC.stop();advVoice(true);VS=null;renderVoice()},check:checkVoice,checkAI:checkVoiceAI,hear,
