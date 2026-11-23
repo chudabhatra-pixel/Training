@@ -2482,6 +2482,14 @@ function buildDzCats(active){
 }
 function dzToggle(n,btn){const p=document.getElementById('dz-det-'+n);const open=p.classList.toggle('open');btn.classList.toggle('open',open);btn.querySelector('.lbl').textContent=open?'ซ่อนความรู้เชิงลึก':'ความรู้เชิงลึก';}
 
+function dzNo(d){
+  if(!window._dzNoMap){
+    window._dzNoMap=new Map();let k=0;
+    ['bone','metabolic','digestive','immune','sensory','men','beauty'].forEach(c=>DISEASES.filter(x=>x.cat===c).forEach(x=>window._dzNoMap.set(x,++k)));
+    DISEASES.forEach(x=>{if(!window._dzNoMap.has(x))window._dzNoMap.set(x,++k);});
+  }
+  return window._dzNoMap.get(d)||d.n;
+}
 function dzDetailHTML(d){
   const dt=DZ_DETAIL[d.n]; if(!dt) return '';
   const deep=(dt.deep||[]).map(g=>`<div class="dz-dgroup"><div class="dz-dh">${g[0]}</div><div class="dz-deeptext">${g[1]}</div></div>`).join('');
@@ -2512,7 +2520,7 @@ function dzCardHTML(d){
     <div class="dz-stripe" style="background:${col}"></div>
     <div class="dz-body">
       <div class="dz-head">
-        <div class="dz-num" style="background:${col}">${d.n}</div>
+        <div class="dz-num" style="background:${col}">${dzNo(d)}</div>
         <div><div class="dz-th">${d.th}</div><div class="dz-en">${d.en}</div></div>
       </div>
       <div class="dz-row"><span class="dz-ico">🔍</span><div class="dz-rc"><div class="dz-rlabel">สาเหตุ</div><div class="dz-rtext">${d.cause}</div></div></div>
