@@ -5591,7 +5591,8 @@ ${SALES_RULE}
   <div class="np-head"><span class="np-badge">NEW</span><div class="np-title">สินค้าใหม่ 2 รายการ</div><button class="np-x" aria-label="ปิด" onclick="npClose()">×</button></div>
   <div class="np-tabs" id="np-tabs"></div>
   <div class="np-vwrap">
-   <video id="np-v" playsinline muted controls preload="metadata"></video>
+   <video id="np-v" playsinline webkit-playsinline muted autoplay controls preload="auto"></video>
+   <div id="np-err" style="display:none;position:absolute;inset:auto 0 0 0;padding:14px 18px;background:rgba(160,30,30,.92);color:#fff;font-size:14px;line-height:1.5"></div>
    <button class="np-sound" id="np-sound" onclick="npSound()">🔊 แตะเพื่อเปิดเสียง</button>
    <button class="np-next" id="np-next" onclick="npNext()">ถัดไป ›</button>
   </div>
@@ -5617,23 +5618,24 @@ ${SALES_RULE}
  tabs.innerHTML=L.map(function(x,i){return '<button class="np-tab" data-i="'+i+'"><b>'+(i+1)+'</b>'+x.name+'</button>'}).join('');
  tabs.addEventListener('click',function(e){var b=e.target.closest('.np-tab');if(b)load(+b.dataset.i,true)});
  function play(){
-   if(wantSound){v.muted=false;snd.style.display='none'}
+   v.muted=!wantSound;v.setAttribute('muted','');if(!wantSound&&!v.error)snd.style.display='';
    var p=v.play();
-   if(p&&p.catch)p.catch(function(){v.muted=true;wantSound=false;snd.style.display='';var q=v.play();if(q&&q.catch)q.catch(function(){})});
+   if(p&&p.catch)p.catch(function(){v.muted=true;wantSound=false;if(!v.error)snd.style.display='';var q=v.play();if(q&&q.catch)q.catch(function(){})});
  }
  function load(i,autoplay){
    cur=i;var x=L[i];
    [].forEach.call(tabs.children,function(b,k){b.classList.toggle('on',k===i)});
    nx.style.display=i<L.length-1?'':'none';
-   v.poster=x.poster;v.src=x.src;try{v.load()}catch(e){}
+   document.getElementById('np-err').style.display='none';v.poster=x.poster;v.src=x.src;try{v.load()}catch(e){}
    if(autoplay)play();
  }
  v.addEventListener('ended',function(){if(cur<L.length-1)load(cur+1,true)});
- v.addEventListener('error',function(){snd.style.display='none'});
+ v.addEventListener('error',function(){snd.style.display='none';var e=document.getElementById('np-err');e.style.display='block';e.textContent='ไม่พบไฟล์วิดีโอ '+L[cur].src+' — อัปโหลดไฟล์นี้ไว้โฟลเดอร์เดียวกับไฟล์เทรนนิ่ง'});
+ v.addEventListener('loadeddata',function(){document.getElementById('np-err').style.display='none'});
  v.addEventListener('volumechange',function(){if(!v.muted){wantSound=true;snd.style.display='none'}});
  window.npNext=function(){if(cur<L.length-1)load(cur+1,true)};
  window.npOpen=function(){pop.classList.add('show');fab.style.display='none';document.getElementById('np-hide').checked=!!get();
-   snd.style.display='none';wantSound=true;load(0,true)};
+   wantSound=false;load(0,true)};
  window.npSound=function(){wantSound=true;v.muted=false;try{v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){})}catch(e){}snd.style.display='none'};
  function firstTouch(e){if(!pop.classList.contains('show')||!v.muted)return;
    var t=e.target;if(t.closest&&(t.closest('.np-x')||t.closest('.np-close')||t.closest('.np-go')||t.closest('label')||t.closest('.np-tab')||t.closest('.np-next')))return;
