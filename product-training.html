@@ -5655,6 +5655,31 @@ html.xmas .bm-hero.xdb{padding-bottom:52px!important}
 @media(max-width:1120px){html.xmas .hero-banner .xd-orn.mx,html.xmas .hero-banner .xd-tree,html.xmas .hero-banner .xd-snowman,html.xmas .hero-banner .xd-gift{display:none!important}}
 html.xmas .hero-banner .xd-tree,html.xmas .hero-banner .xd-snowman,html.xmas .hero-banner .xd-gift{z-index:8}
 html.xmas .hero-banner .xd-orn{z-index:8}
+
+/* ---- hovering Santa on the greeting box ---- */
+html.xmas .xm-greet{position:relative}
+.xd-santa{position:absolute;left:-44px;top:-30px;width:236px;z-index:9;cursor:pointer;pointer-events:auto;filter:drop-shadow(0 10px 14px rgba(0,0,0,.35));animation:xdBob 3.2s ease-in-out infinite;transform-origin:40% 60%}
+.xd-santa:hover{filter:drop-shadow(0 10px 14px rgba(0,0,0,.35)) brightness(1.08)}
+.xd-santa .deer{animation:xdBob2 1.1s ease-in-out infinite}
+.xd-santa .deer.d2{animation-delay:-.4s}
+.xd-santa .leg{transform-box:fill-box;transform-origin:50% 0;animation:xdLeg .55s ease-in-out infinite alternate}
+.xd-santa .leg.b{animation-delay:-.27s}
+.xd-santa .warm{transform-box:fill-box;transform-origin:15% 90%;animation:xdArm 1.4s ease-in-out infinite}
+.xd-santa.hit .warm{animation:xdArm .25s ease-in-out 6}
+.xd-santa .nose{animation:xdNose 1.2s ease-in-out infinite}
+.xd-santa .trailp{stroke-dasharray:6 10;animation:xdDash 1.2s linear infinite}
+.xd-santa .sp{animation:xdTw 1.4s ease-in-out infinite}
+@keyframes xdBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-9px) rotate(1.5deg)}}
+@keyframes xdBob2{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes xdLeg{from{transform:rotate(-26deg)}to{transform:rotate(22deg)}}
+@keyframes xdArm{0%,100%{transform:rotate(0)}50%{transform:rotate(-28deg)}}
+@keyframes xdNose{0%,100%{opacity:1;filter:drop-shadow(0 0 3px #ff4040)}50%{opacity:.75;filter:drop-shadow(0 0 7px #ff2020)}}
+@keyframes xdDash{to{stroke-dashoffset:-32}}
+.xd-santa.zoom{animation:xdZoom 1.6s cubic-bezier(.5,0,.3,1) forwards}
+@keyframes xdZoom{0%{transform:translate(0,0)}35%{transform:translate(-20px,8px) rotate(-6deg)}100%{transform:translate(120vw,-40vh) rotate(-12deg);opacity:0}}
+@media(min-width:1121px){html.xmas .xm-greet{padding-left:168px!important;min-height:118px}}
+@media(max-width:1120px){.xd-santa{left:auto;right:6px;top:-22px;width:176px}html.xmas .xm-greet .t1{padding-right:120px}}
+@media(max-width:600px){.xd-santa{width:134px;right:2px;top:-18px}html.xmas .xm-greet .t1{padding-right:92px}}
 @media(prefers-reduced-motion:reduce){.xd *,.xd{animation:none!important}}
 </style>
 <script>
@@ -5738,6 +5763,52 @@ html.xmas .hero-banner .xd-orn{z-index:8}
   <path d="M0 40 C120 12 220 52 340 30 S560 8 680 34 S900 58 1020 26 S1160 18 1200 30 V80 H0Z" fill="url(#xdgr)"/>
   <path d="M0 56 C160 36 260 64 420 48 S700 40 860 56 S1100 46 1200 52 V80 H0Z" fill="#EAF2FC" opacity=".9"/></svg>`;
 
+
+ const SANTA=`<svg viewBox="0 0 300 150" aria-hidden="true"><defs>
+  <linearGradient id="sgT" x1="0" x2="1"><stop offset="0" stop-color="#FFD36E" stop-opacity="0"/><stop offset=".6" stop-color="#FFE7A0"/><stop offset="1" stop-color="#FFF6D6"/></linearGradient>
+  <linearGradient id="sgS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8283E"/><stop offset="1" stop-color="#9E0F22"/></linearGradient>
+  <radialGradient id="sgF" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FFE0CC"/><stop offset="1" stop-color="#F2B595"/></radialGradient>
+  <filter id="sgG" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.4"/></filter></defs>
+  <path d="M2 142 C40 136 52 112 92 112" stroke="url(#sgT)" stroke-width="7" fill="none" opacity=".55" filter="url(#sgG)"/>
+  <path class="trailp" d="M2 142 C40 136 52 112 92 112" stroke="#FFF1B8" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <g fill="#FFF3C4"><path class="sp" d="M20 124 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/><path class="sp" style="animation-delay:-.5s" d="M48 112 l1.5 4 4 1.5 -4 1.5 -1.5 4 -1.5 -4 -4 -1.5 4 -1.5z"/><circle class="sp" style="animation-delay:-.9s" cx="34" cy="138" r="1.8"/><circle class="sp" style="animation-delay:-.2s" cx="66" cy="120" r="1.6"/></g>
+  <!-- reins -->
+  <path d="M150 74 C178 60 196 52 222 50 M150 78 C190 66 222 58 262 42" stroke="#8B5A2B" stroke-width="1.6" fill="none"/>
+  <!-- reindeer 1 (back) -->
+  <g class="deer"><g transform="translate(196 30)">
+   <path class="leg" d="M8 26 v16" stroke="#6B4220" stroke-width="3.4" stroke-linecap="round"/><path class="leg b" d="M14 27 v15" stroke="#6B4220" stroke-width="3.4" stroke-linecap="round"/>
+   <path class="leg b" d="M32 27 v15" stroke="#6B4220" stroke-width="3.4" stroke-linecap="round"/><path class="leg" d="M38 25 v15" stroke="#6B4220" stroke-width="3.4" stroke-linecap="round"/>
+   <ellipse cx="23" cy="21" rx="20" ry="9.5" fill="#9A6634"/><path d="M40 16 q6 -6 6 -14" stroke="#9A6634" stroke-width="7" stroke-linecap="round" fill="none"/>
+   <ellipse cx="49" cy="0" rx="8" ry="6" fill="#9A6634"/><circle cx="51" cy="-2" r="1.2" fill="#222"/><circle cx="56" cy="2" r="2.2" fill="#3a2a1a"/>
+   <path d="M44 -6 l-4 -10 M42 -12 l-6 -2 M47 -6 l2 -11 M48 -13 l5 -3" stroke="#C9A36B" stroke-width="2" stroke-linecap="round" fill="none"/>
+   <path d="M30 16 q4 6 10 2" stroke="#C8102E" stroke-width="3" fill="none"/><circle cx="35" cy="20" r="2.2" fill="#FFD36E"/></g></g>
+  <!-- reindeer 2 (lead, red nose) -->
+  <g class="deer d2"><g transform="translate(238 20)">
+   <path class="leg" d="M8 26 v16" stroke="#6B4220" stroke-width="3.4" stroke-linecap="round"/><path class="leg b" d="M14 27 v15" stroke="#6B4220" stroke-width="3.4" stroke-linecap="round"/>
+   <path class="leg b" d="M32 27 v15" stroke="#6B4220" stroke-width="3.4" stroke-linecap="round"/><path class="leg" d="M38 25 v15" stroke="#6B4220" stroke-width="3.4" stroke-linecap="round"/>
+   <ellipse cx="23" cy="21" rx="20" ry="9.5" fill="#8B5A2B"/><path d="M40 16 q6 -6 6 -14" stroke="#8B5A2B" stroke-width="7" stroke-linecap="round" fill="none"/>
+   <ellipse cx="49" cy="0" rx="8" ry="6" fill="#8B5A2B"/><circle cx="51" cy="-2" r="1.2" fill="#222"/><circle class="nose" cx="57" cy="2" r="3" fill="#FF2A2A"/>
+   <path d="M44 -6 l-4 -10 M42 -12 l-6 -2 M47 -6 l2 -11 M48 -13 l5 -3" stroke="#C9A36B" stroke-width="2" stroke-linecap="round" fill="none"/>
+   <path d="M30 16 q4 6 10 2" stroke="#C8102E" stroke-width="3" fill="none"/><circle cx="35" cy="20" r="2.2" fill="#FFD36E"/></g></g>
+  <!-- sack with gifts -->
+  <path d="M62 86 C54 58 70 36 92 40 C112 44 116 66 108 88 Z" fill="#8E1B2A"/><path d="M70 50 q14 -8 30 0" stroke="#5F0F1A" stroke-width="3" fill="none"/>
+  <rect x="70" y="30" width="18" height="16" rx="2" fill="#2E9E5B"/><rect x="77" y="30" width="4" height="16" fill="#FFD36E"/>
+  <rect x="88" y="26" width="16" height="18" rx="2" fill="#3B82F6"/><rect x="94" y="26" width="4" height="18" fill="#F9E27A"/>
+  <rect x="62" y="40" width="12" height="12" rx="2" fill="#F59E0B"/>
+  <!-- Santa -->
+  <path d="M112 90 C108 66 118 52 134 52 C150 52 156 68 152 90 Z" fill="url(#sgS)"/><path d="M114 82 H152" stroke="#fff" stroke-width="5"/><rect x="128" y="79" width="9" height="7" rx="1.5" fill="#FFD36E"/>
+  <g class="warm"><path d="M146 64 C160 56 166 44 168 34" stroke="url(#sgS)" stroke-width="10" stroke-linecap="round" fill="none"/><circle cx="168" cy="31" r="6" fill="#F4F4F4"/></g>
+  <path d="M120 66 C112 74 116 80 124 80" stroke="#B5172B" stroke-width="9" stroke-linecap="round" fill="none"/><circle cx="125" cy="80" r="5" fill="#2b2b2b"/>
+  <circle cx="134" cy="40" r="13" fill="url(#sgF)"/>
+  <path d="M121 42 C120 60 148 62 147 42 C143 50 125 50 121 42 Z" fill="#fff"/><path d="M127 47 q7 4 14 0" stroke="#e8e8e8" stroke-width="3" fill="none"/>
+  <circle cx="129" cy="38" r="1.6" fill="#222"/><circle cx="139" cy="38" r="1.6" fill="#222"/><circle cx="134" cy="43" r="2.6" fill="#E8907A"/>
+  <path d="M120 33 C122 16 140 12 150 22 C156 28 160 30 164 36" fill="#D7263D"/><path d="M150 22 C158 26 162 32 164 36" stroke="#D7263D" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <circle cx="165" cy="38" r="5" fill="#fff"/><rect x="118" y="29" width="32" height="7" rx="3.5" fill="#fff"/>
+  <!-- sleigh -->
+  <path d="M56 84 H170 C178 84 178 92 174 98 L162 118 C158 124 152 126 144 126 H82 C64 126 56 114 56 98 Z" fill="url(#sgS)"/>
+  <path d="M60 92 H168" stroke="#FFD36E" stroke-width="3"/><path d="M76 106 q10 -8 20 0 q10 8 20 0 q10 -8 20 0 q10 8 20 0" stroke="#FFD36E" stroke-width="2.4" fill="none"/>
+  <path d="M60 136 H160 C184 136 188 118 176 112" stroke="#E2B24A" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M84 126 V136 M140 126 V136" stroke="#E2B24A" stroke-width="4"/>
+ </svg>`;
  // ---------- product tips for gifts ----------
  function tip(){const L=((typeof PRODUCTS!=='undefined'&&PRODUCTS)||window.PRODUCTS||[]).filter(p=>!/_box$/.test(p.id)&&p.benefits&&p.benefits.length);if(!L.length)return null;
   const p=L[Math.floor(Math.random()*L.length)];return {p,b:p.benefits[Math.floor(Math.random()*p.benefits.length)]};}
@@ -5765,10 +5836,22 @@ html.xmas .hero-banner .xd-orn{z-index:8}
   [[3,46,46,26],[44,40,26,40],[60,68,34,32],[2,62,30,48],[95,44,40,36],[52,8,22,52],[33,88,28,44]].forEach(([l,t,s,d])=>{
    hb.insertAdjacentHTML('afterbegin',`<div class="xd xd-flake" data-d="14" style="left:${l}%;top:${t}%;width:${s}px;animation-duration:${d}s;opacity:.75">${FLAKE}</div>`);});
   // ornaments
-  [[2.2,64,'#C8102E','#FF6B6B'],[7.5,30,'#B8862A','#FFE08A'],[58.5,40,'#1F7A4D','#7FE0A0'],[96.2,54,'#C8102E','#FF6B6B'],[91.5,22,'#B8862A','#FFE08A']].forEach(([l,len,c1,c2],i)=>{
-   const o=document.createElement('div');o.className='xd xd-orn'+((i===1||i===2||i===4)?' mx':'');o.style.left=`calc(${l}% - 27px)`;o.style.animationDelay=(-i*0.7)+'s';o.innerHTML=ornSVG(c1,c2,len);
+  [[2.2,64,'#C8102E','#FF6B6B'],[58.5,40,'#1F7A4D','#7FE0A0'],[96.2,54,'#C8102E','#FF6B6B'],[91.5,22,'#B8862A','#FFE08A']].forEach(([l,len,c1,c2],i)=>{
+   const o=document.createElement('div');o.className='xd xd-orn'+((i===1||i===3)?' mx':'');o.style.left=`calc(${l}% - 27px)`;o.style.animationDelay=(-i*0.7)+'s';o.innerHTML=ornSVG(c1,c2,len);
    o.addEventListener('click',e=>{o.classList.remove('hit');void o.offsetWidth;o.classList.add('hit');jingle(true);burst(e.clientX,e.clientY,['✨','⭐','❄️','💫'],10);
     setTimeout(()=>o.classList.remove('hit'),1250);});hb.appendChild(o);});
+
+  // hovering Santa on greeting box
+  const gr=hb.querySelector('.xm-greet');
+  if(gr&&!gr.querySelector('.xd-santa')){const st=document.createElement('div');st.className='xd xd-santa';st.setAttribute('role','button');st.setAttribute('aria-label','ซานต้าคลอส กดเพื่อรับของขวัญ');st.innerHTML=U(SANTA);gr.appendChild(st);
+   const HO=['โฮ่ โฮ่ โฮ่! 🎅 Merry Christmas!','ซานต้ามีของขวัญมาให้คนขยัน! 🎁','ปีใหม่นี้ขอให้ยอดขายพุ่งเหมือนรถเลื่อนซานต้า! 🛷','ทำแบบทดสอบให้ผ่าน รับดาวจากซานต้าไปเลย ⭐'];
+   st.addEventListener('click',e=>{e.stopPropagation();st.classList.remove('hit');void st.offsetWidth;st.classList.add('hit');jingle(false);
+    burst(e.clientX,e.clientY,['🎁','⭐','🍬','❄️','✨','🎄'],18);
+    const t=tip();const msg=HO[Math.floor(Math.random()*HO.length)];
+    const box=showTip(e.clientX,e.clientY+150,`<div class="h">🎅 ${msg}</div>${t?`ของขวัญจากซานต้า: <b>${t.p.name}</b> — ${t.b}<br><button>ดูสินค้านี้ →</button>`:''}`);
+    const bt=box.querySelector('button');if(bt)bt.onclick=()=>{box.remove();if(typeof openDP==='function')openDP(t.p.id)};
+    try{if(window.xmSanta&&innerWidth>900)setTimeout(xmSanta,900)}catch(_){}
+    setTimeout(()=>st.classList.remove('hit'),1600);});}
   // tree
   const tr=document.createElement('div');tr.className='xd xd-tree';tr.setAttribute('role','button');tr.setAttribute('aria-label','ต้นคริสต์มาส กดเพื่อเปิดไฟ');
   tr.innerHTML=`<div class="xd-star"></div>${treeSVG()}`;hb.appendChild(tr);
@@ -5830,6 +5913,7 @@ html.xmas .hero-banner .xd-orn{z-index:8}
  function trail(){if(reduce)return;const cv=document.createElement('canvas');cv.id='xd-trail';document.body.appendChild(cv);const c=cv.getContext('2d');let P=[];
   const rs=()=>{cv.width=innerWidth;cv.height=innerHeight};rs();addEventListener('resize',rs);
   (function loop(){const sl=document.querySelector('.xm-sleigh.fly');
+   const hs=document.querySelector('.xd-santa');if(hs&&isX()&&hs.offsetParent&&Math.random()<.5){const r=hs.getBoundingClientRect();if(r.bottom>0&&r.top<innerHeight){P.push({x:r.left+r.width*.05+R(-4,4),y:r.top+r.height*.93+R(-4,4),vx:R(-1.2,-.1),vy:R(-.2,.8),l:1,s:R(.8,2.4)});}}
    if(sl&&isX()){const r=sl.getBoundingClientRect();for(let i=0;i<4;i++)P.push({x:r.left+r.width*0.06+R(-6,6),y:r.top+r.height*0.66+R(-8,8),vx:R(-1.6,-.2),vy:R(-.4,.9),l:1,s:R(1,3.2)});}
    c.clearRect(0,0,cv.width,cv.height);if(P.length){c.globalCompositeOperation='lighter';
     P=P.filter(p=>(p.l-=0.018)>0);for(const p of P){p.x+=p.vx;p.y+=p.vy;c.globalAlpha=p.l;c.fillStyle=p.l>.6?'#FFF4C9':'#FFC94D';c.beginPath();c.arc(p.x,p.y,p.s*p.l+.4,0,6.283);c.fill();}
