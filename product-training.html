@@ -4816,7 +4816,7 @@ showScript('open',document.querySelector('.sc-tab'));
     btn.addEventListener('click',e=>{e.stopPropagation();if(!a.paused){setPref(false);pause();}else{setPref(true);play();}});
     document.body.appendChild(btn);ui(false);
     if(themeOn()&&pref()){hint=document.createElement('div');hint.className='xm-hint fest-only';hint.textContent='🎵 แตะที่ไหนก็ได้เพื่อเปิดเพลง';document.body.appendChild(hint);setTimeout(hideHint,9000);}
-    const first=e=>{if(e.target.closest&&e.target.closest('.xm-music'))return;if(themeOn()&&pref())play();['pointerdown','keydown'].forEach(ev=>removeEventListener(ev,first,true));};
+    const first=e=>{if(e.target.closest&&e.target.closest('.xm-music'))return;if(window.npIsOpen&&window.npIsOpen())return;if(themeOn()&&pref())play();['pointerdown','keydown'].forEach(ev=>removeEventListener(ev,first,true));};
     ['pointerdown','keydown'].forEach(ev=>addEventListener(ev,first,true));
     new MutationObserver(()=>{if(!themeOn()&&!a.paused)pause();}).observe(root,{attributes:true,attributeFilter:['class']});
     document.addEventListener('visibilitychange',()=>{if(document.hidden&&!a.paused){a.__wasOn=1;a.pause();}else if(!document.hidden&&a.__wasOn){a.__wasOn=0;if(themeOn())a.play().catch(()=>{});}});
@@ -5581,9 +5581,9 @@ ${SALES_RULE}
 .np-btn{border:0;border-radius:12px;padding:12px 20px;font-family:var(--display);font-weight:800;font-size:15px;cursor:pointer}
 .np-go{background:#E6E27A;color:#161A36}
 .np-close{background:rgba(255,255,255,.1);color:#fff}
-#np-fab{position:fixed;left:18px;bottom:18px;z-index:9999;display:none;align-items:center;gap:8px;background:#161A36;color:#fff;border:2px solid #E6E27A;border-radius:999px;padding:10px 16px 10px 12px;font-family:var(--display);font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 10px 28px rgba(0,0,0,.25)}
+#np-fab{position:fixed;right:76px;bottom:16px;z-index:9999;display:none;align-items:center;gap:8px;background:#161A36;color:#fff;border:2px solid #E6E27A;border-radius:999px;padding:10px 16px 10px 12px;font-family:var(--display);font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 10px 28px rgba(0,0,0,.25)}
 #np-fab b{background:#E6E27A;color:#161A36;border-radius:999px;padding:2px 8px;font-size:11px;letter-spacing:.1em}
-@media(min-width:1024px){#np-fab{left:290px}}
+@media(max-width:600px){#np-fab{right:70px;bottom:14px;padding:8px 12px 8px 10px;font-size:13px}}
 @media(max-width:600px){.np-title{font-size:16px}.np-sound{font-size:14px;padding:10px 16px}.np-tab{font-size:13px;padding:8px 10px}}
 </style>
 <div id="np-pop" role="dialog" aria-modal="true" aria-label="สินค้าใหม่">
@@ -5634,15 +5634,16 @@ ${SALES_RULE}
  v.addEventListener('loadeddata',function(){document.getElementById('np-err').style.display='none'});
  v.addEventListener('volumechange',function(){if(!v.muted){wantSound=true;snd.style.display='none'}});
  window.npNext=function(){if(cur<L.length-1)load(cur+1,true)};
- window.npOpen=function(){pop.classList.add('show');fab.style.display='none';document.getElementById('np-hide').checked=!!get();
-   wantSound=false;load(0,true)};
+ var bgmWas=false;window.npIsOpen=function(){return pop.classList.contains('show')};
+ window.npOpen=function(){try{if(window.festBGM&&festBGM.playing){bgmWas=true;festBGM.pause()}}catch(e){}pop.classList.add('show');fab.style.display='none';document.getElementById('np-hide').checked=!!get();
+   wantSound=!!(navigator.userActivation&&navigator.userActivation.hasBeenActive);load(0,true)};
  window.npSound=function(){wantSound=true;v.muted=false;try{v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){})}catch(e){}snd.style.display='none'};
  function firstTouch(e){if(!pop.classList.contains('show')||!v.muted)return;
    var t=e.target;if(t.closest&&(t.closest('.np-x')||t.closest('.np-close')||t.closest('.np-go')||t.closest('label')||t.closest('.np-tab')||t.closest('.np-next')))return;
    if(t===pop)return; npSound(); setTimeout(function(){if(v.paused){var p=v.play();if(p&&p.catch)p.catch(function(){})}},250);}
  document.addEventListener('pointerdown',firstTouch,true);
  document.addEventListener('keydown',function(e){if(e.key!=='Escape')firstTouch(e)},true);
- window.npClose=function(){set(document.getElementById('np-hide').checked);try{v.pause()}catch(e){}pop.classList.remove('show');fab.style.display='flex'};
+ window.npClose=function(){set(document.getElementById('np-hide').checked);try{v.pause()}catch(e){}pop.classList.remove('show');fab.style.display='flex';if(bgmWas){bgmWas=false;try{festBGM.play()}catch(e){}}};
  window.npGo=function(){var id=L[cur].id;npClose();if(typeof openDP==='function')openDP(id)};
  pop.addEventListener('click',function(e){if(e.target===pop)npClose()});
  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&pop.classList.contains('show'))npClose()});
