@@ -5585,26 +5585,35 @@ html.xmas .hero-title em,html.xmas .pg-header.xdb .pg-title em{background:linear
 html.xmas .hero-path-card{border:2px solid rgba(231,198,110,.9);box-shadow:0 0 0 6px rgba(231,198,110,.12),0 0 40px rgba(255,205,110,.35),0 24px 50px rgba(0,0,0,.3)!important}
 html.xmas .hero-path-card .path-topline{color:#B8862A}
 html.xmas .hero-left,html.xmas .hero-path-card{position:relative;z-index:7}
-html.xmas .hero-stats{background:rgba(0,48,20,.5);border-radius:16px;padding:10px 16px;backdrop-filter:blur(4px);width:fit-content;border:1px solid rgba(231,198,110,.3)}
 html.xmas .hero-left{text-shadow:0 2px 14px rgba(0,40,15,.55)}
 @media(min-width:1121px){html.xmas .hero-banner{padding-left:calc(13% + 24px)!important}}
-/* greeting box like the sample */
-html.xmas .xm-greet{position:relative;background:linear-gradient(90deg,rgba(0,40,18,.55),rgba(0,40,18,.35))!important;border:1.5px solid rgba(231,198,110,.75)!important;box-shadow:0 10px 30px rgba(0,0,0,.25),inset 0 0 30px rgba(255,210,120,.08)}
-html.xmas .xm-greet .t1{font-size:17px}
-.xd-santa{position:absolute;left:-52px;top:-34px;width:168px;z-index:9;cursor:pointer;pointer-events:auto;animation:xdBob 3.2s ease-in-out infinite;filter:drop-shadow(0 10px 14px rgba(0,0,0,.35))}
-.xd-santa img{display:block;width:100%;height:auto}
+/* greeting box: Santa team flying in */
+html.xmas .xm-greet{position:relative;background:linear-gradient(120deg,rgba(0,52,24,.72),rgba(1,40,18,.55))!important;border:1.5px solid rgba(231,198,110,.8)!important;box-shadow:0 14px 34px rgba(0,0,0,.28),0 0 0 5px rgba(231,198,110,.08),inset 0 1px 0 rgba(255,240,200,.25)!important;backdrop-filter:blur(6px)}
+html.xmas .xm-greet::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(100deg,transparent 30%,rgba(255,236,170,.18) 45%,transparent 60%);background-size:250% 100%;animation:xdSheen 6s ease-in-out infinite}
+@keyframes xdSheen{0%,60%{background-position:160% 0}100%{background-position:-60% 0}}
+html.xmas .xm-greet .t1{font-size:17px;text-shadow:0 2px 10px rgba(0,0,0,.35)}
+html.xmas .xm-cd>div{background:linear-gradient(180deg,#0B3D22,#06291A)!important;border:1px solid rgba(231,198,110,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 4px 10px rgba(0,0,0,.25)}
+.xd-team{display:none;position:absolute;inset:0;pointer-events:none;z-index:9}
+.xd-team svg.reins{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
+.xd-team .reins path{fill:none;stroke:url(#xdrein);stroke-width:2.2;stroke-linecap:round;filter:drop-shadow(0 0 4px rgba(255,214,110,.9))}
+.xd-team .reins path.sp{stroke:#FFF6D0;stroke-width:2.6;stroke-dasharray:1 16;animation:xdDash 1.2s linear infinite;filter:drop-shadow(0 0 5px #FFE08A)}
+.xd-santa{position:absolute;left:-58px;top:-40px;width:176px;z-index:10;cursor:pointer;pointer-events:auto;animation:xdFly 3.4s ease-in-out infinite;transform-origin:60% 70%}
+.xd-santa::before{content:"";position:absolute;left:8%;top:12%;width:84%;height:80%;border-radius:50%;background:radial-gradient(circle,rgba(255,220,130,.55),rgba(255,200,90,.18) 45%,transparent 70%);filter:blur(6px);z-index:-1;animation:xdHalo 3.4s ease-in-out infinite}
+.xd-santa img{display:block;width:100%;height:auto;filter:drop-shadow(0 12px 14px rgba(0,30,12,.45)) drop-shadow(0 0 1px rgba(255,255,255,.6))}
 .xd-santa.hit{animation:xdShake .6s ease}
-.xd-trailsv{position:absolute;left:-70px;top:58%;width:120px;height:70px;pointer-events:none;z-index:-1}
-.xd-trailsv path.d{stroke-dasharray:5 9;animation:xdDash 1.1s linear infinite}
-.xd-deer{flex:none;width:150px;margin:-30px 0 -14px;z-index:9;cursor:pointer;pointer-events:auto;animation:xdBob2 1.4s ease-in-out infinite;filter:drop-shadow(0 8px 10px rgba(0,0,0,.3))}
-.xd-deer img{display:block;width:100%;height:auto}
-@keyframes xdBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(1.5deg)}}
-@keyframes xdBob2{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes xdShake{0%,100%{transform:none}25%{transform:rotate(-6deg) scale(1.05)}60%{transform:rotate(5deg) scale(1.05)}}
-@keyframes xdDash{to{stroke-dashoffset:-28}}
-@media(min-width:1121px){html.xmas .xm-greet{padding-left:124px!important;min-height:112px;row-gap:8px}html.xmas .xm-greet .t1{max-width:205px}html.xmas .xm-greet .xm-cd{margin-left:0}.xd-deer{width:122px;margin:-26px 0 -14px -6px}html.xmas .hero-banner .xd-bl{width:36%}}
-@media(max-width:1120px){.xd-santa{left:auto;right:4px;top:-30px;width:132px}.xd-trailsv{display:none}html.xmas .xm-greet .t1{padding-right:112px}.xd-deer{width:120px;margin:-6px 0 -8px}}
-@media(max-width:600px){.xd-santa{width:108px;right:0;top:-24px}html.xmas .xm-greet .t1{padding-right:88px}.xd-deer{display:none}}
+.xd-deer{flex:none;position:relative;width:132px;margin:-34px -6px -18px 0;z-index:10;cursor:pointer;pointer-events:auto;animation:xdFly 3.4s ease-in-out infinite;animation-delay:-.5s;transform-origin:50% 60%}
+.xd-deer img{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 12px rgba(0,30,12,.4))}
+.xd-deer::after{content:"";position:absolute;left:79%;top:16%;width:7px;height:7px;border-radius:50%;background:#ff3b3b;box-shadow:0 0 8px 3px rgba(255,60,60,.8);animation:xdNose 1.2s ease-in-out infinite}
+@keyframes xdNose{50%{opacity:.35;box-shadow:0 0 3px 1px rgba(255,60,60,.5)}}
+@keyframes xdFly{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-9px) rotate(1.5deg)}}
+@keyframes xdHalo{0%,100%{opacity:.7;transform:scale(.95)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes xdShake{0%,100%{transform:none}25%{transform:rotate(-7deg) scale(1.06)}60%{transform:rotate(5deg) scale(1.06)}}
+@keyframes xdDash{to{stroke-dashoffset:-34}}
+@media(min-width:1121px){html.xmas .xm-greet{display:grid!important;grid-template-columns:auto auto;align-items:center;justify-content:start;width:fit-content;max-width:100%;padding:16px 24px 16px 126px!important;column-gap:18px;row-gap:12px}html.xmas .xm-greet .t1{max-width:210px;grid-column:1;grid-row:1}html.xmas .xm-greet .xd-deer{grid-column:2;grid-row:1;margin:-30px 0 -14px -4px}html.xmas .xm-greet .xm-cd{grid-column:1;grid-row:2;margin:0}html.xmas .xm-greet .xm-fwbtn:not(.xm-advbtn){grid-column:2;grid-row:2;justify-self:start}html.xmas .xm-greet .xm-advbtn{grid-column:1/-1;grid-row:3;justify-self:start}html.xmas .hero-banner .xd-bl{width:36%}}
+@media(max-width:1120px){.xd-santa{left:auto;right:2px;top:-34px;width:138px}html.xmas .xm-greet .t1{padding-right:118px}.xd-deer{display:none}.xd-team svg.reins{display:none}}
+@media(max-width:600px){.xd-santa{width:112px;right:-4px;top:-28px}html.xmas .xm-greet .t1{padding-right:92px}}
+html.xmas .hero-stats{background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.04));border:1px solid rgba(231,198,110,.35);border-radius:18px;padding:12px 20px;backdrop-filter:blur(6px);width:fit-content;box-shadow:0 10px 26px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.15)}
+html.xmas .hero-stats strong,html.xmas .hero-stats .num,html.xmas .hero-stats b{color:#FFE7A6!important}
 /* banners */
 html.xmas .pg-header.xdb{border:0!important;box-shadow:0 18px 40px rgba(1,60,25,.3)!important;color:#E9F5EE;padding-bottom:40px!important}
 html.xmas .bm-hero.xdb{padding-bottom:44px!important}
@@ -5676,11 +5685,17 @@ html.xmas .xdb{text-shadow:0 2px 12px rgba(0,40,15,.45)}
   if(!reduce)setInterval(()=>{if(!isX()||document.hidden||!el.offsetParent)return;sh.style.top=R(6,34)+'%';sh.style.left=R(-20,30)+'%';sh.classList.remove('go');void sh.offsetWidth;sh.classList.add('go');},7000+Math.random()*4000);
   sparkles(el);
  }
- const TRAIL=`<svg class="xd-trailsv" viewBox="0 0 120 70" aria-hidden="true"><defs><linearGradient id="xdtg" x1="0" x2="1"><stop offset="0" stop-color="#FFD36E" stop-opacity="0"/><stop offset="1" stop-color="#FFF3C4"/></linearGradient></defs><path d="M2 66 C34 62 60 40 118 30" stroke="url(#xdtg)" stroke-width="6" fill="none" opacity=".5"/><path class="d" d="M2 66 C34 62 60 40 118 30" stroke="#FFF1B8" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`;
+ const TRAIL_UNUSED=`<svg class="xd-trailsv" viewBox="0 0 120 70" aria-hidden="true"><defs><linearGradient id="xdtg" x1="0" x2="1"><stop offset="0" stop-color="#FFD36E" stop-opacity="0"/><stop offset="1" stop-color="#FFF3C4"/></linearGradient></defs><path d="M2 66 C34 62 60 40 118 30" stroke="url(#xdtg)" stroke-width="6" fill="none" opacity=".5"/><path class="d" d="M2 66 C34 62 60 40 118 30" stroke="#FFF1B8" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`;
  function santa(hb){const gr=hb.querySelector('.xm-greet');if(!gr||gr.querySelector('.xd-santa'))return;
-  const st=document.createElement('div');st.className='xd xd-santa';st.setAttribute('role','button');st.setAttribute('aria-label','ซานต้าคลอส กดเพื่อรับของขวัญ');st.innerHTML=TRAIL+`<img src="${IMG.santa}" alt="">`;gr.appendChild(st);
+  const st=document.createElement('div');st.className='xd xd-santa';st.setAttribute('role','button');st.setAttribute('aria-label','ซานต้าคลอส กดเพื่อรับของขวัญ');st.innerHTML=`<img src="${IMG.santa}" alt="">`;const team=document.createElement('div');team.className='xd xd-team';team.innerHTML='<svg class="reins"><defs><linearGradient id="xdrein" x1="0" x2="1"><stop offset="0" stop-color="#C99332"/><stop offset=".5" stop-color="#FFF1B8"/><stop offset="1" stop-color="#E2B24A"/></linearGradient></defs><path class="r"/><path class="sp"/></svg>';gr.append(team,st);
   const dr=document.createElement('div');dr.className='xd xd-deer';dr.setAttribute('role','button');dr.setAttribute('aria-label','กวางเรนเดียร์');dr.innerHTML=`<img src="${IMG.deer}" alt="">`;
   const t1=gr.querySelector('.t1');if(t1)t1.after(dr);else gr.appendChild(dr);
+  const ps=team.querySelectorAll('path');
+  function reins(){const g=gr.getBoundingClientRect();if(!dr.offsetParent||getComputedStyle(dr).display==='none'){ps.forEach(p=>p.setAttribute('d',''));return requestAnimationFrame(reins)}
+   const a=st.getBoundingClientRect(),d=dr.getBoundingClientRect();
+   const x1=a.left-g.left+a.width*.93,y1=a.top-g.top+a.height*.52,x2=d.left-g.left+d.width*.12,y2=d.top-g.top+d.height*.55;
+   const mx=(x1+x2)/2,my=Math.max(y1,y2)+26;const D=`M${x1} ${y1} Q${mx} ${my} ${x2} ${y2}`;ps.forEach(p=>p.setAttribute('d',D));requestAnimationFrame(reins);}
+  
   const HO=['โฮ่ โฮ่ โฮ่! 🎅 Merry Christmas!','ซานต้ามีของขวัญมาให้คนขยัน! 🎁','ปีใหม่นี้ขอให้ยอดขายพุ่งเหมือนรถเลื่อนซานต้า! 🛷','ทำแบบทดสอบให้ผ่าน รับดาวจากซานต้าไปเลย ⭐'];
   st.addEventListener('click',e=>{e.stopPropagation();st.classList.remove('hit');void st.offsetWidth;st.classList.add('hit');jingle(false);burst(e.clientX,e.clientY,['🎁','⭐','🍬','❄️','✨','🎄'],18);
    giftTip(e.clientX,e.clientY+170,'🎅 '+HO[Math.floor(Math.random()*HO.length)]);try{if(window.xmSanta&&innerWidth>900)setTimeout(xmSanta,900)}catch(_){}});
@@ -5696,7 +5711,7 @@ html.xmas .xdb{text-shadow:0 2px 12px rgba(0,40,15,.45)}
  function trail(){if(reduce)return;const cv=document.createElement('canvas');cv.id='xd-trail';document.body.appendChild(cv);const c=cv.getContext('2d');let P=[];
   const rs=()=>{cv.width=innerWidth;cv.height=innerHeight};rs();addEventListener('resize',rs);
   (function loop(){const sl=document.querySelector('.xm-sleigh.fly');
-   const hs=document.querySelector('.xd-santa');if(hs&&isX()&&hs.offsetParent&&innerWidth>1120&&Math.random()<.45){const r=hs.getBoundingClientRect();if(r.bottom>0&&r.top<innerHeight)P.push({x:r.left+r.width*.08+R(-4,4),y:r.top+r.height*.78+R(-4,4),vx:R(-1.3,-.2),vy:R(-.1,.9),l:1,s:R(.8,2.4)});}
+   const hs=document.querySelector('.xd-santa');if(hs&&isX()&&hs.offsetParent&&innerWidth>1120){const r=hs.getBoundingClientRect();if(r.bottom>0&&r.top<innerHeight)for(let i=0;i<2;i++)P.push({x:r.left+r.width*.1+R(-5,5),y:r.top+r.height*.72+R(-6,6),vx:R(-1.6,-.3),vy:R(.1,1),l:1,s:R(.8,2.6)});}
    if(sl&&isX()){const r=sl.getBoundingClientRect();for(let i=0;i<4;i++)P.push({x:r.left+r.width*0.06+R(-6,6),y:r.top+r.height*0.66+R(-8,8),vx:R(-1.6,-.2),vy:R(-.4,.9),l:1,s:R(1,3.2)});}
    c.clearRect(0,0,cv.width,cv.height);if(P.length){c.globalCompositeOperation='lighter';P=P.filter(p=>(p.l-=0.018)>0);
     for(const p of P){p.x+=p.vx;p.y+=p.vy;c.globalAlpha=p.l;c.fillStyle=p.l>.6?'#FFF4C9':'#FFC94D';c.beginPath();c.arc(p.x,p.y,p.s*p.l+.4,0,6.283);c.fill();}
