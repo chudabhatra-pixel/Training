@@ -5556,6 +5556,293 @@ ${SALES_RULE}
 
 </script>
 
+<!-- ===== XMAS DELUXE HERO (เพิ่มลูกเล่นธีมคริสต์มาส) ===== -->
+<style>
+html:not(.xmas) .xd{display:none!important}
+html.xmas .hero-banner .xm-tree,html.xmas .hero-banner .xm-cap,html.xmas .hero-banner .xm-lights{display:none!important}
+html.xmas .hero-banner{background:
+  radial-gradient(60% 55% at 72% 70%,rgba(255,196,90,.20),transparent 60%),
+  radial-gradient(45% 50% at 12% 10%,rgba(255,220,140,.14),transparent 60%),
+  radial-gradient(120% 90% at 50% 40%,#1E6B45 0%,#14523A 38%,#0C3A2A 70%,#08291F 100%)!important;isolation:isolate}
+.xd-layer{position:absolute;inset:0;pointer-events:none}
+.xd-bokeh{z-index:0;background:
+  radial-gradient(circle at 8% 30%,rgba(255,214,120,.18) 0 18px,transparent 19px),
+  radial-gradient(circle at 22% 70%,rgba(255,180,90,.12) 0 26px,transparent 27px),
+  radial-gradient(circle at 46% 18%,rgba(255,240,180,.14) 0 14px,transparent 15px),
+  radial-gradient(circle at 63% 52%,rgba(255,200,110,.10) 0 30px,transparent 31px),
+  radial-gradient(circle at 88% 88%,rgba(255,220,150,.16) 0 22px,transparent 23px),
+  radial-gradient(circle at 96% 40%,rgba(255,190,100,.12) 0 18px,transparent 19px);filter:blur(2px);animation:xdBok 6s ease-in-out infinite alternate}
+@keyframes xdBok{from{opacity:.55}to{opacity:1}}
+.xd-vign{z-index:0;background:radial-gradient(120% 100% at 50% 45%,transparent 55%,rgba(0,0,0,.35) 100%)}
+.xd-branch{position:absolute;z-index:2;pointer-events:none;filter:drop-shadow(0 10px 14px rgba(0,0,0,.35))}
+.xd-branch.tl{left:-40px;top:-46px;width:330px}
+.xd-branch.tr{right:-44px;top:-50px;width:300px;transform:scaleX(-1)}
+.xd-garland{position:absolute;left:0;right:0;top:-6px;height:90px;z-index:3;pointer-events:none}
+.xd-garland .b{animation:xdTw 2.4s ease-in-out infinite}
+@keyframes xdTw{0%,100%{opacity:1}50%{opacity:.35}}
+.xd-orn{position:absolute;top:-4px;z-index:6;transform-origin:50% 0;cursor:pointer;pointer-events:auto;animation:xdSwing 3.8s ease-in-out infinite;filter:drop-shadow(0 10px 12px rgba(0,0,0,.35))}
+.xd-orn.hit{animation:xdSwingHard 1.2s cubic-bezier(.3,1.6,.5,1)}
+@keyframes xdSwing{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes xdSwingHard{0%{transform:rotate(0)}20%{transform:rotate(28deg)}45%{transform:rotate(-20deg)}70%{transform:rotate(10deg)}100%{transform:rotate(0)}}
+.xd-flake{position:absolute;z-index:1;pointer-events:none;color:#fff;filter:drop-shadow(0 0 6px rgba(255,255,255,.9)) drop-shadow(0 0 14px rgba(170,220,255,.6));animation:xdSpin linear infinite}
+@keyframes xdSpin{from{transform:rotate(0) translateY(0)}50%{transform:rotate(180deg) translateY(10px)}to{transform:rotate(360deg) translateY(0)}}
+.xd-ground{position:absolute;left:-2%;right:-2%;bottom:-2px;height:74px;z-index:3;pointer-events:none}
+.xd-tree{position:absolute;z-index:4;bottom:24px;left:56%;width:178px;cursor:pointer;pointer-events:auto;transform-origin:50% 100%;transition:transform .3s}
+.xd-tree:hover{transform:scale(1.03)}
+.xd-tree .lt{animation:xdTw 1.8s ease-in-out infinite}
+.xd-tree.show .lt{animation:xdChase .5s steps(2) infinite}
+@keyframes xdChase{0%{opacity:1;filter:brightness(1.6)}50%{opacity:.2}}
+.xd-star{position:absolute;left:50%;top:-6px;width:150px;height:150px;transform:translate(-50%,-38%);pointer-events:none;background:conic-gradient(from 0deg,transparent 0 8%,rgba(255,226,140,.55) 9% 10%,transparent 11% 23%,rgba(255,226,140,.45) 24% 25%,transparent 26% 40%,rgba(255,226,140,.55) 41% 42%,transparent 43% 58%,rgba(255,226,140,.45) 59% 60%,transparent 61% 74%,rgba(255,226,140,.55) 75% 76%,transparent 77% 90%,rgba(255,226,140,.45) 91% 92%,transparent 93%);border-radius:50%;-webkit-mask:radial-gradient(circle,#000 20%,transparent 70%);mask:radial-gradient(circle,#000 20%,transparent 70%);animation:xdRays 14s linear infinite}
+.xd-tree.show .xd-star{animation-duration:3s;filter:brightness(1.6)}
+@keyframes xdRays{to{transform:translate(-50%,-38%) rotate(360deg)}}
+.xd-gift{position:absolute;z-index:5;bottom:16px;cursor:pointer;pointer-events:auto;transform-origin:50% 100%;transition:transform .25s;filter:drop-shadow(0 8px 10px rgba(0,0,0,.35))}
+.xd-gift:hover{transform:translateY(-4px) rotate(-3deg)}
+.xd-gift .lid{transition:transform .6s cubic-bezier(.2,1.6,.4,1);transform-box:fill-box;transform-origin:50% 100%}
+.xd-gift.open .lid{transform:translateY(-26px) rotate(-18deg)}
+.xd-gift.wiggle{animation:xdWig 1.6s ease-in-out infinite}
+@keyframes xdWig{0%,70%,100%{transform:rotate(0)}75%{transform:rotate(-6deg)}85%{transform:rotate(6deg)}92%{transform:rotate(-3deg)}}
+.xd-snowman{position:absolute;z-index:5;bottom:16px;left:44%;width:96px;cursor:pointer;pointer-events:auto;transform-origin:50% 100%}
+.xd-snowman .arm{transform-box:fill-box;transform-origin:0% 100%;animation:xdWave 2.6s ease-in-out infinite}
+.xd-snowman.hit .arm{animation:xdWave .35s ease-in-out 4}
+.xd-snowman.hit .hat{animation:xdHat .7s ease}
+.xd-snowman .hat{transform-box:fill-box;transform-origin:50% 100%}
+@keyframes xdWave{0%,100%{transform:rotate(0)}50%{transform:rotate(-24deg)}}
+@keyframes xdHat{0%,100%{transform:none}40%{transform:translateY(-14px) rotate(-12deg)}}
+.xd-shoot{position:absolute;z-index:1;top:10%;left:-20%;width:180px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.95));filter:drop-shadow(0 0 6px #fff);opacity:0;pointer-events:none}
+.xd-shoot.go{animation:xdShoot 1.3s ease-out forwards}
+@keyframes xdShoot{0%{opacity:0;transform:translate(0,0) rotate(18deg)}10%{opacity:1}100%{opacity:0;transform:translate(70vw,26vh) rotate(18deg)}}
+html.xmas .hero-title em{background:linear-gradient(100deg,#B8862A 0%,#FFE9A8 22%,#E2B24A 40%,#FFF4CF 50%,#C99332 62%,#FFE39A 80%,#B8862A 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent!important;animation:xdGold 5s linear infinite;filter:drop-shadow(0 4px 18px rgba(255,200,90,.35))}
+@keyframes xdGold{to{background-position:-220% 0}}
+html.xmas .hero-path-card{border:2px solid rgba(231,198,110,.9);box-shadow:0 0 0 6px rgba(231,198,110,.12),0 0 40px rgba(255,205,110,.35),0 24px 50px rgba(0,0,0,.3)!important}
+html.xmas .hero-path-card .path-topline{color:#B8862A}
+html.xmas .hero-left,html.xmas .hero-path-card{position:relative;z-index:7}
+.xd-spark{position:fixed;z-index:9000;pointer-events:none;font-size:14px;color:#FFE39A;text-shadow:0 0 8px #FFD36E;animation:xdSpk .9s ease-out forwards}
+@keyframes xdSpk{to{transform:translate(var(--dx),var(--dy)) scale(.2) rotate(140deg);opacity:0}}
+.xd-burst{position:fixed;z-index:9001;pointer-events:none;font-size:22px;animation:xdBurst 1.1s cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes xdBurst{0%{transform:translate(0,0) scale(.4);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.1) rotate(var(--r));opacity:0}}
+.xd-tip{position:fixed;z-index:9002;max-width:330px;background:#fff;color:#14213D;border-radius:16px;padding:14px 16px;box-shadow:0 18px 40px rgba(0,0,0,.3);border:2px solid #E7C66E;font-size:14px;line-height:1.5;animation:xdTip .35s cubic-bezier(.2,1.6,.4,1)}
+.xd-tip b{color:#C8102E}.xd-tip .h{font-weight:900;font-size:15px;margin-bottom:4px}
+.xd-tip button{margin-top:8px;border:0;background:#1F7A4D;color:#fff;border-radius:10px;padding:7px 12px;font-weight:800;cursor:pointer}
+@keyframes xdTip{from{transform:scale(.6) translateY(10px);opacity:0}}
+#xd-trail{position:fixed;inset:0;z-index:159;pointer-events:none}
+#xm-cd div.flip{animation:xdFlip .45s ease}
+@keyframes xdFlip{0%{transform:rotateX(0)}45%{transform:rotateX(90deg);filter:brightness(1.6)}100%{transform:rotateX(0)}}
+@media(max-width:900px){.xd-tree,.xd-snowman,.xd-gift,.xd-branch.tr{display:none!important}.xd-branch.tl{width:200px;left:-40px;top:-36px}.xd-ground{height:40px}}
+
+/* ---- every banner (page headers / body-map / sim) ---- */
+html.xmas .pg-header.xdb{overflow:hidden;isolation:isolate;border:0!important;background:radial-gradient(70% 90% at 85% 15%,rgba(255,205,110,.18),transparent 60%),radial-gradient(120% 120% at 30% 40%,#1E6B45 0%,#135036 45%,#0B3626 100%)!important;box-shadow:0 18px 40px rgba(8,41,31,.28)!important;color:#E9F5EE}
+html.xmas .pg-header.xdb .pg-title{color:#fff!important}
+html.xmas .pg-header.xdb .pg-title em{background:linear-gradient(100deg,#B8862A 0%,#FFE9A8 22%,#E2B24A 40%,#FFF4CF 50%,#C99332 62%,#FFE39A 80%,#B8862A 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent!important;animation:xdGold 5s linear infinite}
+html.xmas .pg-header.xdb .pg-eyebrow{color:#FFD98A!important}
+html.xmas .pg-header.xdb .pg-desc,html.xmas .pg-header.xdb p{color:#CFE6D9!important}
+html.xmas .pg-header.xdb b,html.xmas .pg-header.xdb strong{color:#FFE3A3!important}
+html.xmas .pg-header.xdb div:not(.pg-title):not(.pg-eyebrow):not(.xd):not(.xd *){color:#CFE6D9}
+html.xmas .bm-hero.xdb{overflow:hidden;isolation:isolate}
+html.xmas .xdb .xm-orns,html.xmas .xdb .xm-ribbon{display:none!important}
+html.xmas .xdb>*:not(.xd):not(.xm-orns):not(.xm-ribbon):not(.xm-gift):not(.lk-lstrip){position:relative;z-index:6}
+.xdb .xd-branch.tr{width:210px;right:-34px;top:-40px}
+.xdb .xd-garland{height:70px}
+.xdb .xd-ground{height:44px}
+.xdb .xd-mtree{position:absolute;z-index:4;right:70px;bottom:8px;width:92px;cursor:pointer;pointer-events:auto;transform-origin:50% 100%;transition:transform .3s}
+.xdb .xd-mtree:hover{transform:scale(1.06)}
+.xdb .xd-mtree .lt{animation:xdTw 1.8s ease-in-out infinite}
+.xdb .xd-mtree.show .lt{animation:xdChase .5s steps(2) infinite}
+.xdb .xd-gift{bottom:8px}
+html.xmas .pg-header.xdb{padding-bottom:50px!important}
+html.xmas .bm-hero.xdb{padding-bottom:52px!important}
+@media(max-width:600px){.xdb .xd-mtree,.xdb .xd-gift{display:none!important}html.xmas .pg-header.xdb{padding-bottom:40px!important}.xdb .xd-ground{height:30px}}
+@media(max-width:900px){.xdb .xd-mtree{width:70px;right:44px}.xdb .xd-branch.tr{display:block!important;width:150px;top:-30px}.xdb .xd-gift{width:40px!important}.xdb .xd-orn:nth-of-type(n+3){display:none}}
+@media(max-width:1120px){html.xmas .hero-banner .xd-orn.mx,html.xmas .hero-banner .xd-tree,html.xmas .hero-banner .xd-snowman,html.xmas .hero-banner .xd-gift{display:none!important}}
+html.xmas .hero-banner .xd-tree,html.xmas .hero-banner .xd-snowman,html.xmas .hero-banner .xd-gift{z-index:8}
+html.xmas .hero-banner .xd-orn{z-index:8}
+@media(prefers-reduced-motion:reduce){.xd *,.xd{animation:none!important}}
+</style>
+<script>
+(function(){
+ const root=document.documentElement,isX=()=>root.classList.contains('xmas');
+ const reduce=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
+ const R=(a,b)=>a+Math.random()*(b-a);
+ let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646};
+ const jingle=s=>{try{window.xmJingle&&xmJingle(s)}catch(e){}};
+
+ let UID=0;const U=svg=>{const u='_'+(++UID);return svg.replace(/id="([^"]+)"/g,(m,a)=>`id="${a}${u}"`).replace(/url\(#([^)]+)\)/g,(m,a)=>`url(#${a}${u})`);};
+ // ---------- SVG builders ----------
+ function branchSVG(){seed=11;let g='';
+  const stems=[[20,40,300,150,26],[0,110,250,230,22],[60,0,230,60,18],[10,170,160,300,18]];
+  stems.forEach(([x1,y1,x2,y2,n])=>{
+   g+=`<path d="M${x1} ${y1} Q${(x1+x2)/2} ${(y1+y2)/2-30} ${x2} ${y2}" stroke="#3B2A1A" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+   for(let i=0;i<n*3;i++){const t=i/(n*3);const x=x1+(x2-x1)*t,y=y1+(y2-y1)*t-30*4*t*(1-t);const ang=Math.atan2(y2-y1,x2-x1);
+    for(const side of[-1,1]){const a=ang+side*(0.9+rnd()*.5),L=26+rnd()*20-t*10;const c=['#0F4D2E','#14613A','#1C7A46','#2A8F55','#3FA466'][Math.floor(rnd()*5)];
+     g+=`<path d="M${x.toFixed(1)} ${y.toFixed(1)} l${(Math.cos(a)*L).toFixed(1)} ${(Math.sin(a)*L).toFixed(1)}" stroke="${c}" stroke-width="${(2.2+rnd()*1.6).toFixed(1)}" stroke-linecap="round"/>`;}}
+   for(let k=0;k<4;k++){const t=.25+rnd()*.7,x=x1+(x2-x1)*t,y=y1+(y2-y1)*t-30*4*t*(1-t);g+=`<ellipse cx="${(x+R(-8,8)).toFixed(0)}" cy="${(y-6).toFixed(0)}" rx="${R(6,11).toFixed(0)}" ry="3.5" fill="#fff" opacity=".85"/>`;}
+  });
+  g+=`<circle cx="70" cy="70" r="8" fill="#7A3B1E"/><circle cx="82" cy="78" r="7" fill="#8B4A26"/><circle cx="92" cy="66" r="6" fill="#6B3318"/>`;
+  return `<svg viewBox="0 0 320 320" aria-hidden="true">${g}</svg>`;}
+
+ function garlandSVG(w){w=Math.max(360,Math.round(w));seed=3;let s='',b='';
+  for(const [y0,sag,n] of [[6,46,Math.round(w/46)],[2,74,Math.round(w/64)]]){
+   const seg=w/ (Math.round(w/320));let d=`M0 ${y0}`;
+   for(let x=0;x<w;x+=seg){d+=` Q${x+seg/2} ${y0+sag} ${x+seg} ${y0}`;}
+   s+=`<path d="${d}" stroke="#2B1D10" stroke-width="1.6" fill="none" opacity=".8"/>`;
+   for(let i=0;i<n;i++){const x=(i+.5)*w/n;const k=((x%seg)/seg);const y=y0+sag*4*k*(1-k)*0.5*2;
+    const c=['#FFE7A0','#FFD46A','#FFF3C8','#FFC45A'][i%4];
+    b+=`<g class="b" style="animation-delay:${(rnd()*2.4).toFixed(2)}s"><circle cx="${x.toFixed(1)}" cy="${(y+5).toFixed(1)}" r="11" fill="${c}" opacity=".28" filter="url(#xdg)"/><circle cx="${x.toFixed(1)}" cy="${(y+5).toFixed(1)}" r="4.2" fill="${c}"/><circle cx="${(x-1.2).toFixed(1)}" cy="${(y+3.8).toFixed(1)}" r="1.5" fill="#fff"/></g>`;}}
+  return U(`<svg viewBox="0 0 ${w} 90" width="${w}" height="90" aria-hidden="true"><defs><filter id="xdg" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter></defs>${s}${b}</svg>`);}
+
+ function ornSVG(c1,c2,len){const id='o'+Math.random().toString(36).slice(2,7);
+  return `<svg width="54" height="${len+58}" viewBox="0 0 54 ${len+58}" aria-hidden="true"><defs><radialGradient id="${id}" cx="35%" cy="32%" r="70%"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".18" stop-color="${c2}"/><stop offset=".75" stop-color="${c1}"/><stop offset="1" stop-color="#2a0a0a"/></radialGradient></defs>
+  <line x1="27" y1="0" x2="27" y2="${len}" stroke="#E7D49A" stroke-width="1.6"/><rect x="20" y="${len}" width="14" height="9" rx="2" fill="#D9B45A"/><circle cx="27" cy="${len+33}" r="22" fill="url(#${id})"/>
+  <path d="M8 ${len+30} q19 8 38 0" stroke="rgba(255,240,200,.7)" stroke-width="2" fill="none"/><ellipse cx="19" cy="${len+24}" rx="6" ry="3.5" fill="#fff" opacity=".7" transform="rotate(-30 19 ${len+24})"/></svg>`;}
+
+ const FLAKE=`<svg viewBox="0 0 64 64" aria-hidden="true"><g stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none">${[0,60,120].map(r=>`<g transform="rotate(${r} 32 32)"><path d="M32 4V60"/><path d="M32 14l-7-7M32 14l7-7M32 50l-7 7M32 50l7 7M32 24l-10-6M32 24l10-6M32 40l-10 6M32 40l10 6"/></g>`).join('')}</g></svg>`;
+
+ function treeSVG(){seed=5;const tiers=[[100,40,150,130],[100,85,175,160],[100,130,205,195],[100,178,240,235]];
+  let t='',o='',l='',tin='';
+  tiers.forEach(([cx,top,bw,bot],i)=>{const hw=bw/2;let d=`M${cx} ${top} `;const n=7+i*2;
+   d+=`L${cx+hw*.35} ${top+(bot-top)*.45} `;for(let k=0;k<=n;k++){const x=cx+hw-(k*bw/n);const y=bot-(k%2?10:0);d+=`L${x.toFixed(1)} ${y} `;}
+   d+=`L${cx-hw*.35} ${top+(bot-top)*.45} Z`;t+=`<path d="${d}" fill="url(#xdt${i%2})" stroke="#0E4A2C" stroke-width="1.5"/>`;
+   for(let k=0;k<6+i*2;k++){const yy=top+30+rnd()*(bot-top-36),half=hw*(yy-top)/(bot-top),xx=cx+R(-half*.85,half*.85);
+    o+=`<circle cx="${xx.toFixed(1)}" cy="${yy.toFixed(1)}" r="${(4+rnd()*3).toFixed(1)}" fill="url(#xdo${k%4})"/>`;}
+   for(let k=0;k<10+i*4;k++){const yy=top+14+rnd()*(bot-top-16),half=hw*(yy-top)/(bot-top),xx=cx+R(-half*.9,half*.9);
+    l+=`<circle class="lt" style="animation-delay:${(rnd()*1.8).toFixed(2)}s" cx="${xx.toFixed(1)}" cy="${yy.toFixed(1)}" r="2.3" fill="${['#FFF2B3','#FFD36E','#FF8A8A','#9BE7FF'][k%4]}"/>`;}
+   const ty=top+(bot-top)*.62,hh=hw*.62;tin+=`<path d="M${cx-hh} ${ty} Q${cx} ${ty+16} ${cx+hh} ${ty-6}" stroke="#F3D27A" stroke-width="2.2" fill="none" opacity=".85"/>`;});
+  return U(`<svg viewBox="0 0 200 270" aria-hidden="true"><defs>
+   <linearGradient id="xdt0" x1="0" x2="1"><stop offset="0" stop-color="#0F5A33"/><stop offset=".5" stop-color="#2F9A5A"/><stop offset="1" stop-color="#0C4A2B"/></linearGradient>
+   <linearGradient id="xdt1" x1="0" x2="1"><stop offset="0" stop-color="#0D5130"/><stop offset=".55" stop-color="#27894F"/><stop offset="1" stop-color="#0A4127"/></linearGradient>
+   ${[['#FF4D5E','#7A0010'],['#FFE08A','#9A6A10'],['#7FD0FF','#0B4A8A'],['#F7F7F7','#9AA']].map((c,i)=>`<radialGradient id="xdo${i}" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="${c[0]}"/><stop offset="1" stop-color="${c[1]}"/></radialGradient>`).join('')}
+   <filter id="xdsg" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="5"/></filter></defs>
+   <rect x="90" y="232" width="20" height="26" rx="3" fill="#6B3E1E"/>${t}${tin}${o}${l}
+   <g transform="translate(100 30)"><circle r="20" fill="#FFE08A" opacity=".55" filter="url(#xdsg)"/><polygon points="0,-20 5.9,-6.2 21,-6.2 8.8,3 13.4,18 0,9 -13.4,18 -8.8,3 -21,-6.2 -5.9,-6.2" fill="#FFD84D" stroke="#FFF1B0" stroke-width="1.5"/></g></svg>`);}
+
+ function giftSVG(c,rib){return U(`<svg viewBox="0 0 80 84" aria-hidden="true">
+   <rect x="8" y="34" width="64" height="48" rx="4" fill="${c}"/><rect x="8" y="34" width="64" height="48" rx="4" fill="url(#xdgs)"/>
+   <rect x="35" y="34" width="10" height="48" fill="${rib}"/>
+   <g class="lid"><rect x="3" y="22" width="74" height="15" rx="3" fill="${c}"/><rect x="3" y="22" width="74" height="15" rx="3" fill="url(#xdgs)"/><rect x="35" y="22" width="10" height="15" fill="${rib}"/>
+   <path d="M40 22 C22 2 10 18 26 22 Z" fill="${rib}"/><path d="M40 22 C58 2 70 18 54 22 Z" fill="${rib}"/><circle cx="40" cy="21" r="5" fill="${rib}"/></g>
+   <defs><linearGradient id="xdgs" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".25"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></linearGradient></defs></svg>`);}
+
+ const SNOWMAN=`<svg viewBox="0 0 120 170" aria-hidden="true"><defs><radialGradient id="xdsn" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#fff"/><stop offset=".7" stop-color="#EEF5FF"/><stop offset="1" stop-color="#B9CBE6"/></radialGradient></defs>
+  <ellipse cx="60" cy="164" rx="46" ry="6" fill="rgba(0,0,0,.18)"/>
+  <circle cx="60" cy="128" r="36" fill="url(#xdsn)"/><circle cx="60" cy="78" r="26" fill="url(#xdsn)"/>
+  <g class="arm"><path d="M84 80 l26 -22 M102 64 l8 -2 M100 66 l2 -9" stroke="#6B3E1E" stroke-width="3.5" stroke-linecap="round" fill="none"/></g>
+  <path d="M36 82 l-24 -14 M18 72 l-8 2 M20 72 l-3 -8" stroke="#6B3E1E" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+  <circle cx="60" cy="40" r="22" fill="url(#xdsn)"/>
+  <circle cx="52" cy="36" r="2.6" fill="#1b1b1b"/><circle cx="68" cy="36" r="2.6" fill="#1b1b1b"/>
+  <path d="M60 42 l18 4 -18 3z" fill="#F07A1A"/>
+  <g fill="#1b1b1b"><circle cx="50" cy="50" r="1.5"/><circle cx="55" cy="53" r="1.5"/><circle cx="61" cy="54" r="1.5"/><circle cx="67" cy="52" r="1.5"/></g>
+  <path d="M38 58 q22 10 44 0 l2 9 q-24 10 -48 0z" fill="#D7263D"/><path d="M70 64 l6 24 h-9 l-4 -22z" fill="#C8102E"/><path d="M69 84 h8 M68 88 h9" stroke="#FFD36E" stroke-width="1.5"/>
+  <g fill="#1b1b1b"><circle cx="60" cy="96" r="3"/><circle cx="60" cy="112" r="3"/><circle cx="60" cy="128" r="3"/></g>
+  <g class="hat"><rect x="34" y="20" width="52" height="6" rx="3" fill="#1b1b1b"/><rect x="42" y="-4" width="36" height="26" rx="3" fill="#232323"/><rect x="42" y="12" width="36" height="6" fill="#C8102E"/><circle cx="72" cy="15" r="3" fill="#2E8B57"/></g></svg>`;
+
+ const GROUND=`<svg viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="xdgr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#D7E6F7"/></linearGradient></defs>
+  <path d="M0 40 C120 12 220 52 340 30 S560 8 680 34 S900 58 1020 26 S1160 18 1200 30 V80 H0Z" fill="url(#xdgr)"/>
+  <path d="M0 56 C160 36 260 64 420 48 S700 40 860 56 S1100 46 1200 52 V80 H0Z" fill="#EAF2FC" opacity=".9"/></svg>`;
+
+ // ---------- product tips for gifts ----------
+ function tip(){const L=((typeof PRODUCTS!=='undefined'&&PRODUCTS)||window.PRODUCTS||[]).filter(p=>!/_box$/.test(p.id)&&p.benefits&&p.benefits.length);if(!L.length)return null;
+  const p=L[Math.floor(Math.random()*L.length)];return {p,b:p.benefits[Math.floor(Math.random()*p.benefits.length)]};}
+ function showTip(x,y,html){document.querySelectorAll('.xd-tip').forEach(e=>e.remove());const t=document.createElement('div');t.className='xd-tip';t.innerHTML=html;
+  document.body.appendChild(t);const w=t.offsetWidth,h=t.offsetHeight;t.style.left=Math.max(10,Math.min(innerWidth-w-10,x-w/2))+'px';t.style.top=Math.max(10,y-h-24)+'px';
+  const close=()=>{t.remove();removeEventListener('pointerdown',out,true)};const out=e=>{if(!t.contains(e.target))close()};setTimeout(()=>addEventListener('pointerdown',out,true),50);setTimeout(close,9000);return t;}
+ function burst(x,y,set,n){if(reduce)return;for(let i=0;i<(n||14);i++){const s=document.createElement('div');s.className='xd-burst';s.textContent=set[i%set.length];
+  const a=Math.random()*Math.PI*2,d=R(60,150);s.style.left=x+'px';s.style.top=y+'px';s.style.setProperty('--dx',Math.cos(a)*d+'px');s.style.setProperty('--dy',(Math.sin(a)*d-40)+'px');s.style.setProperty('--r',R(-200,200)+'deg');
+  document.body.appendChild(s);setTimeout(()=>s.remove(),1200);}}
+
+
+ function layoutHero(hb){const card=hb.querySelector('.hero-path-card'),tr=hb.querySelector('.xd-tree'),sm=hb.querySelector('.xd-snowman');if(!card||!tr||innerWidth<=1120)return;
+  const cl=card.offsetLeft,tw=tr.offsetWidth||178;const tl=Math.max(hb.clientWidth*0.38,cl-tw-14);tr.style.left=tl+'px';sm.style.left=(tl-104)+'px';
+  hb.querySelectorAll('.xd-gift').forEach(g=>{const p=g.dataset.pos;if(p==='tr')g.style.left=(tl+tw-34)+'px';else if(p==='tl')g.style.left=(tl-6)+'px';else if(p==='sm')g.style.left=(tl-150)+'px';});}
+ // ---------- build ----------
+ let built=false;
+ function build(){
+  const hb=document.querySelector('.hero-banner');if(!hb||built)return;built=true;
+  const W=hb.clientWidth;
+  hb.insertAdjacentHTML('afterbegin',`<div class="xd xd-layer xd-bokeh" data-d="6"></div><div class="xd xd-layer xd-vign"></div><div class="xd xd-shoot"></div>
+   <div class="xd xd-branch tl" data-d="10">${branchSVG()}</div><div class="xd xd-branch tr" data-d="10">${branchSVG()}</div>
+   <div class="xd xd-garland" data-d="4">${garlandSVG(W)}</div>
+   <div class="xd xd-ground">${U(GROUND)}</div>`);
+  // flakes
+  [[3,46,46,26],[44,40,26,40],[60,68,34,32],[2,62,30,48],[95,44,40,36],[52,8,22,52],[33,88,28,44]].forEach(([l,t,s,d])=>{
+   hb.insertAdjacentHTML('afterbegin',`<div class="xd xd-flake" data-d="14" style="left:${l}%;top:${t}%;width:${s}px;animation-duration:${d}s;opacity:.75">${FLAKE}</div>`);});
+  // ornaments
+  [[2.2,64,'#C8102E','#FF6B6B'],[7.5,30,'#B8862A','#FFE08A'],[58.5,40,'#1F7A4D','#7FE0A0'],[96.2,54,'#C8102E','#FF6B6B'],[91.5,22,'#B8862A','#FFE08A']].forEach(([l,len,c1,c2],i)=>{
+   const o=document.createElement('div');o.className='xd xd-orn'+((i===1||i===2||i===4)?' mx':'');o.style.left=`calc(${l}% - 27px)`;o.style.animationDelay=(-i*0.7)+'s';o.innerHTML=ornSVG(c1,c2,len);
+   o.addEventListener('click',e=>{o.classList.remove('hit');void o.offsetWidth;o.classList.add('hit');jingle(true);burst(e.clientX,e.clientY,['✨','⭐','❄️','💫'],10);
+    setTimeout(()=>o.classList.remove('hit'),1250);});hb.appendChild(o);});
+  // tree
+  const tr=document.createElement('div');tr.className='xd xd-tree';tr.setAttribute('role','button');tr.setAttribute('aria-label','ต้นคริสต์มาส กดเพื่อเปิดไฟ');
+  tr.innerHTML=`<div class="xd-star"></div>${treeSVG()}`;hb.appendChild(tr);
+  tr.addEventListener('click',e=>{tr.classList.add('show');jingle(false);burst(e.clientX,e.clientY-60,['⭐','✨','🌟','💛'],16);
+   try{window.xmFireworks&&xmFireworks(2)}catch(_){}
+   showTip(e.clientX,e.clientY-40,'<div class="h">🎄 ต้นคริสต์มาสสว่างแล้ว!</div>ขอให้ทุกสายปิดการขายสว่างไสวแบบนี้ ✨');setTimeout(()=>tr.classList.remove('show'),5000);});
+  // snowman
+  const sm=document.createElement('div');sm.className='xd xd-snowman';sm.setAttribute('role','button');sm.setAttribute('aria-label','ตุ๊กตาหิมะ');sm.innerHTML=U(SNOWMAN);hb.appendChild(sm);
+  const SM=['สู้ ๆ นะ! ⛄ ปิดการขายรับปีใหม่!','อย่าลืมถามอาการลูกค้าก่อนเสนอสินค้านะ 😉','ทำแบบทดสอบให้ผ่าน 70% ก่อนสิ้นปีกันเถอะ!','ยิ้มก่อนโทร เสียงจะสดใสขึ้นนะ ☺️','ลองเปิด Advent Calendar วันนี้หรือยัง? 📅'];
+  sm.addEventListener('click',e=>{sm.classList.remove('hit');void sm.offsetWidth;sm.classList.add('hit');jingle(true);
+   showTip(e.clientX,e.clientY-30,`<div class="h">⛄ ตุ๊กตาหิมะบอกว่า...</div>${SM[Math.floor(Math.random()*SM.length)]}`);burst(e.clientX,e.clientY,['❄️','⛄','✨'],8);});
+  // gifts
+  [['tr','#C8102E','#FFD36E',58],['tl','#1F7A4D','#FFD36E',46],['sm','#B8862A','#C8102E',44],['calc(100% - 64px)','#C8102E','#FFE08A',56]].forEach(([l,c,r,w],i)=>{
+   const g=document.createElement('div');g.className='xd xd-gift'+(i===0?' wiggle':'');g.dataset.pos=l;if(l.startsWith('calc'))g.style.left=l;g.style.width=w+'px';g.setAttribute('role','button');g.setAttribute('aria-label','กล่องของขวัญ กดเพื่อเปิด');
+   g.innerHTML=giftSVG(c,r);hb.appendChild(g);
+   g.addEventListener('click',e=>{g.classList.remove('wiggle');g.classList.add('open');jingle(true);burst(e.clientX,e.clientY-20,['🎁','🍬','⭐','🎀','✨','🍭'],16);
+    const t=tip();if(t){const el=showTip(e.clientX,e.clientY-30,`<div class="h">🎁 ของขวัญความรู้!</div><b>${t.p.name}</b> — ${t.b}<br><button>ดูสินค้านี้ →</button>`);
+     el.querySelector('button').onclick=()=>{el.remove();if(typeof openDP==='function')openDP(t.p.id)};}
+    setTimeout(()=>g.classList.remove('open'),2200);});});
+  layoutHero(hb);setTimeout(()=>layoutHero(hb),400);addEventListener('resize',()=>layoutHero(hb));
+  // parallax + sparkles
+  if(!reduce&&matchMedia('(pointer:fine)').matches){
+   const layers=[...hb.querySelectorAll('[data-d]')];let raf=0,mx=0,my=0,last=0;
+   hb.addEventListener('pointermove',e=>{const r=hb.getBoundingClientRect();mx=(e.clientX-r.left)/r.width-.5;my=(e.clientY-r.top)/r.height-.5;
+    if(!raf)raf=requestAnimationFrame(()=>{raf=0;layers.forEach(l=>{const d=+l.dataset.d;l.style.translate=`${(-mx*d).toFixed(1)}px ${(-my*d).toFixed(1)}px`;})});
+    const now=performance.now();if(isX()&&now-last>45){last=now;const s=document.createElement('div');s.className='xd-spark';s.textContent=['✦','✧','⋆','✨'][Math.floor(Math.random()*4)];
+     s.style.left=e.clientX+'px';s.style.top=e.clientY+'px';s.style.setProperty('--dx',R(-30,30)+'px');s.style.setProperty('--dy',R(10,50)+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),900);}});
+  }
+  // shooting star
+  if(!reduce){const sh=hb.querySelector('.xd-shoot');setInterval(()=>{if(!isX()||document.hidden)return;sh.style.top=R(4,30)+'%';sh.style.left=R(-20,30)+'%';sh.classList.remove('go');void sh.offsetWidth;sh.classList.add('go');},7000);}
+  // hide fixed snowman while hero has its own
+  const fixedSM=()=>document.querySelector('body > .xm-snowman');
+  try{new IntersectionObserver(es=>{const v=es[0].isIntersecting;const f=fixedSM();if(f)f.style.visibility=v&&innerWidth>1120?'hidden':'';}).observe(hb);}catch(e){}
+  // countdown flip
+  const cd=document.getElementById('xm-cd');if(cd){let prev=[];new MutationObserver(()=>{const ds=[...cd.children];ds.forEach((d,i)=>{const v=d.firstChild&&d.firstChild.textContent;if(prev[i]!==undefined&&prev[i]!==v){d.classList.add('flip');setTimeout(()=>d.classList.remove('flip'),460);}prev[i]=v;});}).observe(cd,{childList:true});}
+  addEventListener('resize',()=>{clearTimeout(window.__xdR);window.__xdR=setTimeout(()=>{const g=hb.querySelector('.xd-garland');if(g)g.innerHTML=garlandSVG(hb.clientWidth);},250)});
+ }
+
+
+ // ---------- every other banner ----------
+ function decoBanner(el){if(el.classList.contains('xdb')||el.closest('.hero-banner'))return;el.classList.add('xdb');
+  const W=el.clientWidth||900;
+  el.insertAdjacentHTML('afterbegin',`<div class="xd xd-layer xd-bokeh"></div><div class="xd xd-layer xd-vign"></div>
+   <div class="xd xd-branch tr">${branchSVG()}</div><div class="xd xd-garland">${garlandSVG(W)}</div><div class="xd xd-ground">${U(GROUND)}</div>`);
+  [[62,22,22,40],[8,70,18,30],[80,58,26,46],[45,82,16,36]].forEach(([l,t,sz,d])=>el.insertAdjacentHTML('afterbegin',`<div class="xd xd-flake" style="left:${l}%;top:${t}%;width:${sz}px;animation-duration:${d}s;opacity:.6">${FLAKE}</div>`));
+  [[70,26,'#C8102E','#FF6B6B'],[77,48,'#B8862A','#FFE08A'],[84,20,'#1F7A4D','#7FE0A0']].forEach(([l,len,c1,c2],i)=>{const o=document.createElement('div');o.className='xd xd-orn';o.style.left=l+'%';o.style.animationDelay=(-i*.9)+'s';o.innerHTML=ornSVG(c1,c2,len);
+   o.addEventListener('click',e=>{o.classList.remove('hit');void o.offsetWidth;o.classList.add('hit');jingle(true);burst(e.clientX,e.clientY,['✨','⭐','❄️','💫'],10);setTimeout(()=>o.classList.remove('hit'),1250);});el.appendChild(o);});
+  const t=document.createElement('div');t.className='xd xd-mtree';t.setAttribute('role','button');t.setAttribute('aria-label','ต้นคริสต์มาส');t.innerHTML=treeSVG();el.appendChild(t);
+  t.addEventListener('click',e=>{t.classList.add('show');jingle(false);burst(e.clientX,e.clientY-40,['⭐','✨','🌟'],12);setTimeout(()=>t.classList.remove('show'),4000);});
+  [['14px','#C8102E','#FFD36E',44],['168px','#1F7A4D','#FFD36E',38]].forEach(([r,c,rb,w])=>{const g=document.createElement('div');g.className='xd xd-gift';g.style.right=r;g.style.width=w+'px';g.setAttribute('role','button');g.setAttribute('aria-label','กล่องของขวัญ กดเพื่อเปิด');g.innerHTML=giftSVG(c,rb);el.appendChild(g);
+   g.addEventListener('click',e=>{g.classList.add('open');jingle(true);burst(e.clientX,e.clientY-20,['🎁','🍬','⭐','🎀','✨'],14);const tp=tip();
+    if(tp){const box=showTip(e.clientX,e.clientY-30,`<div class="h">🎁 ของขวัญความรู้!</div><b>${tp.p.name}</b> — ${tp.b}<br><button>ดูสินค้านี้ →</button>`);box.querySelector('button').onclick=()=>{box.remove();if(typeof openDP==='function')openDP(tp.p.id)};}
+    setTimeout(()=>g.classList.remove('open'),2200);});});
+  if(!reduce&&matchMedia('(pointer:fine)').matches){let last=0;el.addEventListener('pointermove',e=>{const now=performance.now();if(!isX()||now-last<50)return;last=now;const s=document.createElement('div');s.className='xd-spark';s.textContent=['✦','✧','⋆','✨'][Math.floor(Math.random()*4)];s.style.left=e.clientX+'px';s.style.top=e.clientY+'px';s.style.setProperty('--dx',R(-30,30)+'px');s.style.setProperty('--dy',R(10,50)+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),900);});}
+ }
+ function decoAll(){document.querySelectorAll('.pg-header,.bm-hero').forEach(el=>{try{decoBanner(el)}catch(e){}});
+  document.querySelectorAll('.xdb .xd-garland').forEach(g=>{const w=g.parentElement.clientWidth;if(w&&Math.abs((+g.dataset.w||0)-w)>40){g.dataset.w=w;g.innerHTML=garlandSVG(w);}});}
+ // ---------- golden sparkle trail behind flying sleigh ----------
+ function trail(){if(reduce)return;const cv=document.createElement('canvas');cv.id='xd-trail';document.body.appendChild(cv);const c=cv.getContext('2d');let P=[];
+  const rs=()=>{cv.width=innerWidth;cv.height=innerHeight};rs();addEventListener('resize',rs);
+  (function loop(){const sl=document.querySelector('.xm-sleigh.fly');
+   if(sl&&isX()){const r=sl.getBoundingClientRect();for(let i=0;i<4;i++)P.push({x:r.left+r.width*0.06+R(-6,6),y:r.top+r.height*0.66+R(-8,8),vx:R(-1.6,-.2),vy:R(-.4,.9),l:1,s:R(1,3.2)});}
+   c.clearRect(0,0,cv.width,cv.height);if(P.length){c.globalCompositeOperation='lighter';
+    P=P.filter(p=>(p.l-=0.018)>0);for(const p of P){p.x+=p.vx;p.y+=p.vy;c.globalAlpha=p.l;c.fillStyle=p.l>.6?'#FFF4C9':'#FFC94D';c.beginPath();c.arc(p.x,p.y,p.s*p.l+.4,0,6.283);c.fill();}
+    c.globalAlpha=1;c.globalCompositeOperation='source-over';}
+   requestAnimationFrame(loop);})();}
+
+ function init(){if(typeof FEST_SEASON==='function'&&FEST_SEASON()!=='xmas')return;build();trail();decoAll();
+  document.addEventListener('click',e=>{if(e.target.closest('[data-page],.nav-link,.path-item,button'))setTimeout(decoAll,120);},true);addEventListener('resize',()=>{clearTimeout(window.__xdA);window.__xdA=setTimeout(decoAll,300)});}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,50));else setTimeout(init,50);
+})();
+</script>
+<!-- ===== /XMAS DELUXE HERO ===== -->
+
 <!-- ===== NEW PRODUCT POPUP (playlist) ===== -->
 <style>
 #np-pop{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(8,12,30,.72);backdrop-filter:blur(4px)}
